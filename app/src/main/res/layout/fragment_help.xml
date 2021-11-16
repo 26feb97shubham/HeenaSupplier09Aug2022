@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@android:color/transparent"
+    tools:context=".fragments.HelpFragment">
+
+    <ImageView
+        android:id="@+id/iv_logo"
+        android:layout_width="@dimen/_150sdp"
+        android:layout_height="@dimen/_80sdp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/golden_logo"
+        android:layout_marginTop="@dimen/_20sdp"/>
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="@dimen/_200sdp"
+        android:layout_height="@dimen/_40sdp"
+        android:layout_below="@id/iv_logo"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:text="@string/help_page"
+        android:fontFamily="@font/avenir_medium"
+        android:textAllCaps="false"
+        android:textSize="@dimen/_24ssp"
+        android:textColor="@color/gold"
+        android:gravity="center"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/tv_title"
+        android:paddingHorizontal="@dimen/_20sdp"
+        android:paddingTop="@dimen/_20sdp"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:background="@drawable/left_right_light_brown_filled_bg">
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <LinearLayout
+                    android:id="@+id/ll_help"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:layout_marginTop="@dimen/_10sdp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/good_day_nhow_can_we_help_you_today"
+                        android:textAllCaps="false"
+                        android:textSize="@dimen/_18ssp"
+                        android:textStyle="normal"
+                        android:fontFamily="@font/avenir_medium"
+                        android:textColor="@color/text_gold_color_dark"/>
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:id="@+id/rv_help_text"
+                        android:layout_marginTop="@dimen/_10sdp"/>
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tv_need_more_help"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/need_more_help"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/_18ssp"
+                    android:textStyle="normal"
+                    app:layout_constraintTop_toBottomOf="@id/ll_help"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:fontFamily="@font/avenir_medium"
+                    android:textColor="@color/text_gold_color_dark"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/tv_need_more_help"
+                    android:orientation="horizontal"
+                    android:paddingVertical="@dimen/_10sdp">
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/faq_card"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/_45sdp"
+                        android:layout_weight="1"
+                        android:layout_marginHorizontal="@dimen/_15sdp"
+                        app:cardBackgroundColor="@color/white"
+                        app:cardCornerRadius="@dimen/_6sdp">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:text="@string/faq_page"
+                            android:textColor="@color/text_gold_color_dark"
+                            android:fontFamily="@font/avenir_medium"
+                            android:textSize="@dimen/_15ssp"
+                            android:textAllCaps="true"
+                            android:gravity="center"/>
+                    </com.google.android.material.card.MaterialCardView>
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/admin_chat_card"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/_45sdp"
+                        android:layout_weight="1"
+                        android:layout_marginHorizontal="@dimen/_15sdp"
+                        app:cardBackgroundColor="@color/white"
+                        app:cardCornerRadius="@dimen/_6sdp">
+                        <TextView
+                            android:id="@+id/tv_help_page_admin_chat"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:fontFamily="@font/avenir_medium"
+                            android:text="@string/admin_chat"
+                            android:textColor="@color/text_gold_color_dark"
+                            android:textSize="@dimen/_15ssp"
+                            android:textAllCaps="true"
+                            android:gravity="center"/>
+                    </com.google.android.material.card.MaterialCardView>
+
+                </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.core.widget.NestedScrollView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</RelativeLayout>

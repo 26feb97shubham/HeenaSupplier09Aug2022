@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="@dimen/_10sdp">
+
+    <RadioButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:id="@+id/rb_address"/>
+
+    <TextView
+        android:id="@+id/tv_services_categories"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/rb_address"
+        app:layout_constraintBottom_toBottomOf="@id/rb_address"
+        android:text="@string/title"
+        android:textSize="@dimen/_13ssp"
+        android:fontFamily="@font/avenir_medium"
+        android:textColor="@color/gold"
+        android:layout_marginStart="@dimen/_10sdp"
+        app:layout_constraintStart_toEndOf="@+id/rb_address"
+        style="@style/TextAppearance.AppCompat.Large"
+        android:textAllCaps="false"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="@dimen/_10sdp"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_1sdp"
+        android:background="@color/gold"
+        app:layout_constraintTop_toBottomOf="@id/rb_address"
+        android:layout_marginTop="@dimen/_4sdp"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

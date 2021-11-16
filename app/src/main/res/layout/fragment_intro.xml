@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/black"
+    android:id="@+id/mainView"
+    tools:context=".fragments.IntroFragment">
+
+    <ImageView
+        android:id="@+id/iv_logo"
+        android:layout_width="@dimen/_200sdp"
+        android:layout_height="@dimen/_100sdp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="@dimen/_60sdp"
+        android:src="@drawable/dark_logo"
+        android:visibility="gone"
+        android:contentDescription="@string/logo"/>
+
+    <TextView
+        android:id="@+id/tv_intro_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/_20sdp"
+        android:padding="@dimen/_15sdp"
+        android:background="#59836853"
+        android:text="@string/intro_page_1_txt"
+        android:fontFamily="@font/avenir_medium"
+        android:textColor="@color/white"
+        android:gravity="center"
+        android:textSize="@dimen/_15ssp"
+        android:layout_marginBottom="@dimen/_110sdp"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <TextView
+        android:id="@+id/tv_continue"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_40sdp"
+        android:background="@drawable/curved_gold_filled_rect_box"
+        android:text="Continue"
+        android:fontFamily="@font/avenir_medium"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:textSize="@dimen/_15sdp"
+        android:textAllCaps="true"
+        android:visibility="visible"
+        android:layout_marginHorizontal="@dimen/_30sdp"
+        android:layout_alignParentBottom="true"
+        app:layout_constraintTop_toBottomOf="@id/tv_intro_content"
+        android:layout_marginTop="@dimen/_20sdp"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

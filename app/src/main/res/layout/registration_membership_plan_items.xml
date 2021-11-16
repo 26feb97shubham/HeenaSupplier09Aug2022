@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_margin="@dimen/_8sdp"
+        android:paddingVertical="@dimen/_8sdp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_20sdp"
+            android:id="@+id/tv_registration_plan_title"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="@dimen/_12sdp"
+            android:text="@string/title"
+            android:layout_marginHorizontal="@dimen/_16sdp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:gravity="center"
+            android:fontFamily="@font/avenirlt85heavy"
+            android:textColor="#211928"
+            android:textSize="@dimen/_15ssp"
+            android:textAllCaps="false"
+            android:textStyle="normal"/>
+
+        <ImageView
+            android:id="@+id/iv_selected_unselected_registration"
+            android:layout_width="@dimen/_15sdp"
+            android:layout_height="@dimen/_15sdp"
+            android:src="@drawable/ic_baseline_check_24"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tv_registration_plan_title"
+            android:layout_margin="@dimen/_8sdp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/tv_registration_plan_title"/>
+
+        <TextView
+            android:layout_width="@dimen/_120sdp"
+            android:layout_height="@dimen/_16sdp"
+            android:id="@+id/tv_registration_plan_price"
+            app:layout_constraintTop_toBottomOf="@id/tv_registration_plan_title"
+            android:layout_marginTop="@dimen/_12sdp"
+            android:text="@string/title"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:gravity="center"
+            android:fontFamily="@font/avenir_heavy"
+            android:textColor="#211928"
+            android:textSize="@dimen/_12ssp"
+            android:textStyle="normal"/>
+
+        <TextView
+            android:layout_width="@dimen/_277sdp"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_registration_plan_description"
+            app:layout_constraintTop_toBottomOf="@id/tv_registration_plan_price"
+            android:layout_marginTop="@dimen/_12sdp"
+            android:text="@string/service_desc"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:gravity="center"
+            android:fontFamily="@font/avenir_45_book"
+            android:textColor="#211928"
+            android:maxLines="6"
+            android:ellipsize="end"
+            android:padding="@dimen/_8sdp"
+            android:textSize="@dimen/_10ssp"
+            android:textStyle="normal"/>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

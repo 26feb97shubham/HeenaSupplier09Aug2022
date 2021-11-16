@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@android:color/transparent"
+    tools:context=".fragments.MyLocationsFragment">
+
+    <TextView
+        android:id="@+id/tv_saved_address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:text="@string/saved_address"
+        android:textColor="@color/gold"
+        android:layout_marginStart="@dimen/_15sdp"
+        android:layout_marginTop="@dimen/_15sdp"
+        android:fontFamily="@font/avenir_medium"
+        android:textSize="@dimen/_15ssp"
+        android:textStyle="normal"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/tv_saved_address"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:paddingHorizontal="@dimen/_15sdp"
+        android:background="@drawable/left_right_white_filled_background">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_address_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/_10sdp"/>
+        <TextView
+            android:id="@+id/tv_add_new_address"
+            android:layout_width="@dimen/_200sdp"
+            android:layout_height="@dimen/_40sdp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:text="@string/add_new_address"
+            android:textAllCaps="true"
+            android:layout_marginVertical="@dimen/_20sdp"
+            android:textColor="@color/black"
+            android:gravity="center"
+            android:background="@drawable/curved_gold_filled_rect_box"
+            android:layout_marginTop="@dimen/_40sdp"
+            android:fontFamily="@font/avenir_medium"
+            android:textSize="@dimen/_13ssp"
+            android:textStyle="bold"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</RelativeLayout>

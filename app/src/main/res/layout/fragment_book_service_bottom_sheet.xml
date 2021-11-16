@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/black">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingVertical="@dimen/_12sdp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:cardCornerRadius="@dimen/_4sdp"
+                android:layout_margin="@dimen/_4sdp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
+                <ImageView
+                    android:id="@+id/img"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/def_henna"/>
+                <ImageView
+                    android:id="@+id/iv_add_to_fav"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    app:layout_constraintTop_toTopOf="@id/tv_services"
+                    android:src="@drawable/add_to_fav_icon"
+                    android:layout_marginStart="@dimen/_6sdp"
+                    android:layout_marginTop="@dimen/_4sdp"/>
+            </com.google.android.material.card.MaterialCardView>
+
+            <View
+                android:id="@+id/view1"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_2sdp"
+                android:background="@color/gold"
+                app:layout_constraintTop_toBottomOf="@id/view"
+                android:layout_marginTop="@dimen/_8sdp"
+                android:layout_marginHorizontal="@dimen/_4sdp"/>
+
+            <TextView
+                android:id="@+id/tv_services"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/view1"
+                app:layout_constraintStart_toStartOf="parent"
+                android:text="@string/services"
+                android:textColor="@color/gold"
+                android:layout_marginTop="@dimen/_6sdp"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:fontFamily="@font/avenir_medium"
+                android:gravity="center_vertical"
+                android:textStyle="normal"
+                android:layout_gravity="center"
+                android:textSize="@dimen/_12ssp" />
+
+            <View
+                android:id="@+id/view2"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_2sdp"
+                android:background="@color/gold"
+                app:layout_constraintTop_toBottomOf="@id/tv_services"
+                android:layout_marginTop="@dimen/_8sdp"
+                android:layout_marginHorizontal="@dimen/_4sdp"/>
+
+            <TextView
+                android:id="@+id/tv_services_desc"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_100sdp"
+                app:layout_constraintTop_toBottomOf="@id/view2"
+                app:layout_constraintStart_toStartOf="parent"
+                android:text="@string/service_desc"
+                android:maxLines="5"
+                android:ellipsize="end"
+                android:textColor="@color/gold"
+                android:layout_marginTop="@dimen/_6sdp"
+                android:layout_marginHorizontal="@dimen/_10sdp"
+                android:fontFamily="@font/avenir_medium"
+                android:gravity="center_vertical"
+                android:textStyle="normal"
+                android:layout_gravity="center"
+                android:textSize="@dimen/_12ssp" />
+
+            <View
+                android:id="@+id/view3"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_2sdp"
+                android:background="@color/gold"
+                app:layout_constraintTop_toBottomOf="@id/tv_services_desc"
+                android:layout_marginTop="@dimen/_8sdp"
+                android:layout_marginHorizontal="@dimen/_4sdp"/>
+
+            <TextView
+                android:id="@+id/tv_book_service"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_40sdp"
+                android:background="@drawable/curved_gold_filled_rect_box"
+                android:text="@string/book_service"
+                android:fontFamily="@font/avenir_medium"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:textSize="@dimen/_15sdp"
+                android:textAllCaps="true"
+                android:visibility="visible"
+                android:layout_marginHorizontal="@dimen/_30sdp"
+                android:layout_alignParentBottom="true"
+                app:layout_constraintTop_toBottomOf="@id/view3"
+                android:layout_marginTop="@dimen/_20sdp"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+</FrameLayout>

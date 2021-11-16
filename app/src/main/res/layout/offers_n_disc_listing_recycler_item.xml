@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginHorizontal="@dimen/_5sdp"
+    android:layout_marginVertical="@dimen/_6sdp"
+    app:cardCornerRadius="@dimen/_6sdp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_120sdp">
+        <ImageView
+            android:id="@+id/iv_offer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/hennatattoos"
+            android:scaleType="fitXY"/>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/offer_desc_card"
+            android:layout_width="@dimen/_120sdp"
+            android:layout_height="@dimen/_30sdp"
+            app:cardBackgroundColor="#D1C3B7"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginBottom="@dimen/_15sdp"
+            android:layout_marginEnd="@dimen/_15sdp">
+            <TextView
+                android:id="@+id/tv_offers_n_disc_name"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textColor="#836853"
+                android:textSize="@dimen/_14ssp"
+                android:layout_marginEnd="@dimen/_10sdp"
+                android:text="10% offers"
+                android:layout_gravity="center"
+                android:fontFamily="@font/avenir_medium"
+                android:gravity="center"
+                android:drawablePadding="@dimen/_10sdp"
+                app:drawableEndCompat="@drawable/dark_brown_right_arrow" />
+        </com.google.android.material.card.MaterialCardView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>

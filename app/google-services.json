@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "634557022438",
+    "project_id": "heenasupplier-e2746",
+    "storage_bucket": "heenasupplier-e2746.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:634557022438:android:22f24e40b79d46f35ebb27",
+        "android_client_info": {
+          "package_name": "com.dev.heenasupplier"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "634557022438-vbei8edc724g6uh0sflpudavacgsrs2q.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.dev.heenasupplier",
+            "certificate_hash": "dcfa16b62d4ed1866f7f122b3538fe80c7f996ea"
+          }
+        },
+        {
+          "client_id": "634557022438-irv16tj1ajpve1k58vtmkav3r79tiba2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA3_ZZOKIB6u8hIeKBrRAKRotQ9SmTswGg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "634557022438-irv16tj1ajpve1k58vtmkav3r79tiba2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

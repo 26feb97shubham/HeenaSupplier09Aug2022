@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="@dimen/_10sdp">
+
+      <!-- TODO: Update blank fragment layout -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <com.ortiz.touchview.TouchImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:id="@+id/viewMap"/>
+        <ProgressBar
+            android:layout_width="80sp"
+            android:layout_height="80sp"
+            android:layout_centerInParent="true"
+            android:id="@+id/loadMapimage"/>
+    </RelativeLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

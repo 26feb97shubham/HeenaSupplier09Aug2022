@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="@dimen/_6sdp"
+    app:strokeColor="@color/gold"
+    app:strokeWidth="@dimen/_1sdp"
+    android:layout_margin="@dimen/_10sdp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/_12sdp">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/civ_profile"
+            android:layout_width="@dimen/_50sdp"
+            android:layout_height="@dimen/_50sdp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:civ_border_width="@dimen/_1sdp"
+            app:civ_border_color="@color/gold"
+            android:src="@drawable/user"/>
+
+        <TextView
+            android:id="@+id/tv_naqasha_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="@id/civ_profile"
+            app:layout_constraintStart_toEndOf="@id/civ_profile"
+            android:layout_marginStart="@dimen/_8sdp"
+            android:text="@string/supplier_name"
+            android:textColor="@color/text_gold_color_dark"
+            android:textSize="@dimen/_11ssp"
+            android:fontFamily="@font/avenir_medium"
+            android:textAllCaps="false"
+            android:textStyle="normal"/>
+
+        <TextView
+            android:id="@+id/tv_service_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="@id/tv_naqasha_name"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_naqasha_name"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginStart="@dimen/_8sdp"
+            android:text="@string/supplier_name"
+            android:textColor="@color/text_gold_color_dark"
+            android:textSize="@dimen/_9ssp"
+            android:fontFamily="@font/avenir_medium"
+            android:textAllCaps="false"
+            android:textStyle="normal"/>
+
+        <LinearLayout
+            android:id="@+id/ratingView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/tv_naqasha_name"
+            app:layout_constraintStart_toStartOf="@+id/tv_naqasha_name"
+            android:visibility="visible"
+            android:gravity="center">
+
+            <RatingBar
+                android:id="@+id/ratingBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:rating="3.5"
+                android:textAlignment="viewStart"
+                android:textDirection="locale"
+                android:theme="@style/orangeRatingBar"
+                style="?attr/ratingBarStyleSmall"
+                />
+
+            <TextView
+                android:id="@+id/txtRating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="3.5"
+                android:textAlignment="viewStart"
+                android:textDirection="locale"
+                android:layout_marginStart="@dimen/_6sdp"
+                android:fontFamily="@font/avenir_medium"
+                app:layout_constraintTop_toTopOf="parent"
+                android:textColor="@color/orange"
+                android:textSize="@dimen/_9ssp"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_service_desc"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/_8sdp"
+            app:layout_constraintTop_toBottomOf="@id/ratingView"
+            app:layout_constraintStart_toStartOf="@id/ratingView"
+            android:text="@string/service_desc"
+            android:textColor="@color/text_gold_color_dark"
+            android:textSize="@dimen/_9ssp"
+            android:fontFamily="@font/avenir_medium"
+            android:textAllCaps="false"
+            android:maxLines="5"
+            android:ellipsize="end"
+            android:textStyle="normal"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>

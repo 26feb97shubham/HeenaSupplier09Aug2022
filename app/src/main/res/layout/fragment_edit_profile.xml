@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@android:color/transparent"
+    tools:context=".fragments.EditProfileFragment">
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollViewUpdate"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/_20sdp"
+            android:paddingTop="@dimen/_20sdp">
+
+            <ImageView
+                android:id="@+id/iv_logo"
+                android:layout_width="@dimen/_200sdp"
+                android:layout_height="@dimen/_100sdp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:src="@drawable/golden_logo"
+                android:layout_marginTop="@dimen/_30sdp"
+                android:contentDescription="@string/logo"/>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/profileView"
+                android:layout_width="@dimen/_140sdp"
+                android:layout_height="@dimen/_140sdp"
+                android:layout_marginTop="@dimen/_30sdp"
+                app:layout_constraintTop_toBottomOf="@+id/iv_logo"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/civ_profile_update"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:src="@drawable/def_edit_profile"
+                    app:civ_border_color="@color/gold"
+                    app:civ_border_width="1dp"/>
+
+                <ImageView
+                    android:id="@+id/editProfileUpdate"
+                    android:layout_width="@dimen/_25sdp"
+                    android:layout_height="@dimen/_25sdp"
+                    android:layout_marginBottom="@dimen/_7sdp"
+                    android:src="@drawable/edit_icon"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            <EditText
+                android:id="@+id/edtUsername_update"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_40sdp"
+                app:layout_constraintTop_toBottomOf="@+id/profileView"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="@dimen/_30sdp"
+                android:layout_marginHorizontal="@dimen/_30sdp"
+                android:background="@drawable/gold_border_white_filled_rect_box_curved"
+                android:textColorHint="@color/text_color"
+                android:padding="@dimen/_10sdp"
+                android:includeFontPadding="false"
+                android:textColor="@color/text_color"
+                android:fontFamily="@font/avenir_medium"
+                android:layout_marginBottom="@dimen/_40sdp"
+                android:textSize="@dimen/_12ssp"
+                android:textAllCaps="false"
+                android:elevation="@dimen/_5sdp"
+                android:inputType="text"
+                android:imeOptions="actionNext"
+                android:hint="@string/username"
+                android:importantForAutofill="no" />
+
+
+            <EditText
+                android:id="@+id/edtFullName_update"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_40sdp"
+                app:layout_constraintTop_toBottomOf="@+id/edtUsername_update"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:layout_marginHorizontal="@dimen/_30sdp"
+                android:background="@drawable/gold_border_white_filled_rect_box_curved"
+                android:textColorHint="@color/text_color"
+                android:padding="@dimen/_10sdp"
+                android:includeFontPadding="false"
+                android:textColor="@color/text_color"
+                android:fontFamily="@font/avenir_medium"
+                android:layout_marginBottom="@dimen/_40sdp"
+                android:textSize="@dimen/_12ssp"
+                android:textAllCaps="false"
+                android:elevation="@dimen/_5sdp"
+                android:inputType="text"
+                android:imeOptions="actionNext"
+                android:hint="@string/full_name"
+                android:importantForAutofill="no" />
+
+
+
+            <EditText
+                android:id="@+id/edtmobilenumber_update"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_40sdp"
+                app:layout_constraintTop_toBottomOf="@+id/edtFullName_update"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:layout_marginHorizontal="@dimen/_30sdp"
+                android:background="@drawable/gold_border_white_filled_rect_box_curved"
+                android:textColorHint="@color/text_color"
+                android:padding="@dimen/_10sdp"
+                android:includeFontPadding="false"
+                android:textColor="@color/text_color"
+                android:fontFamily="@font/avenir_medium"
+                android:layout_marginBottom="@dimen/_40sdp"
+                android:textSize="@dimen/_12ssp"
+                android:textAllCaps="false"
+                android:elevation="@dimen/_5sdp"
+                android:inputType="number"
+                android:imeOptions="actionDone"
+                android:hint="@string/mobile_number"/>
+
+            <EditText
+                android:id="@+id/edtemailaddress_update"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_40sdp"
+                app:layout_constraintTop_toBottomOf="@+id/edtmobilenumber_update"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:layout_marginHorizontal="@dimen/_30sdp"
+                android:background="@drawable/gold_border_white_filled_rect_box_curved"
+                android:textColorHint="@color/text_color"
+                android:padding="@dimen/_10sdp"
+                android:includeFontPadding="false"
+                android:textColor="@color/text_color"
+               android:fontFamily="@font/avenir_medium"
+                android:layout_marginBottom="@dimen/_40sdp"
+                android:textSize="@dimen/_12ssp"
+                android:textAllCaps="false"
+                android:elevation="@dimen/_5sdp"
+                android:inputType="textEmailAddress"
+                android:imeOptions="actionDone"
+                android:hint="@string/email_address"/>
+
+            <TextView
+                android:id="@+id/edtlocation_update"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_40sdp"
+                app:layout_constraintTop_toBottomOf="@+id/edtemailaddress_update"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:layout_marginHorizontal="@dimen/_30sdp"
+                android:background="@drawable/gold_border_white_filled_rect_box_curved"
+                android:textColorHint="@color/text_color"
+                android:padding="@dimen/_10sdp"
+                android:includeFontPadding="false"
+                android:textColor="@color/text_color"
+               android:fontFamily="@font/avenir_medium"
+                android:layout_marginBottom="@dimen/_40sdp"
+                android:textSize="@dimen/_12ssp"
+                android:textAllCaps="false"
+                android:gravity="center_vertical"
+                android:elevation="@dimen/_5sdp"
+                android:drawablePadding="@dimen/_8sdp"
+                android:hint="@string/location"
+                app:drawableStartCompat="@drawable/location_pin_dark_brown_layer_list" />
+
+
+            <TextView
+                android:id="@+id/btnUpdate"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_45sdp"
+                app:layout_constraintTop_toBottomOf="@+id/edtlocation_update"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginHorizontal="@dimen/_30sdp"
+                android:layout_marginTop="@dimen/_60sdp"
+                android:background="@drawable/curved_gold_filled_rect_box"
+               android:fontFamily="@font/avenir_medium"
+                android:includeFontPadding="false"
+                android:textColor="@color/black"
+                android:layout_marginBottom="@dimen/_40sdp"
+                android:gravity="center"
+                android:textSize="@dimen/_20ssp"
+                android:textStyle="normal"
+                android:textAllCaps="true"
+                android:elevation="@dimen/_5sdp"
+                android:text="@string/update"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <ProgressBar
+        android:id="@+id/progressBar_update"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        android:elevation="@dimen/_5sdp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

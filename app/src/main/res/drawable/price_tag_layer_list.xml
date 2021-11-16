@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:drawable="@drawable/price_tag_icon"
+        android:width="@dimen/_16sdp"
+        android:height="@dimen/_16sdp"
+        />
+</layer-list>

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".bottomsheets.CancelServiceBottomSheetFragment">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        android:paddingVertical="@dimen/_12sdp">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tv_rsn_for_cancellation_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:text="@string/reason_for_cancellation"
+                android:textColor="@color/gold"
+                android:layout_marginTop="@dimen/_6sdp"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:fontFamily="@font/avenir_medium"
+                android:gravity="center_vertical"
+                android:textStyle="normal"
+                android:layout_gravity="center"
+                android:textAllCaps="false"
+                android:textSize="@dimen/_12ssp" />
+
+            <TextView
+                android:id="@+id/tv_plz_prvd_valid_rsn_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/tv_rsn_for_cancellation_txt"
+                app:layout_constraintStart_toStartOf="parent"
+                android:text="@string/please_provide_a_valid_reason_for_your_refusal"
+                android:textColor="@color/gold"
+                android:layout_marginTop="@dimen/_6sdp"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:fontFamily="@font/avenir_medium"
+                android:gravity="center_vertical"
+                android:textStyle="normal"
+                android:layout_gravity="center"
+                android:textAllCaps="false"
+                android:textSize="@dimen/_10ssp" />
+
+            <LinearLayout
+                android:id="@+id/ll_rsn_for_cancellation"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_100sdp"
+                android:layout_marginHorizontal="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                app:layout_constraintTop_toBottomOf="@id/tv_plz_prvd_valid_rsn_txt"
+                android:background="@drawable/little_curved_white_filled_gold_border_rect_box">
+                <EditText
+                    android:id="@+id/et_rsn_for_cancellation"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:inputType="text"
+                    android:textColor="@color/gold"
+                    android:textSize="@dimen/_12ssp"
+                    android:fontFamily="@font/avenir_medium"
+                    android:background="@null"/>
+            </LinearLayout>
+
+
+            <TextView
+                android:id="@+id/tv_proceed"
+                android:layout_width="@dimen/_200sdp"
+                android:layout_height="@dimen/_40sdp"
+                android:background="@drawable/curved_gold_filled_rect_box"
+                android:text="@string/submit"
+                android:fontFamily="@font/avenir_medium"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:textSize="@dimen/_15sdp"
+                android:textAllCaps="true"
+                android:visibility="visible"
+                android:layout_alignParentBottom="true"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ll_rsn_for_cancellation"
+                android:layout_marginTop="@dimen/_20sdp"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <ProgressBar
+        android:id="@+id/frag_cancel_service_progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        android:elevation="@dimen/_5sdp"
+        android:visibility="gone"
+        style="@style/Theme.Progressbar"
+        android:indeterminateTint="@color/gold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

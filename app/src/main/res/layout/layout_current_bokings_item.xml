@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/_180sdp"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardBackgroundColor="@color/white"
+    app:cardCornerRadius="@dimen/_6sdp"
+    app:cardElevation="@dimen/_8sdp"
+    android:layout_margin="@dimen/_8sdp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/_10sdp">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/civ_profile"
+            android:layout_width="@dimen/_20sdp"
+            android:layout_height="@dimen/_20sdp"
+            app:civ_border_color="@color/gold"
+            app:civ_border_width="@dimen/_2sdp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:src="@drawable/user"/>
+
+        <TextView
+            android:id="@+id/tv_booking_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="@id/civ_profile"
+            app:layout_constraintBottom_toBottomOf="@id/civ_profile"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:text="BOOK#070821001"
+            android:textAllCaps="true"
+            android:fontFamily="@font/avenir_medium"
+            android:textColor="@color/text_gold_color_dark"
+            android:textSize="@dimen/_10ssp"/>
+
+
+        <View
+            android:id="@+id/view1"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/gold"
+            app:layout_constraintTop_toBottomOf="@id/civ_profile"
+            android:layout_marginTop="@dimen/_8sdp"/>
+
+        <TextView
+            android:id="@+id/tv_service_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/view1"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:text="Drawing Service"
+            android:textAllCaps="true"
+            android:fontFamily="@font/avenir_medium"
+            android:textColor="@color/text_gold_color_dark"
+            android:textSize="@dimen/_9ssp"/>
+
+        <TextView
+            android:id="@+id/tv_service_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/tv_service_name"
+            app:layout_constraintStart_toStartOf="parent"
+            android:text="@string/membership_status"
+            android:textAllCaps="false"
+            android:layout_marginTop="@dimen/_4sdp"
+            android:fontFamily="@font/avenir_medium"
+            android:textColor="@color/text_gold_color_dark"
+            android:textSize="@dimen/_9ssp"/>
+        <TextView
+            android:id="@+id/tv_service_date_booking"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="@id/tv_service_price"
+            app:layout_constraintBottom_toBottomOf="@id/tv_service_price"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:text="@string/view_all"
+            android:textAllCaps="false"
+            android:fontFamily="@font/avenir_medium"
+            android:textColor="@color/text_gold_color_dark"
+            android:textSize="@dimen/_9ssp"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>

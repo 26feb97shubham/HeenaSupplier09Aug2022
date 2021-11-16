@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/default_background"
+    tools:context=".activities.OtpVerificationActivity">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingVertical="@dimen/_10sdp">
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingVertical="@dimen/_15sdp">
+                    <ImageView
+                        android:id="@+id/iv_logo"
+                        android:layout_width="@dimen/_200sdp"
+                        android:layout_height="@dimen/_100sdp"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        android:src="@drawable/golden_logo"
+                        android:layout_marginTop="@dimen/_20sdp"
+                        android:contentDescription="@string/logo"/>
+
+                    <TextView
+                        android:id="@+id/tv_otp_verification"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_40sdp"
+                        app:layout_constraintTop_toBottomOf="@+id/iv_logo"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        android:layout_marginTop="@dimen/_20sdp"
+                        android:fontFamily="@font/avenir_medium"
+                        android:includeFontPadding="false"
+                        android:textColor="@color/gold"
+                        android:gravity="center"
+                        android:textSize="@dimen/_20ssp"
+                        android:textStyle="normal"
+                        android:layout_marginBottom="@dimen/_10sdp"
+                        android:textAllCaps="true"
+                        android:elevation="@dimen/_5sdp"
+                        android:layout_marginHorizontal="@dimen/_30sdp"
+                        android:text="@string/otp_verification"/>
+
+                    <TextView
+                        android:id="@+id/tv_otp_verification_desc"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toBottomOf="@+id/tv_otp_verification"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        android:layout_marginTop="@dimen/_20sdp"
+                        android:fontFamily="@font/avenir_45_book"
+                        android:includeFontPadding="false"
+                        android:textColor="@color/gold"
+                        android:lineHeight="@dimen/_15sdp"
+                        android:gravity="center"
+                        android:textSize="@dimen/_10ssp"
+                        android:layout_marginHorizontal="@dimen/_30sdp"
+                        android:textStyle="normal"
+                        android:layout_marginBottom="@dimen/_10sdp"
+                        android:textAllCaps="false"
+                        android:elevation="@dimen/_5sdp"
+                        android:text="@string/otp_verification_text"/>
+
+                    <com.chaos.view.PinView
+                        android:id="@+id/firstPinView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        android:layout_marginStart="@dimen/_20sdp"
+                        android:layout_marginEnd="@dimen/_20sdp"
+                        android:layout_marginTop="@dimen/_40sdp"
+                        app:layout_constraintTop_toBottomOf="@+id/tv_otp_verification_desc"
+                        android:itemBackground="@drawable/outer_gold_white_rect_filled_box"
+                        android:textColor="@color/black"
+                        app:itemCount="4"
+                        android:cursorVisible="true"
+                        app:cursorColor="@color/black"
+                        android:textColorHint="@color/gray"
+                        android:textSize="@dimen/_22sdp"
+                        app:itemHeight="@dimen/_55sdp"
+                        app:itemRadius="@dimen/_10sdp"
+                        app:itemSpacing="@dimen/_7sdp"
+                        app:itemWidth="@dimen/_50sdp"
+                        app:lineColor="#DBDBDB"
+                        app:lineWidth="1dp"
+                        app:viewType="rectangle"
+                        style="@style/PinWidget.PinView" />
+
+                    <TextView
+                        android:id="@+id/txt3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toBottomOf="@+id/firstPinView"
+                        app:layout_constraintStart_toStartOf="@id/firstPinView"
+                        android:layout_marginTop="@dimen/_20sdp"
+                        android:textColor="@color/gold"
+                        android:fontFamily="@font/avenir_medium"
+                        android:textSize="@dimen/_9ssp"
+                        android:text="@string/didn_t_received_any_code" />
+                    <TextView
+                        android:id="@+id/resend"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toBottomOf="@+id/firstPinView"
+                        app:layout_constraintEnd_toEndOf="@id/firstPinView"
+                        android:layout_marginTop="@dimen/_20sdp"
+                        android:textColor="@color/gold"
+                        android:fontFamily="@font/avenir_medium"
+                        android:textSize="@dimen/_9ssp"
+                        android:textAllCaps="true"
+                        android:text="@string/resend" />
+
+                    <TextView
+                        android:id="@+id/btnVerify"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_45sdp"
+                        app:layout_constraintTop_toBottomOf="@+id/resend"
+                        app:layout_constraintStart_toStartOf="@id/firstPinView"
+                        app:layout_constraintEnd_toEndOf="@id/firstPinView"
+                        android:layout_marginHorizontal="@dimen/_30sdp"
+                        android:layout_marginTop="@dimen/_60sdp"
+                        android:background="@drawable/curved_gold_filled_rect_box"
+                        android:fontFamily="@font/avenirlt85heavy"
+                        android:includeFontPadding="false"
+                        android:textColor="@color/black"
+                        android:layout_marginBottom="@dimen/_40sdp"
+                        android:gravity="center"
+                        android:textSize="@dimen/_15ssp"
+                        android:textStyle="normal"
+                        android:textAllCaps="true"
+                        android:elevation="@dimen/_5sdp"
+                        android:text="@string/submit"/>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
+
+    </ScrollView>
+
+    <ProgressBar
+        android:id="@+id/otpVerificationprogressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        android:elevation="@dimen/_5sdp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
