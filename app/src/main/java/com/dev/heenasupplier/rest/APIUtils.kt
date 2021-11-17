@@ -14,7 +14,7 @@ class APIUtils {
         const val REGISTERVERIFYRESEND:String = "access/register-verify-resend"
         const val COUNTRIES:String = "option/country"
         const val CATEGORYLIST : String = "option/category"
-        const val MEMBERSHIPLIST : String = "membership"
+        const val MEMBERSHIPLIST : String = "membership/{user_id}"
         const val BUYMEMBERSHIP : String = "membership"
         const val LOGOUT : String = "access/logout/{user_id}"
         const val SERVICESLISTING : String = "service/{user_id}"

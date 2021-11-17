@@ -103,13 +103,15 @@ class MembershipRegistrationActivity : AppCompatActivity() {
             window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             membership_registration_progressBar.visibility= View.VISIBLE
             val apiInterface = APIClient.getClient()!!.create(APIInterface::class.java)
-            val call = apiInterface.membershipList()
+            val call = apiInterface.membershipList(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId, 0))
             call!!.enqueue(object : Callback<MembershipListResponse?>{
                 override fun onResponse(call: Call<MembershipListResponse?>, response: Response<MembershipListResponse?>) {
                     membership_registration_progressBar.visibility = View.GONE
                     window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                     try {
                         if (response.isSuccessful){
+                            membership_card.visibility = View.VISIBLE
+                            btnSignUp.visibility = View.VISIBLE
                             if (response.body()!=null){
                                 if(response.body()!!.status==1){
                                     membershipList = response.body()!!.membership as ArrayList<Membership>
@@ -127,6 +129,8 @@ class MembershipRegistrationActivity : AppCompatActivity() {
 
                             }
                         }else{
+                            membership_card.visibility = View.GONE
+                            btnSignUp.visibility = View.GONE
                             LogUtils.longToast(this@MembershipRegistrationActivity,getString(R.string.response_isnt_successful))
                         }
                     } catch (e: IOException) {
@@ -141,6 +145,8 @@ class MembershipRegistrationActivity : AppCompatActivity() {
                 override fun onFailure(call: Call<MembershipListResponse?>, throwable: Throwable) {
                     LogUtils.e("msg", throwable.message)
                     LogUtils.shortToast(this@MembershipRegistrationActivity,throwable.localizedMessage)
+                    membership_card.visibility = View.GONE
+                    btnSignUp.visibility = View.GONE
                     membership_registration_progressBar.visibility = View.GONE
                     window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 }

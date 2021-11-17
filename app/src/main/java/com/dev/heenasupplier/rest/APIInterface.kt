@@ -35,7 +35,7 @@ interface APIInterface {
    fun categoryList() : Call<CategoryListResponse?>?
 
    @GET(APIUtils.MEMBERSHIPLIST)
-   fun membershipList() : Call<MembershipListResponse?>?
+   fun membershipList(@Path("user_id") user_id: Int) : Call<MembershipListResponse?>?
 
     @FormUrlEncoded
     @POST(APIUtils.BUYMEMBERSHIP)

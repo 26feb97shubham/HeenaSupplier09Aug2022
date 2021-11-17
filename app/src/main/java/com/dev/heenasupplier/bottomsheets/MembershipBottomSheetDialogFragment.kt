@@ -71,7 +71,7 @@ class MembershipBottomSheetDialogFragment : BottomSheetDialogFragment() {
             requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             mView!!.membership_bottom_sheet_progressBar.visibility= View.VISIBLE
             val apiInterface = APIClient.getClient()!!.create(APIInterface::class.java)
-            val call = apiInterface.membershipList()
+            val call = apiInterface.membershipList(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId, 0))
             call!!.enqueue(object : Callback<MembershipListResponse?> {
                 override fun onResponse(call: Call<MembershipListResponse?>, response: Response<MembershipListResponse?>) {
                     mView!!.membership_bottom_sheet_progressBar.visibility = View.GONE
