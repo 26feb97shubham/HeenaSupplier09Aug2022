@@ -28,6 +28,8 @@ import android.view.WindowManager
 import android.view.animation.AlphaAnimation
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.FileProvider
@@ -80,7 +82,8 @@ class SignUpActivity : AppCompatActivity() {
     var password: String = ""
     var confirmPassword: String = ""
     private val PERMISSION_CAMERA_EXTERNAL_STORAGE_CODE = 301
-    private val PERMISSIONS = arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    private val PERMISSIONS_1 = arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    private val PERMISSIONS_2 = arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION)
     private var uri: Uri? = null
     val MEDIA_TYPE_IMAGE = 1
     val PICK_IMAGE_FROM_GALLERY = 10
@@ -103,6 +106,126 @@ class SignUpActivity : AppCompatActivity() {
     private var countryId : Int?=null
     var show_cnfrm_pass = false
     var show_pass = false
+    var status = 0
+    var my_click = ""
+
+    private var activityResultLauncher: ActivityResultLauncher<Array<String>> =
+            registerForActivityResult(
+                    ActivityResultContracts.RequestMultiplePermissions()) { result ->
+                var allAreGranted = true
+                for(b in result.values) {
+                    allAreGranted = allAreGranted && b
+                }
+                if(allAreGranted) {
+                    Log.e("Granted", "Permissions")
+                    if (my_click.equals("profile")){
+                        openCameraDialog()
+                    }else{
+                        val fields: MutableList<Place.Field> = java.util.ArrayList()
+                        fields.add(Place.Field.NAME)
+                        fields.add(Place.Field.ID)
+                        fields.add(Place.Field.LAT_LNG)
+                        fields.add(Place.Field.ADDRESS)
+                        fields.add(Place.Field.ADDRESS_COMPONENTS)
+                        status = AUTOCOMPLETE_REQUEST_CODE
+                        // Start the autocomplete intent.
+                        val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields).build(
+                                this
+                        )
+                        resultLauncher.launch(intent)
+                    }
+                }else{
+                    LogUtils.shortToast(this, getString(R.string.please_allow_permissions))
+                    Log.e("Denied", "Permissions")
+                }
+            }
+
+    var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        if (status.equals(CAMERA_CAPTURE_IMAGE_REQUEST_CODE)){
+            if (it.resultCode == Activity.RESULT_OK){
+                if (uri != null) {
+                    imagePath = ""
+                    Log.e("uri", uri.toString())
+                    imagePath = uri!!.path!!
+                    Log.e("image_path", imagePath)
+                    Glide.with(this).load("file:///$imagePath").placeholder(R.drawable.user).into(civ_profile)
+                } else {
+                    LogUtils.shortToast(this, "something went wrong! please try again")
+                }
+            }
+        }else if (status.equals(PICK_IMAGE_FROM_GALLERY)){
+            if (it.resultCode==Activity.RESULT_OK){
+                val data: Intent? = it.data
+                if (data!!.data != null) {
+                    imagePath = ""
+                    val uri = data.data
+                    imagePath = if (uri.toString().startsWith("content")) {
+                        FetchPath.getPath(this, uri!!)!!
+                    } else {
+                        uri!!.path!!
+                    }
+                    Log.e("image_path", imagePath)
+                    Glide.with(this).applyDefaultRequestOptions(RequestOptions().placeholder(R.drawable.user)).load("file:///$imagePath").into(civ_profile)
+                }
+            }
+        }else if (status.equals(AUTOCOMPLETE_REQUEST_CODE)){
+            if (it.resultCode==Activity.RESULT_OK){
+                val place = Autocomplete.getPlaceFromIntent(it.data!!)
+                val latlng = place.latLng
+                mLatitude = latlng!!.latitude
+                mLongitude = latlng.longitude
+                val addressComponents: MutableList<AddressComponent> = place.addressComponents!!.asList()
+                var ard = 0
+                var add = ""
+                for (addressComponent in addressComponents) {
+                    Log.e("addressss--", addressComponent.name)
+                    countryName = addressComponent.name
+                    if (ard == 0) {
+                        add = addressComponent.name
+                    }
+
+                    var flag: Boolean = false
+                    val types: MutableList<String> = addressComponent.types
+                    for (type in types) {
+                        if (type.equals(
+                                        "locality",
+                                        true
+                                ) || type.equals("administrative_area_level_2") || type.equals(
+                                        "administrative_area_level_1",
+                                        true
+                                )
+                        ) {
+                            flag = true
+                        }
+                    }
+                    if (flag) {
+                        val center = LatLng(mLatitude, mLongitude)
+                        val locality = getLocality(center)
+                        val countryName = getCountry(center)
+
+                        var address = ""
+
+                        if (!add.isEmpty()) {
+                            address = add
+                        }
+                        if (!locality.isEmpty() && !address.isEmpty() && !address.equals(locality)) {
+                            address = address + ", " + locality
+                        }
+                        if (!addressComponent.name.isEmpty() && !address.isEmpty() && !address.equals(addressComponent.name)) {
+                            address = address + ", " + addressComponent.name
+                        }
+                        if (!countryName.isEmpty() && !address.isEmpty()) {
+                            address = address + ", " + countryName
+                        }
+                        edtlocation_signup.text = address
+                        break
+                    }
+                    ard++
+                }
+            }
+        }
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -188,9 +311,6 @@ class SignUpActivity : AppCompatActivity() {
                 noInternetDialog.show(supportFragmentManager, "Login Activity")
             }
             validateAndSignUp()
-
-/*            startActivity(Intent(applicationContext,MembershipRegistrationActivity::class.java).putExtra("emailaddress", emailaddress))
-            finishAffinity()*/
         }
 
         tv_login.setOnClickListener {
@@ -259,44 +379,18 @@ class SignUpActivity : AppCompatActivity() {
 
         civ_profile.setOnClickListener {
             civ_profile.startAnimation(AlphaAnimation(1f, 0.5f))
-            requestToUploadProfilePhoto()
+            my_click = "profile"
+            activityResultLauncher.launch(PERMISSIONS_1)
         }
 
         edtlocation_signup.setOnClickListener {
-            val fields: MutableList<Place.Field> = ArrayList()
-            fields.add(Place.Field.NAME)
-            fields.add(Place.Field.ID)
-            fields.add(Place.Field.LAT_LNG)
-            fields.add(Place.Field.ADDRESS)
-            fields.add(Place.Field.ADDRESS_COMPONENTS)
-
-            // Start the autocomplete intent.
-            val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields).build(this)
-            startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE)
+            edtlocation_signup.startAnimation(AlphaAnimation(1f, 0.5f))
+            my_click = "location"
+            activityResultLauncher.launch(PERMISSIONS_2)
         }
 
         tv_emirate.setOnClickListener {
             getCountires()
-        }
-    }
-
-    fun hasPermissions(context: Context?, vararg permissions: String?): Boolean {
-        if (context != null && permissions != null) {
-            for (permission in permissions) {
-                if (ActivityCompat.checkSelfPermission(context, permission!!) != PackageManager.PERMISSION_GRANTED) {
-                    return false
-                }
-            }
-        }
-        return true
-    }
-
-
-    private fun requestToUploadProfilePhoto() {
-        if (!hasPermissions(this, *PERMISSIONS)) {
-            ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_CAMERA_EXTERNAL_STORAGE_CODE)
-        } else if (hasPermissions(this, *PERMISSIONS)) {
-            openCameraDialog()
         }
     }
 
@@ -321,7 +415,8 @@ class SignUpActivity : AppCompatActivity() {
         uri = getOutputMediaFileUri(MEDIA_TYPE_IMAGE)
         intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
         intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
-        startActivityForResult(intent, CAMERA_CAPTURE_IMAGE_REQUEST_CODE)
+        status = CAMERA_CAPTURE_IMAGE_REQUEST_CODE
+        resultLauncher.launch(intent)
     }
 
     fun getOutputMediaFileUri(type: Int): Uri {
@@ -359,118 +454,8 @@ class SignUpActivity : AppCompatActivity() {
         val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         intent.type = "image/*"
         intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
-        startActivityForResult(intent, PICK_IMAGE_FROM_GALLERY)
-    }
-
-    fun hasAllPermissionsGranted(grantResults: IntArray): Boolean {
-        for (grantResult in grantResults) {
-            if (grantResult == PackageManager.PERMISSION_DENIED) {
-                return false
-            }
-        }
-        return true
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == PERMISSION_CAMERA_EXTERNAL_STORAGE_CODE) {
-            if (grantResults.size > 0) { /*  if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {*/
-                if (hasAllPermissionsGranted(grantResults)) {
-                    openCameraDialog()
-                } else {
-                    LogUtils.shortToast(this, "Please grant both Camera and Storage permissions")
-
-                }
-            } else if (!hasAllPermissionsGranted(grantResults)) {
-                LogUtils.shortToast(this, "Please grant both Camera and Storage permissions")
-            }
-        }
-    }
-
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode != Activity.RESULT_OK) {
-            return
-        } else if (requestCode == CAMERA_CAPTURE_IMAGE_REQUEST_CODE) {
-            if (resultCode == Activity.RESULT_OK) { //previewCapturedImage();
-                if (uri != null) {
-                    imagePath = ""
-                    Log.e("uri", uri.toString())
-                    imagePath = uri!!.path!!
-                    Glide.with(this).load("file:///$imagePath").placeholder(R.drawable.user).into(civ_profile)
-                } else {
-                    LogUtils.shortToast(this, "something went wrong! please try again")
-                }
-            }
-        } else if (requestCode == PICK_IMAGE_FROM_GALLERY && resultCode == Activity.RESULT_OK && data != null) {
-            if (data.data != null) {
-                imagePath = ""
-                val uri = data.data
-                imagePath = if (uri.toString().startsWith("content")) {
-                    FetchPath.getPath(this, uri!!)!!
-                } else {
-                    uri!!.path!!
-                }
-                Glide.with(this).applyDefaultRequestOptions(RequestOptions().placeholder(R.drawable.user)).load("file:///$imagePath").into(civ_profile)
-            }
-        } else if (requestCode == AUTOCOMPLETE_REQUEST_CODE && null != data) {
-            if (resultCode == RESULT_OK) {
-                val place = Autocomplete.getPlaceFromIntent(data)
-                val latlng = place.latLng
-                mLatitude = latlng!!.latitude
-                mLongitude = latlng.longitude
-                val addressComponents: MutableList<AddressComponent> = place.addressComponents!!.asList()
-                var ard = 0
-                var add = ""
-                for (addressComponent in addressComponents) {
-                    Log.e("addressss--", addressComponent.name)
-                    countryName = addressComponent.name
-                    if (ard == 0) {
-                        add = addressComponent.name
-                    }
-
-                    var flag: Boolean = false
-                    val types: MutableList<String> = addressComponent.types
-                    for (type in types) {
-                        if (type.equals(
-                                        "locality",
-                                        true
-                                ) || type.equals("administrative_area_level_2") || type.equals(
-                                        "administrative_area_level_1",
-                                        true
-                                )
-                        ) {
-                            flag = true
-                        }
-                    }
-                    if (flag) {
-                        val center = LatLng(mLatitude, mLongitude)
-                        val locality = getLocality(center)
-                        val countryName = getCountry(center)
-
-                        var address = ""
-
-                        if (!add.isEmpty()) {
-                            address = add
-                        }
-                        if (!locality.isEmpty() && !address.isEmpty() && !address.equals(locality)) {
-                            address = address + ", " + locality
-                        }
-                        if (!addressComponent.name.isEmpty() && !address.isEmpty() && !address.equals(addressComponent.name)) {
-                            address = address + ", " + addressComponent.name
-                        }
-                        if (!countryName.isEmpty() && !address.isEmpty()) {
-                            address = address + ", " + countryName
-                        }
-                        edtlocation_signup.text = address
-                        break
-                    }
-                    ard++
-                }
-
-            }
-        }
+        status = PICK_IMAGE_FROM_GALLERY
+        resultLauncher.launch(intent)
     }
 
     private fun getLocality(latLng: LatLng): String {
@@ -495,19 +480,17 @@ class SignUpActivity : AppCompatActivity() {
 
 
     private fun getCountry(latLng: LatLng): String {
-        if (mContext != null) {
-            val geocoder = Geocoder(mContext, Locale.getDefault())
-            val addresses: List<Address>
-            try {
-                addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
-                var subLocality = ""
-                if (!addresses[0].countryName.isNullOrEmpty()) {
-                    subLocality = addresses[0].countryName
-                }
-                return subLocality
-            } catch (e: IOException) {
-                e.printStackTrace()
+        val geocoder = Geocoder(mContext, Locale.getDefault())
+        val addresses: List<Address>
+        try {
+            addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
+            var subLocality = ""
+            if (!addresses[0].countryName.isNullOrEmpty()) {
+                subLocality = addresses[0].countryName
             }
+            return subLocality
+        } catch (e: IOException) {
+            e.printStackTrace()
         }
         return ""
     }

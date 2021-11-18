@@ -266,4 +266,5 @@
     <string name="username_invalid">Username is not valid</string>
     <string name="no_image_found">No Image Found!!!!!!!</string>
     <string name="you_can_select_max_5_photos">You can select max 5 photos!!!</string>
+    <string name="please_allow_permissions">Please Allow Permissions</string>
 </resources>

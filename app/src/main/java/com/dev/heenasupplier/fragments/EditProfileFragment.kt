@@ -19,6 +19,8 @@ import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import android.view.animation.AlphaAnimation
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -43,6 +45,7 @@ import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import kotlinx.android.synthetic.main.activity_home2.*
+import kotlinx.android.synthetic.main.activity_sign_up2.*
 import kotlinx.android.synthetic.main.activity_sign_up2.view.*
 import kotlinx.android.synthetic.main.fragment_edit_profile.view.*
 import okhttp3.MediaType
@@ -73,7 +76,8 @@ class EditProfileFragment : Fragment() {
 
     private var mView : View? = null
     private val PERMISSION_CAMERA_EXTERNAL_STORAGE_CODE = 301
-    private val PERMISSIONS = arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    private val PERMISSIONS_1 = arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    private val PERMISSIONS_2 = arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION)
     private var uri: Uri? = null
     val MEDIA_TYPE_IMAGE = 1
     val PICK_IMAGE_FROM_GALLERY = 10
@@ -92,6 +96,126 @@ class EditProfileFragment : Fragment() {
     var AUTOCOMPLETE_REQUEST_CODE: Int = 500
     var countryName: String = ""
     var profile_pic_changed = false
+    var status = 0
+    var my_click = ""
+
+    private var activityResultLauncher: ActivityResultLauncher<Array<String>> =
+            registerForActivityResult(
+                    ActivityResultContracts.RequestMultiplePermissions()) { result ->
+                var allAreGranted = true
+                for(b in result.values) {
+                    allAreGranted = allAreGranted && b
+                }
+                if(allAreGranted) {
+                    Log.e("Granted", "Permissions")
+                    if (my_click.equals("profile")){
+                        openCameraDialog()
+                    }else{
+                        val fields: MutableList<Place.Field> = java.util.ArrayList()
+                        fields.add(Place.Field.NAME)
+                        fields.add(Place.Field.ID)
+                        fields.add(Place.Field.LAT_LNG)
+                        fields.add(Place.Field.ADDRESS)
+                        fields.add(Place.Field.ADDRESS_COMPONENTS)
+                        status = AUTOCOMPLETE_REQUEST_CODE
+                        // Start the autocomplete intent.
+                        val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields).build(
+                                requireContext()
+                        )
+                        resultLauncher.launch(intent)
+                    }
+                }else{
+                    LogUtils.shortToast(requireContext(), getString(R.string.please_allow_permissions))
+                    Log.e("Denied", "Permissions")
+                }
+            }
+
+
+    var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        if (status.equals(CAMERA_CAPTURE_IMAGE_REQUEST_CODE)){
+            if (it.resultCode == Activity.RESULT_OK){
+                if (uri != null) {
+                    imagePath = ""
+                    Log.e("uri", uri.toString())
+                    imagePath = uri!!.path!!
+                    Log.e("image_path", imagePath)
+                    Glide.with(this).load("file:///$imagePath").placeholder(R.drawable.user).into(mView!!.civ_profile_update)
+                } else {
+                    LogUtils.shortToast(requireContext(), "something went wrong! please try again")
+                }
+            }
+        }else if (status.equals(PICK_IMAGE_FROM_GALLERY)){
+            if (it.resultCode==Activity.RESULT_OK){
+                val data: Intent? = it.data
+                if (data!!.data != null) {
+                    imagePath = ""
+                    val uri = data.data
+                    imagePath = if (uri.toString().startsWith("content")) {
+                        FetchPath.getPath(requireContext(), uri!!)!!
+                    } else {
+                        uri!!.path!!
+                    }
+                    Log.e("image_path", imagePath)
+                    Glide.with(this).applyDefaultRequestOptions(RequestOptions().placeholder(R.drawable.user)).load("file:///$imagePath").into(mView!!.civ_profile_update)
+                }
+            }
+        }else if (status.equals(AUTOCOMPLETE_REQUEST_CODE)){
+            if (it.resultCode==Activity.RESULT_OK){
+                val place = Autocomplete.getPlaceFromIntent(it.data!!)
+                val latlng = place.latLng
+                mLatitude = latlng!!.latitude
+                mLongitude = latlng.longitude
+                val addressComponents: MutableList<AddressComponent> = place.addressComponents!!.asList()
+                var ard = 0
+                var add = ""
+                for (addressComponent in addressComponents) {
+                    Log.e("addressss--", addressComponent.name)
+                    countryName = addressComponent.name
+                    if (ard == 0) {
+                        add = addressComponent.name
+                    }
+
+                    var flag: Boolean = false
+                    val types: MutableList<String> = addressComponent.types
+                    for (type in types) {
+                        if (type.equals(
+                                        "locality",
+                                        true
+                                ) || type.equals("administrative_area_level_2") || type.equals(
+                                        "administrative_area_level_1",
+                                        true
+                                )
+                        ) {
+                            flag = true
+                        }
+                    }
+                    if (flag) {
+                        val center = LatLng(mLatitude, mLongitude)
+                        val locality = getLocality(center)
+                        val countryName = getCountry(center)
+
+                        var address = ""
+
+                        if (!add.isEmpty()) {
+                            address = add
+                        }
+                        if (!locality.isEmpty() && !address.isEmpty() && !address.equals(locality)) {
+                            address = address + ", " + locality
+                        }
+                        if (!addressComponent.name.isEmpty() && !address.isEmpty() && !address.equals(addressComponent.name)) {
+                            address = address + ", " + addressComponent.name
+                        }
+                        if (!countryName.isEmpty() && !address.isEmpty()) {
+                            address = address + ", " + countryName
+                        }
+                        mView!!.edtlocation_update.text = address
+                        break
+                    }
+                    ard++
+                }
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -144,20 +268,14 @@ class EditProfileFragment : Fragment() {
         mView!!.editProfileUpdate.setOnClickListener {
             profile_pic_changed = true
             mView!!.editProfileUpdate.startAnimation(AlphaAnimation(1f, 0.5f))
-            requestToUploadProfilePhoto()
+            my_click = "profile"
+            activityResultLauncher.launch(PERMISSIONS_1)
         }
 
         mView!!.edtlocation_update.setOnClickListener {
-            val fields: MutableList<Place.Field> = ArrayList()
-            fields.add(Place.Field.NAME)
-            fields.add(Place.Field.ID)
-            fields.add(Place.Field.LAT_LNG)
-            fields.add(Place.Field.ADDRESS)
-            fields.add(Place.Field.ADDRESS_COMPONENTS)
-
-            // Start the autocomplete intent.
-            val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields).build(requireContext())
-            startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE)
+            mView!!.edtlocation_update.startAnimation(AlphaAnimation(1f, 0.5f))
+            my_click = "location"
+            activityResultLauncher.launch(PERMISSIONS_2)
         }
     }
 
@@ -269,24 +387,6 @@ class EditProfileFragment : Fragment() {
         })
     }
 
-    fun hasPermissions(context: Context?, vararg permissions: String?): Boolean {
-        if (context != null && permissions != null) {
-            for (permission in permissions) {
-                if (ContextCompat.checkSelfPermission(context, permission!!) != PackageManager.PERMISSION_GRANTED) {
-                    return false
-                }
-            }
-        }
-        return true
-    }
-
-    fun requestToUploadProfilePhoto() {
-        if (!hasPermissions(requireContext(), *PERMISSIONS)) {
-            requestPermissions(PERMISSIONS, PERMISSION_CAMERA_EXTERNAL_STORAGE_CODE)
-        } else if (hasPermissions(requireContext(), *PERMISSIONS)) {
-            openCameraDialog()
-        }
-    }
 
     private fun openCameraDialog() {
         val items = arrayOf<CharSequence>(getString(R.string.camera), getString(R.string.gallery), getString(R.string.cancel))
@@ -309,7 +409,8 @@ class EditProfileFragment : Fragment() {
         val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         intent.type = "image/*"
         intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
-        startActivityForResult(intent, PICK_IMAGE_FROM_GALLERY)
+        status = PICK_IMAGE_FROM_GALLERY
+        resultLauncher.launch(intent)
     }
 
 
@@ -318,7 +419,8 @@ class EditProfileFragment : Fragment() {
         uri = getOutputMediaFileUri(MEDIA_TYPE_IMAGE)
         intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
         intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
-        startActivityForResult(intent, CAMERA_CAPTURE_IMAGE_REQUEST_CODE)
+        status = CAMERA_CAPTURE_IMAGE_REQUEST_CODE
+        resultLauncher.launch(intent)
     }
 
 
@@ -354,115 +456,6 @@ class EditProfileFragment : Fragment() {
         return mediaFile
     }
 
-    fun hasAllPermissionsGranted(grantResults: IntArray): Boolean {
-        for (grantResult in grantResults) {
-            if (grantResult == PackageManager.PERMISSION_DENIED) {
-                return false
-            }
-        }
-        return true
-    }
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == PERMISSION_CAMERA_EXTERNAL_STORAGE_CODE) {
-            if (grantResults.size > 0) { /*  if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {*/
-                if (hasAllPermissionsGranted(grantResults)) {
-                    openCameraDialog()
-                } else {
-                    LogUtils.shortToast(requireContext(), "Please grant both Camera and Storage permissions")
-
-                }
-            } else if (!hasAllPermissionsGranted(grantResults)) {
-                LogUtils.shortToast(requireContext(), "Please grant both Camera and Storage permissions")
-            }
-        }
-    }
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode != Activity.RESULT_OK) {
-            return
-        }
-        if (requestCode == CAMERA_CAPTURE_IMAGE_REQUEST_CODE) {
-            if (resultCode == Activity.RESULT_OK) { //previewCapturedImage();
-                if (uri != null) {
-                    imagePath = ""
-                    Log.e("uri", uri.toString())
-                    imagePath = uri!!.path!!
-                    Glide.with(requireContext()).load("file:///$imagePath").placeholder(R.drawable.user).into(mView!!.civ_profile_update)
-                } else {
-                    LogUtils.shortToast(requireContext(), "something went wrong! please try again")
-                }
-            }
-        } else if (requestCode == PICK_IMAGE_FROM_GALLERY && resultCode == Activity.RESULT_OK && data != null) {
-            if (data.data != null) {
-                imagePath = ""
-                val uri = data.data
-                imagePath = if (uri.toString().startsWith("content")) {
-                    FetchPath.getPath(requireContext(), uri!!)!!
-                } else {
-                    uri!!.path!!
-                }
-                Glide.with(requireContext()).applyDefaultRequestOptions(RequestOptions().placeholder(R.drawable.user)).load("file:///$imagePath").into(mView!!.civ_profile_update)
-            }
-        } else if (requestCode == AUTOCOMPLETE_REQUEST_CODE && null != data) {
-            if (resultCode == AppCompatActivity.RESULT_OK) {
-                val place = Autocomplete.getPlaceFromIntent(data)
-                val latlng = place.latLng
-                mLatitude = latlng!!.latitude
-                mLongitude = latlng.longitude
-                val addressComponents: MutableList<AddressComponent> = place.addressComponents!!.asList()
-                var ard = 0
-                var add = ""
-                for (addressComponent in addressComponents) {
-                    Log.e("addressss--", addressComponent.name)
-                    countryName = addressComponent.name
-                    if (ard == 0) {
-                        add = addressComponent.name
-                    }
-
-                    var flag: Boolean = false
-                    val types: MutableList<String> = addressComponent.types
-                    for (type in types) {
-                        if (type.equals(
-                                        "locality",
-                                        true
-                                ) || type.equals("administrative_area_level_2") || type.equals(
-                                        "administrative_area_level_1",
-                                        true
-                                )
-                        ) {
-                            flag = true
-                        }
-                    }
-                    if (flag) {
-                        val center = LatLng(mLatitude, mLongitude)
-                        val locality = getLocality(center)
-                        val countryName = getCountry(center)
-
-                        var address = ""
-
-                        if (!add.isEmpty()) {
-                            address = add
-                        }
-                        if (!locality.isEmpty() && !address.isEmpty() && !address.equals(locality)) {
-                            address = address + ", " + locality
-                        }
-                        if (!addressComponent.name.isEmpty() && !address.isEmpty() && !address.equals(addressComponent.name)) {
-                            address = address + ", " + addressComponent.name
-                        }
-                        if (!countryName.isEmpty() && !address.isEmpty()) {
-                            address = address + ", " + countryName
-                        }
-                        mView!!.edtlocation_update.text = address
-                        break
-                    }
-                    ard++
-                }
-
-            }
-        }
-    }
-
     private fun getLocality(latLng: LatLng): String {
         val geocoder = Geocoder(requireContext(), Locale.getDefault())
         val addresses: List<Address>
@@ -485,19 +478,17 @@ class EditProfileFragment : Fragment() {
 
 
     private fun getCountry(latLng: LatLng): String {
-        if (requireContext() != null) {
-            val geocoder = Geocoder(requireContext(), Locale.getDefault())
-            val addresses: List<Address>
-            try {
-                addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
-                var subLocality = ""
-                if (!addresses[0].countryName.isNullOrEmpty()) {
-                    subLocality = addresses[0].countryName
-                }
-                return subLocality
-            } catch (e: IOException) {
-                e.printStackTrace()
+        val geocoder = Geocoder(requireContext(), Locale.getDefault())
+        val addresses: List<Address>
+        try {
+            addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
+            var subLocality = ""
+            if (!addresses[0].countryName.isNullOrEmpty()) {
+                subLocality = addresses[0].countryName
             }
+            return subLocality
+        } catch (e: IOException) {
+            e.printStackTrace()
         }
         return ""
     }
@@ -546,14 +537,6 @@ class EditProfileFragment : Fragment() {
     }
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment EditProfileFragment.
-         */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
