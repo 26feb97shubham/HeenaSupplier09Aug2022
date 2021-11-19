@@ -1,5 +1,6 @@
 package com.dev.heenasupplier.activities
 
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -49,8 +50,10 @@ class MembershipRegistrationActivity : AppCompatActivity() {
     private lateinit var registrationMembershipPlansListAdapter: RegistrationMembershipPlansListAdapter
     private var membershipList = ArrayList<Membership>()
     private var membership : Membership?=null
+    private var mContext : Context?=null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        mContext = this
         setContentView(R.layout.activity_membership_registration2)
 
         if (intent.extras !== null) {
@@ -59,17 +62,17 @@ class MembershipRegistrationActivity : AppCompatActivity() {
 
         getMembershipList()
 
-        rv_membership_plans.layoutManager =
-            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        registrationMembershipPlansListAdapter = RegistrationMembershipPlansListAdapter(
-            this,
-            membershipList,
-            object : ClickInterface.OnRecyclerItemClick {
-                override fun OnClickAction(position: Int) {
-                }
-            })
+        rv_membership_plans.apply {
+            this.layoutManager = LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false)
+            this.adapter = RegistrationMembershipPlansListAdapter(
+                    mContext as MembershipRegistrationActivity,
+                    membershipList,
+                    object : ClickInterface.OnRecyclerItemClick {
+                        override fun OnClickAction(position: Int) {
+                        }
+                    })
+        }
 
-        rv_membership_plans.adapter = registrationMembershipPlansListAdapter
         registrationMembershipPlansListAdapter.notifyDataSetChanged()
 
         btnSignUp.setOnClickListener {

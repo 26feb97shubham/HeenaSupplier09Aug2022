@@ -12,6 +12,7 @@ import android.view.View
 import android.view.WindowManager
 import android.view.animation.AlphaAnimation
 import android.widget.Toast
+import androidx.core.widget.doOnTextChanged
 import com.dev.heenasupplier.R
 import com.dev.heenasupplier.models.ForgotPasswordVerifyResponse
 import com.dev.heenasupplier.models.RegisterVerifyResendResponse
@@ -56,27 +57,17 @@ class OtpVerificationActivity : AppCompatActivity() {
         btnVerify.isEnabled=false
         btnVerify.alpha=0.5f
 
-        firstPinView.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-
+        firstPinView.doOnTextChanged { text, start, before, count ->
+            if(text!!.length==4){
+                btnVerify.isEnabled=true
+                btnVerify.alpha=1f
+                SharedPreferenceUtility.getInstance().hideSoftKeyBoard(this@OtpVerificationActivity, firstPinView)
             }
-
-            override fun onTextChanged(charSeq: CharSequence?, p1: Int, p2: Int, p3: Int) =
-                if(charSeq!!.length==4){
-                    btnVerify.isEnabled=true
-                    btnVerify.alpha=1f
-                    SharedPreferenceUtility.getInstance().hideSoftKeyBoard(this@OtpVerificationActivity, firstPinView)
-                }
-                else{
-                    btnVerify.isEnabled=false
-                    btnVerify.alpha=0.5f
-                }
-
-            override fun afterTextChanged(p0: Editable?) {
-
+            else{
+                btnVerify.isEnabled=false
+                btnVerify.alpha=0.5f
             }
-
-        })
+        }
 
         pin = firstPinView.text.toString().trim()
 
@@ -283,7 +274,7 @@ class OtpVerificationActivity : AppCompatActivity() {
         else{
 
             doubleClick=true
-            Handler(Looper.getMainLooper()).postDelayed(Runnable {
+            Handler(Looper.getMainLooper()).postDelayed({
                 toast.show()
                 doubleClick=false
             }, 500)

@@ -28,45 +28,6 @@ class SplashActivity : AppCompatActivity() {
         setUpViews()
     }
     private fun setUpViews() {
-       /* Handler(Looper.getMainLooper()).postDelayed(Runnable {
-            if(SharedPreferenceUtility.getInstance()
-                    .get(SharedPreferenceUtility.IsWelcomeShow, false)) {
-                selectLang = "ar"
-                SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.SelectedLang, selectLang)
-                if (!TextUtils.isEmpty(SharedPreferenceUtility.getInstance()
-                        .get(SharedPreferenceUtility.SelectedLang, ""))) {
-//                    Utility.changeLanguage(this, SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""])
-                    Utility.setDefaultLanguage(this,
-                        SharedPreferenceUtility.getInstance()
-                            .get(SharedPreferenceUtility.SelectedLang, "")
-                    )
-                    startActivity(Intent(this, HomeActivity::class.java))
-                    finishAffinity()
-                     if (SharedPreferenceUtility.getInstance()
-                             .get(SharedPreferenceUtility.IsLogin, false)) {
-                         startActivity(Intent(this, HomeActivity::class.java))
-                         finishAffinity()
-                     } else {
-                         startActivity(Intent(this, ChooseLoginSignUpActivity::class.java))
-                         finishAffinity()
-                     }
-                } else {
-                    startActivity(Intent(this, ChooseLangActivity::class.java))
-                    finishAffinity()
-                }
-
-            }
-            else{
-                selectLang = "ar"
-                SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.SelectedLang, selectLang)
-                Utility.setDefaultLanguage(this,
-                    SharedPreferenceUtility.getInstance()
-                        .get(SharedPreferenceUtility.SelectedLang, "")
-                )
-                startActivity(Intent(this, ChooseLangActivity::class.java))
-                finishAffinity()
-            }
-        },2000)*/
 
         if (Utility.getLanguage().isNullOrEmpty()){
             Utility.changeLanguage(this,"ar")
@@ -81,9 +42,6 @@ class SplashActivity : AppCompatActivity() {
                     && !(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.ISINTRODUCTION,false))
                     && !(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.IsLogin,false)))
                 {
-                    /*  val intent = Intent(this, IntroSliderActivity::class.java)
-                      startActivity(intent)
-                      finish()*/
                     val intent = Intent(this, ChooseLangActivity::class.java)
                     startActivity(intent)
                     finish()

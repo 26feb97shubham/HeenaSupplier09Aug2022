@@ -208,6 +208,15 @@ class Utility {
                 true
             } else false
         }
+
+        fun isCharacterAllowed(validateString: String): Boolean {
+            var containsInvalidChar = false
+            for (i in 0 until validateString.length) {
+                val type = Character.getType(validateString[i])
+                containsInvalidChar = !(type == Character.SURROGATE.toInt() || type == Character.OTHER_SYMBOL.toInt())
+            }
+            return containsInvalidChar
+        }
     }
 
 

@@ -9,6 +9,7 @@ import android.text.TextWatcher
 import android.view.View
 import android.view.WindowManager
 import android.view.animation.AlphaAnimation
+import androidx.core.widget.doOnTextChanged
 import com.dev.heenasupplier.R
 import com.dev.heenasupplier.models.ForgotPasswordResponse
 import com.dev.heenasupplier.rest.APIClient
@@ -32,24 +33,13 @@ class ForgotPasswordActivity : AppCompatActivity() {
     }
 
     private fun setUpViews() {
-        edtemailaddress.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-
+        edtemailaddress.doOnTextChanged { text, start, before, count ->
+            if (!TextUtils.isEmpty(emailAddress) && !SharedPreferenceUtility.getInstance().isEmailValid(emailAddress!!)) {
+                scrollView.scrollTo(0, 210)
+                edtemailaddress_signup.requestFocus()
+                edtemailaddress_signup.error=getString(R.string.please_enter_valid_email)
             }
-
-            override fun onTextChanged(charSeq: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                if (!TextUtils.isEmpty(emailAddress) && !SharedPreferenceUtility.getInstance().isEmailValid(emailAddress!!)) {
-                    scrollView.scrollTo(0, 210)
-                    edtemailaddress_signup.requestFocus()
-                    edtemailaddress_signup.error=getString(R.string.please_enter_valid_email)
-                }
-
-            }
-
-            override fun afterTextChanged(p0: Editable?) {
-            }
-
-        })
+        }
 
         btnSubmit.setOnClickListener {
             btnSubmit.startAnimation(AlphaAnimation(1f, 0.5f))

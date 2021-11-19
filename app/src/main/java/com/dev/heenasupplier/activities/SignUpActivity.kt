@@ -33,6 +33,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.FileProvider
+import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -53,6 +54,7 @@ import com.dev.heenasupplier.utils.SharedPreferenceUtility
 import com.dev.heenasupplier.utils.Utility
 import com.dev.heenasupplier.utils.Utility.Companion.IMAGE_DIRECTORY_NAME
 import com.dev.heenasupplier.utils.Utility.Companion.apiInterface
+import com.dev.heenasupplier.utils.Utility.Companion.isCharacterAllowed
 import com.dev.heenasupplier.utils.Utility.Companion.isNetworkAvailable
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.model.AddressComponent
@@ -121,7 +123,7 @@ class SignUpActivity : AppCompatActivity() {
                     if (my_click.equals("profile")){
                         openCameraDialog()
                     }else{
-                        val fields: MutableList<Place.Field> = java.util.ArrayList()
+                        val fields: MutableList<Place.Field> = ArrayList()
                         fields.add(Place.Field.NAME)
                         fields.add(Place.Field.ID)
                         fields.add(Place.Field.LAT_LNG)
@@ -184,7 +186,7 @@ class SignUpActivity : AppCompatActivity() {
                         add = addressComponent.name
                     }
 
-                    var flag: Boolean = false
+                    var flag = false
                     val types: MutableList<String> = addressComponent.types
                     for (type in types) {
                         if (type.equals(
@@ -329,29 +331,19 @@ class SignUpActivity : AppCompatActivity() {
             }
 
         })
+        edtcnfrmpassword_signup.doOnTextChanged { text, start, before, count ->
+            val pass =edtpassword_signup.text.toString()
 
-        edtcnfrmpassword_signup.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
-
-            override fun onTextChanged(charSeq: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                val pass =edtpassword_signup.text.toString()
-
-                if(!TextUtils.isEmpty(pass)){
-                    if(!pass.equals(charSeq.toString(), false)){
-                        edtcnfrmpassword_signup.error=getString(R.string.password_doesnt_match_with_verify_password)
-                    }
+            if(!TextUtils.isEmpty(pass)){
+                if(!pass.equals(text.toString(), false)){
+                    edtcnfrmpassword_signup.error=getString(R.string.password_doesnt_match_with_verify_password)
                 }
-                else{
-                    edtpassword_signup.error=getString(R.string.please_first_enter_your_password)
-                }
-
+            }
+            else{
+                edtpassword_signup.error=getString(R.string.please_first_enter_your_password)
             }
 
-            override fun afterTextChanged(p0: Editable?) {
-            }
-
-        })
+        }
 
         iv_cnfrm_pass_show_hide.setOnClickListener {
             if (show_cnfrm_pass){
@@ -420,11 +412,7 @@ class SignUpActivity : AppCompatActivity() {
     }
 
     fun getOutputMediaFileUri(type: Int): Uri {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID.toString() + ".provider", getOutputMediaFile(type)!!)
-        } else {
-            Uri.fromFile(getOutputMediaFile(type))
-        }
+        return FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID + ".provider", getOutputMediaFile(type)!!)
     }
 
     private fun getOutputMediaFile(type: Int): File? {
@@ -652,18 +640,6 @@ class SignUpActivity : AppCompatActivity() {
         }
     }
 
-    private fun isCharacterAllowed(validateString: String): Boolean {
-        var containsInvalidChar = false
-        for (i in 0 until validateString.length) {
-            val type = Character.getType(validateString[i])
-            containsInvalidChar = !(type == Character.SURROGATE.toInt() || type == Character.OTHER_SYMBOL.toInt())
-        }
-        return containsInvalidChar
-    }
-    private fun isNetworkConnected(): Boolean {
-        val cm = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager?
-        return cm!!.activeNetworkInfo != null && cm.activeNetworkInfo!!.isConnected
-    }
 
     companion object{
         private var instance: SharedPreferenceUtility? = null
