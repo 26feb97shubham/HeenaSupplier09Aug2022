@@ -61,10 +61,6 @@ class BookingdetailsFragment : Fragment() {
 
         showBookingDetails()
 
-        requireActivity().iv_notification.setOnClickListener {
-            findNavController().navigate(R.id.notificationsFragment)
-        }
-
         tv_accept_booking.setOnClickListener {
             acceptBooking()
         }
@@ -109,9 +105,13 @@ class BookingdetailsFragment : Fragment() {
     }
 
     private fun showBookingDetails() {
+        mView!!.frag_booking_details_progressBar.visibility = View.VISIBLE
+        requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         val call = apiInterface.showBooking(booking_id.toString())
         call?.enqueue(object : Callback<BookingDetailsResponse?>{
             override fun onResponse(call: Call<BookingDetailsResponse?>, response: Response<BookingDetailsResponse?>) {
+                mView!!.frag_booking_details_progressBar.visibility= View.GONE
+                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 if(response.isSuccessful){
                     if (response.body()!!.status==1){
                         val booking = response.body()!!.booking
@@ -166,10 +166,10 @@ class BookingdetailsFragment : Fragment() {
                         mView!!.tv_service_desc.text = booking.service!!.description
                         val street = booking.address!!.street
                         val country = booking.address.country
-                        mView!!.tv_address.text = "$street $country"
+                        mView!!.tv_address.text = booking.location?.name
                         mView!!.tv_ladies_count.text = booking.c_ladies.toString()
                         mView!!.tv_childrens_count.text = booking.c_children.toString()
-                        val booking_date_time = booking.booking_date + " - " + booking.booking_from + " to " + booking.booking_to
+                        val booking_date_time = booking.booking_date + " - " + booking.booking_from
                         mView!!.tv_booking_date_time.text = booking_date_time
                         mView!!.tv_special_request_desc.text = booking.message
                         mView!!.tv_service_charge.text = "AED " + booking.service.price
@@ -177,6 +177,11 @@ class BookingdetailsFragment : Fragment() {
                         val total = booking.service.price!!.toInt() + booking.price.total!!.toInt()
                         mView!!.tv_total.text = "AED " + total
                         Glide.with(requireContext()).load(booking.user!!.image).into(mView!!.supplierImg)
+                        if (booking.gallery?.size==0){
+                            mView!!.iv_heena_design.setImageResource(R.drawable.hennatattoos)
+                        }else{
+                            Glide.with(requireContext()).load((booking.gallery?.get(0))).into(mView!!.iv_heena_design)
+                        }
                     }else{
                         LogUtils.shortToast(requireContext(), getString(R.string.response_isnt_successful))
                     }
@@ -187,9 +192,10 @@ class BookingdetailsFragment : Fragment() {
             }
 
             override fun onFailure(call: Call<BookingDetailsResponse?>, throwable: Throwable) {
+                mView!!.frag_booking_details_progressBar.visibility= View.GONE
+                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 LogUtils.shortToast(requireContext(), throwable.message)
             }
-
         })
     }
 

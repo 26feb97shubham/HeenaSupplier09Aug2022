@@ -64,10 +64,6 @@ class EditBankDetailsFragment : Fragment() {
             findNavController().popBackStack()
         }
 
-        requireActivity().iv_notification.setOnClickListener {
-            findNavController().navigate(R.id.notificationsFragment)
-        }
-
         if (!isBankAdded){
             mView!!.et_bank_name.hint = ""
             mView!!.et_fullname.hint = ""

@@ -73,9 +73,6 @@ class MyBookingsFragment : Fragment() {
             findNavController().popBackStack()
         }
 
-        requireActivity().iv_notification.setOnClickListener {
-            findNavController().navigate(R.id.notificationsFragment)
-        }
 
         mView!!.rv_tabs_listing.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         getCurrentBookings()

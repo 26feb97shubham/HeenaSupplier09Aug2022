@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/itemCategories"
+        android:icon="@drawable/categories_icon_inactive"
+        android:title="Categories" />
+    <item
+        android:id="@+id/homeFragment"
+        android:icon="@drawable/icon_home_inactive"
+        android:title="Home" />
+    <item
+        android:id="@+id/myAppointmentsFragment"
+        android:icon="@drawable/check_list_inactive"
+        android:title="Appointments" />
+</menu>

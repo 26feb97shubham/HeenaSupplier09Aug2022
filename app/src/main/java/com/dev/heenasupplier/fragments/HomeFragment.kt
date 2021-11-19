@@ -128,18 +128,11 @@ class HomeFragment : Fragment() {
 
         getDashBoard()
         clickOnDrawer()
-        setBottomView()
-        requireActivity().itemHome.setImageResource(R.drawable.home_icon_active)
+/*
+        setBottomView()*/
+//        requireActivity().itemHome.setImageResource(R.drawable.home_icon_active)
         setOnClickBottomItemView()
         clickOnHomeItems()
-
-        requireActivity().iv_back.setOnClickListener {
-            when(findNavController().currentDestination?.id){
-                R.id.homeFragment -> exitApp()
-                else-> findNavController().navigate(R.id.homeFragment)
-            }
-        }
-
     }
 
     private fun getBookings() {
@@ -349,26 +342,26 @@ class HomeFragment : Fragment() {
         }
 
         requireActivity().iv_notification.setOnClickListener {
-            SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().itemCategories)
+         /*   SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().itemCategories)*/
             findNavController().navigate(R.id.notificationsFragment)
         }
     }
 
     private fun openCloseDrawer() {
         if(requireActivity().drawerLayout.isDrawerOpen(GravityCompat.START)){
-            requireActivity().itemHome.setImageResource(R.drawable.home_icon_active)
-            requireActivity().itemCategories.setImageResource(R.drawable.categories_icon_inactive)
+           /* requireActivity().itemHome.setImageResource(R.drawable.home_icon_active)
+            requireActivity().itemCategories.setImageResource(R.drawable.categories_icon_inactive)*/
             requireActivity().drawerLayout.closeDrawer(GravityCompat.START)
         }
         else{
-            requireActivity().itemHome.setImageResource(R.drawable.icon_home_inactive)
-            requireActivity().itemCategories.setImageResource(R.drawable.categories_icon_active)
+           /* requireActivity().itemHome.setImageResource(R.drawable.icon_home_inactive)
+            requireActivity().itemCategories.setImageResource(R.drawable.categories_icon_active)*/
             requireActivity().drawerLayout.openDrawer(GravityCompat.START)
         }
     }
 
     private fun setOnClickBottomItemView() {
-        requireActivity().itemCategories.setOnClickListener {
+    /*    requireActivity().bottm_nav.setOnClickListener {
             SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().itemCategories)
             requireActivity().itemCategories.startAnimation(AlphaAnimation(1f, 0.5f))
             setBottomView()
@@ -399,28 +392,23 @@ class HomeFragment : Fragment() {
     }
 
     private fun setBottomView() {
-        requireActivity().itemCategories.setImageResource(R.drawable.categories_icon_inactive)
+      *//*  requireActivity().itemCategories.setImageResource(R.drawable.categories_icon_inactive)
         requireActivity().itemAppointment.setImageResource(R.drawable.check_list_inactive)
-        requireActivity().itemHome.setImageResource(R.drawable.icon_home_inactive)
+        requireActivity().itemHome.setImageResource(R.drawable.icon_home_inactive)*//*
     }
 
 
-    private fun clickOnDrawer() {
+  */
 
+    }
+
+    private fun clickOnDrawer() {
+        HomeActivity.clickDirestion = "drawer"
         requireActivity().llMyBanks.setOnClickListener {
             SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().llMyBanks)
             requireActivity().llMyBanks.startAnimation(AlphaAnimation(1f, 0.5f))
             requireActivity().drawerLayout.closeDrawer(GravityCompat.START)
             findNavController().navigate(R.id.bankDetailsFragment)
-        }
-
-        requireActivity().llAccount.setOnClickListener {
-            SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().llAccount)
-            requireActivity().llAccount.startAnimation(AlphaAnimation(1f, 0.5f))
-            requireActivity().drawerLayout.closeDrawer(GravityCompat.START)
-            /*findNavController().navigate(R.id.myProfileFragment)*/
-            val action = HomeFragmentDirections.actionMainHomeFragmentToMyprofileFragment()
-            findNavController()?.navigate(action)
         }
 
         requireActivity().llAccount.setOnClickListener {
@@ -473,7 +461,7 @@ class HomeFragment : Fragment() {
         requireActivity().llAboutUs.setOnClickListener {
             requireActivity().llAboutUs.startAnimation(AlphaAnimation(1f, 0.5f))
             requireActivity().drawerLayout.closeDrawer(GravityCompat.START)
-            val bundle=Bundle()
+            val bundle = Bundle()
             bundle.putString("title", getString(R.string.about_us))
             findNavController().navigate(R.id.CMSFragment, bundle)
         }
@@ -487,7 +475,7 @@ class HomeFragment : Fragment() {
         requireActivity().llTnC.setOnClickListener {
             requireActivity().llTnC.startAnimation(AlphaAnimation(1f, 0.5f))
             requireActivity().drawerLayout.closeDrawer(GravityCompat.START)
-            val bundle=Bundle()
+            val bundle = Bundle()
             bundle.putString("title", getString(R.string.terms_and_conditions))
             findNavController().navigate(R.id.CMSFragment, bundle)
         }
@@ -495,7 +483,7 @@ class HomeFragment : Fragment() {
         requireActivity().llPrivacyPolicy.setOnClickListener {
             requireActivity().llPrivacyPolicy.startAnimation(AlphaAnimation(1f, 0.5f))
             requireActivity().drawerLayout.closeDrawer(GravityCompat.START)
-            val bundle=Bundle()
+            val bundle = Bundle()
             bundle.putString("title", getString(R.string.privacy_and_policy))
             findNavController().navigate(R.id.CMSFragment, bundle)
         }
@@ -503,7 +491,7 @@ class HomeFragment : Fragment() {
         requireActivity().llFAQ.setOnClickListener {
             requireActivity().llFAQ.startAnimation(AlphaAnimation(1f, 0.5f))
             requireActivity().drawerLayout.closeDrawer(GravityCompat.START)
-            val bundle=Bundle()
+            val bundle = Bundle()
             bundle.putString("title", getString(R.string.frequently_asked_questions))
             findNavController().navigate(R.id.CMSFragment, bundle)
         }
@@ -526,8 +514,8 @@ class HomeFragment : Fragment() {
                 }
             })
             logoutDialog.show(requireActivity().supportFragmentManager, "HomeFragment")
-            /* startActivity(Intent(requireContext(), ChooseLoginSignUpActivity::class.java))
-             requireActivity().finishAffinity()*/
+            startActivity(Intent(requireContext(), ChooseLoginSignUpActivity::class.java))
+            requireActivity().finishAffinity()
         }
 
         requireActivity().llSettings.setOnClickListener {
@@ -535,51 +523,49 @@ class HomeFragment : Fragment() {
             requireActivity().drawerLayout.closeDrawer(GravityCompat.START)
             findNavController().navigate(R.id.SettingsFragment)
         }
-
     }
 
     private fun logoutAPI() {
-        requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-        mView!!.fragment_home_progressBar.visibility = View.VISIBLE
+            requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+            mView!!.fragment_home_progressBar.visibility = View.VISIBLE
 
-        val apiInterface = APIClient.getClient()!!.create(APIInterface::class.java)
+            val apiInterface = APIClient.getClient()!!.create(APIInterface::class.java)
 
-        val call = apiInterface.logout(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId, 0))
-        call!!.enqueue(object : Callback<LogoutResponse?> {
-            override fun onResponse(call: Call<LogoutResponse?>, response: Response<LogoutResponse?>) {
-                mView!!.fragment_home_progressBar.visibility = View.GONE
-                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                try {
-                    if(response.isSuccessful){
-                        if (response.body()!!.status==1){
-                            SharedPreferenceUtility.getInstance().delete(SharedPreferenceUtility.IsLogin)
-                            startActivity(Intent(requireContext(), ChooseLoginSignUpActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
-                            requireActivity().finishAffinity()
+            val call = apiInterface.logout(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId, 0))
+            call!!.enqueue(object : Callback<LogoutResponse?> {
+                override fun onResponse(call: Call<LogoutResponse?>, response: Response<LogoutResponse?>) {
+                    mView!!.fragment_home_progressBar.visibility = View.GONE
+                    requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                    try {
+                        if (response.isSuccessful) {
+                            if (response.body()!!.status == 1) {
+                                SharedPreferenceUtility.getInstance().delete(SharedPreferenceUtility.IsLogin)
+                                startActivity(Intent(requireContext(), ChooseLoginSignUpActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
+                                requireActivity().finishAffinity()
+                            } else {
+                                LogUtils.longToast(requireContext(), response.body()!!.message)
+                            }
+                        } else {
+                            LogUtils.longToast(requireContext(), getString(R.string.response_isnt_successful))
                         }
-                        else{
-                            LogUtils.longToast(requireContext(), response.body()!!.message)
-                        }
-                    }else{
-                        LogUtils.longToast(requireContext(), getString(R.string.response_isnt_successful))
+                    } catch (e: IOException) {
+                        e.printStackTrace()
+                    } catch (e: JSONException) {
+                        e.printStackTrace()
+                    } catch (e: Exception) {
+                        e.printStackTrace()
                     }
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                } catch (e: JSONException) {
-                    e.printStackTrace()
-                } catch (e: Exception) {
-                    e.printStackTrace()
                 }
-            }
 
-            override fun onFailure(call: Call<LogoutResponse?>, throwable: Throwable) {
-                LogUtils.e("msg", throwable.message)
-                LogUtils.shortToast(requireContext(), getString(R.string.check_internet))
-                mView!!.fragment_home_progressBar.visibility = View.GONE
-                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-            }
-        })
+                override fun onFailure(call: Call<LogoutResponse?>, throwable: Throwable) {
+                    LogUtils.e("msg", throwable.message)
+                    LogUtils.shortToast(requireContext(), getString(R.string.check_internet))
+                    mView!!.fragment_home_progressBar.visibility = View.GONE
+                    requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                }
+            })
 
-    }
+        }
 
     private fun exitApp() {
         val toast = Toast.makeText(

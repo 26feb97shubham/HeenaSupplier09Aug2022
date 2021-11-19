@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@android:color/transparent"
     tools:context=".fragments.CMSFragment">
 
@@ -23,9 +25,9 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/_20sdp"
         android:text="@string/title"
-        android:fontFamily="@font/avenir_medium"
+        android:fontFamily="@font/avenir_heavy"
         android:textAllCaps="false"
-        android:textSize="@dimen/_24ssp"
+        android:textSize="@dimen/_18ssp"
         android:textColor="@color/gold"
         android:gravity="center"/>
 
@@ -37,15 +39,22 @@
         android:paddingTop="@dimen/_20sdp"
         android:background="@drawable/left_right_light_brown_filled_bg">
 
-        <androidx.core.widget.NestedScrollView
+        <WebView
+            android:id="@+id/web_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <WebView
-                android:id="@+id/web_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </androidx.core.widget.NestedScrollView>
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ProgressBar
+        android:id="@+id/cms_progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:elevation="@dimen/_5sdp"
+        android:visibility="gone"
+        style="@style/Theme.Progressbar"
+        android:indeterminateTint="@color/gold"
+        android:layout_centerInParent="true"/>
 
 </RelativeLayout>

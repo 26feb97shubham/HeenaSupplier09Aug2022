@@ -46,10 +46,6 @@ class ContactUsFragment : Fragment() {
             findNavController().popBackStack()
         }
 
-        requireActivity().iv_notification.setOnClickListener {
-            findNavController().navigate(R.id.action_contactUsFragment_to_notificationsFragment)
-        }
-
         mView!!.tv_contact_us_submit.setOnClickListener {
            validate()
         }

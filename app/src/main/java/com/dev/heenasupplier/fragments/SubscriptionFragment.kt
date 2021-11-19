@@ -74,10 +74,6 @@ class SubscriptionFragment : Fragment() {
             SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_back)
             findNavController().popBackStack()
         }
-        requireActivity().iv_notification.setOnClickListener {
-            findNavController().navigate(R.id.notificationsFragment)
-        }
-
         mView!!.tv_buy_subscription.setOnClickListener {
             buy_subscription()
         }

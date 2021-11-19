@@ -101,9 +101,6 @@ class RevenuesFragment : Fragment() {
             SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_back)
             findNavController().popBackStack()
         }
-        requireActivity().iv_notification.setOnClickListener {
-            findNavController().navigate(R.id.notificationsFragment)
-        }
         queryMap.put("lang", SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, ""))
         queryMap.put("service_id", "")
         queryMap.put("from", "")

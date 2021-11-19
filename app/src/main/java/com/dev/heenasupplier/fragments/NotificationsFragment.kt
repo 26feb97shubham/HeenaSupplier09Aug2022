@@ -147,10 +147,6 @@ class NotificationsFragment : Fragment() {
             noInternetDialog.show(requireActivity().supportFragmentManager, "Notification Fragment")
         }
 
-        requireActivity().iv_notification.setOnClickListener {
-            findNavController().navigate(R.id.notificationsFragment)
-        }
-
         requireActivity().iv_back.setOnClickListener {
             requireActivity().iv_back.startAnimation(AlphaAnimation(1F,0.5F))
             SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_back)
@@ -242,6 +238,21 @@ class NotificationsFragment : Fragment() {
                 requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             }
         })*/
+    }
+
+    override fun onResume() {
+        super.onResume()
+        requireActivity().iv_notification.visibility = View.GONE
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        requireActivity().iv_notification.visibility = View.VISIBLE
+    }
+
+    override fun onStop() {
+        super.onStop()
+        requireActivity().iv_notification.visibility = View.VISIBLE
     }
 
     companion object{

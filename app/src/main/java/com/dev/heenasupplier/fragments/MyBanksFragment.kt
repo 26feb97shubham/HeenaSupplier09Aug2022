@@ -64,9 +64,6 @@ class MyBanksFragment : Fragment() {
             SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_back)
             findNavController().popBackStack()
         }
-        mView!!.tv_add_new_banks.setOnClickListener {
-            findNavController().popBackStack()
-        }
     }
 
     companion object {

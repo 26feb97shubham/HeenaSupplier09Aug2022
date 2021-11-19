@@ -47,9 +47,6 @@ class MyCards : Fragment() {
             findNavController().popBackStack()
         }
 
-        requireActivity().iv_notification.setOnClickListener {
-            findNavController().navigate(R.id.notificationsFragment)
-        }
 
         rv_savedcards.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         myCardsAdapter = MyCardsAdapter(requireContext())

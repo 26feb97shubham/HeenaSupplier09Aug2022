@@ -52,9 +52,6 @@ class ViewImageFragment : Fragment() {
             findNavController().popBackStack()
         }
 
-        requireActivity().iv_notification.setOnClickListener {
-            findNavController().navigate(R.id.notificationsFragment)
-        }
 
         if (gallery.size==0){
             mView!!.rv_images.visibility = View.GONE

@@ -34,10 +34,6 @@ class FilteredOffersAndDiscountsFragment : Fragment() {
             findNavController().popBackStack()
         }
 
-        requireActivity().iv_notification.setOnClickListener {
-            findNavController().navigate(R.id.notificationsFragment)
-        }
-
         mView!!.rv_filtered_offers_n_disc_listing.layoutManager = LinearLayoutManager(requireContext(),  LinearLayoutManager.VERTICAL,
             false)
 

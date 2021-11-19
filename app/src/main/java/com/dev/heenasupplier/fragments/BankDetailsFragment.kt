@@ -45,10 +45,6 @@ class BankDetailsFragment : Fragment() {
             findNavController().popBackStack()
         }
 
-        requireActivity().iv_notification.setOnClickListener {
-            findNavController().navigate(R.id.notificationsFragment)
-        }
-
         mView!!.tv_edit_bank_details.setOnClickListener {
             val bundle = Bundle()
             bundle.putBoolean("isBankAdded", isBankAdded)

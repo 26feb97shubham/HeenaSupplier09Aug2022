@@ -122,9 +122,6 @@ class MyProfileFragment : Fragment() {
             findNavController().popBackStack()
         }
 
-        requireActivity().iv_notification.setOnClickListener {
-            findNavController().navigate(R.id.notificationsFragment)
-        }
 
         Glide.with(this).load(
                 SharedPreferenceUtility.getInstance().get(

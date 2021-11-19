@@ -84,18 +84,14 @@ class AddOffers : Fragment() {
     }
 
     private fun setUpViews() {
-        requireActivity().iv_back.setOnClickListener {
+      /*  requireActivity().iv_back.setOnClickListener {
             requireActivity().iv_back.startAnimation(AlphaAnimation(1F, 0.5F))
             SharedPreferenceUtility.getInstance().hideSoftKeyBoard(
                 requireContext(),
                 requireActivity().iv_back
             )
             findNavController().popBackStack()
-        }
-
-        requireActivity().iv_notification.setOnClickListener {
-            findNavController().navigate(R.id.notificationsFragment)
-        }
+        }*/
 
         if (offer_status.equals("edit")){
             mView!!.tv_add_new_offers_txt.text = getString(R.string.update_offers)
@@ -169,11 +165,8 @@ class AddOffers : Fragment() {
         }
 
         requireActivity().iv_back.setOnClickListener {
-            requireActivity().iv_back.startAnimation(AlphaAnimation(1f, 0.5f))
-            SharedPreferenceUtility.getInstance().hideSoftKeyBoard(
-                requireContext(),
-                requireActivity().iv_back
-            )
+            requireActivity().iv_back.startAnimation(AlphaAnimation(1F,0.5F))
+            SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_back)
             findNavController().popBackStack()
         }
 

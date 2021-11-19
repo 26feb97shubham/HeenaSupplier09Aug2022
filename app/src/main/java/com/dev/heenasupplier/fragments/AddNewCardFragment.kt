@@ -36,10 +36,6 @@ class AddNewCardFragment : Fragment() {
             findNavController().popBackStack()
         }
 
-        requireActivity().iv_notification.setOnClickListener {
-            findNavController().navigate(R.id.notificationsFragment)
-        }
-
         mView!!.tv_save_card.setOnClickListener {
             findNavController().navigate(R.id.action_addNewCardFragment_to_paymentFragment)
         }

@@ -39,9 +39,6 @@ class SelectLangFragment : Fragment() {
             findNavController().popBackStack()
         }
 
-        requireActivity().iv_notification.setOnClickListener {
-            findNavController().navigate(R.id.notificationsFragment)
-        }
 
         if(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, "") =="en"){
             selectEnglish()

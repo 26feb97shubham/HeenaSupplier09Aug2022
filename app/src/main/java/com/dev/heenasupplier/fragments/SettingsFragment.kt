@@ -100,9 +100,6 @@ class SettingsFragment : Fragment() {
             SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_back)
             findNavController().popBackStack()
         }
-        requireActivity().iv_notification.setOnClickListener {
-            findNavController().navigate(R.id.notificationsFragment)
-        }
 
         mView!!.txtChangePass.setOnClickListener {
             mView!!.txtChangePass.startAnimation(AlphaAnimation(1f, 0.5f))

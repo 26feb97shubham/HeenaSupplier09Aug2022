@@ -23,6 +23,8 @@ import android.view.animation.AlphaAnimation
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -32,6 +34,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.dev.heenasupplier.BuildConfig
 import com.dev.heenasupplier.R
 import com.dev.heenasupplier.`interface`.ClickInterface
@@ -56,6 +59,7 @@ import kotlinx.android.synthetic.main.activity_sign_up2.*
 import kotlinx.android.synthetic.main.fragment_add_new_service.*
 import kotlinx.android.synthetic.main.fragment_add_new_service.view.*
 import kotlinx.android.synthetic.main.fragment_edit_profile.view.*
+import kotlinx.android.synthetic.main.fragment_home.view.*
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import org.json.JSONException
@@ -103,6 +107,199 @@ class AddNewServiceFragment : Fragment() {
     var galleryItemList = ArrayList<GalleryItem>()
     private var galleryItemListSize : Int = 0
 
+    private val PERMISSIONS_1 = arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    private val PERMISSIONS_2 = arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION)
+    var status = 0
+    var my_click = ""
+
+    private var activityResultLauncher: ActivityResultLauncher<Array<String>> =
+            registerForActivityResult(
+                    ActivityResultContracts.RequestMultiplePermissions()) { result ->
+                var allAreGranted = true
+                for(b in result.values) {
+                    allAreGranted = allAreGranted && b
+                }
+                if(allAreGranted) {
+                    Log.e("Granted", "Permissions")
+                    if (my_click.equals("upload_photos")){
+                        openCameraDialog()
+                    }else{
+                        val fields: MutableList<Place.Field> = java.util.ArrayList()
+                        fields.add(Place.Field.NAME)
+                        fields.add(Place.Field.ID)
+                        fields.add(Place.Field.LAT_LNG)
+                        fields.add(Place.Field.ADDRESS)
+                        fields.add(Place.Field.ADDRESS_COMPONENTS)
+                        status = AUTOCOMPLETE_REQUEST_CODE
+                        // Start the autocomplete intent.
+                        val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields).build(
+                                requireContext()
+                        )
+                        resultLauncher.launch(intent)
+                    }
+                }else{
+                    LogUtils.shortToast(requireContext(), getString(R.string.please_allow_permissions))
+                    Log.e("Denied", "Permissions")
+                }
+            }
+
+    var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        if (status.equals(CAMERA_CAPTURE_IMAGE_REQUEST_CODE)){
+            if (it.resultCode == Activity.RESULT_OK){
+                if (uri != null) {
+                    imagePath = ""
+                    Log.e("uri", uri.toString())
+                    imagePath = uri!!.path!!
+                    pathList.add(imagePath)
+                    mView!!.rv_uploaded_photos.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+                    addNewPhotosAdapter = AddNewPhotosAdapter(requireContext(), pathList, object : ClickInterface.OnRecyclerItemClick {
+                        override fun OnClickAction(position: Int) {
+                            if(galleryItemListSize>position) {
+                                val alert = android.app.AlertDialog.Builder(requireContext())
+                                alert.setMessage(requireContext().getString(R.string.delete_message))
+                                alert.setCancelable(false)
+                                alert.setPositiveButton(getString(R.string.yes)) { dialog, i ->
+                                    dialog.cancel()
+                                    deleteServerimage(position)
+                                }
+                                alert.setNegativeButton(getString(R.string.no)) { dialog, i ->
+                                    dialog.cancel()
+                                }
+                                alert.show()
+                            }
+                            else {
+                                Log.e("check", "" + position)
+                                pathList.removeAt(position)
+                                mView!!.iv_upload_photo.isEnabled = (pathList.size<5)
+                                Log.e("check size", "" + pathList.size)
+                                mView!!.rv_uploaded_photos.adapter=addNewPhotosAdapter
+                                addNewPhotosAdapter.notifyDataSetChanged()
+                            }
+                            mView!!.iv_upload_photo.alpha = 1f
+                            mView!!.iv_upload_photo.isEnabled = true
+                        }
+                    })
+                    mView!!.rv_uploaded_photos.adapter = addNewPhotosAdapter
+                    addNewPhotosAdapter.notifyDataSetChanged()
+                } else {
+                    LogUtils.shortToast(requireContext(), "something went wrong! please try again")
+                }
+            }
+        }else if (status.equals(PICK_IMAGE_MULTIPLE)){
+            if (it.resultCode==Activity.RESULT_OK){
+                val data: Intent? = it.data
+                if (data!!.clipData != null) {
+                    val count: Int = data.clipData!!.itemCount
+                    Log.e("count", ""+count)
+                    if (count+pathList.size<=5){
+                        for (i in 0 until count) {
+                            val selectedImage: Uri = data.clipData!!.getItemAt(i).uri
+                            if (selectedImage.toString().startsWith("content")) {
+                                imagePath = getRealPath(selectedImage)!!
+                            } else {
+                                imagePath = selectedImage.getPath()!!
+                            }
+                            pathList.add(imagePath)
+                            Log.e("pathList", pathList.size.toString())
+                        }
+                    }else{
+                        LogUtils.shortToast(requireContext(), "Only 5 images can be selected")
+                    }
+                    mView!!.rv_uploaded_photos.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+                    addNewPhotosAdapter = AddNewPhotosAdapter(requireContext(), pathList, object : ClickInterface.OnRecyclerItemClick {
+                        override fun OnClickAction(position: Int) {
+                            if(galleryItemListSize>position) {
+                                val alert = android.app.AlertDialog.Builder(requireContext())
+                                alert.setMessage(requireContext().getString(R.string.delete_message))
+                                alert.setCancelable(false)
+                                alert.setPositiveButton(getString(R.string.yes)) { dialog, i ->
+                                    dialog.cancel()
+                                    deleteServerimage(position)
+                                }
+                                alert.setNegativeButton(getString(R.string.no)) { dialog, i ->
+                                    dialog.cancel()
+                                }
+                                alert.show()
+                            }
+                            else {
+                                Log.e("check", "" + position)
+                                pathList.removeAt(position)
+                                mView!!.iv_upload_photo.isEnabled = (pathList.size<5)
+                                Log.e("check size", "" + pathList.size)
+                                mView!!.rv_uploaded_photos.adapter=addNewPhotosAdapter
+                                addNewPhotosAdapter.notifyDataSetChanged()
+                            }
+                            mView!!.iv_upload_photo.alpha = 1f
+                            mView!!.iv_upload_photo.isEnabled = true
+                        }
+                    })
+                    mView!!.rv_uploaded_photos.adapter = addNewPhotosAdapter
+                    addNewPhotosAdapter.notifyDataSetChanged()
+                } else if (data.data != null) {
+                    var imagePath: String = data.data?.path!!
+                }else{
+                    Log.e("error_data", data.toString())
+                }
+            }
+        }else if (status.equals(AUTOCOMPLETE_REQUEST_CODE)){
+            if (it.resultCode==Activity.RESULT_OK){
+                val place = Autocomplete.getPlaceFromIntent(it.data!!)
+                val latlng = place.latLng
+                mLatitude = latlng!!.latitude
+                mLongitude = latlng.longitude
+                val addressComponents: MutableList<AddressComponent> = place.addressComponents!!.asList()
+                var ard = 0
+                var add = ""
+                for (addressComponent in addressComponents) {
+                    Log.e("addressss--", addressComponent.name)
+                    countryName = addressComponent.name
+                    if (ard == 0) {
+                        add = addressComponent.name
+                    }
+
+                    var flag: Boolean = false
+                    val types: MutableList<String> = addressComponent.types
+                    for (type in types) {
+                        if (type.equals(
+                                        "locality",
+                                        true
+                                ) || type.equals("administrative_area_level_2") || type.equals(
+                                        "administrative_area_level_1",
+                                        true
+                                )
+                        ) {
+                            flag = true
+                        }
+                    }
+                    if (flag) {
+                        val center = LatLng(mLatitude, mLongitude)
+                        val locality = getLocality(center)
+                        val countryName = getCountry(center)
+
+                        var address = ""
+
+                        if (!add.isEmpty()) {
+                            address = add
+                        }
+                        if (!locality.isEmpty() && !address.isEmpty() && !address.equals(locality)) {
+                            address = address + ", " + locality
+                        }
+                        if (!addressComponent.name.isEmpty() && !address.isEmpty() && !address.equals(addressComponent.name)) {
+                            address = address + ", " + addressComponent.name
+                        }
+                        if (!countryName.isEmpty() && !address.isEmpty()) {
+                            address = address + ", " + countryName
+                        }
+                        edtlocation_signup.text = address
+                        break
+                    }
+                    ard++
+                }
+            }
+        }
+    }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -140,21 +337,10 @@ class AddNewServiceFragment : Fragment() {
             mView!!.tv_save_service.text = getString(R.string.save)
         }
 
-        requireActivity().iv_notification.setOnClickListener {
-            findNavController().navigate(R.id.notificationsFragment)
-        }
-
         mView!!.tv_location.setOnClickListener {
-            val fields: MutableList<Place.Field> = ArrayList()
-            fields.add(Place.Field.NAME)
-            fields.add(Place.Field.ID)
-            fields.add(Place.Field.LAT_LNG)
-            fields.add(Place.Field.ADDRESS)
-            fields.add(Place.Field.ADDRESS_COMPONENTS)
-
-            // Start the autocomplete intent.
-            val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields).build(requireActivity())
-            startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE)
+            mView!!.tv_location.startAnimation(AlphaAnimation(1f, 0.5f))
+            my_click = "location"
+            activityResultLauncher.launch(PERMISSIONS_2)
         }
 
         mView!!.iv_upload_photo.setOnClickListener {
@@ -162,7 +348,8 @@ class AddNewServiceFragment : Fragment() {
             if (pathList.size<5){
                 mView!!.iv_upload_photo.isEnabled = true
                 mView!!.iv_upload_photo.startAnimation(AlphaAnimation(1f, 0.5f))
-                requestToUploadServiceImages()
+                my_click = "upload_photos"
+                activityResultLauncher.launch(PERMISSIONS_1)
             }else{
                 LogUtils.shortToast(requireContext(), "Max 5 images can be selected")
                 mView!!.iv_upload_photo.isEnabled = false
@@ -170,16 +357,9 @@ class AddNewServiceFragment : Fragment() {
         }
 
         mView!!.ll_service_location.setOnClickListener {
-            val fields: MutableList<Place.Field> = java.util.ArrayList()
-            fields.add(Place.Field.NAME)
-            fields.add(Place.Field.ID)
-            fields.add(Place.Field.LAT_LNG)
-            fields.add(Place.Field.ADDRESS)
-            fields.add(Place.Field.ADDRESS_COMPONENTS)
-
-            // Start the autocomplete intent.
-            val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields).build(requireContext())
-            startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE)
+            mView!!.ll_service_location.startAnimation(AlphaAnimation(1f, 0.5f))
+            my_click = "location"
+            activityResultLauncher.launch(PERMISSIONS_2)
         }
 
         mView!!.tv_save_service.setOnClickListener {
@@ -201,9 +381,13 @@ class AddNewServiceFragment : Fragment() {
     }
 
     private fun showService(serviceId: Int) {
+        mView!!.add_service_progressBar.visibility = View.VISIBLE
+        requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         val call = apiInterface.showService(serviceId)
         call?.enqueue(object : Callback<ShowServiceResponse?>{
             override fun onResponse(call: Call<ShowServiceResponse?>, response: Response<ShowServiceResponse?>) {
+                mView!!.add_service_progressBar.visibility = View.GONE
+                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 if (response.isSuccessful){
                     if (response.body()!!.status==1){
                         galleryItemList = response.body()!!.gallery as ArrayList<GalleryItem>
@@ -240,6 +424,8 @@ class AddNewServiceFragment : Fragment() {
             override fun onFailure(call: Call<ShowServiceResponse?>, throwable: Throwable) {
                 LogUtils.e("msg", throwable.message)
                 LogUtils.shortToast(requireContext(), throwable.localizedMessage)
+                mView!!.add_service_progressBar.visibility = View.GONE
+                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             }
 
         })
@@ -419,26 +605,6 @@ class AddNewServiceFragment : Fragment() {
         })
     }
 
-
-    fun requestToUploadServiceImages() {
-        if (!hasPermissions(requireContext(), *PERMISSIONS)) {
-            requestPermissions(PERMISSIONS, PERMISSION_CAMERA_EXTERNAL_STORAGE_CODE)
-        } else if (hasPermissions(requireContext(), *PERMISSIONS)) {
-            openCameraDialog()
-        }
-    }
-
-    fun hasPermissions(context: Context?, vararg permissions: String?): Boolean {
-        if (context != null && permissions != null) {
-            for (permission in permissions) {
-                if (ContextCompat.checkSelfPermission(context, permission!!) != PackageManager.PERMISSION_GRANTED) {
-                    return false
-                }
-            }
-        }
-        return true
-    }
-
     private fun openCameraDialog() {
         val items = arrayOf<CharSequence>(getString(R.string.camera), getString(R.string.gallery), getString(R.string.cancel))
         val builder = AlertDialog.Builder(requireContext())
@@ -462,7 +628,8 @@ class AddNewServiceFragment : Fragment() {
         intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
         intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
-        startActivityForResult(intent, PICK_IMAGE_MULTIPLE)
+        status = PICK_IMAGE_MULTIPLE
+        resultLauncher.launch(intent)
     }
 
     private fun captureImage() {
@@ -470,7 +637,8 @@ class AddNewServiceFragment : Fragment() {
         uri = getOutputMediaFileUri(MEDIA_TYPE_IMAGE)
         intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
         intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
-        startActivityForResult(intent, CAMERA_CAPTURE_IMAGE_REQUEST_CODE)
+        status = CAMERA_CAPTURE_IMAGE_REQUEST_CODE
+        resultLauncher.launch(intent)
     }
 
     fun getOutputMediaFileUri(type: Int): Uri {
@@ -563,185 +731,6 @@ class AddNewServiceFragment : Fragment() {
             }
         }
         return true
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == PERMISSION_CAMERA_EXTERNAL_STORAGE_CODE) {
-            if (grantResults.size > 0) { /*  if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {*/
-                if (hasAllPermissionsGranted(grantResults)) {
-                    openCameraDialog()
-                } else {
-                    LogUtils.shortToast(requireActivity(), "Please grant both Camera and Storage permissions")
-
-                }
-            } else if (!hasAllPermissionsGranted(grantResults)) {
-                LogUtils.shortToast(requireActivity(), "Please grant both Camera and Storage permissions")
-            }
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        Log.e("result_code", ""+resultCode)
-        if (resultCode != Activity.RESULT_OK) {
-            return
-        }else if (requestCode == CAMERA_CAPTURE_IMAGE_REQUEST_CODE) {
-            if (resultCode == Activity.RESULT_OK) { //previewCapturedImage();
-                if (uri != null) {
-                    imagePath = ""
-                    Log.e("uri", uri.toString())
-                    imagePath = uri!!.path!!
-                    pathList.add(imagePath)
-                    mView!!.rv_uploaded_photos.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-                    addNewPhotosAdapter = AddNewPhotosAdapter(requireContext(), pathList, object : ClickInterface.OnRecyclerItemClick {
-                        override fun OnClickAction(position: Int) {
-                            if(galleryItemListSize>position) {
-                                val alert = android.app.AlertDialog.Builder(requireContext())
-                                alert.setMessage(requireContext().getString(R.string.delete_message))
-                                alert.setCancelable(false)
-                                alert.setPositiveButton(getString(R.string.yes)) { dialog, i ->
-                                    dialog.cancel()
-                                    deleteServerimage(position)
-                                }
-                                alert.setNegativeButton(getString(R.string.no)) { dialog, i ->
-                                    dialog.cancel()
-                                }
-                                alert.show()
-                            }
-                            else {
-                                Log.e("check", "" + position)
-                                pathList.removeAt(position)
-                                mView!!.iv_upload_photo.isEnabled = (pathList.size<5)
-                                Log.e("check size", "" + pathList.size)
-                                mView!!.rv_uploaded_photos.adapter=addNewPhotosAdapter
-                                addNewPhotosAdapter.notifyDataSetChanged()
-                            }
-                            mView!!.iv_upload_photo.alpha = 1f
-                            mView!!.iv_upload_photo.isEnabled = true
-                        }
-                    })
-                    mView!!.rv_uploaded_photos.adapter = addNewPhotosAdapter
-                    addNewPhotosAdapter.notifyDataSetChanged()
-                } else {
-                    LogUtils.shortToast(requireContext(), "something went wrong! please try again")
-                }
-            }
-        } else if (requestCode == AUTOCOMPLETE_REQUEST_CODE && null != data) {
-            if (resultCode == AppCompatActivity.RESULT_OK) {
-                val place = Autocomplete.getPlaceFromIntent(data)
-                val latlng = place.latLng
-                mLatitude = latlng!!.latitude
-                mLongitude = latlng.longitude
-                val addressComponents: MutableList<AddressComponent> = place.addressComponents!!.asList()
-                var ard = 0
-                var add = ""
-                for (addressComponent in addressComponents) {
-                    Log.e("addressss--", addressComponent.name)
-                    countryName = addressComponent.name
-                    if (ard == 0) {
-                        add = addressComponent.name
-                    }
-
-                    var flag: Boolean = false
-                    val types: MutableList<String> = addressComponent.types
-                    for (type in types) {
-                        if (type.equals(
-                                        "locality",
-                                        true
-                                ) || type.equals("administrative_area_level_2") || type.equals(
-                                        "administrative_area_level_1",
-                                        true
-                                )
-                        ) {
-                            flag = true
-                        }
-                    }
-                    if (flag) {
-                        val center = LatLng(mLatitude, mLongitude)
-                        val locality = getLocality(center)
-                        val countryName = getCountry(center)
-
-                        var address = ""
-
-                        if (!add.isEmpty()) {
-                            address = add
-                        }
-                        if (!locality.isEmpty() && !address.isEmpty() && !address.equals(locality)) {
-                            address = address + ", " + locality
-                        }
-                        if (!addressComponent.name.isEmpty() && !address.isEmpty() && !address.equals(addressComponent.name)) {
-                            address = address + ", " + addressComponent.name
-                        }
-                        if (!countryName.isEmpty() && !address.isEmpty()) {
-                            address = address + ", " + countryName
-                        }
-                        tv_location.text = address
-                        break
-                    }
-                    ard++
-                }
-
-            }
-        }else if(requestCode == PICK_IMAGE_MULTIPLE && resultCode == Activity.RESULT_OK && null != data){
-            Log.e("req", PICK_IMAGE_MULTIPLE.toString())
-            Log.e("clip_data", ""+data.clipData)
-            if (data.clipData != null) {
-                val count: Int = data.clipData!!.itemCount
-                Log.e("count", ""+count)
-                if (count+pathList.size<=5){
-                    for (i in 0 until count) {
-                        val selectedImage: Uri = data.clipData!!.getItemAt(i).uri
-                        if (selectedImage.toString().startsWith("content")) {
-                            imagePath = getRealPath(selectedImage)!!
-                        } else {
-                            imagePath = selectedImage.getPath()!!
-                        }
-                        pathList.add(imagePath)
-                        Log.e("pathList", pathList.size.toString())
-                    }
-                }else{
-                    LogUtils.shortToast(requireContext(), "Only 5 images can be selected")
-                }
-                mView!!.rv_uploaded_photos.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-                addNewPhotosAdapter = AddNewPhotosAdapter(requireContext(), pathList, object : ClickInterface.OnRecyclerItemClick {
-                    override fun OnClickAction(position: Int) {
-                        if(galleryItemListSize>position) {
-                            val alert = android.app.AlertDialog.Builder(requireContext())
-                            alert.setMessage(requireContext().getString(R.string.delete_message))
-                            alert.setCancelable(false)
-                            alert.setPositiveButton(getString(R.string.yes)) { dialog, i ->
-                                dialog.cancel()
-                                deleteServerimage(position)
-                            }
-                            alert.setNegativeButton(getString(R.string.no)) { dialog, i ->
-                                dialog.cancel()
-                            }
-                            alert.show()
-                        }
-                        else {
-                            Log.e("check", "" + position)
-                            pathList.removeAt(position)
-                            mView!!.iv_upload_photo.isEnabled = (pathList.size<5)
-                            Log.e("check size", "" + pathList.size)
-                            mView!!.rv_uploaded_photos.adapter=addNewPhotosAdapter
-                            addNewPhotosAdapter.notifyDataSetChanged()
-                        }
-                        mView!!.iv_upload_photo.alpha = 1f
-                        mView!!.iv_upload_photo.isEnabled = true
-                    }
-                })
-                mView!!.rv_uploaded_photos.adapter = addNewPhotosAdapter
-                addNewPhotosAdapter.notifyDataSetChanged()
-            } else if (data?.data != null) {
-                var imagePath: String = data.data?.path!!
-            }else{
-                Log.e("error_data", data.toString())
-            }
-        }else{
-            Log.e("Error", requestCode.toString())
-            Log.e("Error_result", resultCode.toString())
-            Log.e("Error_data", data.toString())
-        }
     }
 
     private fun deleteServerimage(postion: Int) {

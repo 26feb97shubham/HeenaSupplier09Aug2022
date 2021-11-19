@@ -64,10 +64,6 @@ class AllServicesListing : Fragment() {
             findNavController().popBackStack()
         }
 
-        requireActivity().iv_notification.setOnClickListener {
-            findNavController().navigate(R.id.notificationsFragment)
-        }
-
         getServices(false)
         mView!!.all_servieces_swipeRefresh.setOnRefreshListener {
             getServices(true)

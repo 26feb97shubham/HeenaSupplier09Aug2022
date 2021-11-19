@@ -240,10 +240,6 @@ class EditProfileFragment : Fragment() {
             findNavController().popBackStack()
         }
 
-        requireActivity().iv_notification.setOnClickListener {
-            findNavController().navigate(R.id.notificationsFragment)
-        }
-
         showProfile()
 
         mView!!.btnUpdate.setOnClickListener {

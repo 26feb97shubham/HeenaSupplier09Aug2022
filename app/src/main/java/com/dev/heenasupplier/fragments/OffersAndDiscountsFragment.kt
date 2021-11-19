@@ -32,9 +32,6 @@ class OffersAndDiscountsFragment : Fragment() {
             findNavController().popBackStack()
         }
 
-        requireActivity().iv_notification.setOnClickListener {
-            findNavController().navigate(R.id.notificationsFragment)
-        }
 
         mView!!.rv_offers_n_disc_listing.layoutManager = LinearLayoutManager(
             requireContext(),

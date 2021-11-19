@@ -67,9 +67,6 @@ class CMSFragment : Fragment() {
             findNavController().popBackStack()
         }
 
-        requireActivity().iv_notification.setOnClickListener {
-            findNavController().navigate(R.id.notificationsFragment)
-        }
         instance = SharedPreferenceUtility.getInstance()
         lang = instance!!.get(SharedPreferenceUtility.SelectedLang,"").toString()
         Utility.setLanguage(requireContext(),lang)

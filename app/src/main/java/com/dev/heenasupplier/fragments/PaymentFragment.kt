@@ -66,10 +66,6 @@ class PaymentFragment : Fragment() {
             findNavController().popBackStack()
         }
 
-        requireActivity().iv_notification.setOnClickListener {
-            findNavController().navigate(R.id.notificationsFragment)
-        }
-
         tv_membership_title.text = membership!!.name
         tv_membership_plan_price.text = "AED "+membership!!.price.toString()
         tv_membership_desc.text = membership!!.description
