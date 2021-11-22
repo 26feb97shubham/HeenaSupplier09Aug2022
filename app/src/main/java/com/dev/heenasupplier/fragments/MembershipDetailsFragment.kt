@@ -31,7 +31,6 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class MembershipDetailsFragment : Fragment() {
-    lateinit var addNewFeaturedAdapter: AddNewFeaturedAdapter
     private var membershipX : MembershipX?=null
     private var mView : View?=null
     var serviceslisting = ArrayList<Service>()

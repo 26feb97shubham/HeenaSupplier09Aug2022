@@ -84,14 +84,14 @@ class AddOffers : Fragment() {
     }
 
     private fun setUpViews() {
-      /*  requireActivity().iv_back.setOnClickListener {
+        requireActivity().iv_back.setOnClickListener {
             requireActivity().iv_back.startAnimation(AlphaAnimation(1F, 0.5F))
             SharedPreferenceUtility.getInstance().hideSoftKeyBoard(
                 requireContext(),
                 requireActivity().iv_back
             )
             findNavController().popBackStack()
-        }*/
+        }
 
         if (offer_status.equals("edit")){
             mView!!.tv_add_new_offers_txt.text = getString(R.string.update_offers)
@@ -162,12 +162,6 @@ class AddOffers : Fragment() {
 
         mView!!.tv_save_service.setOnClickListener {
             validateAndSave()
-        }
-
-        requireActivity().iv_back.setOnClickListener {
-            requireActivity().iv_back.startAnimation(AlphaAnimation(1F,0.5F))
-            SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_back)
-            findNavController().popBackStack()
         }
 
         mView!!.img.setOnClickListener {
@@ -327,8 +321,6 @@ class AddOffers : Fragment() {
 
 
     private fun validateAndSave() {
-       /* myStartDate = mView!!.et_card_duration_from.text.toString().trim()
-        myEndDate = mView!!.et_card_duration_to.text.toString().trim()*/
         selectedService = mView!!.tv_choose_service.text.toString().trim()
         offerPrice = mView!!.et_offers_price.text.toString().trim()
         offerChildPrice = mView!!.et_offers_child_price.text.toString().trim()

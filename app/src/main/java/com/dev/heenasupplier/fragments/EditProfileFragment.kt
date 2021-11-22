@@ -1,6 +1,7 @@
 package com.dev.heenasupplier.fragments
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -63,12 +64,6 @@ import java.util.*
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [EditProfileFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class EditProfileFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
@@ -83,8 +78,6 @@ class EditProfileFragment : Fragment() {
     val PICK_IMAGE_FROM_GALLERY = 10
     private val CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 100
     private var imagePath = ""
-    private var name = ""
-    var profile_picture:String=""
     var username: String = ""
     var fullname: String = ""
     var mobilenumber: String = ""
@@ -247,7 +240,6 @@ class EditProfileFragment : Fragment() {
             SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), mView!!.btnUpdate)
             validateAndUpdate()
         }
-
 
         mView!!.scrollViewUpdate.setOnTouchListener(object : View.OnTouchListener{
             override fun onTouch(v: View?, event: MotionEvent?): Boolean {

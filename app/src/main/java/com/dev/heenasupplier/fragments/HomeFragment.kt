@@ -59,7 +59,6 @@ class HomeFragment : Fragment() {
     var bookingslisting = ArrayList<BookingItem>()
     private var membershipX : MembershipX?=null
     private var membershipId :Int = 0
-    var isSettingsPressed = false
     var profile_picture : String = ""
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -514,8 +513,6 @@ class HomeFragment : Fragment() {
                 }
             })
             logoutDialog.show(requireActivity().supportFragmentManager, "HomeFragment")
-            startActivity(Intent(requireContext(), ChooseLoginSignUpActivity::class.java))
-            requireActivity().finishAffinity()
         }
 
         requireActivity().llSettings.setOnClickListener {
@@ -567,27 +564,6 @@ class HomeFragment : Fragment() {
 
         }
 
-    private fun exitApp() {
-        val toast = Toast.makeText(
-                requireContext(),
-                getString(R.string.please_click_back_again_to_exist),
-                Toast.LENGTH_SHORT
-        )
-
-
-        if(doubleClick){
-            finishAffinity(requireActivity())
-            doubleClick=false
-        }
-        else{
-
-            doubleClick=true
-            Handler(Looper.getMainLooper()).postDelayed(Runnable {
-                toast.show()
-                doubleClick=false
-            }, 500)
-        }
-    }
     companion object{
         private var instance: SharedPreferenceUtility? = null
         var mView : View?=null

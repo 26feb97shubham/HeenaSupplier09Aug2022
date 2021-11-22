@@ -12,7 +12,6 @@ import com.dev.heenasupplier.utils.SharedPreferenceUtility
 import kotlinx.android.synthetic.main.fragment_my_services.*
 
 class MyServices : Fragment() {
-    lateinit var bookingServicesAdapter: BookingServicesAdapter
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment

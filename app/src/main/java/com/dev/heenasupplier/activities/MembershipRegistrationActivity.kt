@@ -64,13 +64,14 @@ class MembershipRegistrationActivity : AppCompatActivity() {
 
         rv_membership_plans.apply {
             this.layoutManager = LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false)
-            this.adapter = RegistrationMembershipPlansListAdapter(
+            registrationMembershipPlansListAdapter = RegistrationMembershipPlansListAdapter(
                     mContext as MembershipRegistrationActivity,
                     membershipList,
                     object : ClickInterface.OnRecyclerItemClick {
                         override fun OnClickAction(position: Int) {
                         }
                     })
+            this.adapter =registrationMembershipPlansListAdapter
         }
 
         registrationMembershipPlansListAdapter.notifyDataSetChanged()

@@ -32,11 +32,6 @@ import retrofit2.Response
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [AllServicesListing.newInstance] factory method to
- * create an instance of this fragment.
- */
 class AllServicesListing : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
@@ -56,7 +51,6 @@ class AllServicesListing : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
         mView = inflater.inflate(R.layout.fragment_all_services_listing, container, false)
         requireActivity().iv_back.setOnClickListener {
             requireActivity().iv_back.startAnimation(AlphaAnimation(1F,0.5F))
@@ -114,8 +108,8 @@ class AllServicesListing : Fragment() {
                             }
 
                             override fun onServiceEdit(position: Int) {
-                                var service_id = serviceslisting.get(position).service_id
-                                var status = "edit"
+                                val service_id = serviceslisting.get(position).service_id
+                                val status = "edit"
                                 val bundle = Bundle()
                                 bundle.putInt("service_id", service_id!!)
                                 bundle.putString("status", status)
@@ -178,15 +172,6 @@ class AllServicesListing : Fragment() {
     }
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment AllServicesListing.
-         */
-        // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
                 AllServicesListing().apply {
@@ -197,7 +182,6 @@ class AllServicesListing : Fragment() {
                 }
 
         private var instance: SharedPreferenceUtility? = null
-        var mView : View?=null
         @Synchronized
         fun getInstance(): SharedPreferenceUtility {
             if (instance == null) {

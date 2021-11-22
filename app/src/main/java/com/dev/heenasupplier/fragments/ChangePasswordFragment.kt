@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.animation.AlphaAnimation
+import androidx.core.widget.doOnTextChanged
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.dev.heenasupplier.R
@@ -69,7 +70,6 @@ class ChangePasswordFragment : Fragment() {
     }
 
     private fun setUpViews() {
-       /* Glide.with(requireContext()).load(profile_picture).placeholder(R.drawable.user).into(mView!!.img)*/
         requireActivity().iv_back.setOnClickListener {
             requireActivity().iv_back.startAnimation(AlphaAnimation(1F,0.5F))
             SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_back)
@@ -80,55 +80,36 @@ class ChangePasswordFragment : Fragment() {
             mView!!.btnChangePass.startAnimation(AlphaAnimation(1f, 0.5f))
             validateAndChangePassword()
         }
-        mView!!.edtNewPass.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+        mView!!.edtNewPass.doOnTextChanged { charSeq, start, before, count ->
+            if(SharedPreferenceUtility.getInstance().isPasswordValid(charSeq.toString())){
+                mView!!.imgPassVerify.visibility=View.VISIBLE
+
             }
+            else{
+                mView!!.imgPassVerify.visibility=View.GONE
 
-            override fun onTextChanged(charSeq: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                if(SharedPreferenceUtility.getInstance().isPasswordValid(charSeq.toString())){
-                    mView!!.imgPassVerify.visibility=View.VISIBLE
+            }
+        }
 
+        mView!!.edtConfirmPassword.doOnTextChanged { charSeq, start, before, count ->
+            val pass = mView!!.edtNewPass.text.toString()
+
+            if(!TextUtils.isEmpty(pass)){
+                if(!pass.equals(charSeq.toString(), false)){
+                    mView!!.imgConfPassVerify.visibility=View.GONE
+                    mView!!.txtPassMatch.visibility=View.GONE
                 }
                 else{
-                    mView!!.imgPassVerify.visibility=View.GONE
-
+                    mView!!.imgConfPassVerify.visibility=View.VISIBLE
+                    mView!!.txtPassMatch.visibility=View.VISIBLE
+                    SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), mView!!.edtConfirmPassword)
                 }
-
-
             }
-
-            override fun afterTextChanged(p0: Editable?) {
+            else{
+                mView!!.edtNewPass.error=getString(R.string.please_first_enter_your_password)
             }
-
-        })
-        mView!!.edtConfirmPassword.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
-
-            override fun onTextChanged(charSeq: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                val pass = mView!!.edtNewPass.text.toString()
-
-                if(!TextUtils.isEmpty(pass)){
-                    if(!pass.equals(charSeq.toString(), false)){
-                        mView!!.imgConfPassVerify.visibility=View.GONE
-                        mView!!.txtPassMatch.visibility=View.GONE
-                    }
-                    else{
-                        mView!!.imgConfPassVerify.visibility=View.VISIBLE
-                        mView!!.txtPassMatch.visibility=View.VISIBLE
-                        SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), mView!!.edtConfirmPassword)
-                    }
-                }
-                else{
-                    mView!!.edtNewPass.error=getString(R.string.please_first_enter_your_password)
-                }
-
-            }
-
-            override fun afterTextChanged(p0: Editable?) {
-            }
-
-        })
+        }
 
 
 
@@ -197,37 +178,26 @@ class ChangePasswordFragment : Fragment() {
         if (TextUtils.isEmpty(oldPassword)) {
             mView!!.edtOldPass.requestFocus()
             mView!!.edtOldPass.error=getString(R.string.please_enter_your_old_password)
-//            LogUtils.shortToast(requireContext(), getString(R.string.please_enter_your_password))
         }
         else if (!SharedPreferenceUtility.getInstance().isPasswordValid(oldPassword)) {
             mView!!.edtOldPass.requestFocus()
             mView!!.edtOldPass.error=getString(R.string.password_length_valid)
-//            LogUtils.shortToast(requireContext(), getString(R.string.password_length_valid))
         }
         else if (TextUtils.isEmpty(newPassword)) {
             mView!!.edtNewPass.requestFocus()
             mView!!.edtNewPass.error=getString(R.string.please_enter_your_new_password)
-//            LogUtils.shortToast(requireContext(), getString(R.string.please_enter_your_password))
         }
         else if (!SharedPreferenceUtility.getInstance().isPasswordValid(newPassword)) {
             mView!!.edtNewPass.requestFocus()
             mView!!.edtNewPass.error=getString(R.string.password_length_valid)
-//            LogUtils.shortToast(requireContext(), getString(R.string.password_length_valid))
         }
         else if (TextUtils.isEmpty(confirmPassword)) {
             mView!!.edtConfirmPassword.requestFocus()
             mView!!.edtConfirmPassword.error=getString(R.string.please_verify_your_password)
-//            LogUtils.shortToast(requireContext(), getString(R.string.please_verify_your_password))
         }
-        /* else if (confirmPassword.length < 6) {
-              edtConfirmPassword.error=getString(R.string.verify_password_length_valid)
- //            LogUtils.shortToast(requireContext(), getString(R.string.verify_password_length_valid))
-
-         }*/
         else if (!confirmPassword.equals(newPassword)) {
             mView!!.edtConfirmPassword.requestFocus()
             mView!!.edtConfirmPassword.error=getString(R.string.password_doesnt_match_with_confirm_password)
-//            LogUtils.shortToast(requireContext(), getString(R.string.password_doesnt_match_with_verify_password))
         }
         else{
             changePassword()
@@ -273,15 +243,6 @@ class ChangePasswordFragment : Fragment() {
     }
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment ChangePasswordFragment.
-         */
-        // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
             ChangePasswordFragment().apply {

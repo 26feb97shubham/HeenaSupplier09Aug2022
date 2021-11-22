@@ -19,6 +19,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.animation.AlphaAnimation
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.FileProvider
@@ -43,7 +45,13 @@ import com.dev.heenasupplier.utils.LogUtils
 import com.dev.heenasupplier.utils.SharedPreferenceUtility
 import com.dev.heenasupplier.utils.Utility
 import com.dev.heenasupplier.utils.Utility.Companion.IMAGE_DIRECTORY_NAME
+import com.dev.heenasupplier.utils.Utility.Companion.apiInterface
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.libraries.places.api.model.AddressComponent
+import com.google.android.libraries.places.widget.Autocomplete
 import kotlinx.android.synthetic.main.activity_home2.*
+import kotlinx.android.synthetic.main.activity_sign_up2.*
+import kotlinx.android.synthetic.main.fragment_add_new_service.view.*
 import kotlinx.android.synthetic.main.fragment_my_profile.*
 import kotlinx.android.synthetic.main.fragment_my_profile.view.*
 import kotlinx.android.synthetic.main.fragment_settings.view.*
@@ -62,7 +70,6 @@ import kotlin.collections.ArrayList
 
 class MyProfileFragment : Fragment() {
     var mView : View ?=null
-    private val PERMISSION_CAMERA_EXTERNAL_STORAGE_CODE = 301
     private val PERMISSIONS = arrayOf(
             Manifest.permission.CAMERA,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
@@ -72,27 +79,80 @@ class MyProfileFragment : Fragment() {
     val PICK_IMAGE_FROM_GALLERY = 10
     private val CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 100
     private var imagePath = ""
-    var favAdded : Boolean = true
-    var imageEncoded : String = ""
     lateinit var offersAndDiscountsAdapter: OffersAndDiscountsAdapter
-    lateinit var serviceAdapter: ServiceAdapter
     lateinit var servicesAdapter: ServicesAdapter
     lateinit var galleryStaggeredGridAdapter: GalleryStaggeredGridAdapter
     lateinit var reviewsAdapter: ReviewsAdapter
-    private val galleryPhotosShow = ArrayList<GalleryPhotosShow>()
     private val galleryPhotos = ArrayList<String>()
-    private var selectedImageUriList = ArrayList<String>()
     private var ImageUriList = ArrayList<Gallery>()
     val requestOption = RequestOptions().centerCrop()
-    val apiInterface = APIClient.getClient()!!.create(APIInterface::class.java)
     var serviceslisting = ArrayList<Service>()
     var offersListing = ArrayList<OfferItem>()
     var commentsList = ArrayList<CommentsItem>()
+
+    var status = 0
+
+    private var activityResultLauncher: ActivityResultLauncher<Array<String>> =
+            registerForActivityResult(
+                    ActivityResultContracts.RequestMultiplePermissions()) { result ->
+                var allAreGranted = true
+                for(b in result.values) {
+                    allAreGranted = allAreGranted && b
+                }
+
+                if(allAreGranted) {
+                    Log.e("Granted", "Permissions")
+                    openCameraDialog()
+                }else{
+                    Log.e("Denied", "Permissions")
+                }
+            }
+
+    var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        if (status.equals(CAMERA_CAPTURE_IMAGE_REQUEST_CODE)){
+            if (it.resultCode == Activity.RESULT_OK){
+                if (uri != null) {
+                    imagePath = ""
+                    Log.e("uri", uri.toString())
+                    imagePath = uri!!.path!!
+                    galleryPhotos.add(imagePath)
+                    setUploadPhotos(galleryPhotos)
+                } else {
+                    LogUtils.shortToast(requireContext(), "something went wrong! please try again")
+                }
+            }
+        }else if (status.equals(PICK_IMAGE_FROM_GALLERY)){
+            val data: Intent? = it.data
+            galleryPhotos.clear()
+            imagePath = ""
+            if (data?.clipData != null) {
+                val cout: Int = data.clipData!!.itemCount
+                for (i in 0 until cout) {
+                    val imageurl: Uri = data.clipData!!.getItemAt(i).uri
+                    if (imageurl.toString().startsWith("content")) {
+                        imagePath = getRealPath(imageurl)!!
+                    } else {
+                        imagePath = imageurl.getPath()!!
+                    }
+                    galleryPhotos.add(imagePath)
+                }
+                if (galleryPhotos.size==0){
+                    LogUtils.shortToast(requireContext(), getString(R.string.please_select_atleast_one_image_to_proceed))
+                }else{
+                    setUploadPhotos(galleryPhotos)
+                }
+
+            } else if (data?.data!=null) {
+                val imagePath = data.data!!.path
+                galleryPhotos.add(imagePath.toString())
+            }
+        }
+    }
+
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         mView = inflater.inflate(R.layout.fragment_my_profile, container, false)
         return mView
     }
@@ -156,26 +216,26 @@ class MyProfileFragment : Fragment() {
 
 
         tv_add_new_offers.setOnClickListener {
-            var offer_id = 0
-            var status = "add"
+            val offer_id = 0
+            val status = "add"
             val bundle = Bundle()
-            bundle.putInt("offer_id", offer_id!!)
+            bundle.putInt("offer_id", offer_id)
             bundle.putString("status", status)
             findNavController().navigate(R.id.action_myProfileFragment_to_addNewOffersFragment, bundle)
         }
 
         tv_add_new_service.setOnClickListener {
-            var service_id = 0
-            var status = "add"
+            val service_id = 0
+            val status = "add"
             val bundle = Bundle()
-            bundle.putInt("service_id", service_id!!)
+            bundle.putInt("service_id", service_id)
             bundle.putString("status", status)
             findNavController().navigate(R.id.action_myProfileFragment_to_addNewFeaturedFragment, bundle)
         }
 
         mView!!.card_upload_photo.setOnClickListener {
             mView!!.card_upload_photo.startAnimation(AlphaAnimation(1f, 0.5f))
-            requestToUploadProfilePhoto()
+            activityResultLauncher.launch(PERMISSIONS)
         }
 
         showProfile()
@@ -348,8 +408,8 @@ class MyProfileFragment : Fragment() {
                                 }
 
                                 override fun onOfferEdit(position: Int) {
-                                    var offer_id = offersListing[position].offer_id
-                                    var status = "edit"
+                                    val offer_id = offersListing[position].offer_id
+                                    val status = "edit"
                                     val bundle = Bundle()
                                     bundle.putInt("offer_id", offer_id!!)
                                     bundle.putString("status", status)
@@ -451,8 +511,8 @@ class MyProfileFragment : Fragment() {
                             }
 
                             override fun onServiceEdit(position: Int) {
-                                var service_id = serviceslisting.get(position).service_id
-                                var status = "edit"
+                                val service_id = serviceslisting.get(position).service_id
+                                val status = "edit"
                                 val bundle = Bundle()
                                 bundle.putInt("service_id", service_id!!)
                                 bundle.putString("status", status)
@@ -531,8 +591,6 @@ class MyProfileFragment : Fragment() {
                 WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
         )
         fragment_profile_progressBar.visibility = View.VISIBLE
-
-        val apiInterface = APIClient.getClient()!!.create(APIInterface::class.java)
         val call = apiInterface.galleryListing(
                 SharedPreferenceUtility.getInstance().get(
                         SharedPreferenceUtility.UserId,
@@ -562,7 +620,6 @@ class MyProfileFragment : Fragment() {
                                 ImageUriList,
                                 object : ClickInterface.OnRecyclerItemClick {
                                     override fun OnClickAction(position: Int) {
-                                        val apiInterface = APIClient.getClient()!!.create(APIInterface::class.java)
                                         val call = apiInterface.deletegalleryimage(ImageUriList[position].gallery_id)
                                         call!!.enqueue(object : Callback<DeleteGalleryImage?> {
                                             override fun onResponse(
@@ -638,18 +695,6 @@ class MyProfileFragment : Fragment() {
         })
     }
 
-    private fun requestToUploadProfilePhoto() {
-        if (!hasPermissions(requireActivity(), *PERMISSIONS)) {
-            ActivityCompat.requestPermissions(
-                    requireActivity(),
-                    PERMISSIONS,
-                    PERMISSION_CAMERA_EXTERNAL_STORAGE_CODE
-            )
-        } else if (hasPermissions(requireActivity(), *PERMISSIONS)) {
-            openCameraDialog()
-        }
-    }
-
     private fun openCameraDialog() {
         val items = arrayOf<CharSequence>(
                 getString(R.string.camera), getString(R.string.gallery), getString(
@@ -675,9 +720,8 @@ class MyProfileFragment : Fragment() {
         uri = getOutputMediaFileUri(MEDIA_TYPE_IMAGE)
         intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
         intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
-        startActivityForResult(intent, CAMERA_CAPTURE_IMAGE_REQUEST_CODE)
-
-
+        status = CAMERA_CAPTURE_IMAGE_REQUEST_CODE
+        resultLauncher.launch(intent)
     }
 
     fun getOutputMediaFileUri(type: Int): Uri {
@@ -731,113 +775,8 @@ class MyProfileFragment : Fragment() {
         intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
         intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
-        startActivityForResult(intent, PICK_IMAGE_FROM_GALLERY)
-    }
-
-    fun hasAllPermissionsGranted(grantResults: IntArray): Boolean {
-        for (grantResult in grantResults) {
-            if (grantResult == PackageManager.PERMISSION_DENIED) {
-                return false
-            }
-        }
-        return true
-    }
-
-    override fun onRequestPermissionsResult(
-            requestCode: Int,
-            permissions: Array<out String>,
-            grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == PERMISSION_CAMERA_EXTERNAL_STORAGE_CODE) {
-            if (grantResults.size > 0) { /*  if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {*/
-                if (hasAllPermissionsGranted(grantResults)) {
-                    openCameraDialog()
-                } else {
-                    LogUtils.shortToast(
-                            requireContext(),
-                            "Please grant both Camera and Storage permissions"
-                    )
-
-                }
-            } else if (!hasAllPermissionsGranted(grantResults)) {
-                LogUtils.shortToast(
-                        requireContext(),
-                        "Please grant both Camera and Storage permissions"
-                )
-            }
-        }
-    }
-
-    fun hasPermissions(context: Context?, vararg permissions: String?): Boolean {
-        if (context != null && permissions != null) {
-            for (permission in permissions) {
-                if (ActivityCompat.checkSelfPermission(context, permission!!) != PackageManager.PERMISSION_GRANTED) {
-                    return false
-                }
-            }
-        }
-        return true
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode != Activity.RESULT_OK) {
-            return
-        } else if (requestCode == CAMERA_CAPTURE_IMAGE_REQUEST_CODE) {
-            if (resultCode == Activity.RESULT_OK) { //previewCapturedImage();
-                if (uri != null) {
-//                    galleryPhotos.clear()
-                    imagePath = ""
-                    Log.e("uri", uri.toString())
-                    imagePath = uri!!.path!!
-                    galleryPhotos.add(imagePath)
-                    setUploadPhotos(galleryPhotos)
-                    //Glide.with(this).load("file:///$imagePath").placeholder(R.drawable.user).into(civ_profile)
-                } else {
-                    LogUtils.shortToast(requireContext(), "something went wrong! please try again")
-                }
-            }
-        } else if (requestCode == PICK_IMAGE_FROM_GALLERY && resultCode == Activity.RESULT_OK && data != null) {
-            galleryPhotos.clear()
-            imagePath = ""
-            if (data.clipData != null) {
-                val mClipData: ClipData = data.clipData!!
-                val cout: Int = data.clipData!!.itemCount
-                for (i in 0 until cout) {
-                    // adding imageuri in array
-                    val imageurl: Uri = data.clipData!!.getItemAt(i).uri
-                    if (imageurl.toString().startsWith("content")) {
-                        imagePath = getRealPath(imageurl)!!
-                    } else {
-                        imagePath = imageurl.getPath()!!
-                    }
-                    galleryPhotos.add(imagePath)
-                }
-                if (galleryPhotos.size==0){
-                    LogUtils.shortToast(requireContext(), getString(R.string.please_select_atleast_one_image_to_proceed))
-                }else{
-                    setUploadPhotos(galleryPhotos)
-                }
-
-            } else if (data.data!=null) {
-                /*  val imageurl: Uri = (data.clipData as Nothing?)!!
-                  mArrayUri!!.add(imageurl)
-                  pathList.add(imageurl.toString())
-                  if(pathList.size==5){
-                      mView!!.imgAttach.alpha=0.5f
-                      mView!!.imgAttach.isEnabled=false
-                  }
-                  else{
-                      mView!!.imgAttach.alpha=1f
-                      mView!!.imgAttach.isEnabled=true
-                  }
-                  uploadImageVideoAdapter.notifyDataSetChanged()*/
-
-                val imagePath = data.data!!.path
-                galleryPhotos.add(imagePath.toString())
-            }
-        }
+        status = PICK_IMAGE_FROM_GALLERY
+        resultLauncher.launch(intent)
     }
 
     private fun getRealPath(ur: Uri?): String? {
@@ -865,11 +804,6 @@ class MyProfileFragment : Fragment() {
                                 .toString()
                 )
         )
-
-        // Map is used to multipart the file using okhttp3.RequestBody
-        // Multiple Images
-        // Map is used to multipart the file using okhttp3.RequestBody
-        // Multiple Images
         for (i in 0 until galleryPhotos.size) {
             val file: File = File(galleryPhotos.get(i))
             builder!!.addFormDataPart(
@@ -923,8 +857,6 @@ class MyProfileFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        getServices()
-        getOffers()
         galleryPhotos.clear()
     }
 

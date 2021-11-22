@@ -76,7 +76,6 @@ import kotlin.collections.ArrayList
 class AddNewServiceFragment : Fragment() {
 
     private var mView : View?=null
-    private val PERMISSION_CAMERA_EXTERNAL_STORAGE_CODE = 301
     private var uri: Uri? = null
     private var imagePath = ""
     var AUTOCOMPLETE_REQUEST_CODE: Int = 500
@@ -85,10 +84,8 @@ class AddNewServiceFragment : Fragment() {
     var countryName: String = ""
     lateinit var addNewPhotosAdapter: AddNewPhotosAdapter
     var categoryList = ArrayList<CategoryItem>()
-    var categoryNames = ArrayList<String>()
     var pathList=ArrayList<String>()
     var PICK_IMAGE_MULTIPLE = 101
-    private val PERMISSIONS = arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
     var service_title = ""
     var address : String = ""
     var selected_category : String = ""
@@ -257,7 +254,7 @@ class AddNewServiceFragment : Fragment() {
                         add = addressComponent.name
                     }
 
-                    var flag: Boolean = false
+                    var flag = false
                     val types: MutableList<String> = addressComponent.types
                     for (type in types) {
                         if (type.equals(
@@ -290,7 +287,7 @@ class AddNewServiceFragment : Fragment() {
                         if (!countryName.isEmpty() && !address.isEmpty()) {
                             address = address + ", " + countryName
                         }
-                        edtlocation_signup.text = address
+                        mView!!.tv_location.text = address
                         break
                     }
                     ard++

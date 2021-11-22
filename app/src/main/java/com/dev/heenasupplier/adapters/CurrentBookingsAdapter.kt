@@ -32,17 +32,17 @@ class CurrentBookingsAdapter(private val context: Context,
                     this.isAllCaps = true
                     this.setTextColor(Color.parseColor("#37CC37"))
                 }
-                2 -> bookingItemView!!.tv_pending.apply {
+                2 -> bookingItemView.tv_pending.apply {
                     this.text = context.getString(R.string.cancelled)
                     this.isAllCaps = true
                     this.setTextColor(Color.parseColor("#FF0909"))
                 }
-                3 -> bookingItemView!!.tv_pending.apply {
+                3 -> bookingItemView.tv_pending.apply {
                     this.text = context.getString(R.string.completed)
                     this.isAllCaps = true
                     this.setTextColor(Color.parseColor("#37CC37"))
                 }
-                4 -> bookingItemView!!.tv_pending.apply {
+                4 -> bookingItemView.tv_pending.apply {
                     this.text = context.getString(R.string.pending)
                     this.isAllCaps = true
                     this.setTextColor(Color.parseColor("#FF9F54"))

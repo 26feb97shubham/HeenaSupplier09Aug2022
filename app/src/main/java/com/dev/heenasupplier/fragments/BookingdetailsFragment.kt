@@ -46,7 +46,6 @@ class BookingdetailsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         mView= inflater.inflate(R.layout.fragment_bookingdetails, container, false)
         return mView
     }
@@ -78,10 +77,6 @@ class BookingdetailsFragment : Fragment() {
                         override fun onResponse(call: Call<AcceptRejectBookingResponse?>, response: Response<AcceptRejectBookingResponse?>) {
                             if (response.isSuccessful){
                                 if (response.body()!!.status==1){
-                                   /* ll_accept_reject.visibility = View.GONE
-                                    tv_completed_booking.visibility = View.VISIBLE
-                                    tv_completed_booking.text = getString(R.string.cancelled)
-                                    tv_completed_booking.setBackgroundColor(Color.parseColor("#FF0909"))*/
                                     LogUtils.shortToast(requireContext(), response.body()!!.message)
                                     findNavController().popBackStack()
                                     LogUtils.shortToast(requireContext(), response.body()!!.message)
@@ -174,7 +169,7 @@ class BookingdetailsFragment : Fragment() {
                         mView!!.tv_special_request_desc.text = booking.message
                         mView!!.tv_service_charge.text = "AED " + booking.service.price
                         mView!!.tv_sub_total.text = "AED " + booking.price!!.total
-                        val total = booking.service.price!!.toInt() + booking.price.total!!.toInt()
+                        val total = booking.service.price!!.toDouble() + booking.price.total!!.toDouble()
                         mView!!.tv_total.text = "AED " + total
                         Glide.with(requireContext()).load(booking.user!!.image).into(mView!!.supplierImg)
                         if (booking.gallery?.size==0){
@@ -210,10 +205,6 @@ class BookingdetailsFragment : Fragment() {
                 requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 if (response.isSuccessful){
                     if (response.body()!!.status==1){
-                   /*     ll_accept_reject.visibility = View.GONE
-                        tv_completed_booking.visibility = View.VISIBLE
-                        tv_completed_booking.text = getString(R.string.accepted)
-                        LogUtils.shortToast(requireContext(), response.body()!!.message)*/
                         LogUtils.shortToast(requireContext(), response.body()!!.message)
                         findNavController().popBackStack()
                     }else{
@@ -231,11 +222,6 @@ class BookingdetailsFragment : Fragment() {
             }
 
         })
-    }
-
-    override fun onResume() {
-        super.onResume()
-//        showBookingDetails()
     }
 
     companion object{
