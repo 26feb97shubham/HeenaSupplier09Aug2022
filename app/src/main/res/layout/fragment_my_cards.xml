@@ -13,7 +13,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/_10ssp">
+            android:paddingBottom="@dimen/_10sdp">
             <TextView
                 android:id="@+id/tv_saved_cards"
                 android:layout_width="wrap_content"
@@ -21,44 +21,33 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 android:text="@string/saved_cards"
+                android:layout_margin="@dimen/_10sdp"
                 android:textColor="@color/gold"
                 android:fontFamily="@font/avenir_medium"
                 android:textSize="@dimen/_12ssp"
                 android:textStyle="normal"/>
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_savedcards"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/tv_saved_cards"
-                tools:itemCount="3"
-                tools:listitem="@layout/cards_listing"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                android:orientation="horizontal"
-                android:layout_marginTop="@dimen/_8sdp"/>
-
-            <TextView
-                android:id="@+id/tv_saved_cards_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/rv_savedcards"
-                app:layout_constraintStart_toStartOf="parent"
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/vpCards"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:overScrollMode="never"
+                android:paddingHorizontal="@dimen/_16sdp"
+                app:layout_constraintDimensionRatio="1:0.55"
+                android:layout_marginTop="@dimen/_6sdp"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:text="@string/saved_cards"
-                android:textColor="@color/gold"
-                android:layout_marginTop="@dimen/_20sdp"
-                android:fontFamily="@font/avenir_medium"
-                android:textSize="@dimen/_15ssp"
-                android:textStyle="normal"/>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_saved_cards" />
 
             <TextView
                 android:id="@+id/tv_edit_card"
                 android:layout_width="@dimen/_200sdp"
                 android:layout_height="@dimen/_40sdp"
-                app:layout_constraintTop_toBottomOf="@id/tv_saved_cards_name"
+                app:layout_constraintTop_toBottomOf="@id/vpCards"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:text="@string/edit_card"
+                android:visibility="gone"
                 android:textColor="@color/white"
                 android:gravity="center"
                 android:background="@drawable/curved_light_brown_filled_rect_box"
@@ -76,6 +65,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 android:text="@string/delete_card"
                 android:textColor="@color/white"
+                android:layout_marginHorizontal="@dimen/_10sdp"
                 android:gravity="center"
                 android:background="@drawable/curved_light_brown_filled_rect_box"
                 android:layout_marginTop="@dimen/_20sdp"
@@ -92,9 +82,10 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 android:text="@string/add_new_card"
                 android:textColor="@color/black"
+                android:layout_marginHorizontal="@dimen/_10sdp"
                 android:gravity="center"
                 android:background="@drawable/curved_gold_filled_rect_box"
-                android:layout_marginTop="@dimen/_40sdp"
+                android:layout_marginTop="@dimen/_28sdp"
                 android:fontFamily="@font/avenir_medium"
                 android:textSize="@dimen/_15ssp"
                 android:textStyle="normal"/>

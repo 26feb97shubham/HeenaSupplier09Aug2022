@@ -1,6 +1,5 @@
 package com.dev.heenasupplier.fragments
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,21 +11,15 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dev.heenasupplier.R
 import com.dev.heenasupplier.`interface`.ClickInterface
-import com.dev.heenasupplier.activities.HomeActivity.Companion.myuserId
-import com.dev.heenasupplier.activities.LoginActivity
 import com.dev.heenasupplier.adapters.PaymentsCardAdapter
 import com.dev.heenasupplier.models.BuyMembership
 import com.dev.heenasupplier.models.Membership
-import com.dev.heenasupplier.models.MembershipX
 import com.dev.heenasupplier.rest.APIClient
 import com.dev.heenasupplier.rest.APIInterface
 import com.dev.heenasupplier.utils.LogUtils
 import com.dev.heenasupplier.utils.SharedPreferenceUtility
 import com.dev.heenasupplier.utils.Utility
-import com.heena.heenasupplier.bottomsheets.MembershipBottomSheetDialogFragment
 import kotlinx.android.synthetic.main.activity_home2.*
-import kotlinx.android.synthetic.main.activity_payment_fragment.*
-import kotlinx.android.synthetic.main.fragment_membership_bottom_sheet_dialog.*
 import kotlinx.android.synthetic.main.fragment_membership_bottom_sheet_dialog.tv_subscribe
 import kotlinx.android.synthetic.main.fragment_payment.*
 import kotlinx.android.synthetic.main.fragment_payment.rv_cards_listing

@@ -6,6 +6,8 @@ import android.content.Context
 import android.content.res.Configuration
 import android.graphics.Color
 import android.net.ConnectivityManager
+import android.provider.Settings
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
@@ -19,6 +21,8 @@ import com.dev.heenasupplier.models.CategoryListResponse
 import com.dev.heenasupplier.models.Service
 import com.dev.heenasupplier.rest.APIClient
 import com.dev.heenasupplier.rest.APIInterface
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.messaging.FirebaseMessaging
 import org.json.JSONException
 import retrofit2.Call
 import retrofit2.Callback
@@ -104,6 +108,27 @@ class Utility {
                 containsInvalidChar = !(type == Character.SURROGATE.toInt() || type == Character.OTHER_SYMBOL.toInt())
             }
             return containsInvalidChar
+        }
+
+        fun getFCMToken() {
+            FirebaseMessaging.getInstance().token
+                .addOnCompleteListener(OnCompleteListener { task ->
+                    if (!task.isSuccessful) {
+                        Log.w("getInstanceId", "getInstanceId failed", task.exception)
+                        return@OnCompleteListener
+                    }
+
+                    val fcmToken = task.result
+                    Log.e("getInstanceId", fcmToken)
+                    SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.FCMTOKEN,fcmToken.toString())
+
+                })
+
+        }
+        fun deviceId(context: Context?){
+            val deviceId = Settings.Secure.getString(context?.contentResolver, Settings.Secure.ANDROID_ID)
+            Log.e("deviceId", deviceId)
+            SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.DeviceId,deviceId.toString())
         }
     }
 

@@ -2,23 +2,17 @@ package com.dev.heenasupplier.activities
 
 import android.Manifest
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
+import android.content.IntentFilter
 import android.location.Address
 import android.location.Geocoder
 import android.net.ConnectivityManager
 import android.net.Uri
-import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
-import android.text.Editable
-import android.text.SpannableString
 import android.text.TextUtils
-import android.text.TextWatcher
-import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
 import android.text.style.UnderlineSpan
 import android.util.Log
@@ -42,6 +36,7 @@ import com.dev.heenasupplier.Dialogs.NoInternetDialog
 import com.dev.heenasupplier.R
 import com.dev.heenasupplier.`interface`.ClickInterface
 import com.dev.heenasupplier.adapters.CountryListingAdapter
+import com.dev.heenasupplier.broadcastreceiver.ConnectivityReceiver
 import com.dev.heenasupplier.custom.FetchPath
 import com.dev.heenasupplier.models.CountryItem
 import com.dev.heenasupplier.models.CountryResponse
@@ -75,7 +70,7 @@ import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 
-class SignUpActivity : AppCompatActivity() {
+class SignUpActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityReceiverListener {
     var username: String = ""
     var mobilenumber: String = ""
     var emailaddress: String = ""
@@ -110,6 +105,7 @@ class SignUpActivity : AppCompatActivity() {
     var show_pass = false
     var status = 0
     var my_click = ""
+    var emiratesClick = false
 
     private var activityResultLauncher: ActivityResultLauncher<Array<String>> =
             registerForActivityResult(
@@ -382,7 +378,14 @@ class SignUpActivity : AppCompatActivity() {
         }
 
         tv_emirate.setOnClickListener {
-            getCountires()
+            if (!emiratesClick){
+                emiratesClick = true
+                getCountires()
+
+            }else{
+                emiratesClick = false
+                cards_countries_listing.visibility = View.GONE
+            }
         }
     }
 
@@ -612,7 +615,7 @@ class SignUpActivity : AppCompatActivity() {
                                 SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.UserEmail, emailaddress)
                                 LogUtils.longToast(this@SignUpActivity, response.body()!!.message)
                                 startActivity(Intent(applicationContext,OtpVerificationActivity::class.java).putExtra("ref", "1").putExtra(EMAILADDRESS, emailaddress))
-                                finishAffinity()
+//
                             }else{
                                 LogUtils.longToast(this@SignUpActivity, response.body()!!.message)
                             }
@@ -640,6 +643,19 @@ class SignUpActivity : AppCompatActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        ConnectivityReceiver.connectivityReceiverListener = this
+        registerReceiver(ConnectivityReceiver(),
+            IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
+        )
+    }
+
+
+    override fun onDestroy() {
+        super.onDestroy()
+        unregisterReceiver(ConnectivityReceiver())
+    }
 
     companion object{
         private var instance: SharedPreferenceUtility? = null
@@ -650,6 +666,10 @@ class SignUpActivity : AppCompatActivity() {
             }
             return instance as SharedPreferenceUtility
         }
+    }
+
+    override fun onNetworkConnectionChanged(isConnected: Boolean) {
+        Utility.getFCMToken()
     }
 
 }

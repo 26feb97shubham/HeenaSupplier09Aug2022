@@ -48,6 +48,7 @@ class BankDetailsFragment : Fragment() {
         mView!!.tv_edit_bank_details.setOnClickListener {
             val bundle = Bundle()
             bundle.putBoolean("isBankAdded", isBankAdded)
+            bundle.putSerializable("bank_details", bank)
             findNavController().navigate(R.id.action_bankDetailsFragment_to_editBankDetailsFragment, bundle)
         }
 
@@ -70,6 +71,7 @@ class BankDetailsFragment : Fragment() {
 
     private fun showBankDetails() {
         mView!!.frag_bank_details_progressBar.visibility = View.VISIBLE
+        mView!!.no_banks_found.visibility = View.GONE
         requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
 
         val call  = Utility.apiInterface.showBanks(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId, 0))
@@ -111,7 +113,6 @@ class BankDetailsFragment : Fragment() {
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
-
             }
 
             override fun onFailure(call: Call<BankDetailsResponse?>, throwable: Throwable) {

@@ -1,6 +1,8 @@
 package com.dev.heenasupplier.activities
 
 import android.content.Intent
+import android.content.IntentFilter
+import android.net.ConnectivityManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.SpannableString
@@ -13,6 +15,7 @@ import android.view.WindowManager
 import android.view.animation.AlphaAnimation
 import com.dev.heenasupplier.Dialogs.NoInternetDialog
 import com.dev.heenasupplier.R
+import com.dev.heenasupplier.broadcastreceiver.ConnectivityReceiver
 import com.dev.heenasupplier.models.LoginResponse
 import com.dev.heenasupplier.models.RegisterVerifyResendResponse
 import com.dev.heenasupplier.rest.APIClient
@@ -20,6 +23,8 @@ import com.dev.heenasupplier.rest.APIInterface
 import com.dev.heenasupplier.utils.LogUtils
 import com.dev.heenasupplier.utils.SharedPreferenceUtility
 import com.dev.heenasupplier.utils.Utility
+import com.dev.heenasupplier.utils.Utility.Companion.deviceId
+import com.dev.heenasupplier.utils.Utility.Companion.getFCMToken
 import kotlinx.android.synthetic.main.activity_login2.*
 import kotlinx.android.synthetic.main.activity_login2.progressBar
 import kotlinx.android.synthetic.main.activity_login2.tv_login
@@ -31,7 +36,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.io.IOException
 
-class LoginActivity : AppCompatActivity() {
+class LoginActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityReceiverListener {
     var remembered:Boolean=false
     var username: String = ""
     var password: String = ""
@@ -290,6 +295,10 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        ConnectivityReceiver.connectivityReceiverListener = this
+        registerReceiver(ConnectivityReceiver(),
+            IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
+        )
         if(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.IsRemembered, false)){
             if(SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""]=="en") {
                 chkRememberMe.setCompoundDrawablesWithIntrinsicBounds(R.drawable.check, 0, 0, 0)
@@ -313,6 +322,11 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        unregisterReceiver(ConnectivityReceiver())
+    }
+
     companion object{
         private var instance: SharedPreferenceUtility? = null
         @Synchronized
@@ -322,5 +336,9 @@ class LoginActivity : AppCompatActivity() {
             }
             return instance as SharedPreferenceUtility
         }
+    }
+
+    override fun onNetworkConnectionChanged(isConnected: Boolean) {
+        getFCMToken()
     }
 }

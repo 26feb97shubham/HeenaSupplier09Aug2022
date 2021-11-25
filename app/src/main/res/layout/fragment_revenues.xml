@@ -35,7 +35,6 @@
               android:layout_height="wrap_content"
               app:layout_constraintTop_toBottomOf="@id/tv_revenues_txt"
               app:layout_constraintStart_toStartOf="parent"
-              android:layout_marginStart="@dimen/_12sdp"
               android:layout_marginTop="@dimen/_8sdp"
               android:text="@string/revenues"
               android:textAllCaps="false"
@@ -86,7 +85,6 @@
                       android:layout_width="0dp"
                       android:layout_weight="0.1"
                       android:layout_height="@dimen/_40sdp"
-                      android:layout_toRightOf="@id/et_search"
                       app:civ_border_color="@color/white"
                       app:civ_border_width="@dimen/_1sdp"
                       android:src="@drawable/excel_doc"/>
@@ -96,7 +94,6 @@
                       android:layout_width="0dp"
                       android:layout_weight="0.1"
                       android:layout_height="@dimen/_40sdp"
-                      android:layout_toRightOf="@id/civ_excel_doc"
                       app:civ_border_color="@color/white"
                       app:civ_border_width="@dimen/_1sdp"
                       android:src="@drawable/filter"/>
@@ -424,7 +421,7 @@
               android:id="@+id/rv_revenues_listing"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:padding="@dimen/_10sdp"
+              android:paddingVertical="@dimen/_10sdp"
               app:layout_constraintTop_toBottomOf="@id/card_filter"
               tools:listitem="@layout/revenues_listing"
               android:layout_marginTop="@dimen/_10sdp"/>

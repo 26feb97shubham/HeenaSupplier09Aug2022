@@ -13,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.dev.heenasupplier.R
 import com.dev.heenasupplier.`interface`.ClickInterface
+import com.dev.heenasupplier.bottomsheets.CancelServiceBottomSheetFragment
 import com.dev.heenasupplier.models.AcceptRejectBookingResponse
 import com.dev.heenasupplier.models.Booking
 import com.dev.heenasupplier.models.BookingDetailsResponse
@@ -21,7 +22,6 @@ import com.dev.heenasupplier.utils.LogUtils
 import com.dev.heenasupplier.utils.SharedPreferenceUtility
 import com.dev.heenasupplier.utils.Utility
 import com.dev.heenasupplier.utils.Utility.Companion.apiInterface
-import com.heena.heenasupplier.bottomsheets.CancelServiceBottomSheetFragment
 import kotlinx.android.synthetic.main.activity_home2.*
 import kotlinx.android.synthetic.main.fragment_bookingdetails.*
 import kotlinx.android.synthetic.main.fragment_bookingdetails.view.*
@@ -67,6 +67,7 @@ class BookingdetailsFragment : Fragment() {
         tv_reject_booking.setOnClickListener {
             val bundle = Bundle()
             bundle.putInt("bookingId", booking_id!!)
+
             val cancelServiceBottomSheetFragment = CancelServiceBottomSheetFragment.newInstance(requireContext(), bundle)
             cancelServiceBottomSheetFragment.show(requireActivity().supportFragmentManager,CancelServiceBottomSheetFragment.TAG)
             cancelServiceBottomSheetFragment.setCancelServiceClickListenerCallback(object : ClickInterface.OnCancelServiceClick{

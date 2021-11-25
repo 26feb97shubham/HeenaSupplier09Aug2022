@@ -20,7 +20,7 @@
         android:textSize="@dimen/_14ssp"
         android:textAlignment="viewStart"/>
 
-   <androidx.core.widget.NestedScrollView
+   <ScrollView
        android:id="@+id/sv_bank_details"
        android:layout_width="match_parent"
        android:layout_height="match_parent"
@@ -203,7 +203,7 @@
                android:textAllCaps="true"
                android:gravity="center"/>
        </androidx.constraintlayout.widget.ConstraintLayout>
-   </androidx.core.widget.NestedScrollView>
+   </ScrollView>
 
     <TextView
         android:id="@+id/no_banks_found"

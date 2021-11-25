@@ -108,14 +108,6 @@ class RevenuesFragment : Fragment() {
         queryMap.put("search", "")
         getTransactionsList(queryMap)
 
-        if (transactionsList.size!=0){
-            mView!!.card_search_filter.visibility = View.VISIBLE
-            mView!!.rv_revenues_listing.visibility = View.VISIBLE
-        }else{
-            mView!!.card_search_filter.visibility = View.GONE
-            mView!!.rv_revenues_listing.visibility = View.GONE
-        }
-
 
         mView!!.et_search.setOnEditorActionListener(object : TextView.OnEditorActionListener{
             override fun onEditorAction(textView: TextView?, actionId: Int, keyEvent : KeyEvent?): Boolean {
@@ -280,9 +272,11 @@ class RevenuesFragment : Fragment() {
 
                         transactionsList = response.body()!!.transaction as ArrayList<TransactionItem>
                         if (transactionsList.size==0){
+                            mView!!.card_search_filter.visibility = View.GONE
                             mView!!.rv_revenues_listing.visibility = View.GONE
                             mView!!.ll_no_transactions_found.visibility = View.VISIBLE
                         }else{
+                            mView!!.card_search_filter.visibility = View.VISIBLE
                             mView!!.rv_revenues_listing.visibility = View.VISIBLE
                             mView!!.ll_no_transactions_found.visibility = View.GONE
                         }
@@ -317,6 +311,7 @@ class RevenuesFragment : Fragment() {
         revenuesAdapter = RevenuesAdapter(requireContext(), transactionsList)
         mView!!.rv_revenues_listing.adapter = revenuesAdapter
         revenuesAdapter.notifyDataSetChanged()
+        mView!!.rv_revenues_listing.setHasFixedSize(true)
     }
 
     companion object{

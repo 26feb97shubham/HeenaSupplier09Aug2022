@@ -132,7 +132,7 @@
                 android:textAllCaps="false"
                 android:elevation="@dimen/_5sdp"
                 android:inputType="number"
-                android:imeOptions="actionDone"
+                android:imeOptions="actionNext"
                 android:hint="@string/mobile_number"/>
 
             <EditText

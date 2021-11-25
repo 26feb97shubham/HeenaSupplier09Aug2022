@@ -23,8 +23,7 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
         FirebaseApp.initializeApp(this)
-        getFCMToken()
-        deviceId()
+        Utility.deviceId(this)
         setUpViews()
     }
     private fun setUpViews() {
@@ -73,26 +72,7 @@ class SplashActivity : AppCompatActivity() {
             2000,
         )
     }
-    private fun getFCMToken() {
-        FirebaseMessaging.getInstance().token
-            .addOnCompleteListener(OnCompleteListener { task ->
-                if (!task.isSuccessful) {
-                    Log.w("getInstanceId", "getInstanceId failed", task.exception)
-                    return@OnCompleteListener
-                }
 
-                val fcmToken = task.result
-                Log.e("getInstanceId", fcmToken)
-                SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.FCMTOKEN,fcmToken.toString())
-
-            })
-
-    }
-    private fun deviceId(){
-        val deviceId = Settings.Secure.getString(this.contentResolver, Settings.Secure.ANDROID_ID)
-        Log.e("deviceId", deviceId)
-        SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.DeviceId,deviceId.toString())
-    }
 
     companion object{
         private var instance: SharedPreferenceUtility? = null

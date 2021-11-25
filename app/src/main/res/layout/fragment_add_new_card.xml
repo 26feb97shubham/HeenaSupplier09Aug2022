@@ -24,7 +24,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
                 <TextView
-                    android:id="@+id/tv_expiry_date"
+                    android:id="@+id/tv_expiry_date_1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:layout_constraintTop_toTopOf="parent"
@@ -38,7 +38,7 @@
                     android:layout_marginTop="@dimen/_20sdp"/>
 
                 <TextView
-                    android:id="@+id/tv_card_number"
+                    android:id="@+id/tv_card_number_1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:layout_constraintTop_toTopOf="parent"
@@ -46,12 +46,13 @@
                     android:layout_marginHorizontal="@dimen/_30sdp"
                     app:layout_constraintEnd_toEndOf="parent"
                     android:text="1234 5783 1231 9123"
+                    android:singleLine="true"
                     android:textColor="#F7F7F7"
                     android:textStyle="normal"
                     android:fontFamily="@font/avenir_medium"
                     android:textSize="@dimen/_18ssp" />
                 <TextView
-                    android:id="@+id/tv_account_holdee_name"
+                    android:id="@+id/tv_account_holdee_name_1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -103,6 +104,10 @@
                         android:layout_height="@dimen/_60sdp"
                         android:backgroundTint="@color/gray"
                         android:hint=" - - "
+                        android:maxLines="1"
+                        android:inputType="text"
+                        android:imeOptions="actionNext"
+                        android:maxLength="15"
                         android:textColor="@color/gold"
                         android:textStyle="normal"
                         android:fontFamily="@font/avenir_medium"
@@ -131,6 +136,9 @@
                         android:layout_height="@dimen/_60sdp"
                         android:backgroundTint="@color/gray"
                         android:hint=" - - "
+                        android:maxLength="17"
+                        android:singleLine="true"
+                        android:inputType="number"
                         android:textColor="@color/gold"
                         android:textStyle="normal"
                         android:fontFamily="@font/avenir_medium"
@@ -166,6 +174,9 @@
                             android:layout_height="@dimen/_60sdp"
                             android:backgroundTint="@color/gray"
                             android:hint=" - - "
+                            android:inputType="numberPassword"
+                            android:maxLines="1"
+                            android:maxLength="3"
                             android:textColor="@color/gold"
                             android:textStyle="normal"
                             android:fontFamily="@font/avenir_medium"
@@ -192,6 +203,9 @@
                             android:layout_height="@dimen/_60sdp"
                             android:backgroundTint="@color/gray"
                             android:hint=" - - "
+                            android:inputType="phone"
+                            android:maxLines="1"
+                            android:maxLength="7"
                             android:textColor="@color/gold"
                             android:textStyle="normal"
                             android:fontFamily="@font/avenir_medium"

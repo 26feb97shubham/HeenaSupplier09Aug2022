@@ -1,4 +1,4 @@
-package com.heena.heenasupplier.bottomsheets
+package com.dev.heenasupplier.bottomsheets
 
 import android.content.Context
 import android.os.Bundle
@@ -88,16 +88,6 @@ class MembershipBottomSheetDialogFragment : BottomSheetDialogFragment() {
                                             membership = membershipList[position]
                                         }
                                     })
-
-                                   /* tracker = SelectionTracker.Builder<Long>(
-                                        "mySelection",
-                                        mView!!.rv_membership_plans,
-                                        StableIdKeyProvider( mView!!.rv_membership_plans),
-                                        MembershipItemsDetailsLookUp( mView!!.rv_membership_plans),
-                                        StorageStrategy.createLongStorage()
-                                    ).withSelectionPredicate(
-                                        SelectionPredicates.createSelectSingleAnything()
-                                    ).build()*/
 
                                     mView!!.rv_membership_plans.adapter = membershipPlansListAdapter
 

@@ -1,5 +1,7 @@
 package com.dev.heenasupplier.models
 
+import java.io.Serializable
+
 
 data class Bank(
         val account_num: String? = null,
@@ -8,4 +10,4 @@ data class Bank(
         val bank_id: String? = null,
         val iban: String? = null,
         val bank_name: String? = null
-)
+) : Serializable

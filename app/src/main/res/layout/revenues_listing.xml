@@ -5,11 +5,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardCornerRadius="@dimen/_8sdp"
     android:layout_marginVertical="@dimen/_6sdp"
-    app:cardElevation="@dimen/_8sdp">
+    android:layout_marginHorizontal="@dimen/_10sdp"
+    app:cardElevation="@dimen/_6sdp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:padding="@dimen/_12sdp">
 
 
@@ -41,7 +42,7 @@
         <View
             android:id="@+id/view1"
             android:layout_width="match_parent"
-            android:layout_height="0.5dp"
+            android:layout_height="0.5sp"
             android:background="@color/gold"
             app:layout_constraintTop_toBottomOf="@id/tv_booking_id"
             android:layout_marginTop="@dimen/_8sdp"/>

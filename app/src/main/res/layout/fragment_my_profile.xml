@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@android:color/transparent"
     tools:context=".fragments.MyProfileFragment">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -21,69 +21,71 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_200sdp"
                 app:layout_constraintTop_toTopOf="parent">
+
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/civ_profile"
                     android:layout_width="@dimen/_100sdp"
                     android:layout_height="@dimen/_100sdp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:src="@drawable/user"
                     app:civ_border_color="@color/gold"
                     app:civ_border_width="4dp"
-                    android:src="@drawable/user"/>
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
                 android:id="@+id/tv_naqashat_name_location"
-                android:layout_width="@dimen/_80sdp"
+                android:layout_width="wrap_content"
+                android:maxWidth="@dimen/_150sdp"
                 android:layout_height="@dimen/_20sdp"
-                app:layout_constraintTop_toBottomOf="@id/profile_image_layout"
                 android:layout_marginTop="@dimen/_8sdp"
-                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginEnd="@dimen/_20sdp"
+                android:ellipsize="end"
                 android:fontFamily="@font/avenir_medium"
+                android:maxLines="2"
                 android:text="Naqasha Farah / Dubai"
+                android:textAllCaps="false"
                 android:textColor="@color/gold"
                 android:textSize="@dimen/_10ssp"
                 android:textStyle="normal"
-                android:maxLength="20"
-                android:singleLine="true"
-                android:ellipsize="end"
-                android:textAllCaps="false"/>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/profile_image_layout" />
 
             <TextView
                 android:id="@+id/tv_follow"
                 android:layout_width="@dimen/_80sdp"
                 android:layout_height="@dimen/_20sdp"
-                app:layout_constraintTop_toTopOf="@+id/tv_naqashat_name_location"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:text="@string/favorite"
+                android:layout_gravity="center"
                 android:layout_marginStart="@dimen/_8sdp"
-                android:textColor="@color/gold"
                 android:background="@drawable/little_curved_white_filled_gold_border_rect_box"
+                android:drawablePadding="@dimen/_8sdp"
                 android:fontFamily="@font/avenir_medium"
                 android:gravity="center"
-                android:textStyle="normal"
-                android:layout_gravity="center"
+                android:paddingHorizontal="@dimen/_8sdp"
+                android:text="@string/favorite"
+                android:textColor="@color/gold"
                 android:textSize="@dimen/_8ssp"
+                android:textStyle="normal"
                 app:drawableEndCompat="@drawable/add_to_fav_icon"
-                android:drawablePadding="@dimen/_8sdp"
-                android:paddingHorizontal="@dimen/_8sdp"/>
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tv_naqashat_name_location" />
 
             <TextView
                 android:id="@+id/tv_naqashat_experience"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/tv_naqashat_name_location"
                 android:layout_marginTop="@dimen/_10sdp"
-                app:layout_constraintStart_toStartOf="parent"
                 android:fontFamily="@font/avenir_medium"
                 android:text="5 years wedding experience"
+                android:textAllCaps="false"
                 android:textColor="@color/gold"
                 android:textSize="@dimen/_9ssp"
                 android:textStyle="normal"
                 android:visibility="gone"
-                android:textAllCaps="false"/>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_naqashat_name_location" />
 
             <LinearLayout
                 android:id="@+id/ratingView"
@@ -91,58 +93,57 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_5sdp"
                 android:layout_marginTop="@dimen/_10sdp"
-                app:layout_constraintTop_toBottomOf="@id/tv_naqashat_name_location"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:gravity="center"
                 android:visibility="visible"
-                android:gravity="center">
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_naqashat_name_location">
 
                 <RatingBar
                     android:id="@+id/ratingBar"
+                    style="?attr/ratingBarStyleSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_5sdp"
                     android:rating="3.5"
                     android:textAlignment="viewStart"
                     android:textDirection="locale"
-                    android:theme="@style/orangeRatingBar"
-                    android:layout_marginStart="@dimen/_5sdp"
-                    style="?attr/ratingBarStyleSmall"
-                    />
+                    android:theme="@style/orangeRatingBar" />
 
                 <TextView
                     android:id="@+id/txtRating"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="3.5"
-                    android:fontFamily="@font/avenir_medium"
-                    android:textAlignment="viewStart"
-                    android:textDirection="locale"
                     android:layout_marginStart="@dimen/_6sdp"
-                    app:layout_constraintTop_toTopOf="parent"
+                    android:fontFamily="@font/avenir_medium"
+                    android:text="3.5"
+                    android:textAlignment="viewStart"
                     android:textColor="@color/orange"
-                    android:textSize="@dimen/_9ssp"/>
+                    android:textDirection="locale"
+                    android:textSize="@dimen/_9ssp"
+                    app:layout_constraintTop_toTopOf="parent" />
 
             </LinearLayout>
 
             <View
+                android:id="@+id/view1"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
+                android:layout_marginTop="@dimen/_10sdp"
                 android:background="@color/gold"
-                android:id="@+id/view1"
-                app:layout_constraintTop_toBottomOf="@id/ratingView"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginTop="@dimen/_10sdp"/>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ratingView" />
 
             <LinearLayout
                 android:id="@+id/naqashat_categories_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/view1"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:orientation="horizontal"
                 android:layout_marginTop="@dimen/_10sdp"
-                android:weightSum="3">
+                android:orientation="horizontal"
+                android:weightSum="3"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/view1">
 
                 <TextView
                     android:id="@+id/tv_services"
@@ -150,99 +151,99 @@
                     android:layout_height="@dimen/_40sdp"
                     android:layout_weight="1"
                     android:background="@drawable/little_gold_curved"
-                    android:text="@string/services"
                     android:fontFamily="@font/avenir_medium"
+                    android:gravity="center"
+                    android:text="@string/services"
                     android:textAllCaps="false"
-                    android:textStyle="normal"
-                    android:textSize="@dimen/_11ssp"
                     android:textColor="@color/white"
-                    android:gravity="center"/>
+                    android:textSize="@dimen/_11ssp"
+                    android:textStyle="normal" />
 
                 <TextView
                     android:id="@+id/tv_gallery"
                     android:layout_width="0dp"
                     android:layout_height="@dimen/_40sdp"
+                    android:layout_marginStart="@dimen/_8sdp"
                     android:layout_weight="1"
                     android:background="@drawable/little_curved_white_filled_gold_border_rect_box"
-                    android:text="@string/gallery"
-                    android:layout_marginStart="@dimen/_8sdp"
                     android:fontFamily="@font/avenir_medium"
+                    android:gravity="center"
+                    android:text="@string/gallery"
                     android:textAllCaps="false"
-                    android:textStyle="normal"
-                    android:textSize="@dimen/_11ssp"
                     android:textColor="@color/gold"
-                    android:gravity="center"/>
+                    android:textSize="@dimen/_11ssp"
+                    android:textStyle="normal" />
 
                 <TextView
                     android:id="@+id/tv_reviews"
                     android:layout_width="0dp"
                     android:layout_height="@dimen/_40sdp"
+                    android:layout_marginStart="@dimen/_8sdp"
                     android:layout_weight="1"
                     android:background="@drawable/little_curved_white_filled_gold_border_rect_box"
-                    android:text="@string/reviews"
-                    android:layout_marginStart="@dimen/_8sdp"
                     android:fontFamily="@font/avenir_medium"
+                    android:gravity="center"
+                    android:text="@string/reviews"
                     android:textAllCaps="false"
-                    android:textStyle="normal"
-                    android:textSize="@dimen/_11ssp"
                     android:textColor="@color/gold"
-                    android:gravity="center"/>
+                    android:textSize="@dimen/_11ssp"
+                    android:textStyle="normal" />
             </LinearLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/naqashat_services_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/naqashat_categories_layout"
                 android:layout_marginTop="@dimen/_10sdp"
-                android:visibility="visible">
+                android:visibility="visible"
+                app:layout_constraintTop_toBottomOf="@id/naqashat_categories_layout">
 
                 <TextView
                     android:id="@+id/tv_offers_n_disc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:layout_constraintTop_toTopOf="parent"
                     android:layout_marginTop="@dimen/_8sdp"
-                    app:layout_constraintStart_toStartOf="parent"
+                    android:drawablePadding="@dimen/_8sdp"
+                    android:paddingEnd="@dimen/_8sdp"
+                    android:fontFamily="@font/avenir_medium"
+                    android:text="@string/offers_and_discounts"
+                    android:textAllCaps="false"
                     android:textColor="@color/gold"
                     android:textSize="@dimen/_10ssp"
                     android:textStyle="normal"
-                    android:text="@string/offers_and_discounts"
-                    android:fontFamily="@font/avenir_medium"
-                    android:textAllCaps="false"
                     app:drawableStartCompat="@drawable/price_tag_layer_list"
-                    android:drawablePadding="@dimen/_8sdp"
-                    android:paddingHorizontal="@dimen/_8sdp"/>
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/tv_add_new_offers"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:drawablePadding="@dimen/_8sdp"
+                    android:ellipsize="end"
+                    android:paddingStart="@dimen/_8sdp"
+                    android:fontFamily="@font/avenir_medium"
                     android:gravity="center"
+                    android:maxLines="1"
                     android:text="@string/add_new_offers"
-                    android:textDirection="locale"
+                    android:textAllCaps="false"
                     android:textColor="@color/text_gold_color_dark"
+                    android:textDirection="locale"
                     android:textSize="@dimen/_10ssp"
                     android:textStyle="normal"
-                    android:maxLines="1"
-                    android:ellipsize="end"
-                    android:paddingHorizontal="@dimen/_8sdp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/tv_offers_n_disc"
-                    app:layout_constraintBottom_toBottomOf="@id/tv_offers_n_disc"
-                    android:textAllCaps="false"
-                    android:fontFamily="@font/avenir_medium"
                     app:drawableStartCompat="@drawable/plus_layer_list"
-                    android:drawablePadding="@dimen/_8sdp"/>
+                    app:layout_constraintBottom_toBottomOf="@id/tv_offers_n_disc"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/tv_offers_n_disc" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_offers_n_discs"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layout_constraintTop_toBottomOf="@id/tv_offers_n_disc"
-                    app:layout_constraintStart_toStartOf="parent"
                     android:layout_marginTop="@dimen/_8sdp"
-                    app:layout_constraintEnd_toEndOf="parent"/>
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_offers_n_disc" />
 
                 <LinearLayout
                     android:id="@+id/ll_no_offers_and_disc_found"
@@ -251,65 +252,66 @@
                     android:layout_marginTop="@dimen/_8sdp"
                     android:visibility="gone"
                     app:layout_constraintTop_toBottomOf="@id/rv_offers_n_discs">
+
                     <TextView
                         android:id="@+id/tv_no_offers_n_disc"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:gravity="center"
-                        android:textColor="@color/gold"
-                        android:textSize="@dimen/_10ssp"
                         android:fontFamily="@font/avenir_medium"
-                        android:textStyle="normal"
+                        android:gravity="center"
+                        android:paddingHorizontal="@dimen/_8sdp"
                         android:text="@string/no_offers_and_discounts_found"
                         android:textAllCaps="false"
-                        android:paddingHorizontal="@dimen/_8sdp"/>
+                        android:textColor="@color/gold"
+                        android:textSize="@dimen/_10ssp"
+                        android:textStyle="normal" />
                 </LinearLayout>
 
                 <TextView
                     android:id="@+id/tv_services_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:layout_constraintTop_toBottomOf="@id/ll_no_offers_and_disc_found"
                     android:layout_marginTop="@dimen/_8sdp"
-                    app:layout_constraintStart_toStartOf="parent"
+                    android:fontFamily="@font/avenir_medium"
+                    android:paddingEnd="@dimen/_8sdp"
+                    android:text="@string/services"
+                    android:textAllCaps="false"
                     android:textColor="@color/gold"
                     android:textSize="@dimen/_10ssp"
                     android:textStyle="normal"
-                    android:fontFamily="@font/avenir_medium"
-                    android:text="@string/services"
-                    android:textAllCaps="false"
-                    android:paddingHorizontal="@dimen/_8sdp"/>
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/ll_no_offers_and_disc_found" />
 
                 <TextView
                     android:id="@+id/tv_add_new_service"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:drawablePadding="@dimen/_8sdp"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/avenir_medium"
                     android:gravity="center"
+                    android:maxLines="1"
+                    android:paddingStart="@dimen/_8sdp"
                     android:text="@string/add_new_service"
-                    android:textDirection="locale"
+                    android:textAllCaps="false"
                     android:textColor="@color/text_gold_color_dark"
+                    android:textDirection="locale"
                     android:textSize="@dimen/_10ssp"
                     android:textStyle="normal"
-                    android:maxLines="1"
-                    android:ellipsize="end"
-                    android:paddingHorizontal="@dimen/_8sdp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/tv_services_name"
-                    app:layout_constraintBottom_toBottomOf="@id/tv_services_name"
-                    android:textAllCaps="false"
-                    android:fontFamily="@font/avenir_medium"
                     app:drawableStartCompat="@drawable/plus_layer_list"
-                    android:drawablePadding="@dimen/_8sdp"/>
+                    app:layout_constraintBottom_toBottomOf="@id/tv_services_name"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/tv_services_name" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_services_listing"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layout_constraintTop_toBottomOf="@id/tv_services_name"
-                    app:layout_constraintStart_toStartOf="parent"
                     android:layout_marginTop="@dimen/_8sdp"
-                    app:layout_constraintEnd_toEndOf="parent"/>
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_services_name" />
 
                 <LinearLayout
                     android:id="@+id/ll_no_service_found"
@@ -318,19 +320,20 @@
                     android:layout_marginTop="@dimen/_8sdp"
                     android:visibility="gone"
                     app:layout_constraintTop_toBottomOf="@id/rv_services_listing">
+
                     <TextView
                         android:id="@+id/tv_no_service"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:gravity="center"
-                        android:textColor="@color/gold"
                         android:fontFamily="@font/avenir_medium"
-                        android:textSize="@dimen/_10ssp"
-                        android:textStyle="normal"
+                        android:gravity="center"
+                        android:paddingHorizontal="@dimen/_8sdp"
                         android:text="@string/no_service_found"
                         android:textAllCaps="false"
-                        android:paddingHorizontal="@dimen/_8sdp"/>
+                        android:textColor="@color/gold"
+                        android:textSize="@dimen/_10ssp"
+                        android:textStyle="normal" />
                 </LinearLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -340,42 +343,45 @@
                 android:id="@+id/naqashat_gallery_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/naqashat_categories_layout"
                 android:layout_marginTop="@dimen/_10sdp"
-                android:visibility="gone">
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/naqashat_categories_layout">
 
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/card_upload_photo"
                     android:layout_width="@dimen/_130sdp"
                     android:layout_height="@dimen/_30sdp"
-                    app:strokeWidth="@dimen/_1sdp"
-                    app:strokeColor="@color/gold"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginTop="@dimen/_8sdp"
                     app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_marginTop="@dimen/_8sdp">
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:strokeColor="@color/gold"
+                    app:strokeWidth="@dimen/_1sdp">
+
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:text="@string/upload_photo"
-                        android:textStyle="normal"
-                        android:textAllCaps="false"
-                        android:textSize="@dimen/_12ssp"
-                        android:textColor="@color/text_gold_color_dark"
-                        android:gravity="center"
+                        android:drawablePadding="@dimen/_8sdp"
                         android:fontFamily="@font/avenir_medium"
+                        android:gravity="center"
                         android:paddingHorizontal="@dimen/_8sdp"
-                        app:drawableStartCompat="@drawable/camera_icon_layer_list"
-                        android:drawablePadding="@dimen/_8sdp"/>
+                        android:text="@string/upload_photo"
+                        android:textAllCaps="false"
+                        android:textColor="@color/text_gold_color_dark"
+                        android:textSize="@dimen/_12ssp"
+                        android:textStyle="normal"
+                        app:drawableStartCompat="@drawable/camera_icon_layer_list" />
                 </com.google.android.material.card.MaterialCardView>
+
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_naqashat_gallery"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layout_constraintTop_toBottomOf="@+id/card_upload_photo"
                     android:layout_marginTop="@dimen/_10sdp"
                     android:visibility="visible"
-                    app:layout_constraintStart_toStartOf="parent"/>
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/card_upload_photo" />
+
                 <LinearLayout
                     android:id="@+id/ll_no_gallery_found"
                     android:layout_width="match_parent"
@@ -383,19 +389,20 @@
                     android:layout_marginTop="@dimen/_8sdp"
                     android:visibility="gone"
                     app:layout_constraintTop_toBottomOf="@id/rv_naqashat_gallery">
+
                     <TextView
                         android:id="@+id/tv_no_gallery"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:gravity="center"
-                        android:textColor="@color/gold"
                         android:fontFamily="@font/avenir_medium"
-                        android:textSize="@dimen/_10ssp"
-                        android:textStyle="normal"
+                        android:gravity="center"
+                        android:paddingHorizontal="@dimen/_8sdp"
                         android:text="@string/no_gallery_found"
                         android:textAllCaps="false"
-                        android:paddingHorizontal="@dimen/_8sdp"/>
+                        android:textColor="@color/gold"
+                        android:textSize="@dimen/_10ssp"
+                        android:textStyle="normal" />
                 </LinearLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -403,17 +410,17 @@
                 android:id="@+id/naqashat_reviews_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/naqashat_categories_layout"
                 android:layout_marginTop="@dimen/_10sdp"
-                android:visibility="gone">
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/naqashat_categories_layout">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_reviews"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_10sdp"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"/>
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <LinearLayout
                     android:id="@+id/ll_no_comments_found"
@@ -422,34 +429,36 @@
                     android:layout_marginTop="@dimen/_8sdp"
                     android:visibility="gone"
                     app:layout_constraintTop_toBottomOf="@id/rv_reviews">
+
                     <TextView
                         android:id="@+id/tv_no_comments"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:gravity="center"
-                        android:textColor="@color/gold"
-                        android:textSize="@dimen/_10ssp"
                         android:fontFamily="@font/avenir_medium"
-                        android:textStyle="normal"
+                        android:gravity="center"
+                        android:paddingHorizontal="@dimen/_8sdp"
                         android:text="@string/no_comments_found"
                         android:textAllCaps="false"
-                        android:paddingHorizontal="@dimen/_8sdp"/>
+                        android:textColor="@color/gold"
+                        android:textSize="@dimen/_10ssp"
+                        android:textStyle="normal" />
                 </LinearLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
+
     <ProgressBar
         android:id="@+id/fragment_profile_progressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:elevation="@dimen/_5sdp"
         android:visibility="gone"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

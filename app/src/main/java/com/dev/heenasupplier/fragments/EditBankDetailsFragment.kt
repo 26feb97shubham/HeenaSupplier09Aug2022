@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.animation.AlphaAnimation
 import androidx.core.widget.doAfterTextChanged
-import androidx.core.widget.doOnTextChanged
 import androidx.navigation.fragment.findNavController
 import com.dev.heenasupplier.R
 import com.dev.heenasupplier.models.AddEditBankResponse
@@ -21,7 +20,6 @@ import com.dev.heenasupplier.utils.SharedPreferenceUtility
 import com.dev.heenasupplier.utils.Utility.Companion.apiInterface
 import kotlinx.android.synthetic.main.activity_home2.*
 import kotlinx.android.synthetic.main.fragment_edit_bank_details.view.*
-import kotlinx.android.synthetic.main.fragment_home.*
 import org.json.JSONException
 import retrofit2.Call
 import retrofit2.Callback
@@ -43,6 +41,7 @@ class EditBankDetailsFragment : Fragment() {
         super.onCreate(savedInstanceState)
         arguments?.let {
             isBankAdded = it.getBoolean("isBankAdded")
+            bank = it.getSerializable("bank_details") as Bank?
         }
     }
 
@@ -78,7 +77,7 @@ class EditBankDetailsFragment : Fragment() {
             mView!!.tv_save_bank_details.text = getString(R.string.save)
 
         }else{
-            showBankDetails()
+            updateFields(bank)
             mView!!.tv_save_bank_details.text = getString(R.string.update)
         }
 
@@ -99,7 +98,6 @@ class EditBankDetailsFragment : Fragment() {
         }
 
         mView!!.tv_save_bank_details.setOnClickListener {
-           /* findNavController().navigate(R.id.action_editBankDetailsFragment_to_myCardsFragment)*/
             validateandsave()
         }
     }
@@ -125,10 +123,10 @@ class EditBankDetailsFragment : Fragment() {
         }else if(TextUtils.isEmpty(iban_no)){
             mView!!.et_iban.requestFocus()
             mView!!.et_iban.error = getString(R.string.please_enter_valid_iban)
-        }/*else if(!SharedPreferenceUtility.getInstance().isIbanValid(iban_no!!)){
+        }else if(!SharedPreferenceUtility.getInstance().isIbanValid(iban_no!!)){
             mView!!.et_iban.requestFocus()
             mView!!.et_iban.error = getString(R.string.please_enter_valid_iban)
-        }*/else{
+        }else{
             save()
         }
     }
@@ -143,7 +141,7 @@ class EditBankDetailsFragment : Fragment() {
         acc_no.toString(),
         iban_no.toString()))
 
-        val call = apiInterface.addEditBanks(builder!!.build())
+        val call = apiInterface.addEditBanks(builder.build())
         call?.enqueue(object : Callback<AddEditBankResponse?>{
             override fun onResponse(
                 call: Call<AddEditBankResponse?>,
@@ -183,55 +181,11 @@ class EditBankDetailsFragment : Fragment() {
         })
     }
 
-    private fun showBankDetails() {
-        mView!!.frag_edit_bank_progressBar.visibility = View.VISIBLE
-        requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-
-        val call  = apiInterface.showBanks(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId, 0))
-        call?.enqueue(object : Callback<BankDetailsResponse?>{
-            override fun onResponse(
-                call: Call<BankDetailsResponse?>,
-                response: Response<BankDetailsResponse?>
-            ) {
-                mView!!.frag_edit_bank_progressBar.visibility= View.GONE
-                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-
-                try {
-                    if (response.isSuccessful){
-                        if (response.body()!!.status==1){
-                            bank = response.body()!!.bank
-                            updateFields()
-                        }else{
-                            LogUtils.longToast(requireContext(), response.body()!!.message)
-                        }
-                    }else{
-                        LogUtils.shortToast(requireContext(), getString(R.string.response_isnt_successful))
-                    }
-                }catch (e: IOException) {
-                    e.printStackTrace()
-                } catch (e: JSONException) {
-                    e.printStackTrace()
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-
-            }
-
-            override fun onFailure(call: Call<BankDetailsResponse?>, throwable: Throwable) {
-                LogUtils.e("msg", throwable.message)
-                LogUtils.shortToast(requireContext(), getString(R.string.check_internet))
-                mView!!.frag_edit_bank_progressBar.visibility= View.GONE
-                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-            }
-
-        })
-    }
-
-    private fun updateFields() {
+    private fun updateFields(bank: Bank?) {
         mView!!.et_bank_name.setText( bank!!.bank_name)
-        mView!!.et_fullname.setText( bank!!.full_name)
-        mView!!.et_acc_number.setText( bank!!.account_num)
-        mView!!.et_iban.setText( bank!!.iban)
+        mView!!.et_fullname.setText( bank.full_name)
+        mView!!.et_acc_number.setText( bank.account_num)
+        mView!!.et_iban.setText( bank.iban)
     }
 
     override fun onResume() {
@@ -250,7 +204,7 @@ class EditBankDetailsFragment : Fragment() {
             mView!!.tv_save_bank_details.text = getString(R.string.save)
 
         }else{
-            showBankDetails()
+            updateFields(bank)
             mView!!.tv_save_bank_details.text = getString(R.string.update)
         }
     }

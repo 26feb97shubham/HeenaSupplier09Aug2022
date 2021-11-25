@@ -3,8 +3,6 @@ package com.dev.heenasupplier.fragments
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -12,8 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.animation.AlphaAnimation
-import android.widget.Toast
-import androidx.core.app.ActivityCompat.finishAffinity
 import androidx.core.view.GravityCompat
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -30,6 +26,7 @@ import com.dev.heenasupplier.activities.ChooseLoginSignUpActivity
 import com.dev.heenasupplier.activities.HomeActivity
 import com.dev.heenasupplier.adapters.DashBoardBookingsAdapter
 import com.dev.heenasupplier.adapters.ServicesAdapter
+import com.dev.heenasupplier.bottomsheets.MembershipBottomSheetDialogFragment
 import com.dev.heenasupplier.models.*
 import com.dev.heenasupplier.rest.APIClient
 import com.dev.heenasupplier.rest.APIInterface
@@ -37,7 +34,6 @@ import com.dev.heenasupplier.utils.LogUtils
 import com.dev.heenasupplier.utils.SharedPreferenceUtility
 import com.dev.heenasupplier.utils.SharedPreferenceUtility.Companion.SelectedLang
 import com.dev.heenasupplier.utils.Utility
-import com.heena.heenasupplier.bottomsheets.MembershipBottomSheetDialogFragment
 import kotlinx.android.synthetic.main.activity_home2.*
 import kotlinx.android.synthetic.main.fragment_home.view.*
 import kotlinx.android.synthetic.main.fragment_home.view.tv_no_bookings_found

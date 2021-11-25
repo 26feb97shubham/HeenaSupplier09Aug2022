@@ -101,6 +101,7 @@ class MyBookingsFragment : Fragment() {
 
     private fun getCurrentBookings() {
         mView!!.fragment_bookings_progressBar.visibility = View.VISIBLE
+        mView!!.tv_no_bookings_found.visibility = View.GONE
         requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         val hashMap = HashMap<String, String>()
 //        hashMap.put("lang", SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, ""))
@@ -146,6 +147,7 @@ class MyBookingsFragment : Fragment() {
 
     private fun getBookingsHistory() {
         mView!!.fragment_bookings_progressBar.visibility = View.VISIBLE
+        mView!!.tv_no_bookings_found.visibility = View.GONE
         requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         val hashMap = HashMap<String, String>()
         hashMap.put("lang", SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, ""))
