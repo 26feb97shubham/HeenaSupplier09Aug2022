@@ -37,7 +37,6 @@ class MapsActivity : FragmentActivity(), OnMapReadyCallback,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
@@ -46,9 +45,6 @@ class MapsActivity : FragmentActivity(), OnMapReadyCallback,
         mMap = googleMap
 
         locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager?
-//        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0L, 0F, context)
-
-        // Add a marker in Sydney and move the camera
         val sydney = LatLng(-34.0, 151.0)
         mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))

@@ -132,7 +132,6 @@ class LoginActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRece
             }else{
                 validateAndLogin()
             }
-            /*startActivity(Intent(this@LoginActivity, HomeActivity::class.java))*/
 
         }
 

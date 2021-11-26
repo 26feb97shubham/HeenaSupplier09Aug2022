@@ -46,7 +46,6 @@ import java.io.IOException
 class MembershipRegistrationActivity : AppCompatActivity() {
     var emailaddress : String?= null
     var membershipId : Int = 0
-    var userId : Int = 0
     private lateinit var registrationMembershipPlansListAdapter: RegistrationMembershipPlansListAdapter
     private var membershipList = ArrayList<Membership>()
     private var membership : Membership?=null

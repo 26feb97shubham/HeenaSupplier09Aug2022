@@ -1,5 +1,6 @@
 package com.dev.heenasupplier.fragments
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
@@ -46,7 +47,6 @@ import retrofit2.Response
 import java.io.IOException
 
 class HomeFragment : Fragment() {
-    var doubleClick:Boolean=false
     lateinit var currentBookingsAdapter: DashBoardBookingsAdapter
     lateinit var servicesAdapter: ServicesAdapter
     var lang = ""
@@ -58,7 +58,6 @@ class HomeFragment : Fragment() {
     var profile_picture : String = ""
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
         mView = inflater.inflate(R.layout.fragment_home, container, false)
         setUpViews()
         return mView
@@ -118,64 +117,9 @@ class HomeFragment : Fragment() {
                     }
                 }).apply(requestOption).into(requireActivity().headerView.userIcon)
 
-
-
-
         getDashBoard()
         clickOnDrawer()
-/*
-        setBottomView()*/
-//        requireActivity().itemHome.setImageResource(R.drawable.home_icon_active)
-        setOnClickBottomItemView()
         clickOnHomeItems()
-    }
-
-    private fun getBookings() {
-        val hashMap = HashMap<String, String>()
-        hashMap.put("type", "1")
-        hashMap.put("user_id", SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId, 0).toString())
-        val call = Utility.apiInterface.getBookingsList(hashMap)
-        call?.enqueue(object : Callback<BookingsListingResponse?> {
-            override fun onResponse(
-                    call: Call<BookingsListingResponse?>,
-                    response: Response<BookingsListingResponse?>
-            ) {
-                if (response.isSuccessful){
-                    if (response.body()!!.status == 1){
-                        mView!!.rv_current_bookings.visibility = View.VISIBLE
-                        mView!!.tv_no_bookings_found.visibility = View.GONE
-                        bookingslisting = response.body()!!.booking as ArrayList<BookingItem>
-                        mView!!.rv_current_bookings.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL,false)
-                        currentBookingsAdapter = DashBoardBookingsAdapter(requireContext(), bookingslisting, object : ClickInterface.OnRecyclerItemClick{
-                            override fun OnClickAction(position: Int) {
-                                val bundle = Bundle()
-                                bundle.putInt("booking_id", bookingslisting[position].booking_id!!)
-                                findNavController().navigate(R.id.action_mainHomeFragment_to_bookingDetailsFragment, bundle)
-                            }
-                        })
-                        mView!!.rv_current_bookings.adapter = currentBookingsAdapter
-                        currentBookingsAdapter.notifyDataSetChanged()
-                        mView!!.rv_current_bookings.scheduleLayoutAnimation()
-                    }else{
-                        mView!!.rv_current_bookings.visibility = View.GONE
-                        mView!!.tv_no_bookings_found.visibility = View.VISIBLE
-                        LogUtils.shortToast(requireContext(), response.body()!!.message)
-                    }
-                }else{
-                    mView!!.rv_current_bookings.visibility = View.GONE
-                    mView!!.tv_no_bookings_found.visibility = View.VISIBLE
-                    LogUtils.shortToast(requireContext(), getString(R.string.response_isnt_successful))
-                }
-            }
-
-            override fun onFailure(call: Call<BookingsListingResponse?>, throwable: Throwable) {
-                LogUtils.e("msg", throwable.message)
-                LogUtils.shortToast(requireContext(), getString(R.string.check_internet))
-                mView!!.rv_current_bookings.visibility = View.GONE
-                mView!!.tv_no_bookings_found.visibility = View.VISIBLE
-            }
-
-        })
     }
 
     private fun getDashBoard() {
@@ -337,64 +281,8 @@ class HomeFragment : Fragment() {
         }
 
         requireActivity().iv_notification.setOnClickListener {
-         /*   SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().itemCategories)*/
             findNavController().navigate(R.id.notificationsFragment)
         }
-    }
-
-    private fun openCloseDrawer() {
-        if(requireActivity().drawerLayout.isDrawerOpen(GravityCompat.START)){
-           /* requireActivity().itemHome.setImageResource(R.drawable.home_icon_active)
-            requireActivity().itemCategories.setImageResource(R.drawable.categories_icon_inactive)*/
-            requireActivity().drawerLayout.closeDrawer(GravityCompat.START)
-        }
-        else{
-           /* requireActivity().itemHome.setImageResource(R.drawable.icon_home_inactive)
-            requireActivity().itemCategories.setImageResource(R.drawable.categories_icon_active)*/
-            requireActivity().drawerLayout.openDrawer(GravityCompat.START)
-        }
-    }
-
-    private fun setOnClickBottomItemView() {
-    /*    requireActivity().bottm_nav.setOnClickListener {
-            SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().itemCategories)
-            requireActivity().itemCategories.startAnimation(AlphaAnimation(1f, 0.5f))
-            setBottomView()
-            requireActivity().itemCategories.setImageResource(R.drawable.categories_icon_active)
-            openCloseDrawer()
-        }
-
-        requireActivity().itemAppointment.setOnClickListener {
-            SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().itemAppointment)
-            if(findNavController().currentDestination?.id!=R.id.myAppointmentsFragment){
-                requireActivity().itemAppointment.startAnimation(AlphaAnimation(1f, 0.5f))
-                setBottomView()
-                requireActivity().itemAppointment.setImageResource(R.drawable.selected_check_list)
-                findNavController().navigate(R.id.myAppointmentsFragment)
-            }
-
-        }
-        requireActivity().itemHome.setOnClickListener {
-            SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().itemHome)
-            if(findNavController().currentDestination?.id!=R.id.homeFragment){
-                requireActivity().itemHome.startAnimation(AlphaAnimation(1f, 0.5f))
-                setBottomView()
-                requireActivity().itemHome.setImageResource(R.drawable.home_icon_active)
-                findNavController().navigate(R.id.homeFragment)
-            }
-
-        }
-    }
-
-    private fun setBottomView() {
-      *//*  requireActivity().itemCategories.setImageResource(R.drawable.categories_icon_inactive)
-        requireActivity().itemAppointment.setImageResource(R.drawable.check_list_inactive)
-        requireActivity().itemHome.setImageResource(R.drawable.icon_home_inactive)*//*
-    }
-
-
-  */
-
     }
 
     private fun clickOnDrawer() {
@@ -562,6 +450,7 @@ class HomeFragment : Fragment() {
 
     companion object{
         private var instance: SharedPreferenceUtility? = null
+        @SuppressLint("StaticFieldLeak")
         var mView : View?=null
         @Synchronized
         fun getInstance(): SharedPreferenceUtility {
