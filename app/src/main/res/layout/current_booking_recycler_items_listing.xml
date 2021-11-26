@@ -25,7 +25,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"/>
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_bookingId"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -40,7 +40,7 @@
             android:fontFamily="@font/avenir_medium"
             android:textStyle="normal"/>
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_pending"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -54,20 +54,6 @@
             android:textColor="#FF9F54"
             android:textSize="@dimen/_10ssp"/>
 
-      <!--  <TextView
-            android:id="@+id/tv_accepted"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="@+id/tv_bookingId"
-            app:layout_constraintBottom_toBottomOf="@+id/tv_bookingId"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginHorizontal="@dimen/_8sdp"
-            android:text="Accepted"
-            android:textAllCaps="true"
-            android:textColor="#37CC37"
-            android:visibility="gone"
-            android:textSize="@dimen/_10ssp"/>-->
-
         <View
             android:id="@+id/view"
             android:layout_width="0dp"
@@ -78,7 +64,7 @@
             android:layout_marginHorizontal="@dimen/_8sdp"
             android:layout_marginTop="@dimen/_10sdp"/>
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_booking_service"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -92,7 +78,7 @@
             android:fontFamily="@font/avenir_medium"
             android:textStyle="normal"/>
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -106,7 +92,7 @@
             android:fontFamily="@font/avenir_medium"
             android:textStyle="normal"/>
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_service_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

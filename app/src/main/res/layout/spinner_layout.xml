@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/_30sdp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/spinner_item"
         android:singleLine="true"
         android:layout_width="match_parent"

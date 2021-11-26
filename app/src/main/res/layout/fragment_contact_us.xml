@@ -16,7 +16,7 @@
         android:layout_marginTop="@dimen/_20sdp"
         android:src="@drawable/golden_logo" />
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_title"
         android:layout_width="@dimen/_200sdp"
         android:layout_height="@dimen/_40sdp"
@@ -56,7 +56,7 @@
                     android:orientation="vertical"
                     app:layout_constraintTop_toTopOf="parent">
 
-                    <TextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/avenir_medium"
@@ -66,7 +66,7 @@
                         android:textSize="@dimen/_11ssp"
                         android:textStyle="normal" />
 
-                    <EditText
+                    <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/et_fullname"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/_60sdp"
@@ -89,7 +89,7 @@
                     android:orientation="vertical"
                     app:layout_constraintTop_toBottomOf="@id/ll_fullname">
 
-                    <TextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/avenir_medium"
@@ -99,7 +99,7 @@
                         android:textSize="@dimen/_11ssp"
                         android:textStyle="normal" />
 
-                    <EditText
+                    <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/et_email_address"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/_60sdp"
@@ -122,7 +122,7 @@
                     android:orientation="vertical"
                     app:layout_constraintTop_toBottomOf="@id/ll_card_number">
 
-                    <TextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/avenir_medium"
@@ -132,7 +132,7 @@
                         android:textSize="@dimen/_11ssp"
                         android:textStyle="normal" />
 
-                    <EditText
+                    <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/et_message"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/_60sdp"
@@ -146,7 +146,7 @@
                         android:textStyle="normal" />
                 </LinearLayout>
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_contact_us_submit"
                     android:layout_width="@dimen/_200sdp"
                     android:layout_height="@dimen/_40sdp"

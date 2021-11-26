@@ -8,18 +8,7 @@
     android:background="@android:color/transparent"
     tools:context=".fragments.NotificationsFragment">
 
-   <!-- <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/coming_soon"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:textSize="@dimen/_18ssp"
-        android:textColor="@color/gold"/>-->
-
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_40sdp"
@@ -54,7 +43,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/txtTitle"
             android:layout_width="0dp"
             android:layout_height="@dimen/_35sdp"
@@ -68,7 +57,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:text="@string/there_are_no_notifications"
             app:layout_constraintTop_toBottomOf="@+id/imgNoti"/>
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/txtDetails"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

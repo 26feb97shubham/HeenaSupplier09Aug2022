@@ -30,7 +30,7 @@
                     android:src="@drawable/golden_logo"
                     android:contentDescription="@string/logo"/>
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_choose_lang"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -88,7 +88,7 @@
                                 android:layout_marginEnd="@dimen/_20sdp"
                                 android:layout_marginStart="@dimen/_20sdp"
                                 android:src="@drawable/arabic" />
-                            <TextView
+                            <com.google.android.material.textview.MaterialTextView
                                 android:id="@+id/txtArabic"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -144,7 +144,7 @@
                                 android:layout_marginEnd="@dimen/_20sdp"
                                 android:layout_marginStart="@dimen/_20sdp"
                                 android:src="@drawable/english_flag_icon" />
-                            <TextView
+                            <com.google.android.material.textview.MaterialTextView
                                 android:id="@+id/txtEnglish"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -170,7 +170,7 @@
 
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/btnContinue"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_40sdp"

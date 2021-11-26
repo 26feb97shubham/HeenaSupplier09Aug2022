@@ -31,7 +31,7 @@
                     android:layout_marginTop="@dimen/_30sdp"
                     android:contentDescription="@string/logo"/>
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_login"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_40sdp"
@@ -50,7 +50,7 @@
                     android:elevation="@dimen/_5sdp"
                     android:text="@string/log_in"/>
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_login_desc"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_40sdp"
@@ -138,73 +138,7 @@
                         android:padding="@dimen/_4sdp"/>
                 </LinearLayout>
 
-
-
-               <!-- <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/edtPass"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/_40sdp"
-                    app:layout_constraintTop_toBottomOf="@+id/edtUsername"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    android:layout_marginTop="@dimen/_10sdp"
-                    android:layout_marginStart="@dimen/_15sdp"
-                    android:layout_marginEnd="@dimen/_15sdp"
-                    android:background="@drawable/gold_border_white_filled_rect_box_curved"
-                    android:textColorHint="@color/text_color"
-                    android:padding="@dimen/_10sdp"
-                    android:includeFontPadding="false"
-                    android:textColor="@color/text_color"
-                    android:fontFamily="@font/avenir_85"
-                    android:layout_marginBottom="@dimen/_40sdp"
-                    android:textSize="@dimen/_12ssp"
-                    android:textAllCaps="false"
-                    android:elevation="@dimen/_5sdp"
-                    android:inputType="textPassword"
-                    android:imeOptions="actionDone"
-                    android:hint="@string/password"/>-->
-
-               <!-- <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    app:layout_constraintTop_toBottomOf="@+id/edtPass"
-                    app:layout_constraintStart_toStartOf="parent"
-                    android:padding="@dimen/_10sdp"
-                    android:layout_marginTop="@dimen/_8sdp"
-                    android:layout_marginHorizontal="@dimen/_15sdp">
-
-                    <ImageView
-                        android:id="@+id/iv_chkRememberMe"
-                        android:layout_width="@dimen/_18sdp"
-                        android:layout_height="@dimen/_20sdp"
-                        android:src="@drawable/check"
-                        android:visibility="gone"
-                        android:layout_marginEnd="@dimen/_8sdp"/>
-
-                    <ImageView
-                        android:id="@+id/iv_unchkRememberMe"
-                        android:layout_width="@dimen/_18sdp"
-                        android:layout_height="@dimen/_20sdp"
-                        android:src="@drawable/ellipse"
-                        android:visibility="visible"
-                        android:layout_marginEnd="@dimen/_8sdp"/>
-
-                    <TextView
-                        android:id="@+id/chkRememberMe"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/white"
-                        android:fontFamily="@font/avenir_85"
-                        android:gravity="center"
-                        android:textSize="@dimen/_14ssp"
-                        android:text="@string/remember_me" />
-
-                </LinearLayout>-->
-
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/chkRememberMe"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -226,7 +160,7 @@
 
 
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/txtForgotPass"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -243,7 +177,7 @@
                     android:paddingBottom="@dimen/_10sdp"
                     android:text="@string/forgot_password" />
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/btnLogin"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_45sdp"
@@ -273,7 +207,7 @@
                     app:layout_constraintTop_toBottomOf="@id/btnLogin"
                     android:layout_marginTop="@dimen/_30sdp"
                     android:layout_marginBottom="@dimen/_10sdp">
-                    <TextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/tv_dont_have_an_account"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -288,7 +222,7 @@
                         android:elevation="@dimen/_5sdp"
                         android:text="@string/dont_have_an_account_yet"/>
 
-                    <TextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/tv_signup"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

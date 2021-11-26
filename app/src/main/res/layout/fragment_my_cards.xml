@@ -14,7 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingBottom="@dimen/_10sdp">
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_saved_cards"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -39,7 +39,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tv_saved_cards" />
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_edit_card"
                 android:layout_width="@dimen/_200sdp"
                 android:layout_height="@dimen/_40sdp"
@@ -56,7 +56,7 @@
                 android:textSize="@dimen/_15ssp"
                 android:textStyle="normal"/>
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_delete_card"
                 android:layout_width="@dimen/_200sdp"
                 android:layout_height="@dimen/_40sdp"
@@ -73,7 +73,7 @@
                 android:textSize="@dimen/_15ssp"
                 android:textStyle="normal"/>
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_add_new_card"
                 android:layout_width="@dimen/_200sdp"
                 android:layout_height="@dimen/_40sdp"

@@ -16,7 +16,7 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:padding="@dimen/_12sdp">
-          <TextView
+          <com.google.android.material.textview.MaterialTextView
               android:id="@+id/tv_revenues_txt"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
@@ -29,7 +29,7 @@
               android:textStyle="normal"
               android:fontFamily="@font/avenir_medium"/>
 
-          <TextView
+          <com.google.android.material.textview.MaterialTextView
               android:id="@+id/tv_revenues"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
@@ -62,7 +62,7 @@
                   android:layout_width="match_parent"
                   android:layout_height="match_parent"
                   android:orientation="horizontal">
-                  <EditText
+                  <com.google.android.material.textfield.TextInputEditText
                       android:id="@+id/et_search"
                       android:layout_width="0dp"
                       android:layout_weight="0.8"
@@ -117,7 +117,7 @@
                       android:layout_width="match_parent"
                       android:layout_height="match_parent"
                       android:padding="@dimen/_10sdp">
-                      <TextView
+                      <com.google.android.material.textview.MaterialTextView
                           android:id="@+id/tv_filter_search_txt"
                           android:layout_width="wrap_content"
                           android:layout_height="wrap_content"
@@ -138,7 +138,7 @@
                           android:layout_marginTop="@dimen/_8sdp"
                           app:layout_constraintTop_toBottomOf="@id/tv_filter_search_txt"/>
 
-                      <TextView
+                      <com.google.android.material.textview.MaterialTextView
                           android:id="@+id/tv_services_txt"
                           android:layout_width="wrap_content"
                           android:layout_height="wrap_content"
@@ -161,7 +161,7 @@
                           app:cardCornerRadius="@dimen/_15sdp"
                           app:strokeWidth="@dimen/_1sdp"
                           app:strokeColor="#A5A6AE80">
-                          <TextView
+                          <com.google.android.material.textview.MaterialTextView
                               android:id="@+id/tv_service"
                               android:layout_width="match_parent"
                               android:layout_height="match_parent"
@@ -195,7 +195,7 @@
                               android:padding="@dimen/_10sdp"/>
                       </com.google.android.material.card.MaterialCardView>
 
-                      <TextView
+                      <com.google.android.material.textview.MaterialTextView
                           android:id="@+id/tv_location_txt"
                           android:layout_width="wrap_content"
                           android:layout_height="wrap_content"
@@ -220,7 +220,7 @@
                           app:strokeWidth="@dimen/_1sdp"
                           android:visibility="gone"
                           app:strokeColor="#A5A6AE80">
-                          <TextView
+                          <com.google.android.material.textview.MaterialTextView
                               android:id="@+id/tv_location"
                               android:layout_width="match_parent"
                               android:layout_height="match_parent"
@@ -245,7 +245,7 @@
                           android:visibility="gone"
                           app:layout_constraintTop_toBottomOf="@id/card_location"/>
 
-                      <TextView
+                      <com.google.android.material.textview.MaterialTextView
                           android:id="@+id/tv_durations"
                           android:layout_width="wrap_content"
                           android:layout_height="match_parent"
@@ -267,7 +267,7 @@
                           app:cardCornerRadius="@dimen/_15sdp"
                           app:strokeWidth="@dimen/_1sdp"
                           app:strokeColor="#A5A6AE80">
-                          <TextView
+                          <com.google.android.material.textview.MaterialTextView
                               android:id="@+id/tv_card_duration"
                               android:layout_width="match_parent"
                               android:layout_height="match_parent"
@@ -325,7 +325,7 @@
                               android:layout_height="match_parent"
                               android:layout_weight="1"
                               android:orientation="horizontal">
-                              <TextView
+                              <com.google.android.material.textview.MaterialTextView
                                   android:layout_width="wrap_content"
                                   android:layout_height="match_parent"
                                   android:text="@string/from"
@@ -340,7 +340,7 @@
                                   android:layout_marginStart="@dimen/_8sdp"
                                   app:strokeColor="@color/gold"
                                   app:strokeWidth="@dimen/_1sdp">
-                                  <TextView
+                                  <com.google.android.material.textview.MaterialTextView
                                       android:id="@+id/tv_from"
                                       android:layout_width="match_parent"
                                       android:layout_height="match_parent"
@@ -362,7 +362,7 @@
                               android:layout_weight="1"
                               android:layout_marginStart="@dimen/_8sdp"
                               android:orientation="horizontal">
-                              <TextView
+                              <com.google.android.material.textview.MaterialTextView
                                   android:layout_width="wrap_content"
                                   android:layout_height="match_parent"
                                   android:text="@string/to"
@@ -377,7 +377,7 @@
                                   android:layout_marginStart="@dimen/_8sdp"
                                   app:strokeColor="@color/gold"
                                   app:strokeWidth="@dimen/_1sdp">
-                                  <TextView
+                                  <com.google.android.material.textview.MaterialTextView
                                       android:id="@+id/tv_to"
                                       android:layout_width="match_parent"
                                       android:layout_height="match_parent"
@@ -396,7 +396,7 @@
 
                       </LinearLayout>
 
-                      <TextView
+                      <com.google.android.material.textview.MaterialTextView
                           android:id="@+id/tv_apply_filter"
                           android:layout_width="@dimen/_200sdp"
                           android:layout_height="@dimen/_40sdp"
@@ -450,7 +450,7 @@
         android:visibility="gone"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_no_offers_n_disc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

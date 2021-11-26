@@ -7,7 +7,7 @@
     android:background="@android:color/transparent"
     tools:context=".fragments.MyLocationsFragment">
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_saved_address"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -34,7 +34,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="@dimen/_10sdp"/>
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_add_new_address"
             android:layout_width="@dimen/_200sdp"
             android:layout_height="@dimen/_40sdp"

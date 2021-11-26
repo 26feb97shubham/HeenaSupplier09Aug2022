@@ -15,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="@dimen/_10sdp">
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -55,7 +55,7 @@
                 android:src="@drawable/dark_brown_right_arrow" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/desc"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

@@ -18,7 +18,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/_10sdp">
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_current_bookings"
             android:layout_width="0dp"
             android:layout_height="@dimen/_40sdp"
@@ -30,7 +30,7 @@
             android:textSize="@dimen/_11ssp"
             android:textColor="@color/white"/>
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_bookings_history"
             android:layout_width="0dp"
             android:layout_height="@dimen/_40sdp"
@@ -58,7 +58,7 @@
             android:layoutAnimation="@anim/layout_animation_right_to_left"/>
     </ScrollView>
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_no_bookings_found"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

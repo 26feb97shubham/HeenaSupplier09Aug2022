@@ -24,7 +24,7 @@
             android:layout_height="match_parent"
             android:paddingHorizontal="@dimen/_8sdp"
             android:paddingVertical="@dimen/_8sdp">
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_membership_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -50,7 +50,7 @@
                 app:layout_constraintTop_toTopOf="@id/tv_membership_title"
                 app:layout_constraintBottom_toBottomOf="@id/tv_membership_title"
                 android:layout_marginStart="@dimen/_20sdp">
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_membership_plan_price"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -79,7 +79,7 @@
             </LinearLayout>
 
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_membership_desc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -16,7 +16,7 @@
         android:src="@drawable/golden_logo"
         android:layout_marginTop="@dimen/_20sdp"/>
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_title"
         android:layout_width="@dimen/_200sdp"
         android:layout_height="@dimen/_40sdp"
@@ -52,7 +52,7 @@
                     android:orientation="vertical"
                     app:layout_constraintTop_toTopOf="parent"
                     android:layout_marginTop="@dimen/_10sdp">
-                    <TextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/good_day_nhow_can_we_help_you_today"
@@ -68,7 +68,7 @@
                         android:layout_marginTop="@dimen/_10sdp"/>
                 </LinearLayout>
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_need_more_help"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -96,7 +96,7 @@
                         android:layout_marginHorizontal="@dimen/_15sdp"
                         app:cardBackgroundColor="@color/white"
                         app:cardCornerRadius="@dimen/_6sdp">
-                        <TextView
+                        <com.google.android.material.textview.MaterialTextView
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:text="@string/faq_page"
@@ -114,7 +114,7 @@
                         android:layout_marginHorizontal="@dimen/_15sdp"
                         app:cardBackgroundColor="@color/white"
                         app:cardCornerRadius="@dimen/_6sdp">
-                        <TextView
+                        <com.google.android.material.textview.MaterialTextView
                             android:id="@+id/tv_help_page_admin_chat"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"

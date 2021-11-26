@@ -20,7 +20,7 @@
         android:visibility="gone"
         android:contentDescription="@string/logo"/>
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_intro_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -35,7 +35,7 @@
         android:layout_marginBottom="@dimen/_110sdp"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_continue"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_40sdp"

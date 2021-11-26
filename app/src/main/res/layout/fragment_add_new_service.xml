@@ -15,7 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="@dimen/_12sdp">
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_add_new_service_txt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -69,7 +69,7 @@
                 app:layout_constraintTop_toBottomOf="@id/rl_upload_photo"
                 android:orientation="vertical"
                 android:layout_marginTop="@dimen/_30sdp">
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/service_name"
@@ -83,7 +83,7 @@
                     android:layout_height="@dimen/_30sdp"
                     android:layout_marginTop="@dimen/_8sdp"
                     android:background="@drawable/gold_border_white_filled_rect_box_curved">
-                    <EditText
+                    <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/et_service_title"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -111,7 +111,7 @@
                 app:layout_constraintTop_toBottomOf="@id/ll_service_name"
                 android:orientation="vertical"
                 android:layout_marginTop="@dimen/_10sdp">
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/location"
@@ -126,7 +126,7 @@
                     android:layout_marginTop="@dimen/_8sdp"
                     android:background="@drawable/gold_border_white_filled_rect_box_curved">
 
-                    <TextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/tv_location"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -154,7 +154,7 @@
                 app:layout_constraintTop_toBottomOf="@id/ll_service_location"
                 android:layout_marginTop="@dimen/_10sdp"
                 android:orientation="vertical">
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/category"
@@ -172,7 +172,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     android:layout_marginTop="@dimen/_8sdp"
                     android:background="@drawable/gold_border_white_filled_rect_box_curved">
-                    <TextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/spinner_category"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -219,7 +219,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:orientation="vertical">
-                    <TextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/price"
@@ -233,7 +233,7 @@
                         android:layout_height="@dimen/_30sdp"
                         android:layout_marginTop="@dimen/_8sdp"
                         android:background="@drawable/gold_border_white_filled_rect_box_curved">
-                        <EditText
+                        <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/et_price"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
@@ -259,7 +259,7 @@
                     android:layout_weight="1"
                     android:layout_marginStart="@dimen/_8sdp"
                     android:orientation="vertical">
-                    <TextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/child_price"
@@ -273,7 +273,7 @@
                         android:layout_height="@dimen/_30sdp"
                         android:layout_marginTop="@dimen/_8sdp"
                         android:background="@drawable/gold_border_white_filled_rect_box_curved">
-                        <EditText
+                        <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/et_child_price"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
@@ -301,7 +301,7 @@
                 app:layout_constraintTop_toBottomOf="@id/ll_category_price"
                 android:orientation="vertical"
                 android:layout_marginTop="@dimen/_30sdp">
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/description"
@@ -317,7 +317,7 @@
                     app:cardCornerRadius="@dimen/_6sdp"
                     app:strokeColor="@color/gold"
                     app:strokeWidth="@dimen/_1sdp">
-                    <EditText
+                    <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/et_service_desc"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -338,7 +338,7 @@
 
             </LinearLayout>
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_save_service"
                 android:layout_width="@dimen/_200sdp"
                 android:layout_height="@dimen/_40sdp"

@@ -17,7 +17,7 @@
         android:src="@drawable/golden_logo"
         android:layout_marginTop="@dimen/_20sdp"/>
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_title"
         android:layout_width="@dimen/_200sdp"
         android:layout_height="@dimen/_40sdp"

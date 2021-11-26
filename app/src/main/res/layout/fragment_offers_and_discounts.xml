@@ -8,7 +8,7 @@
     android:background="@android:color/transparent"
     tools:context=".fragments.OffersAndDiscountsFragment">
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_offers_n_disc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

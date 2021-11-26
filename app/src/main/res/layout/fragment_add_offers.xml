@@ -16,7 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="@dimen/_12sdp">
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_add_new_offers_txt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -38,7 +38,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 android:layout_marginTop="@dimen/_10sdp"/>
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_choose_service_txt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -63,7 +63,7 @@
                 app:strokeColor="@color/gold"
                 app:strokeWidth="@dimen/_1sdp">
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_choose_service"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -128,7 +128,7 @@
                             android:scaleType="centerCrop"
                             android:src="@drawable/def_henna"/>
                     </com.google.android.material.card.MaterialCardView>
-                    <TextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/tv_services"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -143,26 +143,7 @@
                         android:layout_gravity="center"
                         android:textSize="@dimen/_10ssp" />
 
-
-                  <!--  <ImageView
-                        android:id="@+id/iv_edit"
-                        android:layout_width="@dimen/_20sdp"
-                        android:layout_height="@dimen/_20sdp"
-                        app:layout_constraintTop_toTopOf="@id/tv_services"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        android:src="@drawable/edit_icon"
-                        android:layout_marginHorizontal="@dimen/_12sdp"/>
-                    <ImageView
-                        android:id="@+id/iv_delete"
-                        android:layout_width="@dimen/_20sdp"
-                        android:layout_height="@dimen/_20sdp"
-                        app:layout_constraintTop_toBottomOf="@id/iv_edit"
-                        android:layout_marginTop="@dimen/_8sdp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        android:src="@drawable/delete_icon"
-                        android:layout_marginHorizontal="@dimen/_12sdp"/>-->
-
-                    <TextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/tv_price"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -178,7 +159,7 @@
                         android:layout_gravity="center"
                         android:textSize="@dimen/_10ssp" />
 
-                    <TextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/category"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -197,7 +178,7 @@
                         android:textAllCaps="false"
                         android:fontFamily="@font/avenir_medium"/>
 
-                    <TextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/tv_category_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -244,7 +225,7 @@
                     android:orientation="vertical"
                     android:layout_marginHorizontal="@dimen/_6sdp"
                     android:layout_marginTop="@dimen/_10sdp">
-                    <TextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/lady_price"
@@ -257,7 +238,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/_30sdp"
                         android:layout_marginTop="@dimen/_8sdp">
-                        <EditText
+                        <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/et_offers_price"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
@@ -286,7 +267,7 @@
                     android:orientation="vertical"
                     android:layout_marginHorizontal="@dimen/_6sdp"
                     android:layout_marginTop="@dimen/_10sdp">
-                    <TextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/child_price"
@@ -299,7 +280,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/_30sdp"
                         android:layout_marginTop="@dimen/_8sdp">
-                        <EditText
+                        <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/et_offers_child_price"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
@@ -332,7 +313,7 @@
                 app:layout_constraintTop_toBottomOf="@id/ll_offers_price"
                 android:orientation="vertical"
                 android:layout_marginTop="@dimen/_10sdp">
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/duration"
@@ -347,7 +328,7 @@
                     android:layout_height="@dimen/_30sdp"
                     android:layout_marginTop="@dimen/_8sdp">
 
-                    <TextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/et_card_duration"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -395,7 +376,7 @@
                 </com.archit.calendardaterangepicker.customviews.DateRangeCalendarView>
             </com.google.android.material.card.MaterialCardView>
             
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_save_service"
                 android:layout_width="@dimen/_200sdp"
                 android:layout_height="@dimen/_40sdp"

@@ -37,7 +37,7 @@
                         android:layout_marginTop="@dimen/_20sdp"
                         android:contentDescription="@string/logo"/>
 
-                    <TextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/tv_otp_verification"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/_40sdp"
@@ -57,7 +57,7 @@
                         android:layout_marginHorizontal="@dimen/_30sdp"
                         android:text="@string/otp_verification"/>
 
-                    <TextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/tv_otp_verification_desc"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -105,7 +105,7 @@
                         app:viewType="rectangle"
                         style="@style/PinWidget.PinView" />
 
-                    <TextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/txt3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -116,7 +116,7 @@
                         android:fontFamily="@font/avenir_medium"
                         android:textSize="@dimen/_9ssp"
                         android:text="@string/didn_t_received_any_code" />
-                    <TextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/resend"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -129,7 +129,7 @@
                         android:textAllCaps="true"
                         android:text="@string/resend" />
 
-                    <TextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/btnVerify"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/_45sdp"

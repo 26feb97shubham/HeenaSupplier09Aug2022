@@ -23,7 +23,7 @@
             app:civ_border_color="@color/gold"
             android:src="@drawable/user"/>
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_naqasha_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -37,7 +37,7 @@
             android:textAllCaps="false"
             android:textStyle="normal"/>
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_service_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -72,7 +72,7 @@
                 style="?attr/ratingBarStyleSmall"
                 />
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/txtRating"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -86,7 +86,7 @@
                 android:textSize="@dimen/_9ssp"/>
         </LinearLayout>
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_service_desc"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"

@@ -6,14 +6,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="@dimen/_10sdp">
 
-    <RadioButton
+    <com.google.android.material.radiobutton.MaterialRadioButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:id="@+id/rb_address"/>
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_services_categories"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

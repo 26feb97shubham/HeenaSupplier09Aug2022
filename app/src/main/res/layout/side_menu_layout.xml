@@ -20,7 +20,7 @@
             android:layout_marginTop="@dimen/_15sdp"
             android:gravity="end"
             android:orientation="horizontal">
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/_22sdp"
                 android:fontFamily="@font/avenir_medium"
@@ -55,7 +55,7 @@
             android:layout_marginTop="@dimen/_15sdp"
             android:gravity="end"
             android:orientation="horizontal">
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/_22sdp"
                 android:fontFamily="@font/avenir_medium"
@@ -90,7 +90,7 @@
             android:layout_marginTop="@dimen/_15sdp"
             android:gravity="end"
             android:orientation="horizontal">
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/_22sdp"
                 android:fontFamily="@font/avenir_medium"
@@ -125,7 +125,7 @@
             android:orientation="horizontal"
             android:layout_marginTop="@dimen/_15sdp"
             android:gravity="end">
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_settings"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/_22sdp"
@@ -162,7 +162,7 @@
             android:layout_marginTop="@dimen/_15sdp"
             android:gravity="end"
             android:orientation="horizontal">
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/_22sdp"
                 android:fontFamily="@font/avenir_medium"
@@ -197,7 +197,7 @@
             android:layout_marginTop="@dimen/_15sdp"
             android:gravity="end"
             android:orientation="horizontal">
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/_22sdp"
                 android:fontFamily="@font/avenir_medium"
@@ -232,7 +232,7 @@
             android:layout_marginTop="@dimen/_15sdp"
             android:gravity="end"
             android:orientation="horizontal">
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/_22sdp"
                 android:fontFamily="@font/avenir_medium"
@@ -267,7 +267,7 @@
             android:gravity="end"
             android:visibility="gone"
             android:orientation="horizontal">
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/_22sdp"
                 android:fontFamily="@font/avenir_medium"
@@ -302,7 +302,7 @@
             android:layout_marginTop="@dimen/_15sdp"
             android:gravity="end"
             android:orientation="horizontal">
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/_22sdp"
                 android:fontFamily="@font/avenir_medium"
@@ -337,7 +337,7 @@
             android:layout_marginTop="@dimen/_15sdp"
             android:gravity="end"
             android:orientation="horizontal">
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/_22sdp"
                 android:fontFamily="@font/avenir_medium"
@@ -372,7 +372,7 @@
             android:layout_marginTop="@dimen/_15sdp"
             android:gravity="end"
             android:orientation="horizontal">
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/_22sdp"
                 android:fontFamily="@font/avenir_medium"
@@ -406,7 +406,7 @@
             android:layout_marginTop="@dimen/_15sdp"
             android:gravity="end"
             android:orientation="horizontal">
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/_22sdp"
                 android:fontFamily="@font/avenir_medium"
@@ -441,7 +441,7 @@
             android:gravity="end"
             android:orientation="horizontal">
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_PrivacyPolicy"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/_22sdp"
@@ -476,7 +476,7 @@
             android:layout_marginTop="@dimen/_15sdp"
             android:gravity="end"
             android:orientation="horizontal">
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/_22sdp"
                 android:fontFamily="@font/avenir_medium"
@@ -510,7 +510,7 @@
             android:layout_marginTop="@dimen/_15sdp"
             android:gravity="end"
             android:orientation="horizontal">
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/_22sdp"
                 android:fontFamily="@font/avenir_medium"
@@ -544,7 +544,7 @@
             android:layout_marginTop="@dimen/_15sdp"
             android:gravity="end"
             android:orientation="horizontal">
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/_22sdp"
                 android:fontFamily="@font/avenir_medium"

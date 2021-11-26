@@ -7,7 +7,7 @@
     android:background="@android:color/transparent"
     tools:context=".fragments.MyProfileFragment">
 
-    <androidx.core.widget.NestedScrollView
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -35,7 +35,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_naqashat_name_location"
                 android:layout_width="wrap_content"
                 android:maxWidth="@dimen/_150sdp"
@@ -53,7 +53,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/profile_image_layout" />
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_follow"
                 android:layout_width="@dimen/_80sdp"
                 android:layout_height="@dimen/_20sdp"
@@ -72,7 +72,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/tv_naqashat_name_location" />
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_naqashat_experience"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -109,7 +109,7 @@
                     android:textDirection="locale"
                     android:theme="@style/orangeRatingBar" />
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/txtRating"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -145,7 +145,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/view1">
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_services"
                     android:layout_width="0dp"
                     android:layout_height="@dimen/_40sdp"
@@ -159,7 +159,7 @@
                     android:textSize="@dimen/_11ssp"
                     android:textStyle="normal" />
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_gallery"
                     android:layout_width="0dp"
                     android:layout_height="@dimen/_40sdp"
@@ -174,7 +174,7 @@
                     android:textSize="@dimen/_11ssp"
                     android:textStyle="normal" />
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_reviews"
                     android:layout_width="0dp"
                     android:layout_height="@dimen/_40sdp"
@@ -198,7 +198,7 @@
                 android:visibility="visible"
                 app:layout_constraintTop_toBottomOf="@id/naqashat_categories_layout">
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_offers_n_disc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -215,7 +215,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_add_new_offers"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
@@ -253,7 +253,7 @@
                     android:visibility="gone"
                     app:layout_constraintTop_toBottomOf="@id/rv_offers_n_discs">
 
-                    <TextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/tv_no_offers_n_disc"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -268,7 +268,7 @@
                         android:textStyle="normal" />
                 </LinearLayout>
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_services_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -283,7 +283,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/ll_no_offers_and_disc_found" />
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_add_new_service"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
@@ -321,7 +321,7 @@
                     android:visibility="gone"
                     app:layout_constraintTop_toBottomOf="@id/rv_services_listing">
 
-                    <TextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/tv_no_service"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -358,7 +358,7 @@
                     app:strokeColor="@color/gold"
                     app:strokeWidth="@dimen/_1sdp">
 
-                    <TextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:drawablePadding="@dimen/_8sdp"
@@ -390,7 +390,7 @@
                     android:visibility="gone"
                     app:layout_constraintTop_toBottomOf="@id/rv_naqashat_gallery">
 
-                    <TextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/tv_no_gallery"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -430,7 +430,7 @@
                     android:visibility="gone"
                     app:layout_constraintTop_toBottomOf="@id/rv_reviews">
 
-                    <TextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/tv_no_comments"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -447,7 +447,7 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.core.widget.NestedScrollView>
+    </ScrollView>
 
     <ProgressBar
         android:id="@+id/fragment_profile_progressBar"

@@ -24,7 +24,7 @@
                     android:scaleType="centerCrop"
                     android:src="@drawable/def_henna"/>
         </com.google.android.material.card.MaterialCardView>
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_services"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -48,7 +48,7 @@
             android:src="@drawable/add_to_fav_icon"
             android:layout_marginHorizontal="@dimen/_12sdp"/>
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_original_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -64,7 +64,7 @@
             android:layout_gravity="center"
             android:textSize="@dimen/_8ssp" />
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_discounted_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -115,7 +115,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 />
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/txtRating"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -129,7 +129,7 @@
                 android:textSize="@dimen/_9ssp"/>
 
         </LinearLayout>
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/category"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -148,7 +148,7 @@
             android:textAllCaps="false"
             android:fontFamily="@font/avenir_medium"/>
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_category_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

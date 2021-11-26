@@ -47,7 +47,7 @@
                 android:layout_marginTop="@dimen/_8sdp"
                 android:layout_marginHorizontal="@dimen/_4sdp"/>
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_services"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -72,7 +72,7 @@
                 android:layout_marginTop="@dimen/_8sdp"
                 android:layout_marginHorizontal="@dimen/_4sdp"/>
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_services_desc"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_100sdp"
@@ -99,7 +99,7 @@
                 android:layout_marginTop="@dimen/_8sdp"
                 android:layout_marginHorizontal="@dimen/_4sdp"/>
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_book_service"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_40sdp"

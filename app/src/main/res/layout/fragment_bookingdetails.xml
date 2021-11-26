@@ -14,7 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="@dimen/_10sdp">
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_booking_details"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -43,7 +43,7 @@
                     android:scaleType="fitXY"/>
             </com.google.android.material.card.MaterialCardView>
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_status_txt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -57,7 +57,7 @@
                 android:textStyle="normal"
                 android:fontFamily="@font/avenir_medium"/>
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -81,7 +81,7 @@
                 app:layout_constraintTop_toBottomOf="@id/tv_status"
                 android:layout_marginTop="@dimen/_10sdp"/>
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_service"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -130,7 +130,7 @@
                         style="?attr/ratingBarStyleSmall"
                         />
 
-                    <TextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/txtRating"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -152,7 +152,7 @@
                 android:background="@color/gold"
                 app:layout_constraintTop_toBottomOf="@id/rating_layout"
                 android:layout_marginTop="@dimen/_10sdp"/>
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_service_desc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -184,7 +184,7 @@
                 app:layout_constraintTop_toBottomOf="@id/view3"
                 app:layout_constraintStart_toStartOf="parent">
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_ladies_count_txt"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/_30sdp"
@@ -197,7 +197,7 @@
                     android:layout_alignParentStart="true"
                     android:fontFamily="@font/avenir_medium"/>
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_ladies_count"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/_30sdp"
@@ -222,7 +222,7 @@
                 app:layout_constraintTop_toBottomOf="@id/rl_ladies_count"
                 app:layout_constraintStart_toStartOf="parent">
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_children_count_txt"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/_30sdp"
@@ -235,7 +235,7 @@
                     android:layout_alignParentStart="true"
                     android:fontFamily="@font/avenir_medium"/>
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_childrens_count"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/_30sdp"
@@ -267,7 +267,7 @@
                 app:layout_constraintTop_toBottomOf="@id/view4"
                 app:layout_constraintStart_toStartOf="parent">
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_booking_date_time_txt"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/_30sdp"
@@ -280,7 +280,7 @@
                     android:layout_alignParentStart="true"
                     android:fontFamily="@font/avenir_medium"/>
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_booking_date_time"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/_30sdp"
@@ -305,7 +305,7 @@
                 app:layout_constraintTop_toBottomOf="@id/rl_booking_date_time"
                 app:layout_constraintStart_toStartOf="parent">
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_location_txt"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/_30sdp"
@@ -318,7 +318,7 @@
                     android:layout_alignParentStart="true"
                     android:fontFamily="@font/avenir_medium"/>
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_address"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/_30sdp"
@@ -340,7 +340,7 @@
                 app:layout_constraintTop_toBottomOf="@id/rl_location_layout"
                 android:layout_marginTop="@dimen/_10sdp"/>
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_special_request"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/_30sdp"
@@ -356,7 +356,7 @@
                 android:layout_alignParentEnd="true"
                 android:fontFamily="@font/avenir_medium"/>
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_special_request_desc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -383,7 +383,7 @@
                 android:layout_marginTop="@dimen/_10sdp"/>
 
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_payment"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/_30sdp"
@@ -408,7 +408,7 @@
                 android:weightSum="3"
                 android:layout_marginTop="@dimen/_8sdp"
                 android:orientation="horizontal">
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_payment_mode"
                     android:layout_width="0dp"
                     android:layout_weight="1"
@@ -423,7 +423,7 @@
                     android:textStyle="normal"
                     android:fontFamily="@font/avenir_medium"/>
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_payment_name"
                     android:layout_width="0dp"
                     android:layout_weight="1"
@@ -438,7 +438,7 @@
                     android:textStyle="normal"
                     android:fontFamily="@font/avenir_medium"/>
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_payment_desc"
                     android:layout_width="0dp"
                     android:layout_weight="1"
@@ -472,7 +472,7 @@
                 app:layout_constraintTop_toBottomOf="@id/view7"
                 app:layout_constraintStart_toStartOf="parent">
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_service_charge_txt"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/_30sdp"
@@ -485,7 +485,7 @@
                     android:layout_alignParentStart="true"
                     android:fontFamily="@font/avenir_medium"/>
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_service_charge"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/_30sdp"
@@ -510,7 +510,7 @@
                 app:layout_constraintTop_toBottomOf="@id/rl_service_charge"
                 app:layout_constraintStart_toStartOf="parent">
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_subtotal_txt"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/_30sdp"
@@ -523,7 +523,7 @@
                     android:layout_alignParentStart="true"
                     android:fontFamily="@font/avenir_medium"/>
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_sub_total"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/_30sdp"
@@ -555,7 +555,7 @@
                 app:layout_constraintTop_toBottomOf="@id/view8"
                 app:layout_constraintStart_toStartOf="parent">
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_total_txt"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/_30sdp"
@@ -568,7 +568,7 @@
                     android:layout_alignParentStart="true"
                     android:fontFamily="@font/avenir_medium"/>
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_total"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/_30sdp"
@@ -595,7 +595,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent">
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_accept_booking"
                     android:layout_width="0dp"
                     android:layout_height="@dimen/_40sdp"
@@ -608,7 +608,7 @@
                     android:textAllCaps="true"
                     android:gravity="center"/>
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_reject_booking"
                     android:layout_width="0dp"
                     android:layout_height="@dimen/_40sdp"
@@ -623,7 +623,7 @@
                     android:gravity="center"/>
             </LinearLayout>
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_completed_booking"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_40sdp"

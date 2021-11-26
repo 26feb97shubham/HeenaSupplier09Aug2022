@@ -23,7 +23,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_expiry_date_1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -37,7 +37,7 @@
                     android:textSize="@dimen/_10ssp"
                     android:layout_marginTop="@dimen/_20sdp"/>
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_card_number_1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -51,7 +51,7 @@
                     android:textStyle="normal"
                     android:fontFamily="@font/avenir_medium"
                     android:textSize="@dimen/_18ssp" />
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_account_holdee_name_1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -89,7 +89,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     android:orientation="vertical"
                     android:layout_marginTop="@dimen/_30sdp">
-                    <TextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/card_title"
@@ -98,7 +98,7 @@
                         android:textStyle="normal"
                         android:fontFamily="@font/avenir_medium"
                         android:textColor="@color/text_gold_color_dark"/>
-                    <EditText
+                    <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/et_card_title"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/_60sdp"
@@ -121,7 +121,7 @@
                     app:layout_constraintTop_toBottomOf="@id/ll_card_title"
                     android:orientation="vertical"
                     android:layout_marginTop="@dimen/_10sdp">
-                    <TextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/card_number"
@@ -130,7 +130,7 @@
                         android:textStyle="normal"
                         android:fontFamily="@font/avenir_medium"
                         android:textColor="@color/text_gold_color_dark"/>
-                    <EditText
+                    <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/et_card_number"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/_60sdp"
@@ -159,7 +159,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:orientation="vertical">
-                        <TextView
+                        <com.google.android.material.textview.MaterialTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/cvv"
@@ -168,7 +168,7 @@
                             android:textStyle="normal"
                             android:fontFamily="@font/avenir_medium"
                             android:textColor="@color/text_gold_color_dark"/>
-                        <EditText
+                        <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/et_cvv"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/_60sdp"
@@ -188,7 +188,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:orientation="vertical">
-                        <TextView
+                        <com.google.android.material.textview.MaterialTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/expiry_date"
@@ -197,7 +197,7 @@
                             android:textStyle="normal"
                             android:fontFamily="@font/avenir_medium"
                             android:textColor="@color/text_gold_color_dark"/>
-                        <EditText
+                        <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/et_expiry"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/_60sdp"
@@ -213,7 +213,7 @@
                     </LinearLayout>
 
                 </LinearLayout>
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_save_card"
                     android:layout_width="@dimen/_200sdp"
                     android:layout_height="@dimen/_40sdp"

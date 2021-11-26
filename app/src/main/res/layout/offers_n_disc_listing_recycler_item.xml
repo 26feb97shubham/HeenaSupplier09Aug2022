@@ -27,7 +27,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginBottom="@dimen/_15sdp"
             android:layout_marginEnd="@dimen/_15sdp">
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_offers_n_disc_name"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

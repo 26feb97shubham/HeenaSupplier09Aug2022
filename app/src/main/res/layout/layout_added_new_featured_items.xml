@@ -30,7 +30,7 @@
                     android:src="@drawable/def_henna"/>
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_services"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -65,7 +65,7 @@
             android:src="@drawable/delete_icon"
             android:layout_marginHorizontal="@dimen/_12sdp"/>
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -81,7 +81,7 @@
             android:layout_gravity="center"
             android:textSize="@dimen/_10ssp" />
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/category"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -100,7 +100,7 @@
             android:textAllCaps="false"
             android:fontFamily="@font/avenir_medium"/>
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_category_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

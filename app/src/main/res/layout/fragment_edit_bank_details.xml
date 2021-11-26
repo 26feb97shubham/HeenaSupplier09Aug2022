@@ -23,7 +23,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 android:orientation="vertical"
                 android:layout_marginTop="@dimen/_30sdp">
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/bank_name"
@@ -33,7 +33,7 @@
                     android:gravity="center_vertical"
                     android:fontFamily="@font/avenir_medium"
                     android:textColor="@color/text_gold_color_dark"/>
-                <EditText
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/et_bank_name"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_60sdp"
@@ -58,7 +58,7 @@
                 app:layout_constraintTop_toBottomOf="@id/ll_bank_name"
                 android:orientation="vertical"
                 android:layout_marginTop="@dimen/_30sdp">
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/full_name"
@@ -68,7 +68,7 @@
                     android:gravity="center_vertical"
                     android:fontFamily="@font/avenir_medium"
                     android:textColor="@color/text_gold_color_dark"/>
-                <EditText
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/et_fullname"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_60sdp"
@@ -93,7 +93,7 @@
                 app:layout_constraintTop_toBottomOf="@id/ll_full_name"
                 android:orientation="vertical"
                 android:layout_marginTop="@dimen/_30sdp">
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/account_number"
@@ -103,7 +103,7 @@
                     android:gravity="center_vertical"
                     android:fontFamily="@font/avenir_medium"
                     android:textColor="@color/text_gold_color_dark"/>
-                <EditText
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/et_acc_number"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_60sdp"
@@ -130,7 +130,7 @@
                 app:layout_constraintTop_toBottomOf="@id/ll_acc_number"
                 android:orientation="vertical"
                 android:layout_marginTop="@dimen/_30sdp">
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/iban"
@@ -140,7 +140,7 @@
                     android:gravity="center_vertical"
                     android:fontFamily="@font/avenir_medium"
                     android:textColor="@color/text_gold_color_dark"/>
-                <EditText
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/et_iban"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_60sdp"
@@ -160,7 +160,7 @@
             </LinearLayout>
 
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_save_bank_details"
                 android:layout_width="@dimen/_200sdp"
                 android:layout_height="@dimen/_40sdp"

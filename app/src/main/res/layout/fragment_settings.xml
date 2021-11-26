@@ -35,7 +35,7 @@
                     android:src="@drawable/golden_logo" />
 
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_profileName"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -53,7 +53,7 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/btneditprofile"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_40sdp"
@@ -73,7 +73,7 @@
                 android:layout_marginEnd="@dimen/_20sdp"
                 android:text="@string/edit_profile"/>
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/txtChangePass"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_40sdp"
@@ -93,7 +93,7 @@
                 android:layout_marginEnd="@dimen/_20sdp"
                 android:text="@string/change_password"/>
 
-          <!--  <TextView
+          <!--  <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/txtAddBank"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_40sdp"

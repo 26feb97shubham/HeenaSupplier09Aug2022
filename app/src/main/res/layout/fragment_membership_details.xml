@@ -15,7 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="@dimen/_15ssp">
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_membership_status_txt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -26,7 +26,7 @@
                 android:fontFamily="@font/avenir_medium"
                 android:textColor="@color/gold"
                 android:textSize="@dimen/_15ssp"/>
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_viewall_txt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -40,7 +40,7 @@
                 android:textColor="@color/gold"
                 android:textSize="@dimen/_10ssp"/>
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_membership_txt"
                 android:layout_width="@dimen/_80sdp"
                 android:layout_height="@dimen/_20sdp"
@@ -55,7 +55,7 @@
                 android:textColor="@color/black"
                 android:textSize="@dimen/_7ssp"/>
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_do_u_wnt_to_featured_txt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -81,7 +81,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:padding="@dimen/_10sdp">
-                    <TextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/tv_membership_title_txt_details"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -92,7 +92,7 @@
                         android:fontFamily="@font/avenir_medium"
                         android:textColor="@color/gold"
                         android:textSize="@dimen/_11ssp"/>
-                    <TextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/tv_membership_plan_price_details"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -113,7 +113,7 @@
                         app:layout_constraintTop_toBottomOf="@id/tv_membership_title_txt_details"
                         android:layout_marginTop="@dimen/_8sdp"/>
 
-                    <TextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/tv_expiration_date_txt_details"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -125,7 +125,7 @@
                         android:fontFamily="@font/avenir_medium"
                         android:textColor="@color/gold"
                         android:textSize="@dimen/_8ssp"/>
-                    <TextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/tv_expiration_date_details"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -179,7 +179,7 @@
                 app:strokeWidth="1dp"
                 app:strokeColor="@color/gold"
                 android:layout_marginTop="@dimen/_15sdp">
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_add_new_featured"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -231,7 +231,7 @@
         android:visibility="gone"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_no_service_membership_details"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

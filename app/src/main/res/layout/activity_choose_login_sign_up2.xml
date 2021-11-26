@@ -25,7 +25,7 @@
         android:paddingBottom="@dimen/_30sdp"
         app:layout_constraintBottom_toBottomOf="parent">
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/btnLogin"
             android:layout_width="@dimen/_200sdp"
             android:layout_height="@dimen/_45sdp"
@@ -45,7 +45,7 @@
             android:elevation="@dimen/_5sdp"
             android:text="@string/log_in"/>
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/btnSignUp"
             android:layout_width="@dimen/_200sdp"
             android:layout_height="@dimen/_45sdp"

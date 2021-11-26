@@ -29,7 +29,7 @@
             app:layout_constraintEnd_toEndOf="parent"/>
 
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_subscribe"
             android:layout_width="@dimen/_200sdp"
             android:layout_height="@dimen/_40sdp"

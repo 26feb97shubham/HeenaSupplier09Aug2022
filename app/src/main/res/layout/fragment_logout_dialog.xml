@@ -27,7 +27,7 @@
             android:layout_marginTop="@dimen/_15sdp"
             android:paddingBottom="@dimen/_20sdp">
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:layout_width="@dimen/_200sdp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -40,7 +40,7 @@
                 android:textSize="@dimen/_15ssp"
                 />
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/ok"
                 android:layout_width="@dimen/_200sdp"
                 android:layout_height="@dimen/_30sdp"
@@ -55,7 +55,7 @@
                 android:textColor="@color/black"
                 android:textSize="@dimen/_12ssp" />
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/cancel"
                 android:layout_width="@dimen/_200sdp"
                 android:layout_height="@dimen/_30sdp"
