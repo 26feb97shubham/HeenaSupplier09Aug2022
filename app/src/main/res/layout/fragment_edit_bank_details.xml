@@ -166,7 +166,7 @@
                 android:layout_height="@dimen/_40sdp"
                 android:layout_weight="1"
                 android:background="@drawable/curved_gold_filled_rect_box"
-                android:text="@string/save"
+                android:text="@string/save_changes"
                 android:textSize="@dimen/_15ssp"
                 android:textColor="@color/black"
                 android:layout_marginTop="@dimen/_30sdp"

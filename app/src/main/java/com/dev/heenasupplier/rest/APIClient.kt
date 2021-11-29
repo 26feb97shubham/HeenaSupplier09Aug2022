@@ -13,6 +13,9 @@ class APIClient {
     companion object {
         private var retrofit: Retrofit? = null
         private val baseUrl: String = BASE_URL
+        var baseClient : OkHttpClient?=OkHttpClient().newBuilder().connectTimeout(80, TimeUnit.SECONDS)
+            .readTimeout(80, TimeUnit.SECONDS).writeTimeout(80, TimeUnit.SECONDS)
+            .addInterceptor(LoginInterceptor()).build()
         fun getClient(): Retrofit? {
             if (retrofit == null) {
                 val okHttpClient = OkHttpClient().newBuilder().connectTimeout(80, TimeUnit.SECONDS)

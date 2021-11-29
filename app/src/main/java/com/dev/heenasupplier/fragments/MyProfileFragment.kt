@@ -28,6 +28,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.engine.GlideException
@@ -38,6 +39,7 @@ import com.dev.heenasupplier.Dialogs.NoInternetDialog
 import com.dev.heenasupplier.R
 import com.dev.heenasupplier.`interface`.ClickInterface
 import com.dev.heenasupplier.adapters.*
+import com.dev.heenasupplier.extras.FeedData
 import com.dev.heenasupplier.models.*
 import com.dev.heenasupplier.rest.APIClient
 import com.dev.heenasupplier.rest.APIInterface
@@ -49,6 +51,8 @@ import com.dev.heenasupplier.utils.Utility.Companion.apiInterface
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.model.AddressComponent
 import com.google.android.libraries.places.widget.Autocomplete
+import com.sagrishin.collageview.CollageItemUrlData
+import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.activity_home2.*
 import kotlinx.android.synthetic.main.activity_sign_up2.*
 import kotlinx.android.synthetic.main.fragment_add_new_service.view.*
@@ -66,6 +70,7 @@ import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.random.Random.Default.nextInt
 
 
 class MyProfileFragment : Fragment() {
@@ -91,6 +96,8 @@ class MyProfileFragment : Fragment() {
     var commentsList = ArrayList<CommentsItem>()
 
     var status = 0
+    var user_profile_name : String = ""
+    private val disposable = CompositeDisposable()
 
     private var activityResultLauncher: ActivityResultLauncher<Array<String>> =
             registerForActivityResult(
@@ -145,6 +152,7 @@ class MyProfileFragment : Fragment() {
             } else if (data?.data!=null) {
                 val imagePath = data.data!!.path
                 galleryPhotos.add(imagePath.toString())
+                setUploadPhotos(galleryPhotos)
             }
         }
     }
@@ -301,7 +309,11 @@ class MyProfileFragment : Fragment() {
                         if(response.body()!!.status==1){
                             LogUtils.shortToast(requireContext(), response.body()!!.message)
                             Glide.with(requireContext()).load(response.body()!!.profile!!.image).into(mView!!.civ_profile)
-                            val name_location = response.body()!!.profile!!.username + "/" + response.body()!!.profile!!.address
+                            if(response.body()!!.profile!!.name.equals("")){
+                                user_profile_name = response.body()!!.profile!!.username!!
+                            }else{
+                                user_profile_name = response.body()!!.profile!!.name!!
+                            }
 
                             if(response.body()!!.profile!!.comment_avg.equals("")){
                                 mView!!.ratingBar.rating=0F
@@ -310,7 +322,8 @@ class MyProfileFragment : Fragment() {
                                 mView!!.ratingBar.rating = response.body()!!.profile!!.comment_avg!!.toFloat()
                                 mView!!.txtRating.text = response.body()!!.profile!!.comment_avg!!.toString()
                             }
-                            mView!!.tv_naqashat_name_location.text = name_location
+                            mView!!.tv_naqashat_name_location.text = user_profile_name
+                            mView!!.tv_naqashat_experience.text = response.body()!!.profile!!.address!!
                         }
                     }
                 } catch (e: IOException) {
@@ -608,11 +621,15 @@ class MyProfileFragment : Fragment() {
                     if (response.body()!!.status == 1) {
                         mView!!.rv_naqashat_gallery.visibility = View.VISIBLE
                         mView!!.ll_no_gallery_found.visibility = View.GONE
-                        mView!!.rv_naqashat_gallery.layoutManager = GridLayoutManager(
+                       /* mView!!.rv_naqashat_gallery.layoutManager = GridLayoutManager(
                                 requireContext(),
                                 2,
                                 GridLayoutManager.VERTICAL,
                                 false
+                        )*/
+                        mView!!.rv_naqashat_gallery.layoutManager = StaggeredGridLayoutManager(
+                            2,
+                            StaggeredGridLayoutManager.VERTICAL
                         )
                         ImageUriList = response.body()!!.gallery as ArrayList<Gallery>
                         galleryStaggeredGridAdapter = GalleryStaggeredGridAdapter(

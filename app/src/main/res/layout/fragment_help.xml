@@ -93,7 +93,7 @@
                         android:layout_width="0dp"
                         android:layout_height="@dimen/_45sdp"
                         android:layout_weight="1"
-                        android:layout_marginHorizontal="@dimen/_15sdp"
+                        android:layout_marginHorizontal="@dimen/_5sdp"
                         app:cardBackgroundColor="@color/white"
                         app:cardCornerRadius="@dimen/_6sdp">
                         <com.google.android.material.textview.MaterialTextView
@@ -111,7 +111,7 @@
                         android:layout_width="0dp"
                         android:layout_height="@dimen/_45sdp"
                         android:layout_weight="1"
-                        android:layout_marginHorizontal="@dimen/_15sdp"
+                        android:layout_marginHorizontal="@dimen/_5sdp"
                         app:cardBackgroundColor="@color/white"
                         app:cardCornerRadius="@dimen/_6sdp">
                         <com.google.android.material.textview.MaterialTextView
@@ -119,9 +119,9 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:fontFamily="@font/avenir_medium"
-                            android:text="@string/admin_chat"
+                            android:text="@string/contact_the_official"
                             android:textColor="@color/text_gold_color_dark"
-                            android:textSize="@dimen/_15ssp"
+                            android:textSize="@dimen/_12ssp"
                             android:textAllCaps="true"
                             android:gravity="center"/>
                     </com.google.android.material.card.MaterialCardView>

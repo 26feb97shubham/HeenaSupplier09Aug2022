@@ -13,7 +13,7 @@
     <string name="login">Login</string>
     <string name="dont_have_an_account_yet">Do not have an account yet ?</string>
     <string name="after_completing_your_registration_enjoy_browsing_our_services_and_features">After completing your registration, enjoy browsing our services and features.</string>
-    <string name="already_have_an_account">Already have an account?</string>
+    <string name="already_have_an_account">Do you already have an account?</string>
     <string name="please_enter_your_username">Please enter your username</string>
     <string name="please_enter_your_password">Please enter your password</string>
     <string name="invalid_password">"Invalid Password "</string>
@@ -41,6 +41,7 @@
     <string name="filter_search">Filter Search</string>
     <string name="services">Services</string>
     <string name="location">Location</string>
+    <string name="location_1">Location</string>
     <string name="low_high">Low - High</string>
     <string name="high_low">High - Low</string>
     <string name="nearby">Nearby</string>
@@ -71,9 +72,9 @@
     <string name="about_us">About Us</string>
     <string name="contact_us">Contact Us</string>
     <string name="terms_and_conditions">Terms And Conditions</string>
-    <string name="privacy_and_policy">Privacy And Policy</string>
+    <string name="privacy_and_policy">Privacy policy</string>
     <string name="frequently_asked_questions">Frequently Asked Questions</string>
-    <string name="help_page">Help Page</string>
+    <string name="help_page">Help page</string>
     <string name="logout">Logout</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
@@ -105,14 +106,14 @@
     <string name="reviews">Reviews</string>
     <string name="write_a_review">Write a review</string>
     <string name="enter_your_review_here">Enter your review here</string>
-    <string name="add_new_offers">Add new offers</string>
+    <string name="add_new_offers">Add offers</string>
     <string name="add_new_service">Add new service</string>
     <string name="upload_photo">Upload Photo</string>
     <string name="service_name">Service name</string>
     <string name="price">Price</string>
     <string name="description">Description</string>
     <string name="save">Save</string>
-    <string name="choose_services">Choose Services</string>
+    <string name="choose_services">Choose the service</string>
     <string name="offer_price">Offer Price</string>
     <string name="enter_keywords_here">Enter keywords here</string>
     <string name="from">From</string>
@@ -122,7 +123,7 @@
     <string name="bank_name">Bank Name</string>
     <string name="full_name">Full Name</string>
     <string name="account_number">Account Number</string>
-    <string name="iban">IBAN</string>
+    <string name="iban" translatable="false">IBAN</string>
     <string name="edit">Edit</string>
     <string name="general_information">General Information</string>
     <string name="message">Message</string>
@@ -231,7 +232,7 @@
     <string name="please_enter_valid_bank_name">Please enter a valid bank name</string>
     <string name="please_enter_valid_account_number">Please enter a valid account number</string>
     <string name="please_enter_valid_iban">Please enter a valid IBAN</string>
-    <string name="child_price">Child Price</string>
+    <string name="child_price">Price per child</string>
     <string name="please_enter_valid_child_price">Please enter valid child price</string>
     <string name="please_enter_valid_price">Please enter valid price</string>
     <string name="no_bookings_found">No Bookings Found</string>
@@ -267,4 +268,8 @@
     <string name="no_image_found">No Image Found!!!!!!!</string>
     <string name="you_can_select_max_5_photos">You can select max 5 photos!!!</string>
     <string name="please_allow_permissions">Please Allow Permissions</string>
+    <string name="premium_service">Premium service</string>
+    <string name="bookings">Bookings</string>
+    <string name="save_changes">Save Changes</string>
+    <string name="contact_the_official">Contact the official</string>
 </resources>

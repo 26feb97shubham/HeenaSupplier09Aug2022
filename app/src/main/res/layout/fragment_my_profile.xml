@@ -27,8 +27,6 @@
                     android:layout_width="@dimen/_100sdp"
                     android:layout_height="@dimen/_100sdp"
                     android:src="@drawable/user"
-                    app:civ_border_color="@color/gold"
-                    app:civ_border_width="4dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -43,12 +41,13 @@
                 android:layout_marginTop="@dimen/_8sdp"
                 android:layout_marginEnd="@dimen/_20sdp"
                 android:ellipsize="end"
+                android:gravity="center_vertical"
                 android:fontFamily="@font/avenir_medium"
                 android:maxLines="2"
                 android:text="Naqasha Farah / Dubai"
                 android:textAllCaps="false"
                 android:textColor="@color/gold"
-                android:textSize="@dimen/_10ssp"
+                android:textSize="@dimen/_8ssp"
                 android:textStyle="normal"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/profile_image_layout" />
@@ -76,15 +75,15 @@
                 android:id="@+id/tv_naqashat_experience"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_6sdp"
                 android:fontFamily="@font/avenir_medium"
                 android:text="5 years wedding experience"
                 android:textAllCaps="false"
                 android:textColor="@color/gold"
                 android:textSize="@dimen/_9ssp"
                 android:textStyle="normal"
-                android:visibility="gone"
-                app:layout_constraintStart_toStartOf="parent"
+                android:visibility="visible"
+                app:layout_constraintStart_toStartOf="@id/tv_naqashat_name_location"
                 app:layout_constraintTop_toBottomOf="@id/tv_naqashat_name_location" />
 
             <LinearLayout
@@ -92,7 +91,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_5sdp"
-                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_6sdp"
                 android:gravity="center"
                 android:visibility="visible"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -195,7 +194,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_10sdp"
-                android:visibility="visible"
+                android:visibility="gone"
                 app:layout_constraintTop_toBottomOf="@id/naqashat_categories_layout">
 
                 <com.google.android.material.textview.MaterialTextView
@@ -344,12 +343,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_10sdp"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:layout_constraintTop_toBottomOf="@id/naqashat_categories_layout">
 
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/card_upload_photo"
-                    android:layout_width="@dimen/_130sdp"
+                    android:layout_width="@dimen/_100sdp"
                     android:layout_height="@dimen/_30sdp"
                     android:layout_marginTop="@dimen/_8sdp"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -361,14 +360,13 @@
                     <com.google.android.material.textview.MaterialTextView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:drawablePadding="@dimen/_8sdp"
-                        android:fontFamily="@font/avenir_medium"
+                        android:fontFamily="@font/avenir_45_book"
                         android:gravity="center"
                         android:paddingHorizontal="@dimen/_8sdp"
                         android:text="@string/upload_photo"
                         android:textAllCaps="false"
                         android:textColor="@color/text_gold_color_dark"
-                        android:textSize="@dimen/_12ssp"
+                        android:textSize="@dimen/_10ssp"
                         android:textStyle="normal"
                         app:drawableStartCompat="@drawable/camera_icon_layer_list" />
                 </com.google.android.material.card.MaterialCardView>

@@ -41,6 +41,10 @@ interface ClickInterface {
         fun OnButtonClick()
     }
 
+    /*interface setAddressClick{
+        fun setAddress(myaddressItem: AddressItem?)
+    }*/
+
     interface OnAddAddressClick{
         fun OnAddAddress()
     }

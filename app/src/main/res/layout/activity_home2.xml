@@ -140,11 +140,13 @@
                 android:layout_height="@dimen/_50sdp"
                 android:background="@android:color/transparent"
                 android:fitsSystemWindows="true"
+                android:layoutDirection="ltr"
+                app:elevation="0dp"
                 app:itemIconTint="@drawable/bottom_tab_color"
                 app:labelVisibilityMode="unlabeled"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:elevation="0dp"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:menu="@menu/bottom_navigation_icon" />
         </androidx.constraintlayout.widget.ConstraintLayout>

@@ -23,7 +23,8 @@ class ServicesAdapter(private val context: Context,
                 Glide.with(context).applyDefaultRequestOptions(RequestOptions().placeholder(R.drawable.user)).load(service.gallery!![0]).into(itemView.img)
             }
             itemView.tv_services.text = service.name
-            itemView.tv_price.text = service.price!!.total
+            val price =  "AED ${service.price!!.total}"
+            itemView.tv_price.text = price
             itemView.tv_category_name.text = service.category!!.name
 
             itemView.iv_delete.setOnClickListener {
