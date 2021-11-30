@@ -95,7 +95,6 @@ class AddressSheetFragment : Fragment(),
     private var mView : View ?=null
     var placeAPIresultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            // There are no request codes
             val data: Intent? = result.data
             val place = Autocomplete.getPlaceFromIntent(data!!)
             gMap!!.moveCamera(CameraUpdateFactory.newLatLngZoom(place.latLng!!, 15F))
