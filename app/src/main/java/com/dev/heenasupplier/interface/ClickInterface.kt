@@ -16,6 +16,11 @@ interface ClickInterface {
         fun OnClickAction(position: Int, category : CategoryItem)
     }
 
+    interface OnAddressItemClick{
+        fun editAdddress(position: Int)
+        fun deleteAddress(position: Int)
+    }
+
     interface onServicesItemClick{
         fun onServicClick(position: Int)
         fun onServiceDele(position: Int)
@@ -39,6 +44,10 @@ interface ClickInterface {
 
     interface OnButtonClick{
         fun OnButtonClick()
+    }
+
+    interface onSaveAddress{
+        fun saveAddress(address : String, latitude : Double, longitude : Double)
     }
 
     /*interface setAddressClick{

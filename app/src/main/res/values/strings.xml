@@ -272,4 +272,21 @@
     <string name="bookings">Bookings</string>
     <string name="save_changes">Save Changes</string>
     <string name="contact_the_official">Contact the official</string>
+    <string name="flat_villa">Flat / Villa</string>
+    <string name="building_name">Building Name</string>
+    <string name="street_area">Street / Area</string>
+    <string name="select_country">Select Country</string>
+    <string name="set_as_default">Set as default address</string>
+    <string name="enter_your_title">Enter your title</string>
+    <string name="enter_flat_villa">Enter flat/villa</string>
+    <string name="enter_building_name">Enter building name</string>
+    <string name="enter_your_street_area">Enter your street/area</string>
+    <string name="please_enter_valid_flat_villa_name">Please enter valid flat/villa name</string>
+    <string name="please_enter_valid_building_name">Please enter a valid building name</string>
+    <string name="please_enter_valid_title">Please enter a valid title for your address</string>
+    <string name="please_enter_valid_street_area">Please enter a valid street area</string>
+    <string name="select_your_address">Select your address</string>
+    <string name="move_the_pin_on_the_map_to_select_your_exact_location_or_enter_it_manually">Move the pin on the map to select your exact location   or enter it manually.</string>
+    <string name="enter_manually">Enter manually</string>
+    <string name="there_are_no_locations">There are no locations</string>
 </resources>

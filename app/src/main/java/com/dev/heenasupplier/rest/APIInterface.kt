@@ -129,4 +129,16 @@ interface APIInterface {
 
     @POST(APIUtils.BUYSUBSCRIPTION)
     fun buySubscription(@Body body: RequestBody?) : Call<BuySubscriptionResponse?>?
+
+    @GET(APIUtils.SHOWADDRESS)
+    fun showAddress(@Path("address_id") address_id: Int, @Query("lang") lang : String) : Call<ShowAddressResponse?>?
+
+    @POST(APIUtils.ADDADDRESS)
+    fun addAddress(@Body body: RequestBody?) : Call<AddEditDeleteAddressResponse?>?
+
+    @GET(APIUtils.ADDRESSLISTING)
+    fun getAddressList(@Path("user_id") user_id: Int, @Query("lang") lang : String) : Call<AddressListingResponse?>?
+
+    @GET(APIUtils.DELETEADDRESS)
+    fun deleteAddress(@Path("user_id") user_id: Int, @Query("lang") lang : String) : Call<AddEditDeleteAddressResponse?>?
 }

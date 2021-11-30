@@ -22,35 +22,71 @@
         android:textStyle="normal"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/noLocationView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:paddingTop="@dimen/_10sdp"
+        android:paddingBottom="@dimen/_10sdp"
+        android:layout_centerInParent="true">
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/imgNoti"
+            android:layout_width="@dimen/_150sdp"
+            android:layout_height="@dimen/_150sdp"
+            android:src="@drawable/location_pin_dark_brown"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/txtTitle"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/_35sdp"
+            android:fontFamily="@font/roboto_medium_numbers"
+            android:textColor="@color/gold"
+            android:textSize="@dimen/_20ssp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_marginStart="@dimen/_10sdp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:text="@string/there_are_no_locations"
+            app:layout_constraintTop_toBottomOf="@+id/imgNoti"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_locations"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/tv_saved_address"
         android:layout_marginTop="@dimen/_20sdp"
         android:paddingHorizontal="@dimen/_15sdp"
+        android:visibility="gone"
         android:background="@drawable/left_right_white_filled_background">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_address_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/_10sdp"/>
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/tv_add_new_address"
-            android:layout_width="@dimen/_200sdp"
-            android:layout_height="@dimen/_40sdp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:text="@string/add_new_address"
-            android:textAllCaps="true"
-            android:layout_marginVertical="@dimen/_20sdp"
-            android:textColor="@color/black"
-            android:gravity="center"
-            android:background="@drawable/curved_gold_filled_rect_box"
-            android:layout_marginTop="@dimen/_40sdp"
-            android:fontFamily="@font/avenir_medium"
-            android:textSize="@dimen/_13ssp"
-            android:textStyle="bold"/>
+            android:layout_marginTop="@dimen/_10sdp"
+            tools:listitem="@layout/saved_address_listing"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_add_new_address"
+        android:layout_width="@dimen/_200sdp"
+        android:layout_height="@dimen/_40sdp"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:text="@string/add_new_address"
+        android:textAllCaps="true"
+        android:layout_marginVertical="@dimen/_20sdp"
+        android:textColor="@color/black"
+        android:gravity="center"
+        android:background="@drawable/curved_gold_filled_rect_box"
+        android:layout_marginTop="@dimen/_40sdp"
+        android:fontFamily="@font/avenir_medium"
+        android:textSize="@dimen/_13ssp"
+        android:textStyle="normal"/>
+
 
 </RelativeLayout>

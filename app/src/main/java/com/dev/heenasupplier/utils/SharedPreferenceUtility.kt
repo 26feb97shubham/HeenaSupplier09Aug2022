@@ -200,6 +200,7 @@ class SharedPreferenceUtility {
         const val IsLogin = "isLogin"
         const val IsWelcomeShow = "isWelcomeShow"
         const val ISINTRODUCTION = "isIntroduction"
+        const val SavedAddress= "savedAddress"
         const val FIRSTTIME = "isFirstTime"
         const val ISSELECTLANGUAGE = "isSelectLanguage"
         const val IsRemembered = "isRemembered"
@@ -222,6 +223,7 @@ class SharedPreferenceUtility {
         const val MembershipDesc = "membershipDesc"
         const val MembershipInfo = "membershipInfo"
         const val ISBANKADDED = "isBankAdded"
+        const val PLACECLICK = "placeClick"
 
         @Synchronized
         fun getInstance(): SharedPreferenceUtility {

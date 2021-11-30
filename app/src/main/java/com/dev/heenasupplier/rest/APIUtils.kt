@@ -45,5 +45,10 @@ class APIUtils {
         const val SHOWBOOKING : String = "booking/{booking_id}"
         const val SERVICEIMAGEDELETE : String = "service/image/delete/{gallery_id}"
         const val BUYSUBSCRIPTION : String = "subsciptions"
+        const val SHOWADDRESS : String = "address/show/{address_id}"
+        const val ADDADDRESS : String = "address"
+        const val EDITADDRESS : String = "address/edit"
+        const val DELETEADDRESS : String = "address/delete/{user_id}"
+        const val ADDRESSLISTING : String = "address/{user_id}"
     }
 }
