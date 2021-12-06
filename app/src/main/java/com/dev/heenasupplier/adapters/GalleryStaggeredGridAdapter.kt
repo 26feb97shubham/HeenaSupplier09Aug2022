@@ -36,7 +36,7 @@ import java.io.IOException
 class GalleryStaggeredGridAdapter(
     private val context: Context,
     private val ImageUriList: ArrayList<Gallery>,
-    private val onRecyclerItemClick: ClickInterface.OnRecyclerItemClick
+    private val onRecyclerItemClick: ClickInterface.OnGalleryItemClick
 ) :
     RecyclerView.Adapter<GalleryStaggeredGridAdapter.PostViewHolder>() {
     private val set = ConstraintSet()
@@ -77,6 +77,10 @@ class GalleryStaggeredGridAdapter(
 
             v.delete_image.setOnClickListener {
                 onRecyclerItemClick.OnClickAction(position)
+            }
+
+            v.setOnClickListener {
+                onRecyclerItemClick.onShowImage(position)
             }
 
             Glide.with(context).load(imagePath)

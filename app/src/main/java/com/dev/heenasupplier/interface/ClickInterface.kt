@@ -9,7 +9,8 @@ interface ClickInterface {
     }
 
     interface OnGalleryItemClick{
-        fun OnClickAction(position: Int, )
+        fun OnClickAction(position: Int)
+        fun onShowImage(position: Int)
     }
 
     interface OnCategoryItemClick{

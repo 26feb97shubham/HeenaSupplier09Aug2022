@@ -42,7 +42,7 @@ class AddNewCardFragment : Fragment() {
         }
 
         mView!!.tv_save_card.setOnClickListener {
-            findNavController().navigate(R.id.action_addNewCardFragment_to_paymentFragment)
+            findNavController().navigate(R.id.myCardsFragment)
         }
 
         addTextWatcher()

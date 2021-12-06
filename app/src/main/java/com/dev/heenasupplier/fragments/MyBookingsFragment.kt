@@ -17,6 +17,7 @@ import com.dev.heenasupplier.Dialogs.NoInternetDialog
 import com.dev.heenasupplier.R
 import com.dev.heenasupplier.`interface`.ClickInterface
 import com.dev.heenasupplier.adapters.BookingHistoryAdapter
+import com.dev.heenasupplier.adapters.BookingsAdapter
 import com.dev.heenasupplier.adapters.CurrentBookingsAdapter
 import com.dev.heenasupplier.models.BookingItem
 import com.dev.heenasupplier.models.BookingsListingResponse
@@ -24,6 +25,7 @@ import com.dev.heenasupplier.utils.LogUtils
 import com.dev.heenasupplier.utils.SharedPreferenceUtility
 import com.dev.heenasupplier.utils.Utility
 import com.dev.heenasupplier.utils.Utility.Companion.apiInterface
+import com.dev.heenasupplier.utils.Utility.Companion.booking_item_type
 import kotlinx.android.synthetic.main.activity_home2.*
 import kotlinx.android.synthetic.main.fragment_my_bookings.*
 import kotlinx.android.synthetic.main.fragment_my_bookings.view.*
@@ -32,8 +34,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class MyBookingsFragment : Fragment() {
-    lateinit var currentBookingsAdapter: CurrentBookingsAdapter
-    lateinit var bookingHistoryAdapter: BookingHistoryAdapter
+    lateinit var bookingsAdapter : BookingsAdapter
     var drawable1 : Drawable?= null
     var drawable2 : Drawable?= null
     val arabic_animId = R.anim.layout_animation_right_to_left
@@ -45,7 +46,6 @@ class MyBookingsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         mView = inflater.inflate(
                 R.layout.fragment_my_bookings, container, false)
         return mView
@@ -60,11 +60,15 @@ class MyBookingsFragment : Fragment() {
             noInternetDialog.setRetryCallback(object : NoInternetDialog.RetryInterface{
                 override fun retry() {
                     noInternetDialog.dismiss()
+                    booking_item_type = 1
                     getCurrentBookings()
                 }
 
             })
             noInternetDialog.show(requireActivity().supportFragmentManager, "My Bookings Fragment")
+        }else{
+            booking_item_type = 1
+            getCurrentBookings()
         }
 
         requireActivity().iv_back.setOnClickListener {
@@ -75,7 +79,7 @@ class MyBookingsFragment : Fragment() {
 
 
         mView!!.rv_tabs_listing.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-        getCurrentBookings()
+
 
         tv_current_bookings.setOnClickListener {
             drawable1 = resources.getDrawable(R.drawable.little_gold_curved)
@@ -84,6 +88,7 @@ class MyBookingsFragment : Fragment() {
             tv_bookings_history.background = drawable2
             tv_current_bookings.setTextColor(Color.parseColor("#FFFFFFFF"))
             tv_bookings_history.setTextColor(Color.parseColor("#D0B67A"))
+            booking_item_type = 1
             getCurrentBookings()
         }
 
@@ -94,6 +99,7 @@ class MyBookingsFragment : Fragment() {
             tv_bookings_history.background = drawable2
             tv_current_bookings.setTextColor(Color.parseColor("#D0B67A"))
             tv_bookings_history.setTextColor(Color.parseColor("#FFFFFFFF"))
+           booking_item_type = 2
            getBookingsHistory()
         }
 
@@ -192,40 +198,44 @@ class MyBookingsFragment : Fragment() {
     }
 
     private fun setBookingsAdapter() {
-        currentBookingsAdapter = CurrentBookingsAdapter(requireContext(), bookingList, object : ClickInterface.OnRecyclerItemClick{
+        bookingsAdapter = BookingsAdapter(requireContext(), bookingList, object : ClickInterface.OnRecyclerItemClick{
             override fun OnClickAction(position: Int) {
                 val bundle = Bundle()
                 bundle.putInt("booking_id", bookingList[position].booking_id!!)
                 findNavController().navigate(R.id.action_appointmentFragment_to_bookingDetailsFragment, bundle)
             }
+
         })
+
         if (SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang,"")=="ar"){
             layoutAnimationController = AnimationUtils.loadLayoutAnimation(requireContext(), arabic_animId)
         }else{
             layoutAnimationController = AnimationUtils.loadLayoutAnimation(requireContext(), english_animId)
         }
         rv_tabs_listing.layoutAnimation = layoutAnimationController
-        rv_tabs_listing.adapter = currentBookingsAdapter
-        currentBookingsAdapter.notifyDataSetChanged()
+        rv_tabs_listing.adapter = bookingsAdapter
+        bookingsAdapter.notifyDataSetChanged()
         rv_tabs_listing.scheduleLayoutAnimation()
     }
 
     private fun setBookingsHistoryAdapter() {
-        bookingHistoryAdapter = BookingHistoryAdapter(requireContext(), bookingList, object : ClickInterface.OnRecyclerItemClick{
+        bookingsAdapter = BookingsAdapter(requireContext(), bookingList, object : ClickInterface.OnRecyclerItemClick{
             override fun OnClickAction(position: Int) {
-                var bundle = Bundle()
+                val bundle = Bundle()
                 bundle.putInt("booking_id", bookingList[position].booking_id!!)
                 findNavController().navigate(R.id.action_appointmentFragment_to_bookingDetailsFragment, bundle)
             }
+
         })
+
         if (SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang,"")=="ar"){
             layoutAnimationController = AnimationUtils.loadLayoutAnimation(requireContext(), arabic_animId)
         }else{
             layoutAnimationController = AnimationUtils.loadLayoutAnimation(requireContext(), english_animId)
         }
         mView!!. rv_tabs_listing.layoutAnimation = layoutAnimationController
-        mView!!.rv_tabs_listing.adapter = bookingHistoryAdapter
-        bookingHistoryAdapter.notifyDataSetChanged()
+        mView!!.rv_tabs_listing.adapter = bookingsAdapter
+        bookingsAdapter.notifyDataSetChanged()
         mView!!.rv_tabs_listing.scheduleLayoutAnimation()
     }
 

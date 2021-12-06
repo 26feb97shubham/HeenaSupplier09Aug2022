@@ -224,32 +224,17 @@ class AddressSheetFragment : Fragment(),
 
     private fun getCountires() {
         if (Utility.isNetworkAvailable()){
-            val call = Utility.apiInterface.getCountries()
+            val call = apiInterface.getCountries()
             call!!.enqueue(object : Callback<CountryResponse?> {
                 override fun onResponse(call: Call<CountryResponse?>, response: Response<CountryResponse?>) {
                     try {
                         if (response.body() != null) {
                             if (response.body()!!.status==1){
-                                cards_countries_listing.visibility = View.VISIBLE
-                                rv_countries_listing.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-                                countryList = response.body()!!.country as java.util.ArrayList<CountryItem>
-                                countryListingAdapter = CountryListingAdapter(requireContext(), countryList, object :  ClickInterface.OnRecyclerItemClick{
-                                    override fun OnClickAction(position: Int) {
-                                        tv_emirate.text = countryList[position].name
-                                        selectedCountry = tv_emirate.text.toString().trim()
-                                        cards_countries_listing.visibility = View.GONE
-                                        countryId = returnCountryId(selectedCountry!!, countryList)
-                                        Log.e("service_id", countryId.toString())
-                                    }
-                                })
-                                rv_countries_listing.adapter = countryListingAdapter
-                                countryListingAdapter.notifyDataSetChanged()
+                                countryList = response.body()!!.country as ArrayList<CountryItem>
                             }else{
-                                cards_countries_listing.visibility = View.GONE
                                 LogUtils.shortToast(requireContext(), getString(R.string.response_isnt_successful))
                             }
                         }else {
-                            cards_countries_listing.visibility = View.GONE
                             LogUtils.shortToast(requireContext(), getString(R.string.response_isnt_successful))
                         }
                     } catch (e: IOException) {

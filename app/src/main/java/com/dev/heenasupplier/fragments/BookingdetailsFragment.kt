@@ -158,8 +158,8 @@ class BookingdetailsFragment : Fragment() {
                             }
                         }
 
-                        mView!!.tv_service.text = booking!!.service!!.name
-                        mView!!.tv_service_desc.text = booking.service!!.description
+                        mView!!.tv_service.text = booking.service!!.name
+                        mView!!.tv_service_desc.text = booking.service.description
                         val street = booking.address!!.street
                         val country = booking.address.country
                         mView!!.tv_address.text = booking.location?.name

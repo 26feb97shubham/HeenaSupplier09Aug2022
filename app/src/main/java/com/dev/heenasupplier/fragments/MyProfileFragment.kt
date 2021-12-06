@@ -94,6 +94,7 @@ class MyProfileFragment : Fragment() {
     var serviceslisting = ArrayList<Service>()
     var offersListing = ArrayList<OfferItem>()
     var commentsList = ArrayList<CommentsItem>()
+    var galleryImageList = ArrayList<String>()
 
     var status = 0
     var user_profile_name : String = ""
@@ -134,7 +135,10 @@ class MyProfileFragment : Fragment() {
             imagePath = ""
             if (data?.clipData != null) {
                 val cout: Int = data.clipData!!.itemCount
-                for (i in 0 until cout) {
+                if(cout+galleryPhotos.size==0){
+                    LogUtils.shortToast(requireContext(), getString(R.string.please_select_atleast_one_image_to_proceed))
+                }else if(cout+galleryPhotos.size<=10){
+                    for (i in 0 until cout) {
                     val imageurl: Uri = data.clipData!!.getItemAt(i).uri
                     if (imageurl.toString().startsWith("content")) {
                         imagePath = getRealPath(imageurl)!!
@@ -142,13 +146,11 @@ class MyProfileFragment : Fragment() {
                         imagePath = imageurl.getPath()!!
                     }
                     galleryPhotos.add(imagePath)
-                }
-                if (galleryPhotos.size==0){
-                    LogUtils.shortToast(requireContext(), getString(R.string.please_select_atleast_one_image_to_proceed))
-                }else{
+                    }
                     setUploadPhotos(galleryPhotos)
+                }else{
+                    LogUtils.shortToast(requireContext(), "Only 10 images can be selected")
                 }
-
             } else if (data?.data!=null) {
                 val imagePath = data.data!!.path
                 galleryPhotos.add(imagePath.toString())
@@ -488,7 +490,7 @@ class MyProfileFragment : Fragment() {
     }
 
     private fun getServices() {
-        mView!!.fragment_profile_progressBar.visibility = View.GONE
+        mView!!.fragment_profile_progressBar.visibility = View.VISIBLE
         requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         val call = apiInterface.serviceslisting(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId,0),
                 SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, ""))
@@ -635,7 +637,7 @@ class MyProfileFragment : Fragment() {
                         galleryStaggeredGridAdapter = GalleryStaggeredGridAdapter(
                                 requireContext(),
                                 ImageUriList,
-                                object : ClickInterface.OnRecyclerItemClick {
+                                object : ClickInterface.OnGalleryItemClick {
                                     override fun OnClickAction(position: Int) {
                                         val call = apiInterface.deletegalleryimage(ImageUriList[position].gallery_id)
                                         call!!.enqueue(object : Callback<DeleteGalleryImage?> {
@@ -679,6 +681,17 @@ class MyProfileFragment : Fragment() {
                                                 LogUtils.shortToast(requireContext(), getString(R.string.check_internet))
                                             }
                                         })
+                                    }
+
+                                    override fun onShowImage(position: Int) {
+                                       galleryImageList.clear()
+                                        galleryImageList.add(ImageUriList[position].image)
+
+                                        val bundle = Bundle()
+                                        bundle.putStringArrayList("gallery",
+                                                galleryImageList as ArrayList<String>?
+                                        )
+                                        findNavController().navigate(R.id.viewImageFragment, bundle)
                                     }
 
                                 }
@@ -791,6 +804,7 @@ class MyProfileFragment : Fragment() {
         intent.type = "image/*"
         intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+        uri = getOutputMediaFileUri(MEDIA_TYPE_IMAGE)
         intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
         status = PICK_IMAGE_FROM_GALLERY
         resultLauncher.launch(intent)

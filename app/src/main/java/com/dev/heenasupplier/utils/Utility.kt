@@ -37,6 +37,7 @@ class Utility {
         val apiInterface = APIClient.getClient()!!.create(APIInterface::class.java)
         var serviceslisting = ArrayList<Service>()
         val IMAGE_DIRECTORY_NAME = "Heena_Supplier"
+        var booking_item_type = 0
 
         fun changeLanguage(context: Context, language:String){
             val locale = Locale(language)

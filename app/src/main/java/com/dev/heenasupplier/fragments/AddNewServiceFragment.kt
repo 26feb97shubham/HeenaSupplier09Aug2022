@@ -199,39 +199,39 @@ class AddNewServiceFragment : Fragment() {
                             pathList.add(imagePath)
                             Log.e("pathList", pathList.size.toString())
                         }
+                        mView!!.rv_uploaded_photos.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+                        addNewPhotosAdapter = AddNewPhotosAdapter(requireContext(), pathList, object : ClickInterface.OnRecyclerItemClick {
+                            override fun OnClickAction(position: Int) {
+                                if(galleryItemListSize>position) {
+                                    val alert = android.app.AlertDialog.Builder(requireContext())
+                                    alert.setMessage(requireContext().getString(R.string.delete_message))
+                                    alert.setCancelable(false)
+                                    alert.setPositiveButton(getString(R.string.yes)) { dialog, i ->
+                                        dialog.cancel()
+                                        deleteServerimage(position)
+                                    }
+                                    alert.setNegativeButton(getString(R.string.no)) { dialog, i ->
+                                        dialog.cancel()
+                                    }
+                                    alert.show()
+                                }
+                                else {
+                                    Log.e("check", "" + position)
+                                    pathList.removeAt(position)
+                                    mView!!.iv_upload_photo.isEnabled = (pathList.size<5)
+                                    Log.e("check size", "" + pathList.size)
+                                    mView!!.rv_uploaded_photos.adapter=addNewPhotosAdapter
+                                    addNewPhotosAdapter.notifyDataSetChanged()
+                                }
+                                mView!!.iv_upload_photo.alpha = 1f
+                                mView!!.iv_upload_photo.isEnabled = true
+                            }
+                        })
+                        mView!!.rv_uploaded_photos.adapter = addNewPhotosAdapter
+                        addNewPhotosAdapter.notifyDataSetChanged()
                     }else{
                         LogUtils.shortToast(requireContext(), "Only 5 images can be selected")
                     }
-                    mView!!.rv_uploaded_photos.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-                    addNewPhotosAdapter = AddNewPhotosAdapter(requireContext(), pathList, object : ClickInterface.OnRecyclerItemClick {
-                        override fun OnClickAction(position: Int) {
-                            if(galleryItemListSize>position) {
-                                val alert = android.app.AlertDialog.Builder(requireContext())
-                                alert.setMessage(requireContext().getString(R.string.delete_message))
-                                alert.setCancelable(false)
-                                alert.setPositiveButton(getString(R.string.yes)) { dialog, i ->
-                                    dialog.cancel()
-                                    deleteServerimage(position)
-                                }
-                                alert.setNegativeButton(getString(R.string.no)) { dialog, i ->
-                                    dialog.cancel()
-                                }
-                                alert.show()
-                            }
-                            else {
-                                Log.e("check", "" + position)
-                                pathList.removeAt(position)
-                                mView!!.iv_upload_photo.isEnabled = (pathList.size<5)
-                                Log.e("check size", "" + pathList.size)
-                                mView!!.rv_uploaded_photos.adapter=addNewPhotosAdapter
-                                addNewPhotosAdapter.notifyDataSetChanged()
-                            }
-                            mView!!.iv_upload_photo.alpha = 1f
-                            mView!!.iv_upload_photo.isEnabled = true
-                        }
-                    })
-                    mView!!.rv_uploaded_photos.adapter = addNewPhotosAdapter
-                    addNewPhotosAdapter.notifyDataSetChanged()
                 } else if (data.data != null) {
                     var imagePath: String = data.data?.path!!
                 }else{
