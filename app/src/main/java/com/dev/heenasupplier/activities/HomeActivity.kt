@@ -21,13 +21,12 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.dev.heenasupplier.R
 import com.dev.heenasupplier.utils.SharedPreferenceUtility
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_home2.*
 import kotlinx.android.synthetic.main.side_top_view.view.*
 
 
 class HomeActivity : AppCompatActivity() {
-    var doubleClick:Boolean=false
+    private var doubleClick:Boolean=false
     private lateinit var navController: NavController
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,12 +70,12 @@ class HomeActivity : AppCompatActivity() {
             SharedPreferenceUtility.getInstance().hideSoftKeyBoard(this, home_layout)
         }
 
-        profile_picture = SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.ProfilePic, "")
+        profile_picture = SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.ProfilePic, ""]
         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, GravityCompat.START)
 
 
         val requestOption = RequestOptions().centerCrop()
-        Glide.with(this).load(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.ProfilePic, ""))
+        Glide.with(this).load(SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.ProfilePic, ""])
             .diskCacheStrategy(DiskCacheStrategy.ALL)
             .listener(object : RequestListener<Drawable> {
                 override fun onLoadFailed(p0: GlideException?, p1: Any?, p2: com.bumptech.glide.request.target.Target<Drawable>?, p3: Boolean): Boolean {
@@ -92,7 +91,7 @@ class HomeActivity : AppCompatActivity() {
             }).apply(requestOption).into(menuImg)
 
 
-        Glide.with(this).load(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.ProfilePic, ""))
+        Glide.with(this).load(SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.ProfilePic, ""])
             .diskCacheStrategy(DiskCacheStrategy.ALL)
             .listener(object : RequestListener<Drawable> {
                 override fun onLoadFailed(p0: GlideException?, p1: Any?, p2: com.bumptech.glide.request.target.Target<Drawable>?, p3: Boolean): Boolean {
@@ -108,8 +107,8 @@ class HomeActivity : AppCompatActivity() {
             }).apply(requestOption).into(headerView.userIcon)
 
 
-        headerView.tv_name.text = SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.Username, "")
-        headerView.tv_address.text = SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.Address, "")
+        headerView.tv_name.text = SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.Username, ""]
+        headerView.tv_address.text = SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.Address, ""]
 
         iv_back.setOnClickListener {
             Log.e("Dest", findNavController(R.id.nav_home_host_fragment).currentDestination?.id.toString())
@@ -164,7 +163,7 @@ class HomeActivity : AppCompatActivity() {
         else{
 
             doubleClick=true
-            Handler(Looper.getMainLooper()).postDelayed(Runnable {
+            Handler(Looper.getMainLooper()).postDelayed({
                 toast.show()
                 doubleClick = false
             }, 500)

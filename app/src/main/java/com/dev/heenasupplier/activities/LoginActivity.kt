@@ -1,14 +1,13 @@
 package com.dev.heenasupplier.activities
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.IntentFilter
 import android.net.ConnectivityManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.text.SpannableString
 import android.text.TextUtils
 import android.text.method.PasswordTransformationMethod
-import android.text.style.UnderlineSpan
 import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
@@ -23,8 +22,8 @@ import com.dev.heenasupplier.rest.APIInterface
 import com.dev.heenasupplier.utils.LogUtils
 import com.dev.heenasupplier.utils.SharedPreferenceUtility
 import com.dev.heenasupplier.utils.Utility
-import com.dev.heenasupplier.utils.Utility.Companion.deviceId
 import com.dev.heenasupplier.utils.Utility.Companion.getFCMToken
+import com.dev.heenasupplier.utils.Utility.Companion.networkChangeReceiver
 import kotlinx.android.synthetic.main.activity_login2.*
 import kotlinx.android.synthetic.main.activity_login2.progressBar
 import kotlinx.android.synthetic.main.activity_login2.tv_login
@@ -37,21 +36,24 @@ import retrofit2.Response
 import java.io.IOException
 
 class LoginActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityReceiverListener {
-    var remembered:Boolean=false
-    var username: String = ""
-    var password: String = ""
-    var emailaddress: String = ""
-    var myuserId: Int = 0
-    var showPass = false
+    private var remembered=false
+    private var username = ""
+    private var password = ""
+    private var emailaddress = ""
+    private var myuserId = 0
+    private var showPass = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login2)
-        tv_signup.setText(getString(R.string.sign_up))
+        tv_signup.text = getString(R.string.sign_up)
+        networkChangeReceiver = ConnectivityReceiver()
+        networkChangeReceiver!!.NetworkChangeReceiver(this)
         setUpViews()
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun setUpViews() {
-        if(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.IsRemembered, false)){
+        if(SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.IsRemembered, false]){
             if(SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""]=="en") {
                 chkRememberMe.setCompoundDrawablesWithIntrinsicBounds(R.drawable.check, 0, 0, 0)
             }
@@ -140,14 +142,11 @@ class LoginActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRece
             startActivity(Intent(this, SignUpActivity::class.java))
         }
 
-        scrollViewlogin.setOnTouchListener(object : View.OnTouchListener{
-            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-                edtUsername.clearFocus()
-                edtPass.clearFocus()
-                return false
-            }
-
-        })
+        scrollViewlogin.setOnTouchListener { _, _ ->
+            edtUsername.clearFocus()
+            edtPass.clearFocus()
+            false
+        }
 
     }
 
@@ -156,31 +155,31 @@ class LoginActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRece
         username = edtUsername.text.toString().trim()
         password= edtPass.text.toString().trim()
 
-        if (TextUtils.isEmpty(username)) {
-            edtUsername.requestFocus()
-            edtUsername.error=getString(R.string.please_enter_your_username)
-            LogUtils.shortToast(this, getString(R.string.please_enter_your_username))
+        when {
+            TextUtils.isEmpty(username) -> {
+                edtUsername.requestFocus()
+                edtUsername.error=getString(R.string.please_enter_your_username)
+                LogUtils.shortToast(this, getString(R.string.please_enter_your_username))
 
-        }
-
-        else if (TextUtils.isEmpty(password)) {
-            edtPass.requestFocus()
-            edtPass.error=getString(R.string.please_enter_your_password)
-            LogUtils.shortToast(this, getString(R.string.please_enter_your_password))
-        }
-
-        else {
-            if(remembered){
-                SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.IsRemembered, true)
-                SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.Username, username)
-                SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.Password, password)
             }
-            else{
-                SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.IsRemembered, false)
-                SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.Username, "")
-                SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.Password, "")
+            TextUtils.isEmpty(password) -> {
+                edtPass.requestFocus()
+                edtPass.error=getString(R.string.please_enter_your_password)
+                LogUtils.shortToast(this, getString(R.string.please_enter_your_password))
             }
-            getLogin()
+            else -> {
+                if(remembered){
+                    SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.IsRemembered, true)
+                    SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.Username, username)
+                    SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.Password, password)
+                }
+                else{
+                    SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.IsRemembered, false)
+                    SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.Username, "")
+                    SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.Password, "")
+                }
+                getLogin()
+            }
         }
     }
 
@@ -190,13 +189,11 @@ class LoginActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRece
 
         val apiInterface = APIClient.getClient()!!.create(APIInterface::class.java)
         val builder = APIClient.createBuilder(arrayOf("username", "password", "device_token","lang"),
-                arrayOf(username.trim({ it <= ' ' }),
-                        password.trim({it <= ' '}),
-                        SharedPreferenceUtility.getInstance()
-                            .get(SharedPreferenceUtility.FCMTOKEN, "")
+                arrayOf(username.trim { it <= ' ' },
+                        password.trim { it <= ' ' },
+                        SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.FCMTOKEN, ""]
                             .toString(),
-                        SharedPreferenceUtility.getInstance()
-                            .get(SharedPreferenceUtility.SelectedLang, "")
+                        SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""]
                             .toString()))
 
         val call = apiInterface.login(builder.build())
@@ -206,27 +203,31 @@ class LoginActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRece
                 window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 try {
                     if(response.isSuccessful){
-                        if (response.body()!!.status==1){
-                            SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.IsLogin, true)
-                            SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.IsVerified, true)
-                            myuserId = response.body()!!.user!!.user_id!!
-           /*                 SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.ProfilePic, response.body()!!.user!!.image)*/
-                            SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.UserId, myuserId)
-                            SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.ProfilePic, response.body()!!.user!!.image)
-                            SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.Username, response.body()!!.user!!.username)
-                            SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.Address, response.body()!!.user!!.address)
-                            startActivity(Intent(this@LoginActivity, HomeActivity::class.java).putExtra(SharedPreferenceUtility.UserId, myuserId))
-                        }else if (response.body()!!.status==2){
-                            emailaddress = response.body()!!.user!!.email!!
-                            SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.UserEmail, emailaddress)
-                            SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.IsLogin, false)
-                            SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.IsVerified, false)
-                            sendOTP()
-                            startActivity(Intent(this@LoginActivity, OtpVerificationActivity::class.java).putExtra("ref", "1").
-                            putExtra("emailaddress", SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserEmail, "")))
-                        }
-                        else{
-                            LogUtils.longToast(this@LoginActivity, response.body()!!.message)
+                        when (response.body()!!.status) {
+                            1 -> {
+                                SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.IsLogin, true)
+                                SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.IsVerified, true)
+                                myuserId = response.body()!!.user!!.user_id!!
+                                /*                 SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.ProfilePic, response.body()!!.user!!.image)*/
+                                SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.UserId, myuserId)
+                                SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.ProfilePic, response.body()!!.user!!.image)
+                                SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.Username, response.body()!!.user!!.username)
+                                SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.Address, response.body()!!.user!!.address)
+                                startActivity(Intent(this@LoginActivity, HomeActivity::class.java).putExtra(SharedPreferenceUtility.UserId, myuserId))
+                            }
+                            2 -> {
+                                emailaddress = response.body()!!.user!!.email!!
+                                SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.UserEmail, emailaddress)
+                                SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.IsLogin, false)
+                                SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.IsVerified, false)
+                                sendOTP()
+                                startActivity(Intent(this@LoginActivity, OtpVerificationActivity::class.java).putExtra("ref", "1").putExtra("emailaddress",
+                                    SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.UserEmail, ""]
+                                ))
+                            }
+                            else -> {
+                                LogUtils.longToast(this@LoginActivity, response.body()!!.message)
+                            }
                         }
                     }else{
                         LogUtils.longToast(this@LoginActivity, getString(R.string.response_isnt_successful))
@@ -294,11 +295,9 @@ class LoginActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRece
 
     override fun onResume() {
         super.onResume()
-        ConnectivityReceiver.connectivityReceiverListener = this
-        registerReceiver(ConnectivityReceiver(),
-            IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
-        )
-        if(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.IsRemembered, false)){
+        val intentFilter = IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
+        registerReceiver(networkChangeReceiver, intentFilter)
+        if(SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.IsRemembered, false]){
             if(SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""]=="en") {
                 chkRememberMe.setCompoundDrawablesWithIntrinsicBounds(R.drawable.check, 0, 0, 0)
             }
@@ -321,9 +320,12 @@ class LoginActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRece
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        unregisterReceiver(ConnectivityReceiver())
+
+    override fun onPause() {
+        super.onPause()
+        if (networkChangeReceiver != null) {
+            unregisterReceiver(networkChangeReceiver)
+        }
     }
 
     companion object{

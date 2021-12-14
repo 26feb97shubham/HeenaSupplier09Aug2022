@@ -1,5 +1,6 @@
 package com.dev.heenasupplier.`interface`
 
+import com.android.billingclient.api.SkuDetails
 import com.dev.heenasupplier.models.CategoryItem
 import java.util.*
 
@@ -89,5 +90,10 @@ interface ClickInterface {
 
     interface OnChatWithAdminClick{
         fun OnChatWithAdmin()
+    }
+
+    interface OnQueryProductsListener {
+        fun onSuccess(products: List <SkuDetails> )
+        fun onFailure(error: Error)
     }
 }

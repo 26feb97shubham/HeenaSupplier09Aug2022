@@ -1,6 +1,7 @@
 package com.dev.heenasupplier.activities
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.content.IntentFilter
@@ -8,24 +9,21 @@ import android.location.Address
 import android.location.Geocoder
 import android.net.ConnectivityManager
 import android.net.Uri
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.text.TextUtils
 import android.text.method.PasswordTransformationMethod
-import android.text.style.UnderlineSpan
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
 import android.view.animation.AlphaAnimation
-import android.widget.ArrayAdapter
-import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
-import androidx.core.app.ActivityCompat
 import androidx.core.content.FileProvider
 import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -59,9 +57,7 @@ import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import kotlinx.android.synthetic.main.activity_sign_up2.*
 import okhttp3.MediaType
 import okhttp3.RequestBody
-import okhttp3.ResponseBody
 import org.json.JSONException
-import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -72,26 +68,26 @@ import java.util.*
 
 class SignUpActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityReceiverListener {
     var username: String = ""
-    var mobilenumber: String = ""
+    private var mobilenumber: String = ""
     var emailaddress: String = ""
-    var emirates : String?= ""
+    private var emirates : String?= ""
     var location : String? = ""
     var password: String = ""
-    var confirmPassword: String = ""
-    private val PERMISSION_CAMERA_EXTERNAL_STORAGE_CODE = 301
-    private val PERMISSIONS_1 = arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    private var confirmPassword: String = ""
+    private val PERMISSIONS_1 = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.MANAGE_EXTERNAL_STORAGE)
+    } else {
+        arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    }
     private val PERMISSIONS_2 = arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION)
     private var uri: Uri? = null
-    val MEDIA_TYPE_IMAGE = 1
+    private val MEDIA_TYPE_IMAGE = 1
     val PICK_IMAGE_FROM_GALLERY = 10
     private val CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 100
     private var imagePath = ""
-    private var message : String = ""
-    private var selectCountryCode = ""
-    private var countryCodes=ArrayList<String>()
-    var cCodeList= arrayListOf<String>()
     private var countryList = ArrayList<CountryItem>()
-    lateinit var adp: ArrayAdapter<String>
     var AUTOCOMPLETE_REQUEST_CODE: Int = 500
     var mLatitude: Double = 0.0
     var mLongitude: Double = 0.0
@@ -106,6 +102,7 @@ class SignUpActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRec
     var status = 0
     var my_click = ""
     var emiratesClick = false
+    private var networkChangeReceiver: ConnectivityReceiver? = null
 
     private var activityResultLauncher: ActivityResultLauncher<Array<String>> =
             registerForActivityResult(
@@ -229,6 +226,10 @@ class SignUpActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRec
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_up2)
         tv_login.setText(getString(R.string.log_in))
+        networkChangeReceiver = ConnectivityReceiver()
+        networkChangeReceiver!!.NetworkChangeReceiver(this)
+        val intentFilter = IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
+        registerReceiver(networkChangeReceiver, intentFilter)
         setUpViews()
     }
 
@@ -317,6 +318,7 @@ class SignUpActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRec
         }
 
         scrollView.setOnTouchListener(object : View.OnTouchListener{
+            @SuppressLint("ClickableViewAccessibility")
             override fun onTouch(v: View?, event: MotionEvent?): Boolean {
                 edtUsername_signup.clearFocus()
                 edtemailaddress_signup.clearFocus()
@@ -576,8 +578,7 @@ class SignUpActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRec
         progressBar.visibility= View.VISIBLE
 
         if (isNetworkAvailable()){
-            val apiInterface = APIClient.getClient()!!.create(APIInterface::class.java)
-            val builder = APIClient.createMultipartBodyBuilder(arrayOf("username", "phone", "email", "password", "country_id", "lat", "long", "device_token", "lang", "address"),
+                val builder = APIClient.createMultipartBodyBuilder(arrayOf("username", "phone", "email", "password", "country_id", "lat", "long", "device_token", "lang", "address"),
                 arrayOf(username.trim({ it <= ' ' }),
                         mobilenumber.trim({ it <= ' ' }),
                         emailaddress.trim({it <= ' '}),
@@ -645,16 +646,15 @@ class SignUpActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRec
 
     override fun onResume() {
         super.onResume()
-        ConnectivityReceiver.connectivityReceiverListener = this
-        registerReceiver(ConnectivityReceiver(),
-            IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
-        )
+        val intentFilter = IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
+        registerReceiver(networkChangeReceiver, intentFilter)
     }
 
-
-    override fun onDestroy() {
-        super.onDestroy()
-        unregisterReceiver(ConnectivityReceiver())
+    override fun onPause() {
+        super.onPause()
+        if (networkChangeReceiver != null) {
+            unregisterReceiver(networkChangeReceiver)
+        }
     }
 
     companion object{

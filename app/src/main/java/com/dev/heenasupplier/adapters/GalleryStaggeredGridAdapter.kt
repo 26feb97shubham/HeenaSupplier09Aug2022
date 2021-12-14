@@ -43,16 +43,6 @@ class GalleryStaggeredGridAdapter(
     private val posts: MutableList<FeedData> = mutableListOf()
     inner class PostViewHolder(private val v: View) : RecyclerView.ViewHolder(v) {
         fun bind(imagePath: String, galleryId: Int, position: Int) {
-
-        /*    v.feed_post.itemPreviewLoader = GlideItemPreviewLoaderImpl.Builder(context).build()
-            v.feed_post.itemCornerRadius = 4F.dpToPx(context).toInt()
-            v.feed_post.clickListener = OnCollageClickListener { position ->
-                Toast.makeText(context, "clicked position is $position", Toast.LENGTH_SHORT).show()
-            }
-            v.feed_post.setItemDatas(post.images)
-
-            v.feed_post.showCollage()*/
-
             val requestOption = RequestOptions().centerCrop()
             Glide.with(context).load(imagePath)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -68,12 +58,6 @@ class GalleryStaggeredGridAdapter(
                         return false
                     }
                 }).apply(requestOption).into(v.gallery_images)
-            val height = Math.random()*0.7
-            val width = Math.random()*0.3
-            val ratio =String.format("%f:%f", height,width)
-            set.clone(v.mConstraintLayout)
-            set.setDimensionRatio(v.mConstraintLayout.id, ratio)
-            set.applyTo(v.mConstraintLayout)
 
             v.delete_image.setOnClickListener {
                 onRecyclerItemClick.OnClickAction(position)

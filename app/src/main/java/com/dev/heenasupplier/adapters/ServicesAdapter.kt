@@ -14,6 +14,7 @@ import kotlinx.android.synthetic.main.layout_services_item.view.*
 
 class ServicesAdapter(private val context: Context,
                       private val servicesListing : ArrayList<Service>,
+                      private val subscription_id : Int,
                       private val onServicesItemClick: ClickInterface.onServicesItemClick) : RecyclerView.Adapter<ServicesAdapter.ServicesAdapterVH>() {
     inner class ServicesAdapterVH(itemView : View) : RecyclerView.ViewHolder(itemView){
         fun onBind(service: Service, position: Int) {
@@ -22,6 +23,7 @@ class ServicesAdapter(private val context: Context,
             }else{
                 Glide.with(context).applyDefaultRequestOptions(RequestOptions().placeholder(R.drawable.user)).load(service.gallery!![0]).into(itemView.img)
             }
+
             itemView.tv_services.text = service.name
             val price =  "AED ${service.price!!.total}"
             itemView.tv_price.text = price
@@ -49,6 +51,11 @@ class ServicesAdapter(private val context: Context,
     }
 
     override fun onBindViewHolder(holder: ServicesAdapterVH, position: Int) {
+        if (subscription_id>0){
+            holder.itemView.iv_edit.setBackgroundResource(R.drawable.star)
+        }else{
+            holder.itemView.iv_edit.setBackgroundResource(R.drawable.edit_icon)
+        }
         holder.onBind(servicesListing[position], position)
     }
 

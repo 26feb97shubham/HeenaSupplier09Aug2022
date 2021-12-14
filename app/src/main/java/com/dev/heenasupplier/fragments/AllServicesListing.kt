@@ -40,12 +40,12 @@ class AllServicesListing : Fragment() {
     private var mView : View? = null
     var serviceslisting = ArrayList<Service>()
     lateinit var servicesAdapter: ServicesAdapter
+    private var subscription_id = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+           subscription_id = it.getInt("subscription_id")
         }
     }
 
@@ -93,7 +93,7 @@ class AllServicesListing : Fragment() {
                             mView!!.rvServicesList.visibility = View.VISIBLE
                         }
                         mView!!.rvServicesList.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL,false)
-                        servicesAdapter = ServicesAdapter(requireContext(), serviceslisting, object : ClickInterface.onServicesItemClick{
+                        servicesAdapter = ServicesAdapter(requireContext(), serviceslisting, subscription_id,object : ClickInterface.onServicesItemClick{
                             override fun onServicClick(position: Int) {
                                 val bundle = Bundle()
                                 bundle.putStringArrayList("gallery",

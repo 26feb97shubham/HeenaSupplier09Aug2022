@@ -5,11 +5,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.dev.heenasupplier.R
-import com.dev.heenasupplier.adapters.BookingServicesAdapter
 import com.dev.heenasupplier.utils.SharedPreferenceUtility
-import kotlinx.android.synthetic.main.fragment_my_services.*
 
 class MyServices : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,

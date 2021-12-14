@@ -4,25 +4,21 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
+import com.dev.heenasupplier.utils.Utility.Companion.isNetworkAvailable
 
 class ConnectivityReceiver : BroadcastReceiver() {
-    override fun onReceive(context: Context?, intent: Intent?) {
+    var connectivityReceiverListener: ConnectivityReceiverListener? = null
+    override fun onReceive(context: Context, intent: Intent?) {
+        val status: Boolean = isNetworkAvailable()
         if (connectivityReceiverListener != null) {
-            connectivityReceiverListener!!.onNetworkConnectionChanged(isConnectedOrConnecting(context!!))
+            connectivityReceiverListener!!.onNetworkConnectionChanged(status)
         }
     }
-    private fun isConnectedOrConnecting(context: Context): Boolean {
-        val connMgr = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val networkInfo = connMgr.activeNetworkInfo
-        return networkInfo != null && networkInfo.isConnectedOrConnecting
-    }
-
-
     interface ConnectivityReceiverListener {
         fun onNetworkConnectionChanged(isConnected: Boolean)
     }
 
-    companion object {
-        var connectivityReceiverListener: ConnectivityReceiverListener? = null
+    fun NetworkChangeReceiver(connectivityReceiverListener: ConnectivityReceiverListener?) {
+        this.connectivityReceiverListener = connectivityReceiverListener
     }
 }

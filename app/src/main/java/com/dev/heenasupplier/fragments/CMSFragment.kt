@@ -1,11 +1,14 @@
 package com.dev.heenasupplier.fragments
 
+import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AlphaAnimation
+import android.webkit.WebView
 import androidx.navigation.fragment.findNavController
 import com.dev.heenasupplier.Dialogs.NoInternetDialog
 import com.dev.heenasupplier.R
@@ -78,7 +81,9 @@ class CMSFragment : Fragment() {
         //Enable Multitouch if supported by ROM
         mView!!.web_view.getSettings().setUseWideViewPort(true)
         mView!!.web_view.getSettings().setLoadWithOverviewMode(false)
-        mView!!.tv_title.text = title
+        mView!!.web_view.setBackgroundColor(Color.TRANSPARENT)
+        if (Build.VERSION.SDK_INT >= 11) mView!!.web_view?.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null)
+//        mView!!.tv_title.text = title
         if(title.equals(getString(R.string.about_us))){
             mView!!.web_view.loadUrl("https://henna.devtechnosys.info/about-us")
         }else if (title.equals(getString(R.string.privacy_and_policy))){

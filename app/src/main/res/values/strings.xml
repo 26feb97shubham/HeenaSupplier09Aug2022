@@ -289,4 +289,6 @@
     <string name="move_the_pin_on_the_map_to_select_your_exact_location_or_enter_it_manually">Move the pin on the map to select your exact location   or enter it manually.</string>
     <string name="enter_manually">Enter manually</string>
     <string name="there_are_no_locations">There are no locations</string>
+    <string name="membership_expired">Membership expired</string>
+    <string name="featured_membership_status">Featured Membership Status</string>
 </resources>

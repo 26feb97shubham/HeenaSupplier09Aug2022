@@ -16,9 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.dev.heenasupplier.Dialogs.NoInternetDialog
 import com.dev.heenasupplier.R
 import com.dev.heenasupplier.`interface`.ClickInterface
-import com.dev.heenasupplier.adapters.BookingHistoryAdapter
 import com.dev.heenasupplier.adapters.BookingsAdapter
-import com.dev.heenasupplier.adapters.CurrentBookingsAdapter
 import com.dev.heenasupplier.models.BookingItem
 import com.dev.heenasupplier.models.BookingsListingResponse
 import com.dev.heenasupplier.utils.LogUtils
@@ -172,7 +170,7 @@ class MyBookingsFragment : Fragment() {
                         mView!!.tv_no_bookings_found.visibility = View.GONE
                         mView!!.nsv_bookings.visibility = View.VISIBLE
                         bookingList = response.body()!!.booking as ArrayList<BookingItem>
-                        setBookingsHistoryAdapter()
+                        setBookingsAdapter()
                     }else{
                         mView!!.tv_no_bookings_found.visibility = View.VISIBLE
                         mView!!.nsv_bookings.visibility = View.GONE
@@ -216,27 +214,6 @@ class MyBookingsFragment : Fragment() {
         rv_tabs_listing.adapter = bookingsAdapter
         bookingsAdapter.notifyDataSetChanged()
         rv_tabs_listing.scheduleLayoutAnimation()
-    }
-
-    private fun setBookingsHistoryAdapter() {
-        bookingsAdapter = BookingsAdapter(requireContext(), bookingList, object : ClickInterface.OnRecyclerItemClick{
-            override fun OnClickAction(position: Int) {
-                val bundle = Bundle()
-                bundle.putInt("booking_id", bookingList[position].booking_id!!)
-                findNavController().navigate(R.id.action_appointmentFragment_to_bookingDetailsFragment, bundle)
-            }
-
-        })
-
-        if (SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang,"")=="ar"){
-            layoutAnimationController = AnimationUtils.loadLayoutAnimation(requireContext(), arabic_animId)
-        }else{
-            layoutAnimationController = AnimationUtils.loadLayoutAnimation(requireContext(), english_animId)
-        }
-        mView!!. rv_tabs_listing.layoutAnimation = layoutAnimationController
-        mView!!.rv_tabs_listing.adapter = bookingsAdapter
-        bookingsAdapter.notifyDataSetChanged()
-        mView!!.rv_tabs_listing.scheduleLayoutAnimation()
     }
 
 

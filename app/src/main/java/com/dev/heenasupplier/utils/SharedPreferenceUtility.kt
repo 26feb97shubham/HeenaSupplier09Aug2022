@@ -224,6 +224,7 @@ class SharedPreferenceUtility {
         const val MembershipInfo = "membershipInfo"
         const val ISBANKADDED = "isBankAdded"
         const val PLACECLICK = "placeClick"
+        const val ISFEATURED = "isFeatured"
 
         @Synchronized
         fun getInstance(): SharedPreferenceUtility {

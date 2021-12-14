@@ -12,7 +12,7 @@ import com.dev.heenasupplier.utils.SharedPreferenceUtility
 import kotlinx.android.synthetic.main.activity_choose_login_sign_up2.*
 
 class ChooseLoginSignUpActivity : AppCompatActivity() {
-    var doubleClick:Boolean=false
+    private var doubleClick:Boolean=false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_choose_login_sign_up2)
@@ -47,7 +47,7 @@ class ChooseLoginSignUpActivity : AppCompatActivity() {
         else{
 
             doubleClick=true
-            Handler(Looper.getMainLooper()).postDelayed(Runnable {
+            Handler(Looper.getMainLooper()).postDelayed({
                 toast.show()
                 doubleClick=false
             }, 500)

@@ -3,9 +3,7 @@ package com.dev.heenasupplier.activities
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.text.Editable
 import android.text.TextUtils
-import android.text.TextWatcher
 import android.view.View
 import android.view.WindowManager
 import android.view.animation.AlphaAnimation
@@ -16,6 +14,7 @@ import com.dev.heenasupplier.rest.APIClient
 import com.dev.heenasupplier.rest.APIInterface
 import com.dev.heenasupplier.utils.LogUtils
 import com.dev.heenasupplier.utils.SharedPreferenceUtility
+import com.dev.heenasupplier.utils.Utility.Companion.apiInterface
 import kotlinx.android.synthetic.main.activity_forgot_password2.*
 import kotlinx.android.synthetic.main.activity_sign_up2.*
 import org.json.JSONException
@@ -33,7 +32,7 @@ class ForgotPasswordActivity : AppCompatActivity() {
     }
 
     private fun setUpViews() {
-        edtemailaddress.doOnTextChanged { text, start, before, count ->
+        edtemailaddress.doOnTextChanged { _, _, _, _ ->
             if (!TextUtils.isEmpty(emailAddress) && !SharedPreferenceUtility.getInstance().isEmailValid(emailAddress!!)) {
                 scrollView.scrollTo(0, 210)
                 edtemailaddress_signup.requestFocus()
@@ -64,11 +63,9 @@ class ForgotPasswordActivity : AppCompatActivity() {
         window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         frgt_pass_progressBar.visibility = View.VISIBLE
 
-        val apiInterface = APIClient.getClient()!!.create(APIInterface::class.java)
         val builder = APIClient.createBuilder(arrayOf("email", "lang"),
-                arrayOf(emailAddress!!.trim({ it <= ' ' }),
-                        SharedPreferenceUtility.getInstance()
-                            .get(SharedPreferenceUtility.SelectedLang, "")
+                arrayOf(emailAddress!!.trim { it <= ' ' },
+                        SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""]
                             .toString()))
 
         val call = apiInterface.forgotPassword(builder.build())

@@ -21,11 +21,11 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                android:text="@string/membership_status"
+                android:text="@string/featured_membership_status"
                 android:textAllCaps="false"
                 android:fontFamily="@font/avenir_medium"
                 android:textColor="@color/gold"
-                android:textSize="@dimen/_15ssp"/>
+                android:textSize="@dimen/_12ssp"/>
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_viewall_txt"
                 android:layout_width="wrap_content"
@@ -63,6 +63,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 android:text="@string/do_you_want_to_become_a_featured_henna"
                 android:textAllCaps="false"
+                android:visibility="gone"
                 android:fontFamily="@font/avenir_medium"
                 android:textColor="@color/gold"
                 android:textSize="@dimen/_9ssp"/>
@@ -87,7 +88,7 @@
                         android:layout_height="wrap_content"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        android:text="@string/basic_membership"
+                        android:text="@string/featured_membership"
                         android:textAllCaps="false"
                         android:fontFamily="@font/avenir_medium"
                         android:textColor="@color/gold"

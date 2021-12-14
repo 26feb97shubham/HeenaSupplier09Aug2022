@@ -14,10 +14,9 @@ import com.dev.heenasupplier.utils.LogUtils
 import com.dev.heenasupplier.utils.SharedPreferenceUtility
 import com.dev.heenasupplier.utils.Utility
 import kotlinx.android.synthetic.main.activity_choose_lang2.*
-import java.util.*
 
 class ChooseLangActivity : AppCompatActivity() {
-    var doubleClick:Boolean=false
+    private var doubleClick:Boolean=false
     private var selectLang:String=""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,11 +24,11 @@ class ChooseLangActivity : AppCompatActivity() {
         setUpViews()
     }
     private fun setUpViews() {
-        if(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, "") =="en"){
+        if(SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""] =="en"){
             selectEnglish()
         }
 
-        else if(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, "") =="ar"){
+        else if(SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""] =="ar"){
             selectArabic()
         }
 
@@ -104,7 +103,7 @@ class ChooseLangActivity : AppCompatActivity() {
         else{
 
             doubleClick=true
-            Handler(Looper.getMainLooper()).postDelayed(Runnable {
+            Handler(Looper.getMainLooper()).postDelayed({
                 toast.show()
                 doubleClick=false
             }, 500)

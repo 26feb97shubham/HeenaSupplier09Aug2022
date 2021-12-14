@@ -9,7 +9,6 @@ import com.bumptech.glide.Glide
 import com.dev.heenasupplier.R
 import com.dev.heenasupplier.`interface`.ClickInterface
 import com.dev.heenasupplier.models.BookingItem
-import kotlinx.android.synthetic.main.current_booking_recycler_items_listing.view.*
 import kotlinx.android.synthetic.main.layout_current_bokings_item.view.*
 
 class DashBoardBookingsAdapter(

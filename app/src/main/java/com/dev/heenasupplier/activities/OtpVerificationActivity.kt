@@ -5,9 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.text.Editable
 import android.text.TextUtils
-import android.text.TextWatcher
 import android.view.View
 import android.view.WindowManager
 import android.view.animation.AlphaAnimation
@@ -22,6 +20,7 @@ import com.dev.heenasupplier.rest.APIInterface
 import com.dev.heenasupplier.utils.ConstClass
 import com.dev.heenasupplier.utils.LogUtils
 import com.dev.heenasupplier.utils.SharedPreferenceUtility
+import com.dev.heenasupplier.utils.Utility.Companion.apiInterface
 import kotlinx.android.synthetic.main.activity_login2.*
 import kotlinx.android.synthetic.main.activity_otp_verification2.*
 import kotlinx.android.synthetic.main.activity_sign_up2.*
@@ -34,11 +33,10 @@ import java.io.IOException
 
 
 class OtpVerificationActivity : AppCompatActivity() {
-    lateinit var ref: String
-    lateinit var pin: String
+    private lateinit var ref: String
+    private lateinit var pin: String
     lateinit var emailaddress : String
-    var doubleClick:Boolean=false
-    lateinit var apiInterface: APIInterface
+    private var doubleClick:Boolean=false
     lateinit var builder : FormBody.Builder
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,7 +55,7 @@ class OtpVerificationActivity : AppCompatActivity() {
         btnVerify.isEnabled=false
         btnVerify.alpha=0.5f
 
-        firstPinView.doOnTextChanged { text, start, before, count ->
+        firstPinView.doOnTextChanged { text, _, _, _ ->
             if(text!!.length==4){
                 btnVerify.isEnabled=true
                 btnVerify.alpha=1f
@@ -105,11 +103,6 @@ class OtpVerificationActivity : AppCompatActivity() {
 
             }
             else{
-               /* startActivity(
-                    Intent(this@OtpVerificationActivity, ResetPasswordActivity::class.java)
-                        .putExtra("user_id", user_id))
-                val bundle=Bundle()
-                bundle.putString("user_id", user_id)*/
                 forgotPassVerify()
 
             }
@@ -120,10 +113,8 @@ class OtpVerificationActivity : AppCompatActivity() {
     private fun forgotPassVerify() {
         window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         otpVerificationprogressBar.visibility= View.VISIBLE
-        apiInterface = APIClient.getClient()!!.create(APIInterface::class.java)
         builder = APIClient.createBuilder(arrayOf("email", "otp", "lang"),
-            arrayOf(emailaddress, pin.trim({ it <= ' ' }), SharedPreferenceUtility.getInstance()
-                .get(SharedPreferenceUtility.SelectedLang, "")
+            arrayOf(emailaddress, pin.trim { it <= ' ' }, SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""]
                 .toString()))
 
 
@@ -160,10 +151,8 @@ class OtpVerificationActivity : AppCompatActivity() {
     private fun verifyAccount() {
         window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         otpVerificationprogressBar.visibility= View.VISIBLE
-        apiInterface = APIClient.getClient()!!.create(APIInterface::class.java)
         builder = APIClient.createBuilder(arrayOf("email", "otp", "lang"),
-                arrayOf(emailaddress, pin.trim({ it <= ' ' }), SharedPreferenceUtility.getInstance()
-                    .get(SharedPreferenceUtility.SelectedLang, "")
+                arrayOf(emailaddress, pin.trim { it <= ' ' }, SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""]
                     .toString()))
          val call = apiInterface.verifyotp(builder.build())
          call!!.enqueue(object : Callback<RegistrationVerifyResponse?> {
@@ -199,24 +188,10 @@ class OtpVerificationActivity : AppCompatActivity() {
                 window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             }
         })
-
-        /*startActivity(
-                Intent(this@OtpVerificationActivity, ResetPasswordActivity::class.java)
-                        .putExtra("user_id", user_id))
-        val bundle=Bundle()
-        bundle.putString("user_id", user_id)*/
-
-//
-//        startActivity(
-//                Intent(this@OtpVerificationActivity, ResetPasswordActivity::class.java))
-
     }
     private fun resendOtp() {
         window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         otpVerificationprogressBar.visibility= View.VISIBLE
-
-
-        apiInterface = APIClient.getClient()!!.create(APIInterface::class.java)
         builder = APIClient.createBuilder(arrayOf("email"),
                 arrayOf(emailaddress))
         val call = apiInterface.registerverivyresend(builder.build())

@@ -14,10 +14,7 @@ import com.dev.heenasupplier.R
 import com.dev.heenasupplier.`interface`.ClickInterface
 import com.dev.heenasupplier.adapters.AddNewFeaturedAdapter
 import com.dev.heenasupplier.adapters.ServicesAdapter
-import com.dev.heenasupplier.models.DeleteServiceResponse
-import com.dev.heenasupplier.models.MembershipX
-import com.dev.heenasupplier.models.Service
-import com.dev.heenasupplier.models.ServiceListingResponse
+import com.dev.heenasupplier.models.*
 import com.dev.heenasupplier.utils.LogUtils
 import com.dev.heenasupplier.utils.SharedPreferenceUtility
 import com.dev.heenasupplier.utils.Utility.Companion.apiInterface
@@ -31,14 +28,15 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class MembershipDetailsFragment : Fragment() {
-    private var membershipX : MembershipX?=null
+    private var subscriptions : Subscriptions?=null
+    private var subscription_id : Int = 0
     private var mView : View?=null
     var serviceslisting = ArrayList<Service>()
     lateinit var servicesAdapter: ServicesAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            membershipX = it.getSerializable("membershipX") as MembershipX?
+            subscriptions = it.getSerializable("subscription") as Subscriptions?
         }
     }
 
@@ -48,6 +46,12 @@ class MembershipDetailsFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         mView = inflater.inflate(R.layout.fragment_membership_details, container, false)
+        if (subscriptions!=null){
+            subscription_id = subscriptions!!.id
+        }else{
+            subscription_id = 0
+        }
+
         return mView
     }
 
@@ -62,19 +66,19 @@ class MembershipDetailsFragment : Fragment() {
             findNavController().popBackStack()
         }
 
-        Log.e("membership", ""+membershipX)
-        mView!!.tv_membership_title_txt_details.text = membershipX!!.name
-        mView!!.tv_membership_plan_price_details.text = "AED " +membershipX!!.amount.toString()
-        mView!!.linearprogressindicator_details.max = membershipX!!.total_day
-        mView!!.linearprogressindicator1_details.max = membershipX!!.total_day
-        mView!!.linearprogressindicator1_details.progress = membershipX!!.day
-        mView!!.tv_expiration_date_details.text = membershipX!!.end_date
+        Log.e("membership", ""+subscriptions)
+        mView!!.tv_membership_plan_price_details.text = "AED " +subscriptions!!.amount.toString()
+        mView!!.linearprogressindicator_details.max = subscriptions!!.days
+        mView!!.linearprogressindicator1_details.max = subscriptions!!.days
+        mView!!.linearprogressindicator1_details.progress = subscriptions!!.ended_day
+        mView!!.tv_expiration_date_details.text = subscriptions!!.end_date
 
         tv_add_new_featured!!.setOnClickListener {
             var service_id = 0
             var status = "add"
             val bundle = Bundle()
             bundle.putInt("service_id", service_id)
+            bundle.putInt("subscription_id", subscription_id)
             bundle.putString("status", status)
             findNavController().navigate(R.id.action_membershipStatusFragment_to_addNewFeaturedFragment, bundle)
         }
@@ -83,32 +87,27 @@ class MembershipDetailsFragment : Fragment() {
     private fun getServices() {
         frag_membership_details_progressBar.visibility = View.VISIBLE
         requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-        val call = apiInterface.serviceslisting(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId,0),
+        val call = apiInterface.featuredserviceslisting(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId,0),
                 SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, ""))
-        call!!.enqueue(object : Callback<ServiceListingResponse?> {
+        call!!.enqueue(object : Callback<FeaturedServicesListingResponse?> {
             override fun onResponse(
-                    call: Call<ServiceListingResponse?>,
-                    response: Response<ServiceListingResponse?>
+                    call: Call<FeaturedServicesListingResponse?>,
+                    response: Response<FeaturedServicesListingResponse?>
             ) {
                 mView!!.frag_membership_details_progressBar.visibility= View.GONE
                 requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 if (response.isSuccessful){
                     if (response.body()!!.status==1){
                         serviceslisting = response.body()!!.service as ArrayList<Service>
-                        if (serviceslisting.size==0){
-                            mView!!.rv_add_new_featured_listing.visibility = View.GONE
-                            mView!!.ll_no_services_found_membership_details.visibility = View.VISIBLE
-                        }else{
-                            mView!!.rv_add_new_featured_listing.visibility = View.VISIBLE
-                            mView!!.ll_no_services_found_membership_details.visibility = View.GONE
-                        }
+                        mView!!.rv_add_new_featured_listing.visibility = View.VISIBLE
+                        mView!!.ll_no_services_found_membership_details.visibility = View.GONE
                         mView!!.rv_add_new_featured_listing.layoutManager = LinearLayoutManager(
                                 requireContext(),
                                 LinearLayoutManager.VERTICAL,
                                 false
                         )
 
-                        servicesAdapter = ServicesAdapter(requireContext(), serviceslisting, object : ClickInterface.onServicesItemClick{
+                        servicesAdapter = ServicesAdapter(requireContext(), serviceslisting,subscription_id, object : ClickInterface.onServicesItemClick{
                             override fun onServicClick(position: Int) {
                                 val bundle = Bundle()
                                 bundle.putStringArrayList("gallery",
@@ -145,7 +144,7 @@ class MembershipDetailsFragment : Fragment() {
                 }
             }
 
-            override fun onFailure(call: Call<ServiceListingResponse?>, throwable: Throwable) {
+            override fun onFailure(call: Call<FeaturedServicesListingResponse?>, throwable: Throwable) {
                 LogUtils.e("msg", throwable.message)
                 mView!!.frag_membership_details_progressBar.visibility= View.GONE
                 mView!!.rv_add_new_featured_listing.visibility = View.GONE

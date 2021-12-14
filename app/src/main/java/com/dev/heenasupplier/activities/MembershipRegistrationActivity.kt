@@ -1,47 +1,38 @@
 package com.dev.heenasupplier.activities
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.WindowManager
-import androidx.recyclerview.selection.SelectionPredicates
-import androidx.recyclerview.selection.SelectionTracker
-import androidx.recyclerview.selection.StableIdKeyProvider
-import androidx.recyclerview.selection.StorageStrategy
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.android.billingclient.api.SkuDetails
 import com.dev.heenasupplier.R
 import com.dev.heenasupplier.`interface`.ClickInterface
 import com.dev.heenasupplier.adapters.RegistrationMembershipPlansListAdapter
-import com.dev.heenasupplier.extras.MembershipItemsDetailsLookUp
-import com.dev.heenasupplier.models.BuyMembership
+import com.dev.heenasupplier.billing.BillingClientWrapper
 import com.dev.heenasupplier.models.Membership
 import com.dev.heenasupplier.models.MembershipListResponse
 import com.dev.heenasupplier.rest.APIClient
 import com.dev.heenasupplier.rest.APIInterface
 import com.dev.heenasupplier.utils.ConstClass
-import com.dev.heenasupplier.utils.ConstClass.MEMBERSHIPID
-import com.dev.heenasupplier.utils.ConstClass.MEMBERSHIPPERIODLIMIT
-import com.dev.heenasupplier.utils.ConstClass.USERID
 import com.dev.heenasupplier.utils.LogUtils
 import com.dev.heenasupplier.utils.SharedPreferenceUtility
-import com.dev.heenasupplier.utils.Utility
+import com.dev.heenasupplier.utils.Utility.Companion.apiInterface
 import com.dev.heenasupplier.utils.Utility.Companion.isNetworkAvailable
 import kotlinx.android.synthetic.main.activity_membership_registration2.*
 import kotlinx.android.synthetic.main.activity_membership_registration2.btnSignUp
 import kotlinx.android.synthetic.main.activity_membership_registration2.rv_membership_plans
 import kotlinx.android.synthetic.main.activity_sign_up2.*
 import kotlinx.android.synthetic.main.fragment_membership_bottom_sheet_dialog.*
-import okhttp3.MediaType
-import okhttp3.RequestBody
 import org.json.JSONException
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.io.File
 import java.io.IOException
+import javax.inject.Inject
 
 class MembershipRegistrationActivity : AppCompatActivity() {
     var emailaddress : String?= null
@@ -50,6 +41,11 @@ class MembershipRegistrationActivity : AppCompatActivity() {
     private var membershipList = ArrayList<Membership>()
     private var membership : Membership?=null
     private var mContext : Context?=null
+
+    @Inject
+    lateinit var billingClientWrapper: BillingClientWrapper
+
+    @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mContext = this
@@ -79,8 +75,7 @@ class MembershipRegistrationActivity : AppCompatActivity() {
             if (registrationMembershipPlansListAdapter.getSelected() != null) {
                 membershipId = registrationMembershipPlansListAdapter.getSelected()!!.membership_id
                 membership = registrationMembershipPlansListAdapter.getSelected()
-                if (SharedPreferenceUtility.getInstance()
-                        .get(SharedPreferenceUtility.MembershipId, 0) == membershipId
+                if (SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.MembershipId, 0] == membershipId
                 ) {
                     LogUtils.shortToast(this, getString(R.string.plan_already_purchased))
                 } else {
@@ -105,9 +100,9 @@ class MembershipRegistrationActivity : AppCompatActivity() {
         if(isNetworkAvailable()){
             window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             membership_registration_progressBar.visibility= View.VISIBLE
-            val apiInterface = APIClient.getClient()!!.create(APIInterface::class.java)
-            val call = apiInterface.membershipList(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId, 0))
+            val call = apiInterface.membershipList(SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.UserId, 0])
             call!!.enqueue(object : Callback<MembershipListResponse?>{
+                @SuppressLint("NotifyDataSetChanged")
                 override fun onResponse(call: Call<MembershipListResponse?>, response: Response<MembershipListResponse?>) {
                     membership_registration_progressBar.visibility = View.GONE
                     window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
@@ -156,6 +151,25 @@ class MembershipRegistrationActivity : AppCompatActivity() {
 
             })
         }
+    }
+
+    private fun displayProducts() {
+        billingClientWrapper.queryProducts(object : BillingClientWrapper.OnQueryProductsListener {
+            override fun onSuccess(products: List<SkuDetails>) {
+                /*products.forEach { product ->
+                    purchaseButtonsMap[product.sku]?.apply {
+                        text = "${product.description} for ${product.price}"
+                        setOnClickListener {
+                            billingClientWrapper.purchase(this@PaywallActivity, product) //will be declared below
+                        }
+                    }
+                }*/
+            }
+
+            override fun onFailure(error: BillingClientWrapper.Error) {
+                //handle error
+            }
+        })
     }
 
     companion object{

@@ -15,26 +15,23 @@ import com.dev.heenasupplier.models.Membership
 import com.dev.heenasupplier.rest.APIClient
 import com.dev.heenasupplier.rest.APIInterface
 import com.dev.heenasupplier.utils.ConstClass
-import com.dev.heenasupplier.utils.ConstClass.MEMBERSHIPID
 import com.dev.heenasupplier.utils.LogUtils
 import com.dev.heenasupplier.utils.SharedPreferenceUtility
 import com.dev.heenasupplier.utils.Utility
+import com.dev.heenasupplier.utils.Utility.Companion.apiInterface
 import kotlinx.android.synthetic.main.activity_membership_registration2.*
 import kotlinx.android.synthetic.main.activity_payment_fragment.*
 import kotlinx.android.synthetic.main.fragment_membership_bottom_sheet_dialog.*
-import kotlinx.android.synthetic.main.fragment_membership_bottom_sheet_dialog.tv_subscribe
 import kotlinx.android.synthetic.main.fragment_payment.*
-import kotlinx.android.synthetic.main.fragment_payment.rv_cards_listing
-import kotlinx.android.synthetic.main.fragment_payment.tv_add_new_card
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class PaymentFragmentActivity : AppCompatActivity() {
-    lateinit var paymentsCardAdapter: PaymentsCardAdapter
+    private lateinit var paymentsCardAdapter: PaymentsCardAdapter
     var emailaddress : String?= null
-    var membershipId : Int = 0
-    var myuserId : Int = 0
+    private var membershipId : Int = 0
+    private var myuserId : Int = 0
     var membership : Membership?=null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,7 +41,7 @@ class PaymentFragmentActivity : AppCompatActivity() {
             membership = intent.getSerializableExtra("membership") as Membership?
         }
 
-        myuserId = SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId,0)
+        myuserId = SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.UserId, 0]
         membershipId = membership!!.membership_id
         Log.e("userId", myuserId.toString())
         Log.e("membershipId", membershipId.toString())
@@ -54,8 +51,6 @@ class PaymentFragmentActivity : AppCompatActivity() {
         tv_membership_desc_activity.text = membership!!.description
 
         tv_subscribe_activity!!.setOnClickListener { // dismiss dialog
-           /* startActivity(Intent(this, OtpVerificationActivity::class.java).putExtra("ref", "1").putExtra(ConstClass.EMAILADDRESS, emailaddress))
-            finishAffinity()*/
             purchaseMembership()
         }
 
@@ -79,7 +74,6 @@ class PaymentFragmentActivity : AppCompatActivity() {
         if (Utility.isNetworkAvailable()){
             window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             membership_payment_progressBar.visibility= View.VISIBLE
-            val apiInterface = APIClient.getClient()!!.create(APIInterface::class.java)
             val call = apiInterface.buyMembership(user_id = myuserId.toString(), membership_id = membershipId.toString())
             call!!.enqueue(object : Callback<BuyMembership?> {
                 override fun onResponse(

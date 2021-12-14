@@ -19,6 +19,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
+import com.dev.heenasupplier.Dialogs.ExpiredMembershipDialogFragment
 import com.dev.heenasupplier.Dialogs.LogoutDialog
 import com.dev.heenasupplier.Dialogs.NoInternetDialog
 import com.dev.heenasupplier.R
@@ -54,6 +55,8 @@ class HomeFragment : Fragment() {
     var serviceslisting = ArrayList<Service>()
     var bookingslisting = ArrayList<BookingItem>()
     private var membershipX : MembershipX?=null
+    private var subscription : Subscriptions?=null
+    private var subscription_id = 0
     private var membershipId :Int = 0
     var profile_picture : String = ""
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -138,13 +141,44 @@ class HomeFragment : Fragment() {
                         mView!!.rv_current_bookings.visibility = View.VISIBLE
                         mView!!.tv_no_bookings_found.visibility = View.GONE
                         membershipX = response.body()!!.membership!!
+                        if (response.body()!!.subscriptions==null){
+                            subscription = null
+                            subscription_id = 0
+                        }else{
+                            subscription = response.body()!!.subscriptions!!
+                            subscription_id = subscription!!.id
+                        }
+
                         membershipId = membershipX!!.id
-                        mView!!.tv_membership_title_txt.text = response.body()!!.membership!!.name
-                        mView!!.tv_membership_plan_price.text = "AED " +response.body()!!.membership!!.amount.toString()
-                        mView!!.linearprogressindicator.max = response.body()!!.membership!!.total_day
-                        mView!!.linearprogressindicator1.max = response.body()!!.membership!!.total_day
-                        mView!!.linearprogressindicator1.progress = response.body()!!.membership!!.day
-                        mView!!.tv_expiration_date.text = response.body()!!.membership!!.end_date
+                        if (membershipId!=0){
+                            mView!!.tv_membership_title_txt.text = response.body()!!.membership!!.name
+                            mView!!.tv_membership_plan_price.text = "AED " +response.body()!!.membership!!.amount.toString()
+                            mView!!.linearprogressindicator.max = response.body()!!.membership!!.total_day
+                            mView!!.linearprogressindicator1.max = response.body()!!.membership!!.total_day
+                            mView!!.linearprogressindicator1.progress = response.body()!!.membership!!.day
+                            mView!!.tv_expiration_date.text = response.body()!!.membership!!.end_date
+                        }else{
+                            val expiredMembershipDialogFragment = ExpiredMembershipDialogFragment()
+                            expiredMembershipDialogFragment.isCancelable = false
+                            expiredMembershipDialogFragment.subscribeCallback(object : ExpiredMembershipDialogFragment.SubscribeMembershipInterface{
+                                override fun subscribe_membership() {
+                                    expiredMembershipDialogFragment.dismiss()
+                                    val membershipBottomSheetDialogFragment = MembershipBottomSheetDialogFragment.newInstance(requireContext(), membershipId)
+                                    membershipBottomSheetDialogFragment.show(requireActivity().supportFragmentManager, MembershipBottomSheetDialogFragment.TAG)
+                                    membershipBottomSheetDialogFragment.setSubscribeClickListenerCallback(object : MembershipBottomSheetDialogFragment.OnSubscribeClick{
+                                        override fun OnSubscribe(membership: Membership) {
+                                            val bundle = Bundle()
+                                            Log.e("membership_data", ""+membership)
+                                            bundle.putSerializable("membership", membership)
+                                            findNavController().navigate(R.id.myPaymentFragment, bundle)
+                                        }
+                                    })
+                                }
+
+                            })
+                            expiredMembershipDialogFragment.show(requireActivity().supportFragmentManager, "Home Fragment")
+                        }
+
                         serviceslisting = response.body()!!.service as ArrayList<Service>
                         bookingslisting = response.body()!!.booking as ArrayList<BookingItem>
                         if (serviceslisting.size==0){
@@ -162,7 +196,7 @@ class HomeFragment : Fragment() {
                             mView!!.tv_no_bookings_found.visibility = View.GONE
                         }
                         mView!!.rv_services.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL,false)
-                        servicesAdapter = ServicesAdapter(requireContext(), serviceslisting, object : ClickInterface.onServicesItemClick{
+                        servicesAdapter = ServicesAdapter(requireContext(), serviceslisting, subscription_id, object : ClickInterface.onServicesItemClick{
                             override fun onServicClick(position: Int) {
                                 val bundle = Bundle()
                                 bundle.putStringArrayList("gallery",
@@ -266,18 +300,20 @@ class HomeFragment : Fragment() {
             })
         }
 
-        mView!!.membership_card.setOnClickListener {
+        /*mView!!.membership_card.setOnClickListener {
             val bundle = Bundle()
             Log.e("membership_data", ""+membershipX)
             bundle.putSerializable("membershipX", membershipX)
             findNavController().navigate(R.id.membershipStatusFragment, bundle)
-        }
+        }*/
 
         mView!!.tv_viewall_txt2.setOnClickListener {
             findNavController().navigate(R.id.myAppointmentsFragment)
         }
         mView!!.tv_viewall_txt3.setOnClickListener {
-            findNavController().navigate(R.id.myServicesFragment)
+            val bundle = Bundle()
+            bundle.putInt("subscription_id", subscription_id)
+            findNavController().navigate(R.id.myServicesFragment, bundle)
         }
 
         requireActivity().iv_notification.setOnClickListener {
@@ -298,14 +334,23 @@ class HomeFragment : Fragment() {
             SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().llAccount)
             requireActivity().llAccount.startAnimation(AlphaAnimation(1f, 0.5f))
             requireActivity().drawerLayout.closeDrawer(GravityCompat.START)
-            findNavController().navigate(R.id.myProfileFragment)
+            val bundle = Bundle()
+            bundle.putInt("subscription_id", subscription_id)
+            findNavController().navigate(R.id.myProfileFragment, bundle)
         }
 
         requireActivity().llFeatured.setOnClickListener {
             SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().llFeatured)
             requireActivity().llFeatured.startAnimation(AlphaAnimation(1f, 0.5f))
             requireActivity().drawerLayout.closeDrawer(GravityCompat.START)
-            findNavController().navigate(R.id.SubscriptionFragment)
+            if (subscription!=null){
+                val bundle = Bundle()
+                Log.e("subscription_data", ""+subscription)
+                bundle.putSerializable("subscription", subscription)
+                findNavController().navigate(R.id.membershipStatusFragment, bundle)
+            }else{
+                findNavController().navigate(R.id.SubscriptionFragment)
+            }
         }
 
         requireActivity().llNotifications.setOnClickListener {

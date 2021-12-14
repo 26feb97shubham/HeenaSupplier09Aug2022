@@ -48,10 +48,10 @@
                     android:id="@+id/iv_upload_photo"
                     android:layout_width="@dimen/_80sdp"
                     android:layout_height="match_parent"
+                    android:src="@drawable/upload_photo"
                     android:text="@string/upload_photo"
-                    android:textSize="@dimen/_12ssp"
                     android:textColor="@color/gold"
-                    android:src="@drawable/upload_photo"/>
+                    android:textSize="@dimen/_12ssp" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_uploaded_photos"

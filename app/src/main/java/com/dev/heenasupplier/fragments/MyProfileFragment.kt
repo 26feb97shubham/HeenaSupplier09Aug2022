@@ -1,6 +1,7 @@
 package com.dev.heenasupplier.fragments
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ClipData
 import android.content.Context
@@ -75,10 +76,17 @@ import kotlin.random.Random.Default.nextInt
 
 class MyProfileFragment : Fragment() {
     var mView : View ?=null
-    private val PERMISSIONS = arrayOf(
+    /*private val PERMISSIONS = arrayOf(
             Manifest.permission.CAMERA,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
-    )
+    )*/
+    private val PERMISSIONS = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.MANAGE_EXTERNAL_STORAGE)
+    } else {
+        arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    }
     private var uri: Uri? = null
     val MEDIA_TYPE_IMAGE = 1
     val PICK_IMAGE_FROM_GALLERY = 10
@@ -99,6 +107,8 @@ class MyProfileFragment : Fragment() {
     var status = 0
     var user_profile_name : String = ""
     private val disposable = CompositeDisposable()
+
+    private var subscription_id = 0
 
     private var activityResultLauncher: ActivityResultLauncher<Array<String>> =
             registerForActivityResult(
@@ -130,32 +140,64 @@ class MyProfileFragment : Fragment() {
                 }
             }
         }else if (status.equals(PICK_IMAGE_FROM_GALLERY)){
-            val data: Intent? = it.data
-            galleryPhotos.clear()
-            imagePath = ""
-            if (data?.clipData != null) {
-                val cout: Int = data.clipData!!.itemCount
-                if(cout+galleryPhotos.size==0){
-                    LogUtils.shortToast(requireContext(), getString(R.string.please_select_atleast_one_image_to_proceed))
-                }else if(cout+galleryPhotos.size<=10){
-                    for (i in 0 until cout) {
-                    val imageurl: Uri = data.clipData!!.getItemAt(i).uri
-                    if (imageurl.toString().startsWith("content")) {
-                        imagePath = getRealPath(imageurl)!!
-                    } else {
-                        imagePath = imageurl.getPath()!!
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+                val data: Intent? = it.data
+                galleryPhotos.clear()
+                imagePath = ""
+                if (data?.clipData != null) {
+                    val cout: Int = data.clipData!!.itemCount
+                    if(cout+galleryPhotos.size==0){
+                        LogUtils.shortToast(requireContext(), getString(R.string.please_select_atleast_one_image_to_proceed))
+                    }else if(cout+galleryPhotos.size<=10){
+                        for (i in 0 until cout) {
+                            val imageurl: Uri = data.clipData!!.getItemAt(i).uri
+                            if (imageurl.toString().startsWith("content")) {
+                                imagePath = getRealPath(imageurl)!!
+                            } else {
+                                imagePath = imageurl.getPath()!!
+                            }
+                            galleryPhotos.add(imagePath)
+                        }
+                        setUploadPhotos(galleryPhotos)
+                    }else{
+                        LogUtils.shortToast(requireContext(), "Only 10 images can be selected")
                     }
-                    galleryPhotos.add(imagePath)
-                    }
+                } else if (data?.data!=null) {
+                    val imagePath = data.data!!.path
+                    galleryPhotos.add(imagePath.toString())
                     setUploadPhotos(galleryPhotos)
-                }else{
-                    LogUtils.shortToast(requireContext(), "Only 10 images can be selected")
                 }
-            } else if (data?.data!=null) {
-                val imagePath = data.data!!.path
-                galleryPhotos.add(imagePath.toString())
-                setUploadPhotos(galleryPhotos)
+            } else {
+                if (it.resultCode==Activity.RESULT_OK){
+                    val data: Intent? = it.data
+                    imagePath = ""
+                    if (data?.clipData != null) {
+                        val cout: Int = data.clipData!!.itemCount
+                        if(cout+galleryPhotos.size==0){
+                            LogUtils.shortToast(requireContext(), getString(R.string.please_select_atleast_one_image_to_proceed))
+                        }else if(cout+galleryPhotos.size<=10){
+                            for (i in 0 until cout) {
+                                val imageurl: Uri = data.clipData!!.getItemAt(i).uri
+                                getImageFilePath(imageurl, requireContext())
+                            }
+                            setUploadPhotos(galleryPhotos)
+                        }else{
+                            LogUtils.shortToast(requireContext(), "Only 10 images can be selected")
+                        }
+                    } else if (data?.data!=null) {
+                        val imagePath = data.data!!
+                        getImageFilePath(imagePath, requireContext())
+                        setUploadPhotos(galleryPhotos)
+                    }
+                }
             }
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            subscription_id = it.getInt("subscription_id")
         }
     }
 
@@ -239,6 +281,7 @@ class MyProfileFragment : Fragment() {
             val status = "add"
             val bundle = Bundle()
             bundle.putInt("service_id", service_id)
+            bundle.putInt("subscription_id", 0)
             bundle.putString("status", status)
             findNavController().navigate(R.id.action_myProfileFragment_to_addNewFeaturedFragment, bundle)
         }
@@ -511,7 +554,7 @@ class MyProfileFragment : Fragment() {
                                 LinearLayoutManager.VERTICAL,
                                 false
                         )
-                        servicesAdapter = ServicesAdapter(requireContext(), serviceslisting, object : ClickInterface.onServicesItemClick{
+                        servicesAdapter = ServicesAdapter(requireContext(), serviceslisting,subscription_id, object : ClickInterface.onServicesItemClick{
                             override fun onServicClick(position: Int) {
                                 val bundle = Bundle()
                                 bundle.putStringArrayList("gallery",
@@ -623,12 +666,6 @@ class MyProfileFragment : Fragment() {
                     if (response.body()!!.status == 1) {
                         mView!!.rv_naqashat_gallery.visibility = View.VISIBLE
                         mView!!.ll_no_gallery_found.visibility = View.GONE
-                       /* mView!!.rv_naqashat_gallery.layoutManager = GridLayoutManager(
-                                requireContext(),
-                                2,
-                                GridLayoutManager.VERTICAL,
-                                false
-                        )*/
                         mView!!.rv_naqashat_gallery.layoutManager = StaggeredGridLayoutManager(
                             2,
                             StaggeredGridLayoutManager.VERTICAL
@@ -800,15 +837,27 @@ class MyProfileFragment : Fragment() {
         return mediaFile
     }
     private fun chooseImage() {
-        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-        intent.type = "image/*"
-        intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
-        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
-        uri = getOutputMediaFileUri(MEDIA_TYPE_IMAGE)
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
-        status = PICK_IMAGE_FROM_GALLERY
-        resultLauncher.launch(intent)
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+            val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+            intent.type = "image/*"
+            intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+            uri = getOutputMediaFileUri(MEDIA_TYPE_IMAGE)
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
+            status = PICK_IMAGE_FROM_GALLERY
+            resultLauncher.launch(intent)
+        } else {
+            val intent = Intent(Intent.ACTION_GET_CONTENT, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+            intent.type = "image/*"
+            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+            uri = getOutputMediaFileUri(MEDIA_TYPE_IMAGE)
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
+            status = PICK_IMAGE_FROM_GALLERY
+            resultLauncher.launch(intent)
+        }
+
     }
+
 
     private fun getRealPath(ur: Uri?): String? {
         var realpath = ""
@@ -884,6 +933,26 @@ class MyProfileFragment : Fragment() {
             }
 
         })
+    }
+
+    @SuppressLint("Range")
+    fun getImageFilePath(uri: Uri, context: Context) {
+        val file = File(uri.path)
+        val filePath = file.path.split(":").toTypedArray()
+        val image_id = filePath[filePath.size - 1]
+        val cursor: Cursor? = context.contentResolver.query(
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+            null,
+            MediaStore.Images.Media._ID + " = ? ",
+            arrayOf(image_id),
+            null
+        )
+        if (cursor != null) {
+            cursor.moveToFirst()
+            val imagePath = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA))
+            galleryPhotos.add(imagePath)
+            cursor.close()
+        }
     }
 
     override fun onResume() {

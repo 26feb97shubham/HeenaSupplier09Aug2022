@@ -70,8 +70,13 @@ class EditProfileFragment : Fragment() {
     private var param2: String? = null
 
     private var mView : View? = null
-    private val PERMISSION_CAMERA_EXTERNAL_STORAGE_CODE = 301
-    private val PERMISSIONS_1 = arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    private val PERMISSIONS_1 = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.MANAGE_EXTERNAL_STORAGE)
+    } else {
+        arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    }
     private val PERMISSIONS_2 = arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION)
     private var uri: Uri? = null
     val MEDIA_TYPE_IMAGE = 1

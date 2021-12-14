@@ -114,7 +114,6 @@ class RevenuesFragment : Fragment() {
                 if (actionId == EditorInfo.IME_ACTION_DONE){
                     search_keyword = mView!!.et_search.text.toString()
                     SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(),  mView!!.et_search)
-                    //  getAllServicesListing(latitude!!, longitude!!, 0,"", search_keyword, 1)
                     if (TextUtils.isEmpty(search_keyword)){
                         LogUtils.shortToast(requireContext(), getString(R.string.please_enter_search_keyword_for_searching))
                     }else{

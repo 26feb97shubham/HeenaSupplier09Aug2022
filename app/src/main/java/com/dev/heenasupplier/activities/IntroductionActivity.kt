@@ -21,7 +21,7 @@ class IntroductionActivity : AppCompatActivity() {
         intro_view_pager.adapter = pagerAdapter
 
         //Attaching tab to view pager
-        TabLayoutMediator(tabLayout,   intro_view_pager){ tab, position ->
+        TabLayoutMediator(tabLayout,   intro_view_pager){ _, _ ->
         }.attach()
     }
     companion object{

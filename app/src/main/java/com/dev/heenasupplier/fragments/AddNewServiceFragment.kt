@@ -1,6 +1,7 @@
 package com.dev.heenasupplier.fragments
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -20,27 +21,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.animation.AlphaAnimation
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import android.widget.Spinner
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
 import com.dev.heenasupplier.BuildConfig
 import com.dev.heenasupplier.R
 import com.dev.heenasupplier.`interface`.ClickInterface
 import com.dev.heenasupplier.adapters.AddNewPhotosAdapter
 import com.dev.heenasupplier.adapters.CategoryAdapter
-import com.dev.heenasupplier.custom.FetchPath
 import com.dev.heenasupplier.models.*
 import com.dev.heenasupplier.rest.APIClient
 import com.dev.heenasupplier.rest.APIInterface
@@ -53,13 +46,8 @@ import com.google.android.libraries.places.api.model.AddressComponent
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
-import droidninja.filepicker.FilePickerConst
 import kotlinx.android.synthetic.main.activity_home2.*
-import kotlinx.android.synthetic.main.activity_sign_up2.*
-import kotlinx.android.synthetic.main.fragment_add_new_service.*
 import kotlinx.android.synthetic.main.fragment_add_new_service.view.*
-import kotlinx.android.synthetic.main.fragment_edit_profile.view.*
-import kotlinx.android.synthetic.main.fragment_home.view.*
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import org.json.JSONException
@@ -84,7 +72,6 @@ class AddNewServiceFragment : Fragment() {
     var countryName: String = ""
     lateinit var addNewPhotosAdapter: AddNewPhotosAdapter
     var categoryList = ArrayList<CategoryItem>()
-    var pathList=ArrayList<String>()
     var PICK_IMAGE_MULTIPLE = 101
     var service_title = ""
     var address : String = ""
@@ -94,6 +81,7 @@ class AddNewServiceFragment : Fragment() {
     var service_description = ""
     var category_id : Int?=null
     var service_id = 0
+    var subscription_id = 0
     var service_status = ""
     var service : Service?= null
     val apiInterface = APIClient.getClient()!!.create(APIInterface::class.java)
@@ -103,8 +91,15 @@ class AddNewServiceFragment : Fragment() {
     private val CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 103
     var galleryItemList = ArrayList<GalleryItem>()
     private var galleryItemListSize : Int = 0
+    var pathList=ArrayList<String>()
 
-    private val PERMISSIONS_1 = arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    private val PERMISSIONS_1 = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.MANAGE_EXTERNAL_STORAGE)
+    } else {
+        arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    }
     private val PERMISSIONS_2 = arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION)
     var status = 0
     var my_click = ""
@@ -183,61 +178,70 @@ class AddNewServiceFragment : Fragment() {
                 }
             }
         }else if (status.equals(PICK_IMAGE_MULTIPLE)){
-            if (it.resultCode==Activity.RESULT_OK){
-                val data: Intent? = it.data
-                if (data!!.clipData != null) {
-                    val count: Int = data.clipData!!.itemCount
-                    Log.e("count", ""+count)
-                    if (count+pathList.size<=5){
-                        for (i in 0 until count) {
-                            val selectedImage: Uri = data.clipData!!.getItemAt(i).uri
-                            if (selectedImage.toString().startsWith("content")) {
-                                imagePath = getRealPath(selectedImage)!!
-                            } else {
-                                imagePath = selectedImage.getPath()!!
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+                if (it.resultCode==Activity.RESULT_OK){
+                    val data: Intent? = it.data
+                    imagePath = ""
+                    if (data!!.clipData != null) {
+                        val count: Int = data.clipData!!.itemCount
+                        Log.e("count", ""+count)
+                        if (count+pathList.size<=5){
+                            for (i in 0 until count) {
+                                val selectedImage: Uri = data.clipData!!.getItemAt(i).uri
+                                if (selectedImage.toString().startsWith("content")) {
+                                    imagePath = getRealPath(selectedImage)!!
+                                } else {
+                                    imagePath = selectedImage.getPath()!!
+                                }
+                                pathList.add(imagePath)
+                                Log.e("pathList", pathList.size.toString())
                             }
-                            pathList.add(imagePath)
-                            Log.e("pathList", pathList.size.toString())
+                            setServicePhotoAdapter(pathList)
+                        }else{
+                            LogUtils.shortToast(requireContext(), "Only 5 images can be selected")
                         }
-                        mView!!.rv_uploaded_photos.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-                        addNewPhotosAdapter = AddNewPhotosAdapter(requireContext(), pathList, object : ClickInterface.OnRecyclerItemClick {
-                            override fun OnClickAction(position: Int) {
-                                if(galleryItemListSize>position) {
-                                    val alert = android.app.AlertDialog.Builder(requireContext())
-                                    alert.setMessage(requireContext().getString(R.string.delete_message))
-                                    alert.setCancelable(false)
-                                    alert.setPositiveButton(getString(R.string.yes)) { dialog, i ->
-                                        dialog.cancel()
-                                        deleteServerimage(position)
-                                    }
-                                    alert.setNegativeButton(getString(R.string.no)) { dialog, i ->
-                                        dialog.cancel()
-                                    }
-                                    alert.show()
-                                }
-                                else {
-                                    Log.e("check", "" + position)
-                                    pathList.removeAt(position)
-                                    mView!!.iv_upload_photo.isEnabled = (pathList.size<5)
-                                    Log.e("check size", "" + pathList.size)
-                                    mView!!.rv_uploaded_photos.adapter=addNewPhotosAdapter
-                                    addNewPhotosAdapter.notifyDataSetChanged()
-                                }
-                                mView!!.iv_upload_photo.alpha = 1f
-                                mView!!.iv_upload_photo.isEnabled = true
-                            }
-                        })
-                        mView!!.rv_uploaded_photos.adapter = addNewPhotosAdapter
-                        addNewPhotosAdapter.notifyDataSetChanged()
+                    } else if (data.data != null) {
+                        var imagePath= ""
+                        val imageURI = data.data
+                        if (imageURI.toString().startsWith("content")) {
+                            imagePath = getRealPath(imageURI)!!
+                        } else {
+                            imagePath = imageURI?.getPath()!!
+                        }
+                        pathList.add(imagePath)
+                        setServicePhotoAdapter(pathList)
                     }else{
-                        LogUtils.shortToast(requireContext(), "Only 5 images can be selected")
+                        Log.e("error_data", data.toString())
                     }
-                } else if (data.data != null) {
-                    var imagePath: String = data.data?.path!!
-                }else{
-                    Log.e("error_data", data.toString())
+                }
+            } else {
+                if (it.resultCode==Activity.RESULT_OK){
+                    val data: Intent? = it.data
+                    imagePath = ""
+                    if (data!!.clipData != null) {
+                        val count: Int = data.clipData!!.itemCount
+                        Log.e("count", ""+count)
+                        if (count+pathList.size<=5){
+                            for (i in 0 until count) {
+                                val selectedImage: Uri = data.clipData!!.getItemAt(i).uri
+                                getImageFilePath(selectedImage, requireContext())
+                            }
+                            setServicePhotoAdapter(pathList)
+                        }else{
+                            LogUtils.shortToast(requireContext(), "Only 5 images can be selected")
+                        }
+                    } else if (data.data != null) {
+                        var imageURI = data.data
+                        if (imageURI != null) {
+                            getImageFilePath(imageURI, requireContext())
+                        }
+                        setServicePhotoAdapter(pathList)
+                    }else{
+                        Log.e("error_data", data.toString())
+                    }
                 }
             }
+
         }else if (status.equals(AUTOCOMPLETE_REQUEST_CODE)){
             if (it.resultCode==Activity.RESULT_OK){
                 val place = Autocomplete.getPlaceFromIntent(it.data!!)
@@ -296,12 +300,46 @@ class AddNewServiceFragment : Fragment() {
         }
     }
 
+    fun setServicePhotoAdapter(pathList: ArrayList<String>) {
+        mView!!.rv_uploaded_photos.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        addNewPhotosAdapter = AddNewPhotosAdapter(requireContext(), pathList, object : ClickInterface.OnRecyclerItemClick {
+            override fun OnClickAction(position: Int) {
+                if(galleryItemListSize>position) {
+                    val alert = android.app.AlertDialog.Builder(requireContext())
+                    alert.setMessage(requireContext().getString(R.string.delete_message))
+                    alert.setCancelable(false)
+                    alert.setPositiveButton(getString(R.string.yes)) { dialog, i ->
+                        dialog.cancel()
+                        deleteServerimage(position)
+                    }
+                    alert.setNegativeButton(getString(R.string.no)) { dialog, i ->
+                        dialog.cancel()
+                    }
+                    alert.show()
+                }
+                else {
+                    Log.e("check", "" + position)
+                    pathList.removeAt(position)
+                    mView!!.iv_upload_photo.isEnabled = (pathList.size<5)
+                    Log.e("check size", "" + pathList.size)
+                    mView!!.rv_uploaded_photos.adapter=addNewPhotosAdapter
+                    addNewPhotosAdapter.notifyDataSetChanged()
+                }
+                mView!!.iv_upload_photo.alpha = 1f
+                mView!!.iv_upload_photo.isEnabled = true
+            }
+        })
+        mView!!.rv_uploaded_photos.adapter = addNewPhotosAdapter
+        addNewPhotosAdapter.notifyDataSetChanged()
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             service_status = it.getString("status").toString()
             service_id = it.getInt("service_id")
+            subscription_id = it.getInt("subscription_id")
         }
     }
 
@@ -544,7 +582,7 @@ class AddNewServiceFragment : Fragment() {
     private fun save() {
         requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         mView!!.add_service_progressBar.visibility= View.VISIBLE
-        val builder = APIClient.createMultipartBodyBuilder(arrayOf("user_id", "category_id", "name", "price","child_price", "address", "lat", "long", "description"),
+        val builder = APIClient.createMultipartBodyBuilder(arrayOf("user_id", "category_id", "name", "price","child_price", "address", "lat", "long", "description", "subscription_id"),
                 arrayOf(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId, 0).toString(),
                         category_id.toString(),
                         service_title,
@@ -553,7 +591,8 @@ class AddNewServiceFragment : Fragment() {
                         address,
                         mLatitude.toString(),
                         mLongitude.toString(),
-                        service_description))
+                        service_description,
+                    subscription_id.toString()))
 
         for(i in 0 until pathList.size){
             val file = File(pathList[i])
@@ -619,14 +658,25 @@ class AddNewServiceFragment : Fragment() {
     }
 
     private fun chooseImageVideo() {
-        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-        intent.type = "image/*"
-        uri = getOutputMediaFileUri(MEDIA_TYPE_IMAGE)
-        intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
-        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
-        status = PICK_IMAGE_MULTIPLE
-        resultLauncher.launch(intent)
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+            val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+            intent.type = "image/*"
+            intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+            uri = getOutputMediaFileUri(MEDIA_TYPE_IMAGE)
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
+            status = PICK_IMAGE_MULTIPLE
+            resultLauncher.launch(intent)
+        } else {
+            val intent = Intent(Intent.ACTION_GET_CONTENT, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+            intent.type = "image/*"
+            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+            uri = getOutputMediaFileUri(MEDIA_TYPE_IMAGE)
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
+            status = PICK_IMAGE_MULTIPLE
+            resultLauncher.launch(intent)
+        }
+
     }
 
     private fun captureImage() {
@@ -719,15 +769,6 @@ class AddNewServiceFragment : Fragment() {
             }
 
         })
-    }
-
-    fun hasAllPermissionsGranted(grantResults: IntArray): Boolean {
-        for (grantResult in grantResults) {
-            if (grantResult == PackageManager.PERMISSION_DENIED) {
-                return false
-            }
-        }
-        return true
     }
 
     private fun deleteServerimage(postion: Int) {
@@ -841,6 +882,27 @@ class AddNewServiceFragment : Fragment() {
         }
         return ""
     }
+
+    @SuppressLint("Range")
+    fun getImageFilePath(uri: Uri, context: Context) {
+        val file = File(uri.path)
+        val filePath = file.path.split(":").toTypedArray()
+        val image_id = filePath[filePath.size - 1]
+        val cursor: Cursor? = context.contentResolver.query(
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+            null,
+            MediaStore.Images.Media._ID + " = ? ",
+            arrayOf(image_id),
+            null
+        )
+        if (cursor != null) {
+            cursor.moveToFirst()
+            val imagePath = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA))
+            pathList.add(imagePath)
+            cursor.close()
+        }
+    }
+
     companion object{
         private var instance: SharedPreferenceUtility? = null
         @Synchronized

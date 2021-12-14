@@ -61,6 +61,10 @@ interface APIInterface {
     @GET(APIUtils.SERVICESLISTING)
     fun serviceslisting(@Path("user_id") user_id: Int, @Query("lang") lang : String) : Call<ServiceListingResponse?>?
 
+    @GET(APIUtils.FEATUREDSERVICESLISTING)
+    fun featuredserviceslisting(@Path("user_id") user_id: Int, @Query("lang") lang : String) : Call<FeaturedServicesListingResponse?>?
+
+
     @GET(APIUtils.DELETESERVICE)
     fun deleteservice(@Path("service_id") service_id : Int) : Call<DeleteServiceResponse?>?
 

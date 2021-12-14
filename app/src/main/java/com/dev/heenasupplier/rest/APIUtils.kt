@@ -50,5 +50,6 @@ class APIUtils {
         const val EDITADDRESS : String = "address/edit"
         const val DELETEADDRESS : String = "address/delete/{user_id}"
         const val ADDRESSLISTING : String = "address/{user_id}"
+        const val FEATUREDSERVICESLISTING : String = "featured_service/{user_id}"
     }
 }

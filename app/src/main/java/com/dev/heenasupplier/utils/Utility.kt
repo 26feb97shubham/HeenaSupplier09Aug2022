@@ -4,8 +4,11 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.res.Configuration
+import android.database.Cursor
 import android.graphics.Color
 import android.net.ConnectivityManager
+import android.net.Uri
+import android.provider.MediaStore
 import android.provider.Settings
 import android.util.Log
 import android.view.Gravity
@@ -16,6 +19,7 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
 import com.dev.heenasupplier.application.MyApp
+import com.dev.heenasupplier.broadcastreceiver.ConnectivityReceiver
 import com.dev.heenasupplier.models.CategoryItem
 import com.dev.heenasupplier.models.CategoryListResponse
 import com.dev.heenasupplier.models.Service
@@ -27,6 +31,7 @@ import org.json.JSONException
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -38,6 +43,8 @@ class Utility {
         var serviceslisting = ArrayList<Service>()
         val IMAGE_DIRECTORY_NAME = "Heena_Supplier"
         var booking_item_type = 0
+        var networkChangeReceiver: ConnectivityReceiver? = null
+
 
         fun changeLanguage(context: Context, language:String){
             val locale = Locale(language)
@@ -62,9 +69,18 @@ class Utility {
         }
 
         fun isNetworkAvailable(): Boolean {
-            val connectivityManager = MyApp.instance!!.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-            val activeNetworkInfo = connectivityManager.activeNetworkInfo
-            return activeNetworkInfo != null && activeNetworkInfo.isConnected
+            return try {
+                val connectivityManager = MyApp.instance!!.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+                val activeNetworkInfo = connectivityManager.activeNetworkInfo
+                activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting
+            }catch (e: NullPointerException){
+                showLog(e.localizedMessage)
+                false
+            }
+        }
+
+        private fun showLog(localizedMessage: String?) {
+            Log.e("NetworkChangeReceiver", "" + localizedMessage)
         }
 
         fun setLanguage(context: Context, language: String){

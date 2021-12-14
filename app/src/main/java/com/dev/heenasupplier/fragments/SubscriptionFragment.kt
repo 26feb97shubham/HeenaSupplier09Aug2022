@@ -77,7 +77,6 @@ class SubscriptionFragment : Fragment() {
         mView!!.tv_buy_subscription.setOnClickListener {
             buy_subscription()
         }
-
     }
 
     private fun buy_subscription() {
@@ -97,7 +96,8 @@ class SubscriptionFragment : Fragment() {
                 if (response.isSuccessful){
                     if (response.body()!!.status==1){
                         LogUtils.shortToast(requireContext(), response.body()!!.message)
-                        findNavController().navigate(R.id.homeFragment)
+                        SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.ISFEATURED, true)
+//                        findNavController().navigate(R.id.homeFragment)
                     }else{
                         LogUtils.shortToast(requireContext(), response.body()!!.message)
                     }

@@ -34,13 +34,18 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
-        val messageData = remoteMessage.data.toString().replace("data=", "data:")
-        LogUtils.e("message", "message $messageData")
-        if(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId, 0) !=0){
-            /*val intent =  Intent("MyData")
-           broadcaster.sendBroadcast(intent)*/
-            makeNotification(messageData)
+        if(remoteMessage.notification!=null){
+            val messageData = remoteMessage.data.toString().replace("data=", "data:")
+            LogUtils.e("message", "message $messageData")
+            if(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId, 0) !=0){
+                /*val intent =  Intent("MyData")
+               broadcaster.sendBroadcast(intent)*/
+                makeNotification(messageData)
+            }
+        }else{
+            LogUtils.e("message", "no notification found")
         }
+
     }
 
     private fun makeNotification(messageData: String) {

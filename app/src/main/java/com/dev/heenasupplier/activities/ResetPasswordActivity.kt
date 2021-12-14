@@ -13,21 +13,20 @@ import com.dev.heenasupplier.rest.APIInterface
 import com.dev.heenasupplier.utils.ConstClass
 import com.dev.heenasupplier.utils.LogUtils
 import com.dev.heenasupplier.utils.SharedPreferenceUtility
+import com.dev.heenasupplier.utils.Utility.Companion.apiInterface
 import kotlinx.android.synthetic.main.activity_login2.*
 import kotlinx.android.synthetic.main.activity_reset_password.*
 import kotlinx.android.synthetic.main.activity_sign_up2.*
-import kotlinx.android.synthetic.main.activity_sign_up2.progressBar
 import okhttp3.FormBody
 import retrofit2.Call
 import retrofit2.Response
 
 class ResetPasswordActivity : AppCompatActivity() {
-    lateinit var apiInterface: APIInterface
     lateinit var builder : FormBody.Builder
     var password : String?= null
-    var cnfrmpass : String? = null
+    private var cnfrmpass : String? = null
     var emailaddress : String?=null
-    var otp : String?=null
+    private var otp : String?=null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_reset_password)
@@ -52,13 +51,13 @@ class ResetPasswordActivity : AppCompatActivity() {
             edtPassword.error=getString(R.string.please_enter_your_password)
             LogUtils.shortToast(this, getString(R.string.please_enter_your_password))
         }
-        else if (password.toString()!!.length < 6) {
+        else if (password.toString().length < 6) {
             edtPassword.requestFocus()
             edtPassword.error=getString(R.string.verify_password_length_valid)
             LogUtils.shortToast(this, getString(R.string.verify_password_length_valid))
 
         }
-        else if (!SharedPreferenceUtility.getInstance().isPasswordValid(password.toString()!!)) {
+        else if (!SharedPreferenceUtility.getInstance().isPasswordValid(password.toString())) {
             edtPassword.requestFocus()
             edtPassword.error=getString(R.string.password_length_valid)
             LogUtils.shortToast(this, getString(R.string.password_length_valid))
@@ -68,7 +67,7 @@ class ResetPasswordActivity : AppCompatActivity() {
             edtConfirmPassword.error=getString(R.string.please_verify_your_password)
             LogUtils.shortToast(this, getString(R.string.please_verify_your_password))
         }
-        else if (!cnfrmpass.toString().equals(password.toString())) {
+        else if (cnfrmpass.toString() != password.toString()) {
             edtConfirmPassword.requestFocus()
             edtConfirmPassword.error=getString(R.string.password_doesnt_match_with_verify_password)
             LogUtils.shortToast(this, getString(R.string.password_doesnt_match_with_verify_password))
@@ -81,10 +80,8 @@ class ResetPasswordActivity : AppCompatActivity() {
         window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         reset_pass_progressBar.visibility= View.VISIBLE
 
-        apiInterface = APIClient.getClient()!!.create(APIInterface::class.java)
         builder = APIClient.createBuilder(arrayOf("email", "otp", "lang", "password"),
-        arrayOf(emailaddress!!,otp!!, SharedPreferenceUtility.getInstance()
-            .get(SharedPreferenceUtility.SelectedLang, "")
+        arrayOf(emailaddress!!,otp!!, SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""]
             .toString(),cnfrmpass!!))
 
         val call = apiInterface.resetpassword(builder.build())
