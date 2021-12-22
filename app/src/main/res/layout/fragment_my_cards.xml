@@ -7,12 +7,12 @@
     android:background="@android:color/transparent"
     tools:context=".fragments.MyCards">
 
-    <androidx.core.widget.NestedScrollView
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:paddingBottom="@dimen/_10sdp">
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_saved_cards"
@@ -25,6 +25,24 @@
                 android:textColor="@color/gold"
                 android:fontFamily="@font/avenir_medium"
                 android:textSize="@dimen/_12ssp"
+                android:textStyle="normal"/>
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_no_cards_found"
+                android:layout_width="@dimen/_200sdp"
+                android:layout_height="@dimen/_100sdp"
+                app:layout_constraintTop_toTopOf="@id/vpCards"
+                app:layout_constraintBottom_toBottomOf="@id/vpCards"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:text="@string/no_cards_found"
+                android:textColor="@color/gold"
+                android:layout_marginHorizontal="@dimen/_10sdp"
+                android:gravity="center"
+                android:visibility="gone"
+                android:layout_marginTop="@dimen/_28sdp"
+                android:fontFamily="@font/avenir_medium"
+                android:textSize="@dimen/_15ssp"
                 android:textStyle="normal"/>
 
             <androidx.viewpager2.widget.ViewPager2
@@ -89,7 +107,20 @@
                 android:fontFamily="@font/avenir_medium"
                 android:textSize="@dimen/_15ssp"
                 android:textStyle="normal"/>
+
+            <ProgressBar
+                android:id="@+id/progressBar_view_cards"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                android:elevation="@dimen/_5sdp"
+                android:visibility="gone"
+                style="@style/Theme.Progressbar"
+                android:indeterminateTint="@color/gold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.core.widget.NestedScrollView>
+    </ScrollView>
 
 </FrameLayout>

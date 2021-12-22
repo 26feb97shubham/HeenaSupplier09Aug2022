@@ -19,7 +19,7 @@
             android:paddingBottom="@dimen/_20sdp"
             android:paddingTop="@dimen/_20sdp">
 
-            <ImageView
+            <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/iv_logo"
                 android:layout_width="@dimen/_200sdp"
                 android:layout_height="@dimen/_100sdp"
@@ -263,15 +263,14 @@
                     android:inputType="textPassword"
                     android:imeOptions="actionNext"
                     android:hint="@string/password"/>
-                <ImageView
+                <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/iv_pass_show_hide"
                     android:layout_width="0dp"
                     android:layout_weight="0.1"
                     android:layout_height="match_parent"
                     android:src="@drawable/invisible"
                     app:tint="@color/gray"
-                    android:layout_marginHorizontal="@dimen/_6sdp"
-                    android:padding="@dimen/_4sdp"/>
+                    android:layout_marginHorizontal="@dimen/_6sdp"/>
             </LinearLayout>
 
             <LinearLayout
@@ -301,15 +300,14 @@
                     android:inputType="textPassword"
                     android:imeOptions="actionDone"
                     android:hint="@string/confirm_password" />
-                <ImageView
+                <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/iv_cnfrm_pass_show_hide"
                     android:layout_width="0dp"
                     android:layout_weight="0.1"
                     android:layout_height="match_parent"
                     android:src="@drawable/invisible"
                     app:tint="@color/gray"
-                    android:layout_marginHorizontal="@dimen/_6sdp"
-                    android:padding="@dimen/_4sdp"/>
+                    android:layout_marginHorizontal="@dimen/_6sdp" />
             </LinearLayout>
 
             <com.google.android.material.textview.MaterialTextView
@@ -370,6 +368,46 @@
                     android:textAllCaps="true"
                     android:elevation="@dimen/_5sdp"/>
             </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_tnc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintTop_toBottomOf="@id/cnfrmpasslayout"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginHorizontal="@dimen/_30sdp"
+                android:layout_marginTop="@dimen/_20sdp">
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/imgChk"
+                    android:layout_width="@dimen/_15sdp"
+                    android:layout_height="@dimen/_15sdp"
+                    android:src="@drawable/un_check" />
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/txtPlsAccept"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/i_accept_the"
+                    android:textColor="@color/gold"
+                    android:textSize="@dimen/_12ssp"
+                    android:layout_marginStart="@dimen/_8sdp"
+                    android:fontFamily="@font/expressway_rg" />
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/txtTermsConditions"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/terms_and_conditions_underlined"
+                    android:textColor="@color/gold"
+                    android:textSize="@dimen/_12ssp"
+                    android:textStyle="normal"
+                    android:textAllCaps="true"
+                    android:fontFamily="@font/expressway_rg"
+                    android:layout_marginEnd="@dimen/_15sdp"
+                    android:layout_marginStart="@dimen/_5sdp"
+                    tools:ignore="AllCaps" />
+
+            </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

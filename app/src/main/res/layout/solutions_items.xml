@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.textview.MaterialTextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/_4sdp"
+    android:textColor="#836853"
+    android:text="@string/service_desc"
+    android:textSize="@dimen/_10ssp"
+    android:fontFamily="@font/expressway_rg"
+    android:id="@+id/tv_solutions">
+
+</com.google.android.material.textview.MaterialTextView>

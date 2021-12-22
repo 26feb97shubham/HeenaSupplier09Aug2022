@@ -7,7 +7,7 @@
     android:background="@drawable/default_background"
     tools:context=".activities.ChooseLoginSignUpActivity">
 
-    <ImageView
+    <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/iv_logo"
         android:layout_width="@dimen/_200sdp"
         android:layout_height="@dimen/_100sdp"

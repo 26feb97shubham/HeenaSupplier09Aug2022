@@ -28,7 +28,7 @@
             android:textAllCaps="false"
             android:textStyle="normal"/>
 
-        <ImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/iv_selected_unselected_registration"
             android:layout_width="@dimen/_15sdp"
             android:layout_height="@dimen/_15sdp"

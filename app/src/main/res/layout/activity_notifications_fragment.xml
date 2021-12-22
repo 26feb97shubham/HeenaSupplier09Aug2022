@@ -48,7 +48,7 @@
             android:layout_width="0dp"
             android:layout_height="@dimen/_35sdp"
             android:fontFamily="@font/avenir_medium"
-            android:textColor="@color/black"
+            android:textColor="@color/gold"
             android:textSize="@dimen/_20ssp"
             android:textStyle="bold"
             android:gravity="center"

@@ -20,7 +20,7 @@
                 android:paddingBottom="@dimen/_20sdp"
                 android:paddingTop="@dimen/_20sdp">
 
-                <ImageView
+                <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/iv_logo"
                     android:layout_width="@dimen/_200sdp"
                     android:layout_height="@dimen/_100sdp"
@@ -84,6 +84,7 @@
                     android:background="@drawable/gold_border_white_filled_rect_box_curved"
                     android:includeFontPadding="false"
                     android:textColor="@color/text_color"
+                    android:textColorHint="@color/text_gold_color"
                     android:fontFamily="@font/avenir_medium"
                     android:textSize="@dimen/_11ssp"
                     android:textAllCaps="false"
@@ -127,15 +128,14 @@
                         android:inputType="textPassword"
                         android:imeOptions="actionDone"
                         android:hint="@string/password" />
-                    <ImageView
+                    <com.google.android.material.imageview.ShapeableImageView
                         android:id="@+id/iv_pass_show_hide_login"
                         android:layout_width="0dp"
                         android:layout_weight="0.1"
                         android:layout_height="match_parent"
                         android:src="@drawable/invisible"
                         app:tint="@color/gray"
-                        android:layout_marginHorizontal="@dimen/_6sdp"
-                        android:padding="@dimen/_4sdp"/>
+                        android:layout_marginHorizontal="@dimen/_6sdp" />
                 </LinearLayout>
 
                 <com.google.android.material.textview.MaterialTextView

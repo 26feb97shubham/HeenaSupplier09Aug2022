@@ -92,10 +92,11 @@
                         android:textColorHint="@color/gold"
                         android:gravity="center_vertical"
                         android:singleLine="true"
-                        android:maxLength="15"
+                        android:maxLength="30"
                         android:paddingStart="@dimen/_8sdp"
                         android:textColor="@color/gold"
                         android:textCursorDrawable="@color/gold"
+                        android:cursorVisible="true"
                         android:textStyle="normal"
                         android:background="@null"
                         android:inputType="text"
@@ -244,9 +245,10 @@
                             android:padding="@dimen/_8sdp"
                             android:textColor="@color/gold"
                             android:textStyle="normal"
-                            android:maxLength="8"
+                            android:maxLength="10"
                             android:gravity="center_vertical"
                             android:background="@null"
+                            android:cursorVisible="true"
                             android:singleLine="true"
                             android:fontFamily="@font/avenir_medium"
                             android:textSize="@dimen/_11ssp"/>
@@ -258,6 +260,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:visibility="gone"
                     android:layout_marginStart="@dimen/_8sdp"
                     android:orientation="vertical">
                     <com.google.android.material.textview.MaterialTextView

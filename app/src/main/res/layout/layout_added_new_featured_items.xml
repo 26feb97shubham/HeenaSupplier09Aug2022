@@ -47,7 +47,7 @@
             android:textSize="@dimen/_10ssp" />
 
 
-        <ImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/iv_add_to_fav"
             android:layout_width="@dimen/_20sdp"
             android:layout_height="@dimen/_20sdp"
@@ -55,7 +55,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:src="@drawable/star"
             android:layout_marginHorizontal="@dimen/_12sdp"/>
-        <ImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/iv_delete"
             android:layout_width="@dimen/_20sdp"
             android:layout_height="@dimen/_20sdp"

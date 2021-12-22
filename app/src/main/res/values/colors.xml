@@ -23,4 +23,5 @@
     <color name="calendar_header_title">#1D2634</color>
     <color name="selected_date_circle_color_app">#D0B67A</color>
     <color name="range_bg_color_app">#D1C3B7</color>
+    <color name="light_grey">#F1F1F1</color>
 </resources>

@@ -291,4 +291,21 @@
     <string name="there_are_no_locations">There are no locations</string>
     <string name="membership_expired">Membership expired</string>
     <string name="featured_membership_status">Featured Membership Status</string>
+    <string name="discount">Discount</string>
+    <string name="please_enter_valid_offer_discount">Please enter valid offer discount</string>
+    <string name="please_accept_terms_conditions">Please accept terms and conditions</string>
+    <string name="terms_and_conditions_underlined"><u>Terms and Conditions</u></string>
+    <string name="i_accept_the">I accept the</string>
+    <string name="please_enter_valid_card_title">Please enter valid card title</string>
+    <string name="please_enter_valid_card_number">Please enter valid card number</string>
+    <string name="please_enter_valid_cvv">Please enter valid CVV</string>
+    <string name="please_enter_valid_expiry_date">Please enter valid expiry date</string>
+    <string name="card_is_expired">Your card is expired</string>
+    <string name="no_cards_found">No Cards Found</string>
+    <string name="are_you_sure_you_want_to_delete_the_offer">Are you sure you want to delete the offer</string>
+    <string name="are_you_sure_you_want_to_delete_the_service">Are you sure you want to delete the service</string>
+    <string name="delete_offer">Delete Offer</string>
+    <string name="delete_service">Delete Service</string>
+    <string name="my_offers">My Offers</string>
+    <string name="sorry_to_hear_about_that">Sorry to hear about that.  Try out these solutions!</string>
 </resources>

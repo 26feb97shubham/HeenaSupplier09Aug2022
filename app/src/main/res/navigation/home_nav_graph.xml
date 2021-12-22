@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.dev.heenasupplier.fragments.HomeFragment"
+        android:name="com.heena.supplier.fragments.HomeFragment"
         android:label="fragment_main_home"
         tools:layout="@layout/fragment_home"
         app:enterAnim="@anim/slide_in_right"
@@ -164,7 +164,7 @@
 
      <fragment
         android:id="@+id/SettingsFragment"
-        android:name="com.dev.heenasupplier.fragments.SettingsFragment"
+        android:name="com.heena.supplier.fragments.SettingsFragment"
         android:label="SettingsFragment"
         tools:layout="@layout/fragment_settings"
         app:enterAnim="@anim/slide_in_right"
@@ -201,7 +201,7 @@
 
     <fragment
         android:id="@+id/changePasswordFragment"
-        android:name="com.dev.heenasupplier.fragments.ChangePasswordFragment"
+        android:name="com.heena.supplier.fragments.ChangePasswordFragment"
         android:label="ChangePasswordFragment" 
         tools:layout = "@layout/fragment_change_password"
         app:enterAnim="@anim/slide_in_right"
@@ -214,7 +214,7 @@
 
     <fragment
         android:id="@+id/myBanksFragment"
-        android:name="com.dev.heenasupplier.fragments.MyBanksFragment"
+        android:name="com.heena.supplier.fragments.MyBanksFragment"
         android:label="MyBanksFragment" 
         tools:layout = "@layout/fragment_my_banks"
         app:enterAnim="@anim/slide_in_right"
@@ -235,7 +235,7 @@
 
     <fragment
         android:id="@+id/EditProfileFragment"
-        android:name="com.dev.heenasupplier.fragments.EditProfileFragment"
+        android:name="com.heena.supplier.fragments.EditProfileFragment"
         android:label="EditProfileFragment"
         tools:layout="@layout/fragment_edit_profile"
         app:enterAnim="@anim/slide_in_right"
@@ -248,7 +248,7 @@
 
      <fragment
         android:id="@+id/myProfileFragment"
-        android:name="com.dev.heenasupplier.fragments.MyProfileFragment"
+        android:name="com.heena.supplier.fragments.MyProfileFragment"
         android:label="fragment_my_profile"
         tools:layout="@layout/fragment_my_profile"
         app:enterAnim="@anim/slide_in_right"
@@ -283,7 +283,7 @@
 
     <fragment
         android:id="@+id/addNewOffersFragment"
-        android:name="com.dev.heenasupplier.fragments.AddOffers"
+        android:name="com.heena.supplier.fragments.AddOffers"
         android:label="fragment_add_offers"
         tools:layout="@layout/fragment_add_offers"
         app:enterAnim="@anim/slide_in_right"
@@ -303,7 +303,7 @@
 
      <fragment
         android:id="@+id/bankDetailsFragment"
-        android:name="com.dev.heenasupplier.fragments.BankDetailsFragment"
+        android:name="com.heena.supplier.fragments.BankDetailsFragment"
         android:label="fragment_bank_details"
         tools:layout="@layout/fragment_bank_details"
         app:enterAnim="@anim/slide_in_right"
@@ -321,7 +321,7 @@
 
      <fragment
         android:id="@+id/editBankDetailsFragment"
-        android:name="com.dev.heenasupplier.fragments.EditBankDetailsFragment"
+        android:name="com.heena.supplier.fragments.EditBankDetailsFragment"
         android:label="fragment_edit_bank_details"
         tools:layout="@layout/fragment_edit_bank_details"
         app:enterAnim="@anim/slide_in_right"
@@ -350,7 +350,7 @@
 
      <fragment
         android:id="@+id/SubscriptionFragment"
-        android:name="com.dev.heenasupplier.fragments.SubscriptionFragment"
+        android:name="com.heena.supplier.fragments.SubscriptionFragment"
         android:label="fragment_subscription"
         tools:layout="@layout/fragment_subscription"
         app:enterAnim="@anim/slide_in_right"
@@ -362,7 +362,7 @@
 
      <fragment
         android:id="@+id/notificationsFragment"
-        android:name="com.dev.heenasupplier.fragments.NotificationsFragment"
+        android:name="com.heena.supplier.fragments.NotificationsFragment"
         android:label="fragment_notifictaion"
         tools:layout="@layout/activity_notifications_fragment"
         app:enterAnim="@anim/slide_in_right"
@@ -374,7 +374,7 @@
 
      <fragment
         android:id="@+id/revenuesFragment"
-        android:name="com.dev.heenasupplier.fragments.RevenuesFragment"
+        android:name="com.heena.supplier.fragments.RevenuesFragment"
         android:label="fragment_revenues_fragment"
         tools:layout="@layout/fragment_revenues"
         app:enterAnim="@anim/slide_in_right"
@@ -386,7 +386,7 @@
 
       <fragment
         android:id="@+id/myCardsFragment"
-        android:name="com.dev.heenasupplier.fragments.MyCards"
+        android:name="com.heena.supplier.fragments.MyCards"
         android:label="fragment_my_cards"
         tools:layout="@layout/fragment_my_cards"
         app:enterAnim="@anim/slide_in_right"
@@ -412,7 +412,7 @@
 
     <fragment
         android:id="@+id/myLocationsFragment"
-        android:name="com.dev.heenasupplier.fragments.MyLocationsFragment"
+        android:name="com.heena.supplier.fragments.MyLocationsFragment"
         android:label="fragment_my_locations"
         tools:layout="@layout/fragment_my_locations"
         app:enterAnim="@anim/slide_in_right"
@@ -440,7 +440,7 @@
 
      <fragment
         android:id="@+id/langFragment"
-        android:name="com.dev.heenasupplier.fragments.SelectLangFragment"
+        android:name="com.heena.supplier.fragments.SelectLangFragment"
         android:label="fragment_select_lang"
         tools:layout="@layout/fragment_select_lang"
         app:enterAnim="@anim/slide_in_right"
@@ -462,7 +462,7 @@
     
      <fragment
         android:id="@+id/CMSFragment"
-        android:name="com.dev.heenasupplier.fragments.CMSFragment"
+        android:name="com.heena.supplier.fragments.CMSFragment"
         android:label="fragment_c_m_s"
         tools:layout="@layout/fragment_c_m_s"
         app:enterAnim="@anim/slide_in_right"
@@ -482,7 +482,7 @@
 
       <fragment
         android:id="@+id/contactUsFragment"
-        android:name="com.dev.heenasupplier.fragments.ContactUsFragment"
+        android:name="com.heena.supplier.fragments.ContactUsFragment"
         android:label="fragment_contact_us"
         tools:layout="@layout/fragment_contact_us"
         app:enterAnim="@anim/slide_in_right"
@@ -508,7 +508,7 @@
 
          <fragment
         android:id="@+id/addressSheetFragment"
-        android:name="com.dev.heenasupplier.fragments.AddressSheetFragment"
+        android:name="com.heena.supplier.fragments.AddressSheetFragment"
         android:label="fragment_address_sheet"
         tools:layout="@layout/fragment_address_sheet"
         app:enterAnim="@anim/slide_in_right"
@@ -521,7 +521,7 @@
 
      <fragment
         android:id="@+id/faqFragment"
-        android:name="com.dev.heenasupplier.fragments.FAQFragment"
+        android:name="com.heena.supplier.fragments.FAQFragment"
         android:label="fragment_f_a_q"
         tools:layout="@layout/fragment_f_a_q"
         app:enterAnim="@anim/slide_in_right"
@@ -533,7 +533,7 @@
 
     <fragment
         android:id="@+id/helpFragment"
-        android:name="com.dev.heenasupplier.fragments.HelpFragment"
+        android:name="com.heena.supplier.fragments.HelpFragment"
         android:label="fragment_help"
         tools:layout="@layout/fragment_help"
         app:enterAnim="@anim/slide_in_right"
@@ -553,7 +553,7 @@
 
      <fragment
         android:id="@+id/myAppointmentsFragment"
-        android:name="com.dev.heenasupplier.fragments.MyBookingsFragment"
+        android:name="com.heena.supplier.fragments.MyBookingsFragment"
         android:label="fragment_my_bookings"
         tools:layout="@layout/fragment_my_bookings"
         app:enterAnim="@anim/slide_in_right"
@@ -582,7 +582,7 @@
 
          <fragment
         android:id="@+id/myServicesFragment"
-        android:name="com.dev.heenasupplier.fragments.AllServicesListing"
+        android:name="com.heena.supplier.fragments.AllServicesListing"
         android:label="fragment_all_services_listing"
         tools:layout="@layout/fragment_all_services_listing"
         app:enterAnim="@anim/slide_in_right"
@@ -602,7 +602,7 @@
 
      <fragment
         android:id="@+id/offersAndDiscountsFragment"
-        android:name="com.dev.heenasupplier.fragments.OffersAndDiscountsFragment"
+        android:name="com.heena.supplier.fragments.OffersAndDiscountsFragment"
         android:label="OffersAndDiscountsFragment" 
         app:enterAnim="@anim/slide_in_right"
         app:exitAnim="@anim/slide_out_left"
@@ -619,7 +619,7 @@
 
         <fragment
         android:id="@+id/filteredoffersAndDiscountsFragment"
-        android:name="com.dev.heenasupplier.fragments.FilteredOffersAndDiscountsFragment"
+        android:name="com.heena.supplier.fragments.FilteredOffersAndDiscountsFragment"
         android:label="FilteredOffersAndDiscountsFragment" 
         app:enterAnim="@anim/slide_in_right"
         app:exitAnim="@anim/slide_out_left"
@@ -629,7 +629,7 @@
 
        <fragment
         android:id="@+id/addNewCardFragment"
-        android:name="com.dev.heenasupplier.fragments.AddNewCardFragment"
+        android:name="com.heena.supplier.fragments.AddNewCardFragment"
         android:label="fragment_add_new_card"
         tools:layout="@layout/fragment_add_new_card"
         app:enterAnim="@anim/slide_in_right"
@@ -649,7 +649,7 @@
 
        <fragment
         android:id="@+id/addNewServiceFragment"
-        android:name="com.dev.heenasupplier.fragments.AddNewServiceFragment"
+        android:name="com.heena.supplier.fragments.AddNewServiceFragment"
         android:label="fragment_add_new_service"
         tools:layout="@layout/fragment_add_new_service"
         app:enterAnim="@anim/slide_in_right"
@@ -678,7 +678,7 @@
     
          <fragment
         android:id="@+id/membershipStatusFragment"
-        android:name="com.dev.heenasupplier.fragments.MembershipDetailsFragment"
+        android:name="com.heena.supplier.fragments.MembershipDetailsFragment"
         android:label="fragment_membership_details"
         tools:layout="@layout/fragment_membership_details"
         app:enterAnim="@anim/slide_in_right"
@@ -698,7 +698,7 @@
 
      <fragment
         android:id="@+id/bookingDetailsFragment"
-        android:name="com.dev.heenasupplier.fragments.BookingdetailsFragment"
+        android:name="com.heena.supplier.fragments.BookingdetailsFragment"
         android:label="BookingdetailsFragment"
         app:enterAnim="@anim/slide_in_right"
         app:exitAnim="@anim/slide_out_left"
@@ -709,7 +709,7 @@
 
          <fragment
         android:id="@+id/viewImageFragment"
-        android:name="com.dev.heenasupplier.fragments.ViewImageFragment"
+        android:name="com.heena.supplier.fragments.ViewImageFragment"
         android:label="BookingdetailsFragment"
         app:enterAnim="@anim/slide_in_right"
         app:exitAnim="@anim/slide_out_left"
@@ -719,7 +719,7 @@
 
        <fragment
         android:id="@+id/myPaymentFragment"
-        android:name="com.dev.heenasupplier.fragments.PaymentFragment"
+        android:name="com.heena.supplier.fragments.PaymentFragment"
         android:label="fragment_payment"
         tools:layout="@layout/fragment_payment"
         app:enterAnim="@anim/slide_in_right"
@@ -746,7 +746,7 @@
 
      <fragment
         android:id="@+id/editCardDetailsFragment"
-        android:name="com.dev.heenasupplier.fragments.EditCardDetailsFragment"
+        android:name="com.heena.supplier.fragments.EditCardDetailsFragment"
         android:label="EditCardDetailsFragment" 
         app:enterAnim="@anim/slide_in_right"
         app:exitAnim="@anim/slide_out_left"
@@ -757,7 +757,7 @@
 
     <fragment
         android:id="@+id/chatWithAdminFragment"
-        android:name="com.dev.heenasupplier.fragments.ChatWithAdminFragment"
+        android:name="com.heena.supplier.fragments.ChatWithAdminFragment"
         android:label="ChatWithAdminFragment"
         app:enterAnim="@anim/slide_in_right"
         app:exitAnim="@anim/slide_out_left"

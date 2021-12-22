@@ -71,9 +71,10 @@
                     android:fontFamily="@font/avenir_medium"
                     android:gravity="center_vertical"
                     android:paddingHorizontal="@dimen/_12ssp"
-                    android:text="@string/choose_services"
+                    android:hint="@string/choose_services"
                     android:textAllCaps="false"
                     android:textColor="@color/text_gold_color_dark"
+                    android:textColorHint="@color/text_gold_color_dark"
                     android:textSize="@dimen/_12ssp"
                     android:textStyle="normal"
                     app:drawableEndCompat="@drawable/dark_brown_down_icon" />
@@ -211,10 +212,53 @@
                 android:layout_marginTop="@dimen/_10sdp"/>
 
             <LinearLayout
+                android:id="@+id/ll_offers_discount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintTop_toBottomOf="@id/view2"
+                android:layout_marginHorizontal="@dimen/_6sdp"
+                android:layout_marginTop="@dimen/_10sdp">
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/discount"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/_11ssp"
+                    android:textStyle="normal"
+                    android:fontFamily="@font/avenir_medium"
+                    android:textColor="@color/text_gold_color_dark"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_30sdp"
+                    android:layout_marginTop="@dimen/_8sdp">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_discount"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:backgroundTint="@color/gray"
+                        android:hint=" - - "
+                        android:gravity="center_vertical"
+                        android:padding="@dimen/_8sdp"
+                        android:textColor="@color/gold"
+                        android:textStyle="normal"
+                        android:background="@null"
+                        android:inputType="number"
+                        android:maxLength="2"
+                        android:singleLine="true"
+                        android:fontFamily="@font/avenir_medium"
+                        android:drawableStart="@drawable/edit_2"
+                        android:drawablePadding="@dimen/_8sdp"
+                        android:textSize="@dimen/_11ssp"/>
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/ll_offers_price"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/view2"
+                app:layout_constraintTop_toBottomOf="@id/ll_offers_discount"
                 android:orientation="horizontal"
                 android:layout_marginTop="@dimen/_10sdp">
                 <LinearLayout
@@ -228,7 +272,7 @@
                     <com.google.android.material.textview.MaterialTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/lady_price"
+                        android:text="@string/total"
                         android:textAllCaps="false"
                         android:textSize="@dimen/_11ssp"
                         android:textStyle="normal"
@@ -270,7 +314,7 @@
                     <com.google.android.material.textview.MaterialTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/child_price"
+                        android:text="@string/offer_price"
                         android:textAllCaps="false"
                         android:textSize="@dimen/_11ssp"
                         android:textStyle="normal"
@@ -291,7 +335,9 @@
                             android:textColor="@color/gold"
                             android:textStyle="normal"
                             android:background="@null"
-                            android:inputType="numberDecimal"
+                            android:inputType="none"
+                            android:focusable="false"
+                            android:enabled="false"
                             android:maxLength="8"
                             android:singleLine="true"
                             android:fontFamily="@font/avenir_medium"

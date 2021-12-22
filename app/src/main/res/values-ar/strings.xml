@@ -272,4 +272,15 @@
     <string name="there_are_no_locations">لا توجد مواقع</string>
     <string name="membership_expired">انتهت العضوية</string>
     <string name="featured_membership_status">حالة العضوية المميزة</string>
+    <string name="discount">خصم</string>
+    <string name="please_enter_valid_offer_discount">الرجاء إدخال خصم صالح للعرض</string>
+    <string name="please_accept_terms_conditions">الرجاء قبول الشروط والأحكام</string>
+    <string name="terms_and_conditions_underlined">" البنود والشروط "</string>
+    <string name="i_accept_the">I accept the</string>
+    <string name="please_enter_valid_card_title">الرجاء إدخال عنوان بطاقة صالح</string>
+    <string name="please_enter_valid_card_number">الرجاء إدخال رقم بطاقة صحيح</string>
+    <string name="please_enter_valid_cvv">الرجاء إدخال CVV صالح</string>
+    <string name="please_enter_valid_expiry_date">الرجاء إدخال تاريخ انتهاء صالح</string>
+    <string name="card_is_expired">انتهت صلاحية بطاقتك</string>
+    <string name="no_cards_found">لم يتم العثور على بطاقات</string>
 </resources>

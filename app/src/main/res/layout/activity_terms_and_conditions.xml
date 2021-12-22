@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.TermsAndConditionsActivity">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/black"
+        android:id="@+id/toolbar">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/ic_arrow_back"
+                android:layout_width="@dimen/_24sdp"
+                android:layout_height="@dimen/_24sdp"
+                android:layout_centerVertical="true"
+                android:backgroundTint="@color/gold"
+                android:src="@drawable/gold_back_icon" />
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_24sdp"
+                android:layout_toEndOf="@id/ic_arrow_back"
+                android:layout_centerVertical="true"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:text="@string/terms_and_conditions"
+                android:textAllCaps="true"
+                android:layout_centerHorizontal="true"
+                android:fontFamily="@font/expressway_rg"
+                android:textColor="@color/gold"
+                android:textSize="@dimen/_14ssp"/>
+        </RelativeLayout>
+    </com.google.android.material.appbar.MaterialToolbar>
+
+    <WebView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbar"
+        android:background="@android:color/transparent"
+        android:layerType="software"
+        android:id="@+id/tnc_webview"/>
+
+</RelativeLayout>

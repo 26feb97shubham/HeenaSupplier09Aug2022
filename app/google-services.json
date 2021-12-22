@@ -1,41 +1,70 @@
 {
   "project_info": {
-    "project_number": "634557022438",
-    "project_id": "heenasupplier-e2746",
-    "storage_bucket": "heenasupplier-e2746.appspot.com"
+    "project_number": "358469351072",
+    "project_id": "al-niqasha-hennah",
+    "storage_bucket": "al-niqasha-hennah.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:634557022438:android:22f24e40b79d46f35ebb27",
+        "mobilesdk_app_id": "1:358469351072:android:6fcde0764dde87a99b7bc5",
         "android_client_info": {
-          "package_name": "com.dev.heenasupplier"
+          "package_name": "com.example.hena_user"
         }
       },
       "oauth_client": [
         {
-          "client_id": "634557022438-vbei8edc724g6uh0sflpudavacgsrs2q.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.dev.heenasupplier",
-            "certificate_hash": "dcfa16b62d4ed1866f7f122b3538fe80c7f996ea"
-          }
-        },
-        {
-          "client_id": "634557022438-irv16tj1ajpve1k58vtmkav3r79tiba2.apps.googleusercontent.com",
+          "client_id": "358469351072-sv13mtvkol3eooo5tis7t41n2dkn6jdi.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyA3_ZZOKIB6u8hIeKBrRAKRotQ9SmTswGg"
+          "current_key": "AIzaSyAHnPqlhGyx3IW9xrPHoUW_VoZSslSs1Mk"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "634557022438-irv16tj1ajpve1k58vtmkav3r79tiba2.apps.googleusercontent.com",
+              "client_id": "358469351072-sv13mtvkol3eooo5tis7t41n2dkn6jdi.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:358469351072:android:5655a02fdf2fa1879b7bc5",
+        "android_client_info": {
+          "package_name": "com.heena.supplier"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "358469351072-966gjn0emk9j6f1kujmeoqenmhu96skb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.heena.supplier",
+            "certificate_hash": "dcfa16b62d4ed1866f7f122b3538fe80c7f996ea"
+          }
+        },
+        {
+          "client_id": "358469351072-sv13mtvkol3eooo5tis7t41n2dkn6jdi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAHnPqlhGyx3IW9xrPHoUW_VoZSslSs1Mk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "358469351072-sv13mtvkol3eooo5tis7t41n2dkn6jdi.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
