@@ -2,6 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/black">
 
     <LinearLayout
@@ -195,6 +196,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_15sdp"
             android:gravity="end"
+            android:visibility="visible"
             android:orientation="horizontal">
             <com.google.android.material.textview.MaterialTextView
                 android:layout_width="wrap_content"
@@ -222,6 +224,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/_1sdp"
             android:layout_marginTop="@dimen/_5sdp"
+            android:visibility="visible"
             android:background="@color/gray"/>
 
         <LinearLayout
@@ -250,6 +253,8 @@
                 android:layout_width="@dimen/_20sdp"
                 android:layout_height="@dimen/_20sdp"
                 android:src="@drawable/my_bank"
+                android:tint="@color/gold"
+                app:tint="@color/gold"
                 android:layout_gravity="center_vertical"
                 android:layout_marginEnd="@dimen/_5sdp"/>
         </LinearLayout>

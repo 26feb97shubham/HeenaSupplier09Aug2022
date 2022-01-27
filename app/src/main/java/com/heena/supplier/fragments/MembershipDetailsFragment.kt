@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.animation.AlphaAnimation
+import androidx.appcompat.app.AlertDialog
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.heena.supplier.R
@@ -16,7 +17,9 @@ import com.heena.supplier.adapters.ServicesAdapter
 import com.heena.supplier.models.*
 import com.heena.supplier.utils.LogUtils
 import com.heena.supplier.utils.SharedPreferenceUtility
+import com.heena.supplier.utils.Utility
 import com.heena.supplier.utils.Utility.Companion.apiInterface
+import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
 import kotlinx.android.synthetic.main.activity_home2.*
 import kotlinx.android.synthetic.main.fragment_membership_details.*
 import kotlinx.android.synthetic.main.fragment_membership_details.view.*
@@ -43,6 +46,10 @@ class MembershipDetailsFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         mView = inflater.inflate(R.layout.fragment_membership_details, container, false)
+        Utility.changeLanguage(
+            requireContext(),
+            SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, "")
+        )
         if (subscriptions!=null){
             subscription_id = subscriptions!!.id
         }else{
@@ -57,10 +64,16 @@ class MembershipDetailsFragment : Fragment() {
 
         getServices()
 
-        requireActivity().iv_back.setOnClickListener {
+        requireActivity().iv_back.setSafeOnClickListener {
             requireActivity().iv_back.startAnimation(AlphaAnimation(1F,0.5F))
             SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_back)
             findNavController().popBackStack()
+        }
+
+        requireActivity().iv_notification.setSafeOnClickListener {
+            requireActivity().iv_notification.startAnimation(AlphaAnimation(1F,0.5F))
+            SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_notification)
+            findNavController().navigate(R.id.notificationsFragment)
         }
 
         Log.e("membership", ""+subscriptions)
@@ -70,7 +83,7 @@ class MembershipDetailsFragment : Fragment() {
         mView!!.linearprogressindicator1_details.progress = subscriptions!!.ended_day
         mView!!.tv_expiration_date_details.text = subscriptions!!.end_date
 
-        tv_add_new_featured!!.setOnClickListener {
+        tv_add_new_featured!!.setSafeOnClickListener {
             var service_id = 0
             var status = "add"
             val bundle = Bundle()
@@ -95,6 +108,7 @@ class MembershipDetailsFragment : Fragment() {
                 requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 if (response.isSuccessful){
                     if (response.body()!!.status==1){
+                        serviceslisting.clear()
                         serviceslisting = response.body()!!.service as ArrayList<Service>
                         mView!!.rv_add_new_featured_listing.visibility = View.VISIBLE
                         mView!!.ll_no_services_found_membership_details.visibility = View.GONE
@@ -114,17 +128,39 @@ class MembershipDetailsFragment : Fragment() {
                             }
 
                             override fun onServiceDele(position: Int) {
-                                val service_id = serviceslisting.get(position).service_id
-                                deleteServices(service_id!!, position)
+                                val serviceid = serviceslisting.get(position).service_id
+                                val deleteServiceDialog = AlertDialog.Builder(requireContext())
+                                deleteServiceDialog.setCancelable(false)
+                                deleteServiceDialog.setTitle(requireContext().getString(R.string.delete_service))
+                                deleteServiceDialog.setMessage(requireContext().getString(R.string.are_you_sure_you_want_to_delete_the_service))
+                                deleteServiceDialog.setPositiveButton(requireContext().getString(R.string.delete)
+                                ) { dialog, _ ->
+                                    deleteServices(serviceid!!, position)
+                                    dialog!!.dismiss()
+                                }
+                                deleteServiceDialog.setNegativeButton(requireContext().getString(R.string.cancel)
+                                ) { dialog, _ -> dialog!!.cancel() }
+                                deleteServiceDialog.show()
                             }
 
                             override fun onServiceEdit(position: Int) {
-                                val service_id = serviceslisting.get(position).service_id
-                                val status = "edit"
-                                val bundle = Bundle()
-                                bundle.putInt("service_id", service_id!!)
-                                bundle.putString("status", status)
-                                findNavController().navigate(R.id.action_membershipStatusFragment_to_addNewFeaturedFragment, bundle)
+                                val updateServiceDialog = AlertDialog.Builder(requireContext())
+                                updateServiceDialog.setCancelable(false)
+                                updateServiceDialog.setTitle(requireContext().getString(R.string.update_service))
+                                updateServiceDialog.setMessage(requireContext().getString(R.string.would_you_like_to_update_your_service_details))
+                                updateServiceDialog.setPositiveButton(requireContext().getString(R.string.yes)
+                                ) { dialog, _ ->
+                                    val service_id = serviceslisting.get(position).service_id
+                                    val status = "edit"
+                                    val bundle = Bundle()
+                                    bundle.putInt("service_id", service_id!!)
+                                    bundle.putString("status", status)
+                                    findNavController().navigate(R.id.action_membershipStatusFragment_to_addNewFeaturedFragment, bundle)
+                                    dialog!!.dismiss()
+                                }
+                                updateServiceDialog.setNegativeButton(requireContext().getString(R.string.no)
+                                ) { dialog, _ -> dialog!!.cancel() }
+                                updateServiceDialog.show()
                             }
 
                         })

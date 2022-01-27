@@ -9,16 +9,22 @@ import android.view.animation.AlphaAnimation
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.heena.supplier.Dialogs.NoInternetDialog
 import com.heena.supplier.R
 import com.heena.supplier.`interface`.ClickInterface
 import com.heena.supplier.adapters.PaymentsCardAdapter
 import com.heena.supplier.models.BuyMembership
+import com.heena.supplier.models.Cards
 import com.heena.supplier.models.Membership
+import com.heena.supplier.models.ViewCardResponse
 import com.heena.supplier.rest.APIClient
 import com.heena.supplier.rest.APIInterface
 import com.heena.supplier.utils.LogUtils
 import com.heena.supplier.utils.SharedPreferenceUtility
 import com.heena.supplier.utils.Utility
+import com.heena.supplier.utils.Utility.Companion.apiInterface
+import com.heena.supplier.utils.Utility.Companion.mSelectedItem
+import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
 import kotlinx.android.synthetic.main.activity_home2.*
 import kotlinx.android.synthetic.main.fragment_membership_bottom_sheet_dialog.tv_subscribe
 import kotlinx.android.synthetic.main.fragment_payment.*
@@ -27,14 +33,20 @@ import kotlinx.android.synthetic.main.fragment_payment.tv_add_new_card
 import kotlinx.android.synthetic.main.fragment_payment.tv_membership_desc
 import kotlinx.android.synthetic.main.fragment_payment.tv_membership_plan_price
 import kotlinx.android.synthetic.main.fragment_payment.tv_membership_title
+import kotlinx.android.synthetic.main.fragment_payment.view.*
+import org.json.JSONException
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.IOException
+import java.util.ArrayList
 
 class PaymentFragment : Fragment() {
-    private var OnSubscribeCallback : OnSubscribeClick?= null
-    lateinit var paymentsCardAdapter: PaymentsCardAdapter
+    var mView : View?= null
     private var membership : Membership?=null
+    private var card_id = ""
+    lateinit var paymentCardsAdapter: PaymentsCardAdapter
+    var cardsList = ArrayList<Cards>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -47,39 +59,54 @@ class PaymentFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_payment, container, false)
-        return view
+        mView = inflater.inflate(R.layout.fragment_payment, container, false)
+        Utility.changeLanguage(
+            requireContext(),
+            SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, "")
+        )
+        return mView
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        requireActivity().iv_back.setOnClickListener {
+        requireActivity().iv_back.setSafeOnClickListener {
             requireActivity().iv_back.startAnimation(AlphaAnimation(1F,0.5F))
             SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_back)
             findNavController().popBackStack()
         }
 
-        tv_membership_title.text = membership!!.name
-        tv_membership_plan_price.text = "AED "+membership!!.price.toString()
-        tv_membership_desc.text = membership!!.description
+        requireActivity().iv_notification.setSafeOnClickListener {
+            requireActivity().iv_notification.startAnimation(AlphaAnimation(1F,0.5F))
+            SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_notification)
+            findNavController().navigate(R.id.notificationsFragment)
+        }
 
-        tv_subscribe!!.setOnClickListener { // dismiss dialog
+        mView!!.tv_membership_title.text = membership!!.name
+        mView!!.tv_membership_plan_price.text = "AED "+membership!!.price.toString()
+        mView!!.tv_membership_desc.text = membership!!.description
+
+        if (!Utility.hasConnection(requireContext())){
+            val noInternetDialog = NoInternetDialog()
+            noInternetDialog.isCancelable = false
+            noInternetDialog.setRetryCallback(object : NoInternetDialog.RetryInterface {
+                override fun retry() {
+                    noInternetDialog.dismiss()
+                    showCardsListing()
+                }
+            })
+            noInternetDialog.show(requireActivity().supportFragmentManager, "Home Fragment")
+        }else{
+            showCardsListing()
+        }
+
+        mView!!.tv_subscribe!!.setSafeOnClickListener { // dismiss dialog
            purchaseMembership()
         }
 
-        tv_add_new_card.setOnClickListener {
+        mView!!.tv_add_new_card.setSafeOnClickListener {
             findNavController().navigate(R.id.action_myPaymentFragment_to_addNewCardFragment)
         }
 
-        rv_cards_listing.layoutManager =  LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-
-        paymentsCardAdapter = PaymentsCardAdapter(requireContext(), object : ClickInterface.OnRecyclerItemClick{
-            override fun OnClickAction(position: Int) {
-            }
-
-        })
-        rv_cards_listing.adapter = paymentsCardAdapter
-        paymentsCardAdapter.notifyDataSetChanged()
     }
 
     private fun purchaseMembership() {
@@ -124,14 +151,63 @@ class PaymentFragment : Fragment() {
         }
     }
 
+    private fun showCardsListing() {
+        requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+        mView!!.frag_payment_progressBar.visibility= View.VISIBLE
+        val call = apiInterface.showCards(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId, 0))
+        call!!.enqueue(object : Callback<ViewCardResponse?> {
+            override fun onResponse(
+                call: Call<ViewCardResponse?>,
+                response: Response<ViewCardResponse?>
+            ) {
+                mView!!.frag_payment_progressBar.visibility= View.GONE
+                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                try {
+                    if (response.isSuccessful){
+                        if (response.body()!!.status==1){
+                            mView!!.tv_no_cards_found_service_payment.visibility = View.GONE
+                            mView!!.card_creditcard.visibility = View.VISIBLE
+                            cardsList.clear()
+                            cardsList = (response.body()!!.cards as ArrayList<Cards>?)!!
+                            mView!!.rv_cards_listing.layoutManager= LinearLayoutManager(requireContext())
+                            paymentCardsAdapter = PaymentsCardAdapter(requireContext(), cardsList!!,object : ClickInterface.OnRecyclerItemClick{
+                                override fun OnClickAction(pos: Int) {
+//                                    mSelectedItem = pos
+                                    card_id = cardsList!![mSelectedItem].id.toString()
+                                    paymentCardsAdapter.notifyDataSetChanged()
+                                }
 
-    fun setSubscribeClickListenerCallback(OnSubscribeCallback: OnSubscribeClick){
-        this.OnSubscribeCallback = OnSubscribeCallback
+                            })
+                            mView!!.rv_cards_listing.adapter=paymentCardsAdapter
+                        }else{
+                            mView!!.tv_no_cards_found_service_payment.visibility = View.VISIBLE
+                            mView!!.card_creditcard.visibility = View.GONE
+                        }
+                    }else{
+                        LogUtils.longToast(requireContext(), getString(R.string.response_isnt_successful))
+                    }
+                }catch (e: IOException) {
+                    e.printStackTrace()
+                } catch (e: JSONException) {
+                    e.printStackTrace()
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+
+            override fun onFailure(call: Call<ViewCardResponse?>, throwable: Throwable) {
+                LogUtils.e("msg", throwable.message)
+                LogUtils.shortToast(requireContext(), getString(R.string.check_internet))
+                mView!!.tv_no_cards_found_service_payment.visibility = View.VISIBLE
+                mView!!.card_creditcard.visibility = View.GONE
+                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+            }
+
+        })
     }
 
-    interface OnSubscribeClick{
-        fun OnSubscribe()
-    }
+
+
     companion object{
         private var instance: SharedPreferenceUtility? = null
         @Synchronized

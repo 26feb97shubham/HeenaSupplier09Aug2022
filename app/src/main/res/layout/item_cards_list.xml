@@ -7,13 +7,13 @@
     android:layout_margin="@dimen/_4sdp"
     android:padding="@dimen/_8sdp">
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <RadioButton
         android:id="@+id/iv_selected_unselected"
-        android:layout_width="@dimen/_15sdp"
-        android:layout_height="@dimen/_15sdp"
+        android:layout_width="@dimen/_20sdp"
+        android:layout_height="@dimen/_20sdp"
+        android:gravity="center"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:src="@drawable/unselected_radio_button"/>
+        app:layout_constraintStart_toStartOf="parent" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_card_title"

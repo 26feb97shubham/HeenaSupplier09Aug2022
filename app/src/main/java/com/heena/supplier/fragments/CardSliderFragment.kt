@@ -9,7 +9,9 @@ import android.view.ViewGroup
 import com.heena.supplier.R
 import com.heena.supplier.models.Cards
 import com.heena.supplier.utils.SharedPreferenceUtility
+import com.heena.supplier.utils.Utility
 import kotlinx.android.synthetic.main.fragment_card_slider.view.*
+import java.util.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -41,6 +43,11 @@ class CardSliderFragment(private var cards : Cards) : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         mView = inflater.inflate(R.layout.fragment_card_slider, container, false)
+        Utility.changeLanguage(
+            requireContext(),
+            SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, "")
+        )
+
         if (SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, "")
                 .equals("en")
         ){
@@ -56,7 +63,13 @@ class CardSliderFragment(private var cards : Cards) : Fragment() {
 
     private fun addDetails(cards: Cards) {
         mView!!.tv_expiry_date_card.text = cards.expiry_date
-        mView!!.tv_card_number_card.text = cards.number
+        if(SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""].equals("ar")){
+            val card_number = cards.number+"******"+cards.first_six
+            mView!!.tv_card_number_card.text = card_number
+        }else{
+            val card_number = cards.first_six+"******"+cards.number
+            mView!!.tv_card_number_card.text = card_number
+        }
         mView!!.tv_account_holdee_name_card.text = cards.name
     }
 

@@ -4,11 +4,9 @@
     package="com.heena.supplier">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission
@@ -21,6 +19,7 @@
         android:protectionLevel="signature" />
 
     <uses-permission android:name="android.permission.READ_CALENDAR" />
+    <uses-permission android:name="com.android.vending.BILLING"/>
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -30,6 +29,7 @@
         android:name="com.heena.supplier.application.MyApp"
         android:allowBackup="true"
         android:hardwareAccelerated="false"
+        android:largeHeap="true"
         android:icon="@mipmap/heena_supplier"
         android:label="@string/app_name"
         android:protectionLevel="signature"
@@ -37,40 +37,58 @@
         android:roundIcon="@mipmap/heena_supplier_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.HeenaSupplier"
+        android:windowSoftInputMode="adjustResize|stateVisible"
         android:usesCleartextTraffic="true">
         <activity
             android:name="com.heena.supplier.activities.TermsAndConditionsActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="stateHidden"/>
         <activity
             android:name="com.heena.supplier.activities.AddNewCardActivity"
-            android:label="@string/title_activity_add_new_card" />
+            android:label="@string/title_activity_add_new_card"
+            android:windowSoftInputMode="stateHidden"/>
         <activity
             android:name="com.heena.supplier.activities.PaymentFragmentActivity"
-            android:label="@string/title_activity_payment_fragment" />
-        <activity android:name="com.heena.supplier.activities.ResetPasswordActivity" />
+            android:label="@string/title_activity_payment_fragment"
+            android:windowSoftInputMode="stateHidden"/>
+        <activity android:name="com.heena.supplier.activities.ResetPasswordActivity"
+            android:windowSoftInputMode="stateHidden"/>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="@string/google_maps_key" />
+            android:value="@string/google_maps_key"
+            android:windowSoftInputMode="stateHidden"/>
 
         <activity
             android:name="com.heena.supplier.activities.MapsActivity"
-            android:label="@string/title_activity_maps" />
+            android:label="@string/title_activity_maps"
+            android:windowSoftInputMode="stateHidden"/>
         <activity
             android:name="com.heena.supplier.fragments.NotificationsFragment"
-            tools:ignore="Instantiatable" />
-        <activity android:name="com.heena.supplier.activities.HomeActivity" />
-        <activity android:name="com.heena.supplier.activities.ChooseLangActivity" />
-        <activity android:name="com.heena.supplier.activities.IntroductionActivity" />
-        <activity android:name="com.heena.supplier.activities.ChooseLoginSignUpActivity" />
-        <activity android:name="com.heena.supplier.activities.LoginActivity" />
-        <activity android:name="com.heena.supplier.activities.ForgotPasswordActivity" />
-        <activity android:name="com.heena.supplier.activities.OtpVerificationActivity" />
-        <activity android:name="com.heena.supplier.activities.MembershipRegistrationActivity" />
-        <activity android:name="com.heena.supplier.activities.SignUpActivity" />
+            tools:ignore="Instantiatable"
+            android:windowSoftInputMode="stateHidden"/>
+        <activity android:name="com.heena.supplier.activities.HomeActivity"
+            android:windowSoftInputMode="stateHidden"/>
+        <activity android:name="com.heena.supplier.activities.ChooseLangActivity"
+            android:windowSoftInputMode="stateHidden"/>
+        <activity android:name="com.heena.supplier.activities.IntroductionActivity"
+            android:windowSoftInputMode="stateHidden"/>
+        <activity android:name="com.heena.supplier.activities.ChooseLoginSignUpActivity"
+            android:windowSoftInputMode="stateHidden"/>
+        <activity android:name="com.heena.supplier.activities.LoginActivity"
+            android:windowSoftInputMode="stateHidden"/>
+        <activity android:name="com.heena.supplier.activities.ForgotPasswordActivity"
+            android:windowSoftInputMode="stateHidden"/>
+        <activity android:name="com.heena.supplier.activities.OtpVerificationActivity"
+            android:windowSoftInputMode="stateHidden"/>
+        <activity android:name="com.heena.supplier.activities.MembershipRegistrationActivity"
+            android:windowSoftInputMode="stateHidden"/>
+        <activity android:name="com.heena.supplier.activities.SignUpActivity"
+            android:windowSoftInputMode="stateHidden"/>
         <activity
             android:name="com.heena.supplier.activities.SplashActivity"
-            android:exported="true">
+            android:exported="true"
+            android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

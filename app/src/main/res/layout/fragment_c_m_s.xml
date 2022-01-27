@@ -17,10 +17,24 @@
         android:layout_marginTop="@dimen/_20sdp"
         android:src="@drawable/golden_logo" />
 
+    <com.google.android.material.textview.MaterialTextView
+        android:layout_width="@dimen/_200sdp"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_title"
+        android:layout_below="@id/iv_logo"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:textSize="@dimen/_13ssp"
+        android:gravity="center"
+        android:text=""
+        android:textColor="@color/gold"
+        android:textAllCaps="true"
+        android:fontFamily="@font/expressway_rg"/>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/iv_logo"
+        android:layout_below="@id/tv_title"
         android:background="@drawable/left_right_light_brown_filled_bg"
         android:paddingHorizontal="@dimen/_20sdp"
         android:layout_marginTop="@dimen/_10sdp"

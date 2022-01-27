@@ -28,6 +28,21 @@
             android:scrollbars="horizontal"
             app:layout_constraintEnd_toEndOf="parent"/>
 
+        <com.chahinem.pageindicator.PageIndicator
+            android:id="@+id/pageIndicator2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:piSelectedColor="@color/gold"
+            app:piDefaultColor="@color/bg_gray"
+            android:visibility="visible"
+            app:piDotSpacing="@dimen/_5sdp"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:paddingVertical="@dimen/_8sdp"
+            app:layout_constraintTop_toBottomOf="@+id/rv_membership_plans"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            />
+
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_subscribe"
@@ -46,7 +61,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginHorizontal="@dimen/_30sdp"
-            app:layout_constraintTop_toBottomOf="@id/rv_membership_plans" />
+            app:layout_constraintTop_toBottomOf="@id/pageIndicator2" />
     </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 

@@ -34,8 +34,6 @@ class MembershipBottomSheetDialogFragment : BottomSheetDialogFragment() {
     var membershipId : Int = 0
     private var mView : View?=null
 
-   /* private var tracker: SelectionTracker<Long>? = null*/
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -51,7 +49,6 @@ class MembershipBottomSheetDialogFragment : BottomSheetDialogFragment() {
         super.onActivityCreated(savedInstanceState)
 
         mView!!.tv_subscribe!!.setOnClickListener { // dismiss dialog
-            /*findNavController().navigate(R.id.action_filterbottomsheetdialogfragment_to_filteredproductsfragment)*/
             if (membershipPlansListAdapter.getSelected()!=null){
                 membershipId = membershipPlansListAdapter.getSelected()!!.membership_id
                 if (dashboardMembershipId==membershipId){
@@ -90,7 +87,7 @@ class MembershipBottomSheetDialogFragment : BottomSheetDialogFragment() {
                                     })
 
                                     mView!!.rv_membership_plans.adapter = membershipPlansListAdapter
-
+                                    mView!!.pageIndicator2.attachTo(mView!!.rv_membership_plans)
                                     membershipPlansListAdapter.notifyDataSetChanged()
                                 }else{
                                     LogUtils.longToast(requireContext(), response.body()!!.message)

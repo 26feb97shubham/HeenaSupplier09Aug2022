@@ -14,6 +14,7 @@ import com.heena.supplier.activities.HomeActivity
 import com.heena.supplier.utils.LogUtils
 import com.heena.supplier.utils.SharedPreferenceUtility
 import com.heena.supplier.utils.Utility
+import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
 import kotlinx.android.synthetic.main.activity_home2.*
 import kotlinx.android.synthetic.main.fragment_select_lang.view.*
 import java.util.*
@@ -21,48 +22,56 @@ import java.util.*
 class SelectLangFragment : Fragment() {
     var mView : View?=null
     private var selectLang:String=""
-    var locale = Locale("ar")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
         mView = inflater.inflate(R.layout.fragment_select_lang, container, false)
+        Utility.changeLanguage(
+            requireContext(),
+            SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, "")
+        )
         setUpViews()
         return mView
     }
 
     private fun setUpViews() {
-        requireActivity().iv_back.setOnClickListener {
+        requireActivity().iv_back.setSafeOnClickListener {
             requireActivity().iv_back.startAnimation(AlphaAnimation(1F,0.5F))
             SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_back)
             findNavController().popBackStack()
         }
 
+        requireActivity().iv_notification.setSafeOnClickListener {
+            requireActivity().iv_notification.startAnimation(AlphaAnimation(1F,0.5F))
+            SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_notification)
+            findNavController().navigate(R.id.notificationsFragment)
+        }
+
 
         if(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, "") =="en"){
             selectEnglish()
-
         }
+
         else if(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, "") =="ar"){
             selectArabic()
-
         }
 
-        mView!!.arabicView.setOnClickListener {
+        mView!!.arabicView.setSafeOnClickListener {
             if(selectLang != "ar") {
                 mView!!.arabicView.startAnimation(AlphaAnimation(1f, 0.5f))
                 selectArabic()
             }
         }
-        mView!!.englishView.setOnClickListener {
+        mView!!.englishView.setSafeOnClickListener {
             if(selectLang != "en") {
                 mView!!.englishView.startAnimation(AlphaAnimation(1f, 0.5f))
                 selectEnglish()
             }
         }
 
-        mView!!.btnContinue.setOnClickListener {
+        mView!!.btnContinue.setSafeOnClickListener {
             /* btnContinue.startAnimation(AlphaAnimation(1f, 0.5f))
              startActivity(Intent(this, ChooseLoginSignUpActivity::class.java))*/
 
@@ -107,7 +116,6 @@ class SelectLangFragment : Fragment() {
 
     private fun setTextForLang(){
         mView!!.tv_choose_lang.text = getString(R.string.choose_language)
-        mView!!.txtArabic.text = getString(R.string.arabic)
         mView!!.btnContinue.text = getString(R.string.continue_btn)
     }
 

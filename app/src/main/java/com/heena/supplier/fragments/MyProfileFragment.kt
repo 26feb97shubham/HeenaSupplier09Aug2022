@@ -38,6 +38,7 @@ import com.heena.supplier.Dialogs.NoInternetDialog
 import com.heena.supplier.R
 import com.heena.supplier.`interface`.ClickInterface
 import com.heena.supplier.adapters.*
+import com.heena.supplier.custom.FetchPath
 import com.heena.supplier.models.*
 import com.heena.supplier.rest.APIClient
 import com.heena.supplier.rest.APIInterface
@@ -46,6 +47,7 @@ import com.heena.supplier.utils.SharedPreferenceUtility
 import com.heena.supplier.utils.Utility
 import com.heena.supplier.utils.Utility.Companion.IMAGE_DIRECTORY_NAME
 import com.heena.supplier.utils.Utility.Companion.apiInterface
+import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
 import kotlinx.android.synthetic.main.activity_home2.*
 import kotlinx.android.synthetic.main.fragment_my_profile.*
 import kotlinx.android.synthetic.main.fragment_my_profile.view.*
@@ -68,13 +70,6 @@ class MyProfileFragment : Fragment() {
             Manifest.permission.CAMERA,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     )
-   /* private val PERMISSIONS = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-        arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.MANAGE_EXTERNAL_STORAGE)
-    } else {
-        arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-    }*/
     private var uri: Uri? = null
     val MEDIA_TYPE_IMAGE = 1
     val PICK_IMAGE_FROM_GALLERY = 10
@@ -143,19 +138,15 @@ class MyProfileFragment : Fragment() {
                     val cout: Int = data.clipData!!.itemCount
                     if(cout+galleryPhotos.size==0){
                         LogUtils.shortToast(requireContext(), getString(R.string.please_select_atleast_one_image_to_proceed))
-                    }else if(cout+galleryPhotos.size<=10){
+                    }else if(cout+galleryPhotos.size<=5){
                         for (i in 0 until cout) {
                             val imageurl: Uri = data.clipData!!.getItemAt(i).uri
-                            if (imageurl.toString().startsWith("content")) {
-                                imagePath = getRealPath(imageurl)!!
-                            } else {
-                                imagePath = imageurl.getPath()!!
-                            }
+                            imagePath = FetchPath.getPath(requireActivity(), imageurl)!!
                             galleryPhotos.add(imagePath)
                         }
                         setUploadPhotos(galleryPhotos)
                     }else{
-                        LogUtils.shortToast(requireContext(), "Only 10 images can be selected")
+                        LogUtils.shortToast(requireContext(), getString(R.string.only_five_images_can_be_selected_at_once))
                     }
                 } else if (data?.data!=null) {
                     val imagePath = data.data!!.path
@@ -173,15 +164,17 @@ class MyProfileFragment : Fragment() {
                         }else if(cout+galleryPhotos.size<=10){
                             for (i in 0 until cout) {
                                 val imageurl: Uri = data.clipData!!.getItemAt(i).uri
-                                getImageFilePath(imageurl, requireContext())
+                                imagePath = FetchPath.getPath(requireActivity(), imageurl)!!
+                                galleryPhotos.add(imagePath)
                             }
                             setUploadPhotos(galleryPhotos)
                         }else{
-                            LogUtils.shortToast(requireContext(), "Only 10 images can be selected")
+                            LogUtils.shortToast(requireContext(), getString(R.string.only_five_images_can_be_selected_at_once))
                         }
                     } else if (data?.data!=null) {
-                        val imagePath = data.data!!
-                        getImageFilePath(imagePath, requireContext())
+                        val imageURI = data.data!!
+                        imagePath = FetchPath.getPath(requireActivity(), imageURI!!)!!
+                        galleryPhotos.add(imagePath)
                         setUploadPhotos(galleryPhotos)
                     }
                 }
@@ -201,6 +194,10 @@ class MyProfileFragment : Fragment() {
             savedInstanceState: Bundle?
     ): View? {
         mView = inflater.inflate(R.layout.fragment_my_profile, container, false)
+        Utility.changeLanguage(
+            requireContext(),
+            SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, "")
+        )
         return mView
     }
 
@@ -221,14 +218,23 @@ class MyProfileFragment : Fragment() {
 
             })
             noInternetDialog.show(requireActivity().supportFragmentManager, "My Profile Fragment")
+        }else{
+            showProfile()
+            getServices()
+            getOffers()
         }
 
-        requireActivity().iv_back.setOnClickListener {
+        requireActivity().iv_back.setSafeOnClickListener {
             requireActivity().iv_back.startAnimation(AlphaAnimation(1F,0.5F))
             SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_back)
             findNavController().popBackStack()
         }
 
+        requireActivity().iv_notification.setSafeOnClickListener {
+            requireActivity().iv_notification.startAnimation(AlphaAnimation(1F,0.5F))
+            SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_notification)
+            findNavController().navigate(R.id.notificationsFragment)
+        }
 
         Glide.with(this).load(
                 SharedPreferenceUtility.getInstance().get(
@@ -262,7 +268,7 @@ class MyProfileFragment : Fragment() {
             }).apply(requestOption).into(mView!!.civ_profile)
 
 
-        tv_add_new_offers.setOnClickListener {
+        tv_add_new_offers.setSafeOnClickListener {
             val offer_id = 0
             val status = "add"
             val bundle = Bundle()
@@ -271,7 +277,7 @@ class MyProfileFragment : Fragment() {
             findNavController().navigate(R.id.action_myProfileFragment_to_addNewOffersFragment, bundle)
         }
 
-        tv_add_new_service.setOnClickListener {
+        tv_add_new_service.setSafeOnClickListener {
             val service_id = 0
             val status = "add"
             val bundle = Bundle()
@@ -281,16 +287,12 @@ class MyProfileFragment : Fragment() {
             findNavController().navigate(R.id.action_myProfileFragment_to_addNewFeaturedFragment, bundle)
         }
 
-        mView!!.card_upload_photo.setOnClickListener {
+        mView!!.card_upload_photo.setSafeOnClickListener {
             mView!!.card_upload_photo.startAnimation(AlphaAnimation(1f, 0.5f))
             activityResultLauncher.launch(PERMISSIONS)
         }
 
-        showProfile()
-        getServices()
-        getOffers()
-
-        mView!!.tv_services.setOnClickListener {
+        mView!!.tv_services.setSafeOnClickListener {
             mView!!.naqashat_services_layout.visibility = View.VISIBLE
             mView!!.naqashat_gallery_layout.visibility = View.GONE
             mView!!.naqashat_reviews_layout.visibility = View.GONE
@@ -304,7 +306,7 @@ class MyProfileFragment : Fragment() {
             mView!!.tv_reviews.setTextColor(resources.getColor(R.color.gold))
         }
 
-        mView!!.tv_gallery.setOnClickListener {
+        mView!!.tv_gallery.setSafeOnClickListener {
             mView!!.naqashat_services_layout.visibility = View.GONE
             mView!!.naqashat_gallery_layout.visibility = View.VISIBLE
             mView!!.naqashat_reviews_layout.visibility = View.GONE
@@ -319,7 +321,7 @@ class MyProfileFragment : Fragment() {
             showGallery()
         }
 
-        mView!!.tv_reviews.setOnClickListener {
+        mView!!.tv_reviews.setSafeOnClickListener {
             mView!!.naqashat_services_layout.visibility = View.GONE
             mView!!.naqashat_gallery_layout.visibility = View.GONE
             mView!!.naqashat_reviews_layout.visibility = View.VISIBLE
@@ -377,8 +379,6 @@ class MyProfileFragment : Fragment() {
             override fun onFailure(call: Call<ProfileShowResponse?>, throwable: Throwable) {
                 mView!!.fragment_profile_progressBar.visibility = View.GONE
                 requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                LogUtils.e("msg", throwable.message)
-                LogUtils.shortToast(requireContext(), getString(R.string.check_internet))
             }
 
         })
@@ -396,6 +396,7 @@ class MyProfileFragment : Fragment() {
                     if (response.body()!!.status==1){
                         mView!!.rv_reviews.visibility = View.VISIBLE
                         mView!!.ll_no_comments_found.visibility = View.GONE
+                        commentsList.clear()
                         commentsList = response.body()!!.comments as ArrayList<CommentsItem>
                         mView!!.rv_reviews.layoutManager = LinearLayoutManager(
                                 requireContext(),
@@ -438,6 +439,7 @@ class MyProfileFragment : Fragment() {
             ) {
                 if(response.isSuccessful){
                     if (response.body()!!.status == 1){
+                        offersListing.clear()
                         offersListing = response.body()!!.offer as ArrayList<OfferItem>
                         mView!!.rv_offers_n_discs.visibility = View.VISIBLE
                         mView!!.ll_no_offers_and_disc_found.visibility = View.GONE
@@ -473,23 +475,32 @@ class MyProfileFragment : Fragment() {
                                 }
 
                                 override fun onOfferEdit(position: Int) {
-                                    val offer_id = offersListing[position].offer_id
-                                    val status = "edit"
-                                    val bundle = Bundle()
-                                    bundle.putInt("offer_id", offer_id!!)
-                                    bundle.putString("status", status)
-                                    findNavController().navigate(R.id.action_myProfileFragment_to_addNewOffersFragment, bundle)
+                                    val updateOfferDialog = AlertDialog.Builder(requireContext())
+                                    updateOfferDialog.setCancelable(false)
+                                    updateOfferDialog.setTitle(requireContext().getString(R.string.update_offer))
+                                    updateOfferDialog.setMessage(requireContext().getString(R.string.would_you_like_to_update_your_offer_details))
+                                    updateOfferDialog.setPositiveButton(requireContext().getString(R.string.yes))
+                                    { dialog, _ ->
+                                        val offer_id = offersListing[position].offer_id
+                                        val status = "edit"
+                                        val bundle = Bundle()
+                                        bundle.putInt("offer_id", offer_id!!)
+                                        bundle.putString("status", status)
+                                        findNavController().navigate(R.id.action_myProfileFragment_to_addNewOffersFragment, bundle)
+                                        dialog!!.dismiss()
+                                    }
+                                    updateOfferDialog.setNegativeButton(requireContext().getString(R.string.no))
+                                    { dialog, _ -> dialog!!.cancel() }
+                                    updateOfferDialog.show()
                                 }
                             })
                         mView!!.rv_offers_n_discs.adapter = offersAndDiscountsAdapter
                         offersAndDiscountsAdapter.notifyDataSetChanged()
                     }else{
-                        LogUtils.shortToast(requireContext(), response.body()!!.message)
                         mView!!.rv_offers_n_discs.visibility = View.GONE
                         mView!!.ll_no_offers_and_disc_found.visibility = View.VISIBLE
                     }
                 }else{
-                    LogUtils.shortToast(requireContext(), getString(R.string.response_isnt_successful))
                     mView!!.rv_offers_n_discs.visibility = View.GONE
                     mView!!.ll_no_offers_and_disc_found.visibility = View.VISIBLE
                 }
@@ -498,8 +509,6 @@ class MyProfileFragment : Fragment() {
             override fun onFailure(call: Call<OffersListingResponse?>, throwable: Throwable) {
                 mView!!.rv_offers_n_discs.visibility = View.GONE
                 mView!!.ll_no_offers_and_disc_found.visibility = View.VISIBLE
-                LogUtils.e("msg", throwable.message)
-                LogUtils.shortToast(requireContext(), getString(R.string.check_internet))
             }
 
         })
@@ -522,7 +531,7 @@ class MyProfileFragment : Fragment() {
                             mView!!.rv_offers_n_discs.visibility = View.VISIBLE
                             mView!!.ll_no_offers_and_disc_found.visibility = View.GONE
                         }
-                        LogUtils.longToast(requireContext(), response.body()!!.message)
+                        LogUtils.longToast(requireContext(), requireContext().getString(R.string.offer_deleted_successfully))
                     }else{
                         LogUtils.longToast(requireContext(), response.body()!!.message)
                     }
@@ -553,6 +562,7 @@ class MyProfileFragment : Fragment() {
                 requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 if (response.isSuccessful){
                     if (response.body()!!.status==1){
+                        serviceslisting.clear()
                         serviceslisting = response.body()!!.service as ArrayList<Service>
                         mView!!.rv_services_listing.visibility = View.VISIBLE
                         mView!!.ll_no_service_found.visibility = View.GONE
@@ -587,14 +597,24 @@ class MyProfileFragment : Fragment() {
                             }
 
                             override fun onServiceEdit(position: Int) {
-                                val service_id = serviceslisting.get(position).service_id
-                                val status = "edit"
-                                val bundle = Bundle()
-                                bundle.putInt("service_id", service_id!!)
-                                bundle.putString("status", status)
-                                findNavController().navigate(R.id.action_myProfileFragment_to_addNewFeaturedFragment, bundle)
+                                val updateServiceDialog = AlertDialog.Builder(requireContext())
+                                updateServiceDialog.setCancelable(false)
+                                updateServiceDialog.setTitle(requireContext().getString(R.string.update_service))
+                                updateServiceDialog.setMessage(requireContext().getString(R.string.would_you_like_to_update_your_service_details))
+                                updateServiceDialog.setPositiveButton(requireContext().getString(R.string.yes)
+                                ) { dialog, _ ->
+                                    val service_id = serviceslisting.get(position).service_id
+                                    val status = "edit"
+                                    val bundle = Bundle()
+                                    bundle.putInt("service_id", service_id!!)
+                                    bundle.putString("status", status)
+                                    findNavController().navigate(R.id.action_myProfileFragment_to_addNewFeaturedFragment, bundle)
+                                    dialog!!.dismiss()
+                                }
+                                updateServiceDialog.setNegativeButton(requireContext().getString(R.string.no)
+                                ) { dialog, _ -> dialog!!.cancel() }
+                                updateServiceDialog.show()
                             }
-
                         })
                         mView!!.rv_services_listing.adapter = servicesAdapter
                         servicesAdapter.notifyDataSetChanged()
@@ -684,52 +704,26 @@ class MyProfileFragment : Fragment() {
                             2,
                             StaggeredGridLayoutManager.VERTICAL
                         )
+                        ImageUriList.clear()
                         ImageUriList = response.body()!!.gallery as ArrayList<Gallery>
                         galleryStaggeredGridAdapter = GalleryStaggeredGridAdapter(
                                 requireContext(),
                                 ImageUriList,
                                 object : ClickInterface.OnGalleryItemClick {
                                     override fun OnClickAction(position: Int) {
-                                        val call = apiInterface.deletegalleryimage(ImageUriList[position].gallery_id)
-                                        call!!.enqueue(object : Callback<DeleteGalleryImage?> {
-                                            override fun onResponse(
-                                                    call: Call<DeleteGalleryImage?>,
-                                                    response: Response<DeleteGalleryImage?>
-                                            ) {
-                                                try {
-                                                    if (response.isSuccessful) {
-                                                        if (response.body()!!.status == 1) {
-                                                            ImageUriList.removeAt(position)
-                                                            if (mView!!.rv_naqashat_gallery.adapter != null) {
-                                                                mView!!.rv_naqashat_gallery.adapter!!.notifyDataSetChanged()
-                                                            }
-                                                            if (ImageUriList.size==0){
-                                                                mView!!.rv_naqashat_gallery.visibility = View.GONE
-                                                                mView!!.ll_no_gallery_found.visibility = View.VISIBLE
-                                                            }else{
-                                                                mView!!.rv_naqashat_gallery.visibility = View.VISIBLE
-                                                                mView!!.ll_no_gallery_found.visibility = View.GONE
-                                                            }
-
-                                                        } else {
-                                                            LogUtils.longToast(requireContext(), response.body()!!.message)
-                                                        }
-                                                    } else {
-                                                        LogUtils.longToast(requireContext(), requireContext().getString(R.string.response_isnt_successful))
-                                                    }
-                                                } catch (e: IOException) {
-                                                    e.printStackTrace()
-                                                } catch (e: JSONException) {
-                                                    e.printStackTrace()
-                                                } catch (e: Exception) {
-                                                    e.printStackTrace()
-                                                }
-                                            }
-
-                                            override fun onFailure(call: Call<DeleteGalleryImage?>, throwable: Throwable) {
-                                                LogUtils.e("msg", throwable.message)
-                                            }
-                                        })
+                                        val gallery_id = ImageUriList[position].gallery_id
+                                        val deleteImageDialog = AlertDialog.Builder(requireContext())
+                                        deleteImageDialog.setCancelable(false)
+                                        deleteImageDialog.setTitle(requireContext().getString(R.string.delete_gallery_image))
+                                        deleteImageDialog.setMessage(requireContext().getString(R.string.are_you_sure_you_want_to_delete_the_image))
+                                        deleteImageDialog.setPositiveButton(requireContext().getString(R.string.delete)
+                                        ) { dialog, _ ->
+                                            deleteImage(gallery_id, position)
+                                            dialog!!.dismiss()
+                                        }
+                                        deleteImageDialog.setNegativeButton(requireContext().getString(R.string.cancel)
+                                        ) { dialog, _ -> dialog!!.cancel() }
+                                        deleteImageDialog.show()
                                     }
 
                                     override fun onShowImage(position: Int) {
@@ -764,6 +758,49 @@ class MyProfileFragment : Fragment() {
                 requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             }
 
+        })
+    }
+
+    private fun deleteImage(galleryId: Int, position: Int) {
+        val call = apiInterface.deletegalleryimage(galleryId)
+        call!!.enqueue(object : Callback<DeleteGalleryImage?> {
+            override fun onResponse(
+                call: Call<DeleteGalleryImage?>,
+                response: Response<DeleteGalleryImage?>
+            ) {
+                try {
+                    if (response.isSuccessful) {
+                        if (response.body()!!.status == 1) {
+                            ImageUriList.removeAt(position)
+                            if (mView!!.rv_naqashat_gallery.adapter != null) {
+                                mView!!.rv_naqashat_gallery.adapter!!.notifyDataSetChanged()
+                            }
+                            if (ImageUriList.size==0){
+                                mView!!.rv_naqashat_gallery.visibility = View.GONE
+                                mView!!.ll_no_gallery_found.visibility = View.VISIBLE
+                            }else{
+                                mView!!.rv_naqashat_gallery.visibility = View.VISIBLE
+                                mView!!.ll_no_gallery_found.visibility = View.GONE
+                            }
+
+                        } else {
+                            LogUtils.longToast(requireContext(), response.body()!!.message)
+                        }
+                    } else {
+                        LogUtils.longToast(requireContext(), requireContext().getString(R.string.response_isnt_successful))
+                    }
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                } catch (e: JSONException) {
+                    e.printStackTrace()
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+
+            override fun onFailure(call: Call<DeleteGalleryImage?>, throwable: Throwable) {
+                LogUtils.e("msg", throwable.message)
+            }
         })
     }
 

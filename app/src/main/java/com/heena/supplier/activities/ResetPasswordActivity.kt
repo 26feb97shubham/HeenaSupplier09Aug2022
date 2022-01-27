@@ -13,6 +13,7 @@ import com.heena.supplier.utils.ConstClass
 import com.heena.supplier.utils.LogUtils
 import com.heena.supplier.utils.SharedPreferenceUtility
 import com.heena.supplier.utils.Utility.Companion.apiInterface
+import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
 import kotlinx.android.synthetic.main.activity_login2.*
 import kotlinx.android.synthetic.main.activity_reset_password.*
 import kotlinx.android.synthetic.main.activity_sign_up2.*
@@ -35,7 +36,7 @@ class ResetPasswordActivity : AppCompatActivity() {
             otp = intent.getStringExtra("otp").toString()
         }
 
-        btnSubmit.setOnClickListener {
+        btnSubmit.setSafeOnClickListener {
             validation()
         }
 

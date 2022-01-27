@@ -14,6 +14,7 @@ import com.heena.supplier.rest.APIClient
 import com.heena.supplier.utils.LogUtils
 import com.heena.supplier.utils.SharedPreferenceUtility
 import com.heena.supplier.utils.Utility.Companion.apiInterface
+import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
 import kotlinx.android.synthetic.main.activity_forgot_password2.*
 import kotlinx.android.synthetic.main.activity_sign_up2.*
 import org.json.JSONException
@@ -39,7 +40,7 @@ class ForgotPasswordActivity : AppCompatActivity() {
             }
         }
 
-        btnSubmit.setOnClickListener {
+        btnSubmit.setSafeOnClickListener {
             btnSubmit.startAnimation(AlphaAnimation(1f, 0.5f))
             SharedPreferenceUtility.getInstance().hideSoftKeyBoard(this, btnSubmit)
             validateAndForgot()

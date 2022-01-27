@@ -2,15 +2,21 @@ package com.heena.supplier.adapters
 
 import android.content.Context
 import android.graphics.Color
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import com.heena.supplier.R
 import com.heena.supplier.`interface`.ClickInterface
 import com.heena.supplier.models.BookingItem
 import com.heena.supplier.utils.Utility.Companion.booking_item_type
+import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
 import kotlinx.android.synthetic.main.booking_history_recycler_items_listing.view.*
 import kotlinx.android.synthetic.main.current_booking_recycler_items_listing.view.*
 import kotlinx.android.synthetic.main.current_booking_recycler_items_listing.view.tv_bookingId
@@ -60,8 +66,32 @@ class BookingsAdapter(private val context: Context,
             current_booking_item_View.tv_bookingId.text = bookingId
             current_booking_item_View.tv_booking_service.text = bookingItem.service!!.name
             current_booking_item_View.tv_price.text = "AED "+bookingItem.price.toString()
-            current_booking_item_View.tv_service_date.text = "AED "+bookingItem.booking_date.toString()
-            Glide.with(context).load(bookingItem.user!!.image).into(current_booking_item_View.civ_supplierImg)
+            current_booking_item_View.tv_service_date.text = bookingItem.booking_date.toString()
+            Glide.with(context).load(bookingItem.user!!.image)
+                .listener(object : RequestListener<Drawable>{
+                    override fun onLoadFailed(
+                        e: GlideException?,
+                        model: Any?,
+                        target: Target<Drawable>?,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        current_booking_item_View.supplier_img_loader.visibility = View.GONE
+                        return false
+                    }
+
+                    override fun onResourceReady(
+                        resource: Drawable?,
+                        model: Any?,
+                        target: Target<Drawable>?,
+                        dataSource: DataSource?,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        current_booking_item_View.supplier_img_loader.visibility = View.GONE
+                        return false
+                    }
+
+                })
+                .into(current_booking_item_View.civ_supplierImg)
 
             when(bookingItem.status){
                 1 -> current_booking_item_View.tv_pending.apply {
@@ -86,7 +116,7 @@ class BookingsAdapter(private val context: Context,
                 }
             }
 
-            current_booking_item_View.setOnClickListener {
+            current_booking_item_View.setSafeOnClickListener {
                 onRecyclerItemClick.OnClickAction(position)
             }
         }
@@ -124,7 +154,7 @@ class BookingsAdapter(private val context: Context,
                 }
             }
 
-            history_booking_item_view.setOnClickListener {
+            history_booking_item_view.setSafeOnClickListener {
                 onRecyclerItemClick.OnClickAction(position)
             }
         }

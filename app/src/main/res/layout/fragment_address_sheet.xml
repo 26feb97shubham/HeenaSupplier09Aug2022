@@ -97,6 +97,9 @@
                         android:textSize="@dimen/_12ssp" />
 
                     <com.google.android.material.textfield.TextInputEditText
+                        android:textDirection="locale"
+                        android:textAlignment="viewStart"
+                        android:paddingStart="@dimen/_4sdp"
                         android:id="@+id/et_title"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/_40sdp"
@@ -171,19 +174,6 @@
                         android:textStyle="normal"
                         android:textSize="@dimen/_12ssp"
                         tools:ignore="RelativeOverlap" />
-
-                    <com.google.android.material.switchmaterial.SwitchMaterial
-                        android:id="@+id/switchDefault1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:button="@drawable/selected_switch_on_off"
-                        app:useMaterialThemeColors="false"
-                        android:thumb="@null"
-                        android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
-                        android:scaleX="0.3"
-                        android:scaleY="0.3"
-                        android:visibility="gone"/>
 
                     <LinearLayout
                         android:id="@+id/ll_toggle"

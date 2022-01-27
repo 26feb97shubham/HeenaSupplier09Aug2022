@@ -47,6 +47,8 @@ import com.google.android.libraries.places.api.model.AddressComponent
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
+import com.heena.supplier.custom.FetchPath
+import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
 import kotlinx.android.synthetic.main.activity_home2.*
 import kotlinx.android.synthetic.main.fragment_add_new_service.view.*
 import kotlinx.android.synthetic.main.fragment_add_new_service.view.tv_save_service
@@ -93,15 +95,8 @@ class AddNewServiceFragment : Fragment() {
     private val CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 103
     var galleryItemList = ArrayList<GalleryItem>()
     private var galleryItemListSize : Int = 0
-    var pathList=ArrayList<String>()
+    var pathList=ArrayList<PhotoData>()
 
-/*    private val PERMISSIONS_1 = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-        arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.MANAGE_EXTERNAL_STORAGE)
-    } else {
-        arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-    }*/
     private val PERMISSIONS_1 =  arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
     private val PERMISSIONS_2 = arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION)
     var status = 0
@@ -145,7 +140,10 @@ class AddNewServiceFragment : Fragment() {
                     imagePath = ""
                     Log.e("uri", uri.toString())
                     imagePath = uri!!.path!!
-                    pathList.add(imagePath)
+                    val photoData = PhotoData()
+                    photoData.status = "new"
+                    photoData.path = imagePath
+                    pathList.add(photoData)
                     mView!!.rv_uploaded_photos.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
                     addNewPhotosAdapter = AddNewPhotosAdapter(requireContext(), pathList, object : ClickInterface.OnRecyclerItemClick {
                         override fun OnClickAction(position: Int) {
@@ -168,14 +166,12 @@ class AddNewServiceFragment : Fragment() {
                                 mView!!.iv_upload_photo.isEnabled = (pathList.size<5)
                                 Log.e("check size", "" + pathList.size)
                                 mView!!.rv_uploaded_photos.adapter=addNewPhotosAdapter
-                                addNewPhotosAdapter.notifyDataSetChanged()
                             }
                             mView!!.iv_upload_photo.alpha = 1f
                             mView!!.iv_upload_photo.isEnabled = true
                         }
                     })
                     mView!!.rv_uploaded_photos.adapter = addNewPhotosAdapter
-                    addNewPhotosAdapter.notifyDataSetChanged()
                 } else {
                     LogUtils.shortToast(requireContext(), "something went wrong! please try again")
                 }
@@ -191,12 +187,19 @@ class AddNewServiceFragment : Fragment() {
                         if (count+pathList.size<=5){
                             for (i in 0 until count) {
                                 val selectedImage: Uri = data.clipData!!.getItemAt(i).uri
-                                if (selectedImage.toString().startsWith("content")) {
-                                    imagePath = getRealPath(selectedImage)!!
+                                /*if (selectedImage.toString().startsWith("content")) {
+                                    imagePath = FetchPath.getPath(requireActivity(), selectedImage)!!
                                 } else {
                                     imagePath = selectedImage.getPath()!!
-                                }
-                                pathList.add(imagePath)
+                                }*/
+
+
+
+                                imagePath = FetchPath.getPath(requireActivity(), selectedImage!!)!!
+                                val photoData = PhotoData()
+                                photoData.status = "new"
+                                photoData.path = imagePath
+                                pathList.add(photoData)
                                 Log.e("pathList", pathList.size.toString())
                             }
                             setServicePhotoAdapter(pathList)
@@ -206,12 +209,26 @@ class AddNewServiceFragment : Fragment() {
                     } else if (data.data != null) {
                         var imagePath= ""
                         val imageURI = data.data
-                        if (imageURI.toString().startsWith("content")) {
-                            imagePath = getRealPath(imageURI)!!
+/*                        if (imageURI.toString().startsWith("content")) {
+                            imagePath = FetchPath.getPath(requireActivity(), selectedImage)!!
                         } else {
                             imagePath = imageURI?.getPath()!!
-                        }
-                        pathList.add(imagePath)
+                        }*/
+                       /* if (imageURI.toString().startsWith("content")) {
+                            imagePath = imageURI?.let { it1 ->
+                                FetchPath.getPath(requireActivity(),
+                                    it1
+                                )
+                            }!!
+                        } else {
+                            imagePath = imageURI!!.getPath()!!
+                        }*/
+                        imagePath = FetchPath.getPath(requireActivity(), imageURI!!)!!
+
+                        val photoData = PhotoData()
+                        photoData.status = "new"
+                        photoData.path = imagePath
+                        pathList.add(photoData)
                         setServicePhotoAdapter(pathList)
                     }else{
                         Log.e("error_data", data.toString())
@@ -227,17 +244,40 @@ class AddNewServiceFragment : Fragment() {
                         if (count+pathList.size<=5){
                             for (i in 0 until count) {
                                 val selectedImage: Uri = data.clipData!!.getItemAt(i).uri
-                                getImageFilePath(selectedImage, requireContext())
+                                /*if (selectedImage.toString().startsWith("content")) {
+                                    imagePath = FetchPath.getPath(requireActivity(), selectedImage)!!
+                                } else {
+                                    imagePath = selectedImage.path!!
+                                }*/
+
+                                imagePath = FetchPath.getPath(requireActivity(), selectedImage)!!
+                                val photoData = PhotoData()
+                                photoData.status = "new"
+                                photoData.path = imagePath
+                                pathList.add(photoData)
                             }
                             setServicePhotoAdapter(pathList)
                         }else{
                             LogUtils.shortToast(requireContext(), "Only 5 images can be selected")
                         }
                     } else if (data.data != null) {
-                        var imageURI = data.data
-                        if (imageURI != null) {
-                            getImageFilePath(imageURI, requireContext())
+                        val imageURI = data.data
+                        imagePath = ""
+                        if (imageURI.toString().startsWith("content")) {
+                            imagePath = imageURI?.let { it1 ->
+                                FetchPath.getPath(requireContext(),
+                                    it1
+                                )
+                            }!!
+                        } else {
+                            imagePath = imageURI!!.getPath()!!
                         }
+
+                        Log.e("activity", ""+requireActivity())
+                        val photoData = PhotoData()
+                        photoData.status = "new"
+                        photoData.path = imagePath
+                        pathList.add(photoData)
                         setServicePhotoAdapter(pathList)
                     }else{
                         Log.e("error_data", data.toString())
@@ -303,11 +343,42 @@ class AddNewServiceFragment : Fragment() {
         }
     }
 
-    fun setServicePhotoAdapter(pathList: ArrayList<String>) {
+
+    @SuppressLint("Range")
+    fun getImageFilePath(uri: Uri, context: Context) {
+        val file = File(uri.path)
+        val filePath = file.path.split(":").toTypedArray()
+        val image_id = filePath[filePath.size - 1]
+        val cursor: Cursor? = context.contentResolver.query(
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+            null,
+            MediaStore.Images.Media._ID + " = ? ",
+            arrayOf(image_id),
+            null
+        )
+        try {
+            while (cursor!!.moveToNext()){
+                val imagePath = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA))
+                val photoData = PhotoData()
+                photoData.status = "new"
+                photoData.path = imagePath
+                pathList.add(photoData)
+            }
+        }catch (e : Exception){
+            Log.e("exception", e.message.toString())
+        }finally {
+            cursor?.close()
+        }
+    }
+
+
+
+
+    fun setServicePhotoAdapter(pathList: ArrayList<PhotoData>) {
         mView!!.rv_uploaded_photos.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         addNewPhotosAdapter = AddNewPhotosAdapter(requireContext(), pathList, object : ClickInterface.OnRecyclerItemClick {
             override fun OnClickAction(position: Int) {
-                if(galleryItemListSize>position) {
+                if(pathList[position].status.equals("old")) {
                     val alert = android.app.AlertDialog.Builder(requireContext())
                     alert.setMessage(requireContext().getString(R.string.delete_message))
                     alert.setCancelable(false)
@@ -336,6 +407,27 @@ class AddNewServiceFragment : Fragment() {
         addNewPhotosAdapter.notifyDataSetChanged()
     }
 
+    @SuppressLint("Range")
+    private fun getRealPath(ur: Uri?): String? {
+        var realpath = ""
+        val filePathColumn = arrayOf(MediaStore.Images.Media.DATA)
+
+        // Get the cursor
+        val cursor: Cursor = requireContext().contentResolver.query(ur!!,
+            filePathColumn, null, null, null
+        )!!
+        try {
+            while (cursor.moveToNext()){
+                realpath = cursor.getString(cursor.getColumnIndex(filePathColumn[0]))
+            }
+        }catch (e : Exception){
+            Log.e("exception", e.message.toString())
+        }finally {
+            cursor.close()
+        }
+        return realpath
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -352,6 +444,10 @@ class AddNewServiceFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         mView  = inflater.inflate(R.layout.fragment_add_new_service, container, false)
+        Utility.changeLanguage(
+            requireContext(),
+            SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, "")
+        )
         return mView
     }
 
@@ -359,10 +455,16 @@ class AddNewServiceFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         getCategories()
 
-        requireActivity().iv_back.setOnClickListener {
+        requireActivity().iv_back.setSafeOnClickListener {
             requireActivity().iv_back.startAnimation(AlphaAnimation(1F,0.5F))
             SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_back)
             findNavController().popBackStack()
+        }
+
+        requireActivity().iv_notification.setSafeOnClickListener {
+            requireActivity().iv_notification.startAnimation(AlphaAnimation(1F,0.5F))
+            SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_notification)
+            findNavController().navigate(R.id.notificationsFragment)
         }
 
         if (service_status.equals("edit")){
@@ -375,13 +477,13 @@ class AddNewServiceFragment : Fragment() {
             mView!!.tv_save_service.text = getString(R.string.save)
         }
 
-        mView!!.tv_location.setOnClickListener {
+        mView!!.tv_location.setSafeOnClickListener {
             mView!!.tv_location.startAnimation(AlphaAnimation(1f, 0.5f))
             my_click = "location"
             activityResultLauncher.launch(PERMISSIONS_2)
         }
 
-        mView!!.iv_upload_photo.setOnClickListener {
+        mView!!.iv_upload_photo.setSafeOnClickListener {
             Log.e("path_list_size", ""+pathList.size)
             if (pathList.size<5){
                 mView!!.iv_upload_photo.isEnabled = true
@@ -394,19 +496,19 @@ class AddNewServiceFragment : Fragment() {
             }
         }
 
-        mView!!.ll_service_location.setOnClickListener {
+        mView!!.ll_service_location.setSafeOnClickListener {
             mView!!.ll_service_location.startAnimation(AlphaAnimation(1f, 0.5f))
             my_click = "location"
             activityResultLauncher.launch(PERMISSIONS_2)
         }
 
-        mView!!.tv_save_service.setOnClickListener {
+        mView!!.tv_save_service.setSafeOnClickListener {
             mView!!.tv_save_service.startAnimation(AlphaAnimation(1f, 0.5f))
             SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), mView!!.tv_save_service)
             validateAndSave()
         }
 
-        mView!!.spinner_category_card.setOnClickListener {
+        mView!!.spinner_category_card.setSafeOnClickListener {
             if (!category_clicked){
                 category_clicked = true
                 mView!!.ll_categoryItems.visibility = View.VISIBLE
@@ -430,11 +532,14 @@ class AddNewServiceFragment : Fragment() {
                 requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 if (response.isSuccessful){
                     if (response.body()!!.status==1){
+                        galleryItemList.clear()
                         galleryItemList = response.body()!!.gallery as ArrayList<GalleryItem>
                         galleryItemListSize = galleryItemList.size
                         for (i in 0 until galleryItemList.size){
-//                            galleryPhotos.add(galleryItemList[i].name.toString())
-                            pathList.add(galleryItemList[i].name.toString())
+                            val photoData = PhotoData()
+                            photoData.status = "old"
+                            photoData.path = galleryItemList[i].name.toString()
+                            pathList.add(photoData)
                         }
                         service = response.body()!!.service
                         setUploadPhotos(pathList)
@@ -450,7 +555,6 @@ class AddNewServiceFragment : Fragment() {
                         mLatitude = service!!.lat!!.toDouble()
                         mLongitude = service!!.long!!.toDouble()
                         price = service!!.price!!.main!!.toString()
-//                        child_price = service!!.price!!.child_price!!.toString()
                         service_description = service!!.description.toString()
                         service_title = service!!.name.toString()
                     }else{
@@ -483,7 +587,6 @@ class AddNewServiceFragment : Fragment() {
         service_title = mView!!.et_service_title.text.toString().trim()
         service_description = mView!!.et_service_desc.text.toString().trim()
         price = mView!!.et_price.text.toString().trim()
-//        child_price = mView!!.et_child_price.text.toString().trim()
         address = mView!!.tv_location.text.toString().trim()
         if (pathList.size==0){
             LogUtils.shortToast(requireContext(), getString(R.string.please_select_atleast_one_image_to_proceed))
@@ -506,11 +609,7 @@ class AddNewServiceFragment : Fragment() {
             mView!!.et_price.requestFocus()
             mView!!.et_price.error = getString(R.string.please_enter_valid_price)
             LogUtils.shortToast(requireContext(), getString(R.string.please_enter_valid_price))
-        }/*else if (TextUtils.isEmpty(child_price)){
-            mView!!.et_child_price.requestFocus()
-            mView!!.et_child_price.error = getString(R.string.please_enter_valid_child_price)
-            LogUtils.shortToast(requireContext(), getString(R.string.please_enter_valid_child_price))
-        }*/ else if (TextUtils.isEmpty(service_description)){
+        } else if (TextUtils.isEmpty(service_description)){
             mView!!.et_service_desc.requestFocus()
             mView!!.et_service_desc.error = getString(R.string.please_enter_valid_service_desc)
             LogUtils.shortToast(requireContext(), getString(R.string.please_enter_valid_service_desc))
@@ -538,7 +637,7 @@ class AddNewServiceFragment : Fragment() {
         service_description))
         Log.e("path_list_size", ""+pathList)
         for(i in 0 until pathList.size){
-            val file = File(pathList[i])
+            val file = File(pathList[i].path)
             if(file.exists()){
                 val requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file)
                 builder!!.addFormDataPart("images[]", file.name, requestBody)
@@ -556,7 +655,6 @@ class AddNewServiceFragment : Fragment() {
                         requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                         if (response.body()!!.status == 1) {
                             LogUtils.shortToast(requireContext(), response.body()!!.message)
-//                            findNavController().navigate(R.id.action_addNewServiceFragment_to_myProfileFragment)
                             findNavController().popBackStack()
                         } else {
                             LogUtils.shortToast(requireContext(), response.body()!!.message)
@@ -598,7 +696,7 @@ class AddNewServiceFragment : Fragment() {
                     subscription_id.toString()))
 
         for(i in 0 until pathList.size){
-            val file = File(pathList[i])
+            val file = File(pathList[i].path)
             if(file.exists()){
                 val requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file)
                 builder!!.addFormDataPart("images[]", file.name, requestBody)
@@ -619,7 +717,6 @@ class AddNewServiceFragment : Fragment() {
                         if (response.body()!!.status == 1) {
                             LogUtils.shortToast(requireContext(), response.body()!!.message)
                             findNavController().popBackStack()
-//                            findNavController().navigate(R.id.action_addNewServiceFragment_to_myProfileFragment)
                         } else {
                             LogUtils.shortToast(requireContext(), response.body()!!.message)
                         }
@@ -734,6 +831,7 @@ class AddNewServiceFragment : Fragment() {
                     if (response.isSuccessful) {
                         if (response.body()!!.status == 1) {
                             mView!!.spinner_category_card.visibility = View.VISIBLE
+                            categoryList.clear()
                             categoryList = response.body()!!.category as ArrayList<CategoryItem>
                             mView!!.rv_category_add_new_service.layoutManager = LinearLayoutManager(requireContext(),
                                 LinearLayoutManager.VERTICAL,
@@ -798,28 +896,12 @@ class AddNewServiceFragment : Fragment() {
         })
     }
 
-    private fun getRealPath(ur: Uri?): String? {
-        var realpath = ""
-        val filePathColumn = arrayOf(MediaStore.Images.Media.DATA)
 
-        // Get the cursor
-        val cursor: Cursor = requireContext().contentResolver.query(ur!!,
-                filePathColumn, null, null, null
-        )!!
-        cursor.moveToFirst()
-        val columnIndex = cursor.getColumnIndex(filePathColumn[0])
-        //Log.e("columnIndex", String.valueOf(MediaStore.Images.Media.DATA));
-        realpath = cursor.getString(columnIndex)
-        cursor.close()
-        return realpath
-    }
-
-
-    private fun setUploadPhotos(galleryPhotos: ArrayList<String>) {
+    private fun setUploadPhotos(galleryPhotos: ArrayList<PhotoData>) {
         mView!!.rv_uploaded_photos.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         addNewPhotosAdapter = AddNewPhotosAdapter(requireContext(), galleryPhotos, object : ClickInterface.OnRecyclerItemClick {
             override fun OnClickAction(position: Int) {
-                if(galleryItemListSize>position) {
+                if(galleryPhotos[position].status.equals("old")) {
                     val alert = android.app.AlertDialog.Builder(requireContext())
                     alert.setMessage(requireContext().getString(R.string.delete_message))
                     alert.setCancelable(false)
@@ -884,26 +966,6 @@ class AddNewServiceFragment : Fragment() {
             e.printStackTrace()
         }
         return ""
-    }
-
-    @SuppressLint("Range")
-    fun getImageFilePath(uri: Uri, context: Context) {
-        val file = File(uri.path)
-        val filePath = file.path.split(":").toTypedArray()
-        val image_id = filePath[filePath.size - 1]
-        val cursor: Cursor? = context.contentResolver.query(
-            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-            null,
-            MediaStore.Images.Media._ID + " = ? ",
-            arrayOf(image_id),
-            null
-        )
-        if (cursor != null) {
-            cursor.moveToFirst()
-            val imagePath = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA))
-            pathList.add(imagePath)
-            cursor.close()
-        }
     }
 
     companion object{

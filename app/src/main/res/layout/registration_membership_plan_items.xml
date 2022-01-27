@@ -8,7 +8,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_margin="@dimen/_8sdp"
         android:paddingVertical="@dimen/_8sdp">
 
         <com.google.android.material.textview.MaterialTextView
@@ -30,8 +29,8 @@
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/iv_selected_unselected_registration"
-            android:layout_width="@dimen/_15sdp"
-            android:layout_height="@dimen/_15sdp"
+            android:layout_width="@dimen/_25sdp"
+            android:layout_height="@dimen/_25sdp"
             android:src="@drawable/ic_baseline_check_24"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/tv_registration_plan_title"
@@ -55,7 +54,7 @@
             android:textStyle="normal"/>
 
         <com.google.android.material.textview.MaterialTextView
-            android:layout_width="@dimen/_277sdp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/tv_registration_plan_description"
             app:layout_constraintTop_toBottomOf="@id/tv_registration_plan_price"
@@ -68,11 +67,9 @@
             android:textColor="#211928"
             android:maxLines="6"
             android:ellipsize="end"
-            android:padding="@dimen/_8sdp"
+            android:padding="@dimen/_10sdp"
             android:textSize="@dimen/_10ssp"
             android:textStyle="normal"/>
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

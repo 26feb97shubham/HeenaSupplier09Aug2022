@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.text.TextUtils
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -27,6 +28,7 @@ import com.heena.supplier.R
 import com.heena.supplier.`interface`.ClickInterface
 import com.heena.supplier.activities.ChooseLoginSignUpActivity
 import com.heena.supplier.activities.HomeActivity
+import com.heena.supplier.activities.LoginActivity
 import com.heena.supplier.adapters.DashBoardBookingsAdapter
 import com.heena.supplier.adapters.ServicesAdapter
 import com.heena.supplier.bottomsheets.MembershipBottomSheetDialogFragment
@@ -37,10 +39,12 @@ import com.heena.supplier.utils.LogUtils
 import com.heena.supplier.utils.SharedPreferenceUtility
 import com.heena.supplier.utils.SharedPreferenceUtility.Companion.SelectedLang
 import com.heena.supplier.utils.Utility
+import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
 import kotlinx.android.synthetic.main.activity_home2.*
 import kotlinx.android.synthetic.main.fragment_home.view.*
 import kotlinx.android.synthetic.main.fragment_home.view.tv_no_bookings_found
 import kotlinx.android.synthetic.main.side_menu_layout.*
+import kotlinx.android.synthetic.main.side_top_view.*
 import kotlinx.android.synthetic.main.side_top_view.view.*
 import org.json.JSONException
 import retrofit2.Call
@@ -63,6 +67,10 @@ class HomeFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         mView = inflater.inflate(R.layout.fragment_home, container, false)
+        Utility.changeLanguage(
+            requireContext(),
+            SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, "")
+        )
         setUpViews()
         return mView
     }
@@ -76,6 +84,25 @@ class HomeFragment : Fragment() {
 
         profile_picture = SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.ProfilePic,"")
 
+        requireActivity().iv_notification.setSafeOnClickListener {
+            requireActivity().iv_notification.startAnimation(AlphaAnimation(1F,0.5F))
+            SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_notification)
+            findNavController().navigate(R.id.notificationsFragment)
+        }
+
+        if (TextUtils.isEmpty(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.Fullname, ""))){
+            requireActivity().tv_name.text = SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.Username,"")
+        }else{
+            requireActivity().tv_name.text = SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.Fullname,"")
+        }
+
+        if (TextUtils.isEmpty(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.Address, ""))){
+            requireActivity().tv_address.text =""
+        }else{
+            requireActivity().tv_address.text = SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.Address,"")
+        }
+
+
         if(!Utility.hasConnection(requireContext())){
             val noInternetDialog = NoInternetDialog()
             noInternetDialog.isCancelable = false
@@ -87,41 +114,10 @@ class HomeFragment : Fragment() {
 
             })
             noInternetDialog.show(requireActivity().supportFragmentManager, "Home Fragment")
+        }else{
+            getDashBoard()
         }
 
-        val requestOption = RequestOptions().centerCrop()
-        Glide.with(this).load(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.ProfilePic, ""))
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .listener(object : RequestListener<Drawable> {
-                    override fun onLoadFailed(p0: GlideException?, p1: Any?, p2: com.bumptech.glide.request.target.Target<Drawable>?, p3: Boolean): Boolean {
-                        Log.e("err", p0?.message.toString())
-                        return false
-                    }
-
-                    override fun onResourceReady(p0: Drawable?, p1: Any?, target: com.bumptech.glide.request.target.Target<Drawable>?, dataSource: com.bumptech.glide.load.DataSource?, p4: Boolean): Boolean {
-
-
-                        return false
-                    }
-                }).apply(requestOption).into(requireActivity().menuImg)
-
-
-        Glide.with(this).load(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.ProfilePic, ""))
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .listener(object : RequestListener<Drawable> {
-                    override fun onLoadFailed(p0: GlideException?, p1: Any?, p2: com.bumptech.glide.request.target.Target<Drawable>?, p3: Boolean): Boolean {
-                        Log.e("err", p0?.message.toString())
-                        return false
-                    }
-
-                    override fun onResourceReady(p0: Drawable?, p1: Any?, target: com.bumptech.glide.request.target.Target<Drawable>?, dataSource: com.bumptech.glide.load.DataSource?, p4: Boolean): Boolean {
-
-
-                        return false
-                    }
-                }).apply(requestOption).into(requireActivity().headerView.userIcon)
-
-        getDashBoard()
         clickOnDrawer()
         clickOnHomeItems()
     }
@@ -179,7 +175,8 @@ class HomeFragment : Fragment() {
                             })
                             expiredMembershipDialogFragment.show(requireActivity().supportFragmentManager, "Home Fragment")
                         }
-
+                        serviceslisting.clear()
+                        bookingslisting.clear()
                         serviceslisting = response.body()!!.service as ArrayList<Service>
                         bookingslisting = response.body()!!.booking as ArrayList<BookingItem>
                         if (serviceslisting.size==0){
@@ -223,12 +220,23 @@ class HomeFragment : Fragment() {
                             }
 
                             override fun onServiceEdit(position: Int) {
-                                val service_id = serviceslisting.get(position).service_id
-                                val status = "edit"
-                                val bundle = Bundle()
-                                bundle.putInt("service_id", service_id!!)
-                                bundle.putString("status", status)
-                                findNavController().navigate(R.id.addNewServiceFragment, bundle)
+                                val updateServiceDialog = AlertDialog.Builder(requireContext())
+                                updateServiceDialog.setCancelable(false)
+                                updateServiceDialog.setTitle(requireContext().getString(R.string.update_service))
+                                updateServiceDialog.setMessage(requireContext().getString(R.string.would_you_like_to_update_your_service_details))
+                                updateServiceDialog.setPositiveButton(requireContext().getString(R.string.yes)
+                                ) { dialog, _ ->
+                                    val service_id = serviceslisting.get(position).service_id
+                                    val status = "edit"
+                                    val bundle = Bundle()
+                                    bundle.putInt("service_id", service_id!!)
+                                    bundle.putString("status", status)
+                                    findNavController().navigate(R.id.addNewServiceFragment, bundle)
+                                    dialog!!.dismiss()
+                                }
+                                updateServiceDialog.setNegativeButton(requireContext().getString(R.string.no)
+                                ) { dialog, _ -> dialog!!.cancel() }
+                                updateServiceDialog.show()
                             }
                         })
                         mView!!.rv_services.adapter = servicesAdapter
@@ -299,7 +307,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun clickOnHomeItems() {
-        mView!!.tv_viewall_txt.setOnClickListener {
+        mView!!.tv_viewall_txt.setSafeOnClickListener {
             val membershipBottomSheetDialogFragment = MembershipBottomSheetDialogFragment.newInstance(requireContext(), membershipId)
             membershipBottomSheetDialogFragment.show(requireActivity().supportFragmentManager, MembershipBottomSheetDialogFragment.TAG)
             membershipBottomSheetDialogFragment.setSubscribeClickListenerCallback(object : MembershipBottomSheetDialogFragment.OnSubscribeClick{
@@ -312,37 +320,30 @@ class HomeFragment : Fragment() {
             })
         }
 
-        /*mView!!.membership_card.setOnClickListener {
-            val bundle = Bundle()
-            Log.e("membership_data", ""+membershipX)
-            bundle.putSerializable("membershipX", membershipX)
-            findNavController().navigate(R.id.membershipStatusFragment, bundle)
-        }*/
-
-        mView!!.tv_viewall_txt2.setOnClickListener {
+        mView!!.tv_viewall_txt2.setSafeOnClickListener {
             findNavController().navigate(R.id.myAppointmentsFragment)
         }
-        mView!!.tv_viewall_txt3.setOnClickListener {
+        mView!!.tv_viewall_txt3.setSafeOnClickListener {
             val bundle = Bundle()
             bundle.putInt("subscription_id", subscription_id)
             findNavController().navigate(R.id.myServicesFragment, bundle)
         }
 
-        requireActivity().iv_notification.setOnClickListener {
+        requireActivity().iv_notification.setSafeOnClickListener {
             findNavController().navigate(R.id.notificationsFragment)
         }
     }
 
     private fun clickOnDrawer() {
         HomeActivity.clickDirestion = "drawer"
-        requireActivity().llMyBanks.setOnClickListener {
+        requireActivity().llMyBanks.setSafeOnClickListener {
             SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().llMyBanks)
             requireActivity().llMyBanks.startAnimation(AlphaAnimation(1f, 0.5f))
             requireActivity().drawerLayout.closeDrawer(GravityCompat.START)
             findNavController().navigate(R.id.bankDetailsFragment)
         }
 
-        requireActivity().llAccount.setOnClickListener {
+        requireActivity().llAccount.setSafeOnClickListener {
             SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().llAccount)
             requireActivity().llAccount.startAnimation(AlphaAnimation(1f, 0.5f))
             requireActivity().drawerLayout.closeDrawer(GravityCompat.START)
@@ -351,7 +352,7 @@ class HomeFragment : Fragment() {
             findNavController().navigate(R.id.myProfileFragment, bundle)
         }
 
-        requireActivity().llFeatured.setOnClickListener {
+        requireActivity().llFeatured.setSafeOnClickListener {
             SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().llFeatured)
             requireActivity().llFeatured.startAnimation(AlphaAnimation(1f, 0.5f))
             requireActivity().drawerLayout.closeDrawer(GravityCompat.START)
@@ -365,40 +366,40 @@ class HomeFragment : Fragment() {
             }
         }
 
-        requireActivity().llNotifications.setOnClickListener {
+        requireActivity().llNotifications.setSafeOnClickListener {
             SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().llNotifications)
             requireActivity().llNotifications.startAnimation(AlphaAnimation(1f, 0.5f))
             requireActivity().drawerLayout.closeDrawer(GravityCompat.START)
             findNavController().navigate(R.id.notificationsFragment)
         }
 
-        requireActivity().llRevenues.setOnClickListener {
+        requireActivity().llRevenues.setSafeOnClickListener {
             SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().llRevenues)
             requireActivity().llRevenues.startAnimation(AlphaAnimation(1f, 0.5f))
             requireActivity().drawerLayout.closeDrawer(GravityCompat.START)
             findNavController().navigate(R.id.revenuesFragment)
         }
 
-        requireActivity().llMyCards.setOnClickListener {
+        requireActivity().llMyCards.setSafeOnClickListener {
             SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().llMyCards)
             requireActivity().llMyCards.startAnimation(AlphaAnimation(1f, 0.5f))
             requireActivity().drawerLayout.closeDrawer(GravityCompat.START)
             findNavController().navigate(R.id.myCardsFragment)
         }
 
-        requireActivity().llMyLocation.setOnClickListener {
+        requireActivity().llMyLocation.setSafeOnClickListener {
             requireActivity().llMyLocation.startAnimation(AlphaAnimation(1f, 0.5f))
             requireActivity().drawerLayout.closeDrawer(GravityCompat.START)
             findNavController().navigate(R.id.myLocationsFragment)
         }
 
-        requireActivity().llLanguages.setOnClickListener {
+        requireActivity().llLanguages.setSafeOnClickListener {
             requireActivity().llLanguages.startAnimation(AlphaAnimation(1f, 0.5f))
             requireActivity().drawerLayout.closeDrawer(GravityCompat.START)
             findNavController().navigate(R.id.langFragment)
         }
 
-        requireActivity().llAboutUs.setOnClickListener {
+        requireActivity().llAboutUs.setSafeOnClickListener {
             requireActivity().llAboutUs.startAnimation(AlphaAnimation(1f, 0.5f))
             requireActivity().drawerLayout.closeDrawer(GravityCompat.START)
             val bundle = Bundle()
@@ -406,13 +407,13 @@ class HomeFragment : Fragment() {
             findNavController().navigate(R.id.CMSFragment, bundle)
         }
 
-        requireActivity().llContactUs.setOnClickListener {
+        requireActivity().llContactUs.setSafeOnClickListener {
             requireActivity().llContactUs.startAnimation(AlphaAnimation(1f, 0.5f))
             requireActivity().drawerLayout.closeDrawer(GravityCompat.START)
             findNavController().navigate(R.id.contactUsFragment)
         }
 
-        requireActivity().llTnC.setOnClickListener {
+        requireActivity().llTnC.setSafeOnClickListener {
             requireActivity().llTnC.startAnimation(AlphaAnimation(1f, 0.5f))
             requireActivity().drawerLayout.closeDrawer(GravityCompat.START)
             val bundle = Bundle()
@@ -420,7 +421,7 @@ class HomeFragment : Fragment() {
             findNavController().navigate(R.id.CMSFragment, bundle)
         }
 
-        requireActivity().llPrivacyPolicy.setOnClickListener {
+        requireActivity().llPrivacyPolicy.setSafeOnClickListener {
             requireActivity().llPrivacyPolicy.startAnimation(AlphaAnimation(1f, 0.5f))
             requireActivity().drawerLayout.closeDrawer(GravityCompat.START)
             val bundle = Bundle()
@@ -428,7 +429,7 @@ class HomeFragment : Fragment() {
             findNavController().navigate(R.id.CMSFragment, bundle)
         }
 
-        requireActivity().llFAQ.setOnClickListener {
+        requireActivity().llFAQ.setSafeOnClickListener {
             requireActivity().llFAQ.startAnimation(AlphaAnimation(1f, 0.5f))
             requireActivity().drawerLayout.closeDrawer(GravityCompat.START)
             val bundle = Bundle()
@@ -436,13 +437,13 @@ class HomeFragment : Fragment() {
             findNavController().navigate(R.id.CMSFragment, bundle)
         }
 
-        requireActivity().llHelpPage.setOnClickListener {
+        requireActivity().llHelpPage.setSafeOnClickListener {
             requireActivity().llHelpPage.startAnimation(AlphaAnimation(1f, 0.5f))
             requireActivity().drawerLayout.closeDrawer(GravityCompat.START)
             findNavController().navigate(R.id.helpFragment)
         }
 
-        requireActivity().llLogout.setOnClickListener {
+        requireActivity().llLogout.setSafeOnClickListener {
             requireActivity().llLogout.startAnimation(AlphaAnimation(1f, 0.5f))
             requireActivity().drawerLayout.closeDrawer(GravityCompat.START)
 
@@ -456,7 +457,7 @@ class HomeFragment : Fragment() {
             logoutDialog.show(requireActivity().supportFragmentManager, "HomeFragment")
         }
 
-        requireActivity().llSettings.setOnClickListener {
+        requireActivity().llSettings.setSafeOnClickListener {
             requireActivity().llSettings.startAnimation(AlphaAnimation(1f, 0.5f))
             requireActivity().drawerLayout.closeDrawer(GravityCompat.START)
             findNavController().navigate(R.id.SettingsFragment)
@@ -478,7 +479,7 @@ class HomeFragment : Fragment() {
                         if (response.isSuccessful) {
                             if (response.body()!!.status == 1) {
                                 SharedPreferenceUtility.getInstance().delete(SharedPreferenceUtility.IsLogin)
-                                startActivity(Intent(requireContext(), ChooseLoginSignUpActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
+                                startActivity(Intent(requireContext(), LoginActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
                                 requireActivity().finishAffinity()
                             } else {
                                 LogUtils.longToast(requireContext(), response.body()!!.message)

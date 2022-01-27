@@ -54,5 +54,7 @@ class APIUtils {
         const val SHOWCARDS : String = "card/{user_id}"
         const val DASH_HELP_CATEGORY : String = "dashboard/get_help_category"
         const val GET_OLD_MESSAGE_LIST : String = "get_old_messages_list"
+        const val CHAT_FILE_UPLOAD : String = "chat_file_upload"
+        const val SUBSCRIPTION_PLANS : String = "subscription_plans/{user_id}"
     }
 }

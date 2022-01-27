@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CompoundButton
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.heena.supplier.R
 import com.heena.supplier.`interface`.ClickInterface
@@ -42,7 +41,7 @@ private const val ARG_PARAM2 = "param2"
  * Use the [AddAddressBottomSheetFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class AddAddressBottomSheetFragment : BottomSheetDialogFragment(), CompoundButton.OnCheckedChangeListener{
+class AddAddressBottomSheetFragment : BottomSheetDialogFragment(){
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -81,13 +80,16 @@ class AddAddressBottomSheetFragment : BottomSheetDialogFragment(), CompoundButto
             showAddress()
         }else{
             mView!!.tv_save.text = getString(R.string.save)
-            setupdata(addressMap)
+            mView!!.et_flat_villa.setText("")
+            mView!!.et_building_name.setText("")
+            mView!!.et_title.setText("")
+            mView!!.et_street_area.setText("")
+            mView!!.tv_emirate.setText("")
         }
 
         mView!!.tv_save.setOnClickListener {
-            validate()
+            validate(countryId)
         }
-        mView!!.switchDefault.setOnCheckedChangeListener(this)
 
         mView!!.tv_emirate.setOnClickListener {
             getCountires()
@@ -96,36 +98,16 @@ class AddAddressBottomSheetFragment : BottomSheetDialogFragment(), CompoundButto
         mView!!.iv_toggle_off.setOnClickListener {
             is_set_default = true
             is_default = 0
-            iv_toggle_off.visibility = View.GONE
-            iv_toggle_on.visibility = View.VISIBLE
+            mView!!.iv_toggle_off.visibility = View.GONE
+            mView!!.iv_toggle_on.visibility = View.VISIBLE
         }
 
         mView!!.iv_toggle_on.setOnClickListener {
             is_set_default = false
             is_default = 1
-            iv_toggle_off.visibility = View.VISIBLE
-            iv_toggle_on.visibility = View.GONE
+            mView!!.iv_toggle_off.visibility = View.VISIBLE
+            mView!!.iv_toggle_on.visibility = View.GONE
         }
-    }
-
-    private fun setupdata(addressMap: HashMap<String, String?>) {
-        flat_villa = addressMap.get("flat_villa")
-        street_area = addressMap.get("street_area")
-        selectedCountry = addressMap.get("country")
-        countryId = addressMap.get("countryId")!!.toInt()
-        if(flat_villa.equals("null"))
-        {
-            mView!!.et_flat_villa.setText("")
-            mView!!.et_building_name.setText("")
-        }
-        else
-        {
-            mView!!.et_flat_villa.setText(flat_villa)
-            mView!!.et_building_name.setText(flat_villa)
-        }
-        mView!!.tv_emirate.text = selectedCountry
-        mView!!.et_street_area.setText(street_area)
-        mView!!.et_title.setText("")
     }
 
 
@@ -143,7 +125,8 @@ class AddAddressBottomSheetFragment : BottomSheetDialogFragment(), CompoundButto
                             mView!!.et_street_area.setText(addressItem.street)
                             mView!!.tv_emirate.text = addressItem.country!!.name
                             if (addressItem.is_default==1){
-                                mView!!.switchDefault.isChecked = true
+                                mView!!.iv_toggle_on.visibility = View.VISIBLE
+                                mView!!.iv_toggle_off.visibility = View.VISIBLE
                             }
                         }else{
                             mView!!.cards_countries_listing.visibility = View.GONE
@@ -180,13 +163,18 @@ class AddAddressBottomSheetFragment : BottomSheetDialogFragment(), CompoundButto
                             if (response.body()!!.status==1){
                                 cards_countries_listing.visibility = View.VISIBLE
                                 rv_countries_listing.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-                                countryList = response.body()!!.country as java.util.ArrayList<CountryItem>
+                                countryList = response.body()!!.country as ArrayList<CountryItem>
                                 countryListingAdapter = CountryListingAdapter(requireContext(), countryList, object :  ClickInterface.OnRecyclerItemClick{
                                     override fun OnClickAction(position: Int) {
-                                        tv_emirate.text = countryList[position].name
+                                        if (SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang,"").equals("ar")){
+                                            tv_emirate.text = countryList[position].name_ar
+                                        }else
+                                        {
+                                            tv_emirate.text = countryList[position].name
+                                        }
                                         selectedCountry = tv_emirate.text.toString().trim()
                                         cards_countries_listing.visibility = View.GONE
-                                        countryId = returnCountryId(selectedCountry!!, countryList)
+                                        countryId = countryList[position].country_id
                                         Log.e("service_id", countryId.toString())
                                     }
                                 })
@@ -217,19 +205,9 @@ class AddAddressBottomSheetFragment : BottomSheetDialogFragment(), CompoundButto
         }else{
             LogUtils.shortToast(requireContext(), getString(R.string.check_internet))
         }
-
     }
 
-    private fun returnCountryId(selectedCountry: String, countryList: ArrayList<CountryItem>): Int? {
-        for (country : CountryItem in countryList) {
-            if (country.name.equals(selectedCountry)) {
-                return country.country_id
-            }
-        }
-        return null
-    }
-
-    private fun validate(){
+    private fun validate(countryId: Int?) {
         flat_villa = mView!!.et_flat_villa.text.toString().trim()
         building_name = mView!!.et_building_name.text.toString().trim()
         title = mView!!.et_title.text.toString().trim()
@@ -251,7 +229,7 @@ class AddAddressBottomSheetFragment : BottomSheetDialogFragment(), CompoundButto
             if (status.equals("edit")){
                 editAddress(addressId.toString())
             }else{
-                saveAddress()
+                saveAddress(countryId)
             }
         }
     }
@@ -290,13 +268,13 @@ class AddAddressBottomSheetFragment : BottomSheetDialogFragment(), CompoundButto
         })
     }
 
-    private fun saveAddress() {
+    private fun saveAddress(country_Id: Int?) {
         val add_address_builder = APIClient.createBuilder(arrayOf("flat", "title", "street", "is_default", "country_id", "building_name", "user_id"),
             arrayOf(flat_villa.toString(),
                 title.toString(),
                 street_area.toString(),
                 is_default.toString(),
-                countryId.toString(),
+                country_Id.toString(),
                 building_name.toString(),
                 SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId, 0).toString()))
         val call = apiInterface.addAddress(add_address_builder!!.build())
@@ -328,20 +306,6 @@ class AddAddressBottomSheetFragment : BottomSheetDialogFragment(), CompoundButto
         return R.style.BottomSheetDialogTheme
     }
 
-
-    override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
-        when (buttonView!!.id) {
-            R.id.switchDefault ->{
-                if (isChecked){
-                    is_default = 1
-                }else{
-                    is_default = 0
-                }
-            }
-        }
-
-    }
-
     companion object {
         /**
          * Use this factory method to create a new instance of
@@ -357,8 +321,6 @@ class AddAddressBottomSheetFragment : BottomSheetDialogFragment(), CompoundButto
         private var instance: SharedPreferenceUtility? = null
         private var status = ""
         private var addressId = 0
-        private var addressList1 = emptyArray<String>()
-        private var addressMap = HashMap<String, String?>()
         fun newInstance(context: Context?, bundle: Bundle?): AddAddressBottomSheetFragment {
             if (bundle!=null){
                 status = bundle.getString("status").toString()

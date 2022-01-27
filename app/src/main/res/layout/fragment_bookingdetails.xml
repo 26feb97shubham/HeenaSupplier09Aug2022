@@ -90,6 +90,8 @@
                 android:layout_marginTop="@dimen/_10sdp"
                 android:text="@string/services"
                 android:textAllCaps="false"
+                android:textDirection="locale"
+                android:textAlignment="viewStart"
                 android:textSize="@dimen/_14ssp"
                 android:textColor="@color/gold"
                 android:textStyle="normal"
@@ -150,12 +152,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
                 android:background="@color/gold"
-                app:layout_constraintTop_toBottomOf="@id/rating_layout"
+                app:layout_constraintTop_toBottomOf="@id/tv_service"
                 android:layout_marginTop="@dimen/_10sdp"/>
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_service_desc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textDirection="locale"
+                android:textAlignment="viewStart"
                 app:layout_constraintTop_toBottomOf="@id/view2"
                 app:layout_constraintStart_toStartOf="parent"
                 android:layout_marginTop="@dimen/_10sdp"
@@ -320,16 +324,18 @@
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_address"
-                    android:layout_width="wrap_content"
+                    android:layout_width="@dimen/_200sdp"
                     android:layout_height="@dimen/_30sdp"
+                    android:layout_alignParentEnd="true"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/avenir_medium"
                     android:gravity="center_vertical"
+                    android:maxLines="2"
                     android:text="Jumeirah Lakes Towers, Dubai"
                     android:textAllCaps="false"
-                    android:textSize="@dimen/_10ssp"
                     android:textColor="@color/gold"
-                    android:textStyle="normal"
-                    android:layout_alignParentEnd="true"
-                    android:fontFamily="@font/avenir_medium"/>
+                    android:textSize="@dimen/_10ssp"
+                    android:textStyle="normal" />
             </RelativeLayout>
 
             <View
@@ -360,13 +366,14 @@
                 android:id="@+id/tv_special_request_desc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
                 android:maxLines="5"
                 android:ellipsize="end"
                 android:text="@string/service_desc"
                 app:layout_constraintTop_toBottomOf="@id/tv_special_request"
                 android:layout_marginTop="@dimen/_6sdp"
                 app:layout_constraintStart_toStartOf="parent"
+                android:textDirection="locale"
+                android:textAlignment="viewStart"
                 android:textAllCaps="false"
                 android:textSize="@dimen/_12ssp"
                 android:textColor="@color/gold"

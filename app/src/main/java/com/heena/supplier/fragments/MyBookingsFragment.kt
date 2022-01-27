@@ -24,6 +24,7 @@ import com.heena.supplier.utils.SharedPreferenceUtility
 import com.heena.supplier.utils.Utility
 import com.heena.supplier.utils.Utility.Companion.apiInterface
 import com.heena.supplier.utils.Utility.Companion.booking_item_type
+import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
 import kotlinx.android.synthetic.main.activity_home2.*
 import kotlinx.android.synthetic.main.fragment_my_bookings.*
 import kotlinx.android.synthetic.main.fragment_my_bookings.view.*
@@ -46,11 +47,27 @@ class MyBookingsFragment : Fragment() {
     ): View? {
         mView = inflater.inflate(
                 R.layout.fragment_my_bookings, container, false)
+        Utility.changeLanguage(
+            requireContext(),
+            SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, "")
+        )
         return mView
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        requireActivity().iv_back.setSafeOnClickListener {
+            requireActivity().iv_back.startAnimation(AlphaAnimation(1F,0.5F))
+            SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_back)
+            findNavController().popBackStack()
+        }
+
+        requireActivity().iv_notification.setSafeOnClickListener {
+            requireActivity().iv_notification.startAnimation(AlphaAnimation(1F,0.5F))
+            SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_notification)
+            findNavController().navigate(R.id.notificationsFragment)
+        }
 
         if(!Utility.hasConnection(requireContext())){
             val noInternetDialog = NoInternetDialog()
@@ -59,17 +76,17 @@ class MyBookingsFragment : Fragment() {
                 override fun retry() {
                     noInternetDialog.dismiss()
                     booking_item_type = 1
-                    getCurrentBookings()
+                    getBookings(booking_item_type)
                 }
 
             })
             noInternetDialog.show(requireActivity().supportFragmentManager, "My Bookings Fragment")
         }else{
             booking_item_type = 1
-            getCurrentBookings()
+            getBookings(booking_item_type)
         }
 
-        requireActivity().iv_back.setOnClickListener {
+        requireActivity().iv_back.setSafeOnClickListener {
             requireActivity().iv_back.startAnimation(AlphaAnimation(1F,0.5F))
             SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_back)
             findNavController().popBackStack()
@@ -79,7 +96,7 @@ class MyBookingsFragment : Fragment() {
         mView!!.rv_tabs_listing.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
 
 
-        tv_current_bookings.setOnClickListener {
+        tv_current_bookings.setSafeOnClickListener {
             drawable1 = resources.getDrawable(R.drawable.little_gold_curved)
             drawable2 = resources.getDrawable(R.drawable.curved_white_filled_rect_box)
             tv_current_bookings.background = drawable1
@@ -87,10 +104,10 @@ class MyBookingsFragment : Fragment() {
             tv_current_bookings.setTextColor(Color.parseColor("#FFFFFFFF"))
             tv_bookings_history.setTextColor(Color.parseColor("#D0B67A"))
             booking_item_type = 1
-            getCurrentBookings()
+            getBookings(booking_item_type)
         }
 
-       tv_bookings_history.setOnClickListener {
+       tv_bookings_history.setSafeOnClickListener {
             drawable1 = resources.getDrawable(R.drawable.curved_white_filled_rect_box)
             drawable2 = resources.getDrawable(R.drawable.little_gold_curved)
             tv_current_bookings.background = drawable1
@@ -98,24 +115,24 @@ class MyBookingsFragment : Fragment() {
             tv_current_bookings.setTextColor(Color.parseColor("#D0B67A"))
             tv_bookings_history.setTextColor(Color.parseColor("#FFFFFFFF"))
            booking_item_type = 2
-           getBookingsHistory()
+           getBookings(booking_item_type)
         }
 
     }
 
-    private fun getCurrentBookings() {
+    private fun getBookings(bookingItemType: Int) {
         mView!!.fragment_bookings_progressBar.visibility = View.VISIBLE
         mView!!.tv_no_bookings_found.visibility = View.GONE
         requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         val hashMap = HashMap<String, String>()
 //        hashMap.put("lang", SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, ""))
-        hashMap.put("type", "1")
+        hashMap.put("type", bookingItemType.toString())
         hashMap.put("user_id", SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId, 0).toString())
         val call = apiInterface.getBookingsList(hashMap)
         call?.enqueue(object : Callback<BookingsListingResponse?> {
             override fun onResponse(
-                    call: Call<BookingsListingResponse?>,
-                    response: Response<BookingsListingResponse?>
+                call: Call<BookingsListingResponse?>,
+                response: Response<BookingsListingResponse?>
             ) {
                 mView!!.fragment_bookings_progressBar.visibility= View.GONE
                 requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
@@ -123,58 +140,12 @@ class MyBookingsFragment : Fragment() {
                     if (response.body()!!.status == 1){
                         mView!!.tv_no_bookings_found.visibility = View.GONE
                         mView!!.nsv_bookings.visibility = View.VISIBLE
+                        bookingList.clear()
                         bookingList = response.body()!!.booking as ArrayList<BookingItem>
                         setBookingsAdapter()
                     }else{
                         mView!!.tv_no_bookings_found.visibility = View.VISIBLE
                         mView!!.nsv_bookings.visibility = View.GONE
-                        LogUtils.shortToast(requireContext(), response.body()!!.message)
-                    }
-                }else{
-                    mView!!.tv_no_bookings_found.visibility = View.VISIBLE
-                    mView!!.nsv_bookings.visibility = View.GONE
-                    LogUtils.shortToast(requireContext(), getString(R.string.response_isnt_successful))
-                }
-            }
-
-            override fun onFailure(call: Call<BookingsListingResponse?>, throwable: Throwable) {
-                LogUtils.e("msg", throwable.message)
-                LogUtils.shortToast(requireContext(), getString(R.string.check_internet))
-                mView!!.fragment_bookings_progressBar.visibility= View.GONE
-                mView!!.tv_no_bookings_found.visibility = View.VISIBLE
-                mView!!.nsv_bookings.visibility = View.GONE
-                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-            }
-
-        })
-    }
-
-    private fun getBookingsHistory() {
-        mView!!.fragment_bookings_progressBar.visibility = View.VISIBLE
-        mView!!.tv_no_bookings_found.visibility = View.GONE
-        requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-        val hashMap = HashMap<String, String>()
-        hashMap.put("lang", SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, ""))
-        hashMap.put("type", "2")
-        hashMap.put("user_id", SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId, 0).toString())
-        val call = apiInterface.getBookingsList(hashMap)
-        call?.enqueue(object : Callback<BookingsListingResponse?>{
-            override fun onResponse(
-                    call: Call<BookingsListingResponse?>,
-                    response: Response<BookingsListingResponse?>
-            ) {
-                mView!!.fragment_bookings_progressBar.visibility= View.GONE
-                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                if (response.isSuccessful){
-                    if (response.body()!!.status == 1){
-                        mView!!.tv_no_bookings_found.visibility = View.GONE
-                        mView!!.nsv_bookings.visibility = View.VISIBLE
-                        bookingList = response.body()!!.booking as ArrayList<BookingItem>
-                        setBookingsAdapter()
-                    }else{
-                        mView!!.tv_no_bookings_found.visibility = View.VISIBLE
-                        mView!!.nsv_bookings.visibility = View.GONE
-                        LogUtils.shortToast(requireContext(), response.body()!!.message)
                     }
                 }else{
                     mView!!.tv_no_bookings_found.visibility = View.VISIBLE

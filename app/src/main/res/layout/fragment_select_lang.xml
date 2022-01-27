@@ -105,7 +105,7 @@
                                 android:fontFamily="@font/avenir_medium"
                                 android:gravity="center"
                                 android:textSize="@dimen/_18ssp"
-                                android:text="@string/arabic"
+                                android:text="العربية"
                                 android:src="@drawable/ic_launcher_foreground"/>
 
                         </androidx.constraintlayout.widget.ConstraintLayout>

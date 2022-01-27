@@ -10,6 +10,8 @@
         android:id="@+id/tv_country_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textDirection="locale"
+        android:textAlignment="viewStart"
         app:layout_constraintTop_toTopOf="parent"
         android:text="@string/title"
         android:textSize="@dimen/_13ssp"
@@ -17,7 +19,6 @@
         android:textColor="@color/gold"
         style="@style/TextAppearance.AppCompat.Large"
         android:textAllCaps="false"
-        android:gravity="center_vertical"
         android:paddingHorizontal="@dimen/_10sdp"/>
 
     <View

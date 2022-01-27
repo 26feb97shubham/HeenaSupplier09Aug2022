@@ -3,6 +3,7 @@ package com.heena.supplier.fragments
 import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.location.Address
 import android.location.Geocoder
 import android.net.Uri
@@ -21,7 +22,11 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.FileProvider
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.Target
 import com.heena.supplier.BuildConfig
 import com.heena.supplier.R
 import com.heena.supplier.custom.FetchPath
@@ -38,6 +43,7 @@ import com.google.android.libraries.places.api.model.AddressComponent
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
+import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
 import kotlinx.android.synthetic.main.activity_home2.*
 import kotlinx.android.synthetic.main.activity_sign_up2.view.*
 import kotlinx.android.synthetic.main.fragment_edit_profile.view.*
@@ -82,6 +88,7 @@ class EditProfileFragment : Fragment() {
     var profile_pic_changed = false
     var status = 0
     var my_click = ""
+    var profile_picture:String=""
 
     private var activityResultLauncher: ActivityResultLauncher<Array<String>> =
             registerForActivityResult(
@@ -213,45 +220,43 @@ class EditProfileFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         mView = inflater.inflate(R.layout.fragment_edit_profile, container, false)
+        Utility.changeLanguage(
+            requireContext(),
+            SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, "")
+        )
         setUpViews()
         return mView
     }
 
     private fun setUpViews() {
-        requireActivity().iv_back.setOnClickListener {
+        requireActivity().iv_back.setSafeOnClickListener {
             requireActivity().iv_back.startAnimation(AlphaAnimation(1F,0.5F))
             SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_back)
             findNavController().popBackStack()
         }
 
+        requireActivity().iv_notification.setSafeOnClickListener {
+            requireActivity().iv_notification.startAnimation(AlphaAnimation(1F,0.5F))
+            SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_notification)
+            findNavController().navigate(R.id.notificationsFragment)
+        }
+
         showProfile()
 
-        mView!!.btnUpdate.setOnClickListener {
+        mView!!.btnUpdate.setSafeOnClickListener {
             mView!!.btnUpdate.startAnimation(AlphaAnimation(1f, 0.5f))
             SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), mView!!.btnUpdate)
             validateAndUpdate()
         }
 
-        mView!!.scrollViewUpdate.setOnTouchListener(object : View.OnTouchListener{
-            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-                mView!!.edtUsername_update.clearFocus()
-                mView!!.edtemailaddress_update.clearFocus()
-                mView!!.edtlocation_update.clearFocus()
-                mView!!.edtmobilenumber_update.clearFocus()
-                mView!!.edtFullName_update.clearFocus()
-                return false
-            }
-
-        })
-
-        mView!!.editProfileUpdate.setOnClickListener {
+        mView!!.editProfileUpdate.setSafeOnClickListener {
             profile_pic_changed = true
             mView!!.editProfileUpdate.startAnimation(AlphaAnimation(1f, 0.5f))
             my_click = "profile"
             activityResultLauncher.launch(PERMISSIONS_1)
         }
 
-        mView!!.edtlocation_update.setOnClickListener {
+        mView!!.edtlocation_update.setSafeOnClickListener {
             mView!!.edtlocation_update.startAnimation(AlphaAnimation(1f, 0.5f))
             my_click = "location"
             activityResultLauncher.launch(PERMISSIONS_2)
@@ -312,30 +317,44 @@ class EditProfileFragment : Fragment() {
     private fun Update() {
         requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         mView!!.progressBar_update.visibility= View.VISIBLE
-        val builder = APIClient.createMultipartBodyBuilder(arrayOf("user_id", "name", "address"),
-        arrayOf(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId,0).toString(),
-        fullname,
-        location.toString(),
-        mLatitude.toString(),
-        mLongitude.toString()))
 
-        Log.e("image_path", imagePath)
-        if (imagePath != "") {
-            if (profile_pic_changed){
-                profile_pic_changed = false
-                val file = File(imagePath)
-                Log.e("file name ", file.name)
-                SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.ProfilePic,imagePath)
-                val requestBody = RequestBody.create(MediaType.parse("image/*"), file)
-                builder!!.addFormDataPart("image", file.name, requestBody)
-            }else{
-                SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.ProfilePic,imagePath)
-                val requestBody = RequestBody.create(MediaType.parse("image/*"), imagePath)
-                builder!!.addFormDataPart("image", imagePath, requestBody)
+        var call : Call<UpdateProfileResponse?>?=null
+
+        if(imagePath.equals("")){
+            val builder = APIClient.createBuilder(arrayOf("user_id", "name", "address", "image"),
+                arrayOf(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId,0).toString(),
+                    fullname,
+                    location.toString(),
+                    ""))
+            call = apiInterface.updateProfile(builder!!.build())
+
+        }else{
+            val builder = APIClient.createMultipartBodyBuilder(arrayOf("user_id", "name", "address"),
+                arrayOf(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId,0).toString(),
+                    fullname,
+                    location.toString(),
+                    mLatitude.toString(),
+                    mLongitude.toString()))
+
+            Log.e("image_path", imagePath)
+            if (imagePath != "") {
+                if (profile_pic_changed){
+                    profile_pic_changed = false
+                    val file = File(imagePath)
+                    Log.e("file name ", file.name)
+                    SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.ProfilePic,imagePath)
+                    SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.Fullname,fullname)
+                    val requestBody = RequestBody.create(MediaType.parse("image/*"), file)
+                    builder!!.addFormDataPart("image", file.name, requestBody)
+                }else{
+                    SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.ProfilePic,imagePath)
+                    val requestBody = RequestBody.create(MediaType.parse("image/*"), imagePath)
+                    builder!!.addFormDataPart("image", imagePath, requestBody)
+                }
             }
+            call = apiInterface.updateProfile(builder!!.build())
         }
 
-        val call = apiInterface.updateProfile(builder!!.build())
         call?.enqueue(object : Callback<UpdateProfileResponse?>{
             override fun onResponse(call: Call<UpdateProfileResponse?>, response: Response<UpdateProfileResponse?>) {
                 mView!!.progressBar_update.visibility= View.GONE
@@ -486,9 +505,31 @@ class EditProfileFragment : Fragment() {
                 try {
                     if (response.body() != null) {
                         if(response.body()!!.status==1){
-                            LogUtils.shortToast(requireContext(), response.body()!!.message)
-                            imagePath = response.body()!!.profile!!.image!!
-                            Glide.with(requireContext()).load(response.body()!!.profile!!.image).into(mView!!.civ_profile_update)
+                            imagePath = ""
+                            profile_picture = response.body()!!.profile!!.image!!
+                            Glide.with(requireContext()).load(response.body()!!.profile!!.image).listener(object : RequestListener<Drawable>{
+                                override fun onLoadFailed(
+                                    e: GlideException?,
+                                    model: Any?,
+                                    target: Target<Drawable>?,
+                                    isFirstResource: Boolean
+                                ): Boolean {
+                                    mView!!.edit_image_progress_bar.visibility = View.GONE
+                                    return false
+                                }
+
+                                override fun onResourceReady(
+                                    resource: Drawable?,
+                                    model: Any?,
+                                    target: Target<Drawable>?,
+                                    dataSource: DataSource?,
+                                    isFirstResource: Boolean
+                                ): Boolean {
+                                    mView!!.edit_image_progress_bar.visibility = View.GONE
+                                    return false
+                                }
+
+                            }).into(mView!!.civ_profile_update)
                             mView!!.edtUsername_update.setText(response.body()!!.profile!!.username)
                             mView!!.edtFullName_update.setText(response.body()!!.profile!!.name)
                             mView!!.edtemailaddress_update.setText(response.body()!!.profile!!.email)

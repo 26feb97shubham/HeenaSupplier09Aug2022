@@ -11,6 +11,34 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/llHeader"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toTopOf="parent"
+            android:maxHeight="?attr/actionBarSize">
+
+            <ImageView
+                android:id="@+id/iv_back_add_card_activity"
+                android:layout_width="@dimen/_20sdp"
+                android:layout_height="@dimen/_20sdp"
+                android:layout_alignParentStart="true"
+                android:layout_marginHorizontal="@dimen/_8sdp"
+                android:padding="@dimen/_4sdp"
+                android:src="@drawable/gold_back_icon" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/expressway_rg"
+                android:layout_centerInParent="true"
+                android:text="@string/add_new_card"
+                android:textColor="@color/gold"
+                android:textSize="@dimen/_14ssp" />
+        </RelativeLayout>
+
         <LinearLayout
             android:id="@+id/ll_card"
             android:layout_width="match_parent"
@@ -19,7 +47,7 @@
             android:layout_marginHorizontal="@dimen/_30sdp"
             android:background="@drawable/card_bg"
             app:layout_constraintVertical_weight="0.3"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toBottomOf="@id/llHeader">
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
@@ -30,6 +58,8 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     android:layout_marginEnd="@dimen/_24sdp"
+                    android:textDirection="locale"
+                    android:textAlignment="viewStart"
                     android:text="01 / 2025"
                     android:textColor="#F7F7F7"
                     android:textStyle="normal"
@@ -44,6 +74,8 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     android:layout_marginHorizontal="@dimen/_30sdp"
+                    android:textDirection="locale"
+                    android:textAlignment="viewStart"
                     app:layout_constraintEnd_toEndOf="parent"
                     android:text="1234 5783 1231 9123"
                     android:singleLine="true"
@@ -55,6 +87,8 @@
                     android:id="@+id/tv_account_holdee_name_1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textDirection="locale"
+                    android:textAlignment="viewStart"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     android:layout_marginEnd="@dimen/_24sdp"
@@ -106,6 +140,9 @@
                         android:hint=" - - "
                         android:maxLines="1"
                         android:inputType="text"
+                        android:textDirection="locale"
+                        android:textAlignment="viewStart"
+                        android:paddingStart="@dimen/_4sdp"
                         android:imeOptions="actionNext"
                         android:maxLength="15"
                         android:textColor="@color/gold"
@@ -136,6 +173,9 @@
                         android:layout_height="@dimen/_60sdp"
                         android:backgroundTint="@color/gray"
                         android:hint=" - - "
+                        android:textDirection="locale"
+                        android:textAlignment="viewStart"
+                        android:paddingStart="@dimen/_4sdp"
                         android:maxLength="17"
                         android:singleLine="true"
                         android:inputType="number"
@@ -175,6 +215,9 @@
                             android:backgroundTint="@color/gray"
                             android:hint=" - - "
                             android:inputType="numberPassword"
+                            android:textDirection="locale"
+                            android:textAlignment="viewStart"
+                            android:paddingStart="@dimen/_4sdp"
                             android:maxLines="1"
                             android:maxLength="3"
                             android:textColor="@color/gold"
@@ -207,6 +250,9 @@
                             android:maxLines="1"
                             android:maxLength="7"
                             android:textColor="@color/gold"
+                            android:textDirection="locale"
+                            android:textAlignment="viewStart"
+                            android:paddingStart="@dimen/_4sdp"
                             android:textStyle="normal"
                             android:fontFamily="@font/avenir_medium"
                             android:textSize="@dimen/_11ssp"/>
@@ -230,5 +276,18 @@
                     android:textStyle="normal"/>
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <ProgressBar
+            android:id="@+id/progressBar_add_card_activity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            android:elevation="@dimen/_5sdp"
+            android:visibility="gone"
+            style="@style/Theme.Progressbar"
+            android:indeterminateTint="@color/gold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

@@ -159,7 +159,7 @@
                 app:layout_constraintTop_toBottomOf="@id/membership_card"
                 android:layout_marginTop="@dimen/_10sdp"
                 app:layout_constraintStart_toStartOf="parent"
-                android:text="@string/bookings"
+                android:text="@string/current_bookings"
                 android:textAllCaps="false"
                 android:fontFamily="@font/avenir_medium"
                 android:textColor="@color/gold"

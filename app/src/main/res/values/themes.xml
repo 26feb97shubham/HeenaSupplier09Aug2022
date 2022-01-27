@@ -60,4 +60,9 @@
         <!-- Customize text field of the text input mode. -->
     </style>
 
+    <style name="ShapeAppearanceOverlay.Avatar" parent="ShapeAppearance.MaterialComponents.SmallComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">@dimen/_10sdp</item>
+    </style>
+
 </resources>

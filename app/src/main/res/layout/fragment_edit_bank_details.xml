@@ -8,7 +8,7 @@
     android:background="@android:color/transparent"
     tools:context=".fragments.EditBankDetailsFragment">
 
-    <androidx.core.widget.NestedScrollView
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -31,9 +31,13 @@
                     android:textSize="@dimen/_11ssp"
                     android:textStyle="normal"
                     android:gravity="center_vertical"
+                    android:imeOptions="actionNext"
                     android:fontFamily="@font/avenir_medium"
                     android:textColor="@color/text_gold_color_dark"/>
                 <com.google.android.material.textfield.TextInputEditText
+                    android:textDirection="locale"
+                    android:textAlignment="viewStart"
+                    android:paddingStart="@dimen/_4sdp"
                     android:id="@+id/et_bank_name"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_60sdp"
@@ -66,9 +70,12 @@
                     android:textSize="@dimen/_11ssp"
                     android:textStyle="normal"
                     android:gravity="center_vertical"
+                    android:imeOptions="actionNext"
                     android:fontFamily="@font/avenir_medium"
                     android:textColor="@color/text_gold_color_dark"/>
                 <com.google.android.material.textfield.TextInputEditText
+                    android:textDirection="locale"
+                    android:textAlignment="viewStart"
                     android:id="@+id/et_fullname"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_60sdp"
@@ -104,6 +111,8 @@
                     android:fontFamily="@font/avenir_medium"
                     android:textColor="@color/text_gold_color_dark"/>
                 <com.google.android.material.textfield.TextInputEditText
+                    android:textDirection="locale"
+                    android:textAlignment="viewStart"
                     android:id="@+id/et_acc_number"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_60sdp"
@@ -137,10 +146,13 @@
                     android:textAllCaps="false"
                     android:textSize="@dimen/_11ssp"
                     android:textStyle="normal"
+                    android:imeOptions="actionNext"
                     android:gravity="center_vertical"
                     android:fontFamily="@font/avenir_medium"
                     android:textColor="@color/text_gold_color_dark"/>
                 <com.google.android.material.textfield.TextInputEditText
+                    android:textDirection="locale"
+                    android:textAlignment="viewStart"
                     android:id="@+id/et_iban"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_60sdp"
@@ -151,6 +163,7 @@
                     android:textColorHint="@color/gold"
                     android:textCursorDrawable="@color/gold"
                     android:maxLength="34"
+                    android:imeOptions="actionDone"
                     android:drawableStart="@drawable/edit_1"
                     android:drawablePadding="@dimen/_12sdp"
                     android:gravity="center_vertical"
@@ -177,7 +190,7 @@
                 android:textAllCaps="true"
                 android:gravity="center"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.core.widget.NestedScrollView>
+    </ScrollView>
 
     <ProgressBar
         android:id="@+id/frag_edit_bank_progressBar"

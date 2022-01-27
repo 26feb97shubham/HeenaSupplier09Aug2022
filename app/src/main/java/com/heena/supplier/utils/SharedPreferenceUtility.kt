@@ -36,9 +36,7 @@ class SharedPreferenceUtility {
             }else{
                 imm.hideSoftInputFromWindow(view.windowToken, 0)
             }
-//            imm.hideSoftInputFromWindow(view.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
         } catch (e: Exception) {
-            // TODO: handle exception
             e.printStackTrace()
         }
 
@@ -139,17 +137,10 @@ class SharedPreferenceUtility {
     }
 
     fun saveMembershipInfo(context: Context, membershipInfo: Membership){
-        var gson = Gson()
-        var json = gson.toJson(membershipInfo)
+        val gson = Gson()
+        val json = gson.toJson(membershipInfo)
         val editor = editor
         editor.putString(MembershipInfo, json).apply()
-    }
-
-    fun getMembershipInfo(context: Context) : Membership{
-        var gson = Gson()
-        var json = sharedPreferences.getString(MembershipInfo, null)
-        val type = object : TypeToken<Membership?>() {}.type
-        return gson.fromJson(json, type)
     }
 
     fun isIbanValid(iban: String): Boolean {
@@ -204,27 +195,22 @@ class SharedPreferenceUtility {
         const val FIRSTTIME = "isFirstTime"
         const val ISSELECTLANGUAGE = "isSelectLanguage"
         const val IsRemembered = "isRemembered"
-        const val Phone = "phone"
         const val Username = "username"
+        const val Fullname = "fullname"
         const val Address = "address"
         const val Password= "password"
-        const val IsDefaultLoc= "isDefaultLoc"
         const val SavedLat= "savedLat"
         const val SavedLng= "savedLng"
-        const val PrimaryAdapterPos= "primaryAdapterPos"
-        const val SecondaryAdapterPos= "secondaryAdapterPos"
-        const val TertiaryAdapterPos= "tertiaryAdapterPos"
         const val ProfilePic= "profilepic"
         const val IsVerified = "isVerified"
         const val IsResend = "isResend"
         const val MembershipTimeLimit = "membershipTimeLimit"
         const val MembershipName = "membershipName"
         const val MembershipPrice = "membershipPrice"
-        const val MembershipDesc = "membershipDesc"
         const val MembershipInfo = "membershipInfo"
-        const val ISBANKADDED = "isBankAdded"
         const val PLACECLICK = "placeClick"
         const val ISFEATURED = "isFeatured"
+        const val isNotificationsClicked = ""
 
         @Synchronized
         fun getInstance(): SharedPreferenceUtility {

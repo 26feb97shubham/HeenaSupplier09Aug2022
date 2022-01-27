@@ -41,6 +41,7 @@
     <string name="filter_search">Filter Search</string>
     <string name="services">Services</string>
     <string name="location">Location</string>
+    <string name="your_location">Your Location</string>
     <string name="location_1">Location</string>
     <string name="low_high">Low - High</string>
     <string name="high_low">High - Low</string>
@@ -141,7 +142,7 @@
     <string name="save_card">Save Card</string>
     <string name="choose_language">Choose Language</string>
     <string name="arabic">Arabic</string>
-    <string name="english">English</string>
+    <string name="english" translatable="false">English</string>
     <string name="english1" translatable="false">English</string>
     <string name="welcome_please_log_in_your_credentials_to_continue">Welcome! Please log in your credentials to continue.</string>
     <string name="intro_page_1_txt">Subscribe and learn about the most professional henna artists</string>
@@ -158,7 +159,7 @@
     <string name="cancel">Cancel</string>
     <string name="add_photo">Add photo !!</string>
     <string name="check_internet">Please check your internet connection</string>
-    <string name="google_map_api_key" translatable="false">AIzaSyD_Tu3xoBItqwRaaZmICV90yq-PO_Xpjc0</string>
+    <string name="google_map_api_key" translatable="false">AIzaSyDkgKQar2q0dYk28l8Ch9smAVgDrGPMqZI</string>
     <!--<string name="places_api_key">AIzaSyBeTKFFtBtiUm41-Ykp1Nxs12e5ERHVLu0</string>-->
     <string name="places_api_key" translatable="false">AIzaSyCh5hBReaLSROrja5l_F4k8a30c18lM9sE</string>
     <string name="title_activity_maps" translatable="false">Map</string>
@@ -178,6 +179,10 @@
     <string name="response">Response</string>
     <string name="response_isnt_successful">Response Unsuccessful</string>
     <string name="title_activity_payment_fragment" translatable="false">PaymentFragmentActivity</string>
+
+ <!--   <string name="google_map_api_key" translatable="false">AIzaSyD_Tu3xoBItqwRaaZmICV90yq-PO_Xpjc0</string>
+    &lt;!&ndash;<string name="places_api_key">AIzaSyBeTKFFtBtiUm41-Ykp1Nxs12e5ERHVLu0</string>&ndash;&gt;
+    <string name="places_api_key" translatable="false">AIzaSyCh5hBReaLSROrja5l_F4k8a30c18lM9sE</string>-->
     <!--
     This string is used for square devices and overridden by hello_world in
     values-round/strings.xml for round devices.
@@ -303,9 +308,29 @@
     <string name="card_is_expired">Your card is expired</string>
     <string name="no_cards_found">No Cards Found</string>
     <string name="are_you_sure_you_want_to_delete_the_offer">Are you sure you want to delete the offer</string>
+    <string name="are_you_sure_you_want_to_delete_the_card">Are you sure you want to delete the card</string>
     <string name="are_you_sure_you_want_to_delete_the_service">Are you sure you want to delete the service</string>
+    <string name="are_you_sure_you_want_to_delete_the_address">Are you sure you want to delete the address</string>
+    <string name="are_you_sure_you_want_to_delete_the_image">Are you sure you want to delete the image</string>
     <string name="delete_offer">Delete Offer</string>
     <string name="delete_service">Delete Service</string>
+    <string name="delete_address">Delete Address</string>
     <string name="my_offers">My Offers</string>
+    <string name="solutions">Solutions</string>
+    <string name="offer_deleted_successfully">Offer deleted successfully</string>
+    <string name="card_deleted_successfully">Card deleted successfully</string>
+    <string name="no_sub_categories_found">No Sub Categories found</string>
+    <string name="no_solutions_found">No Solutions Found</string>
     <string name="sorry_to_hear_about_that">Sorry to hear about that.  Try out these solutions!</string>
+    <string name="please_enter_valid_offer_total_price">Please enter valid offer total price</string>
+    <string name="only_five_images_can_be_selected_at_once">Only 5 images can be selected at once</string>
+    <string name="message_field_cannot_be_empty">Message field cannot be empty. Please enter a message</string>
+    <string name="inactive_account">Sorry! Your account is not active by the admin</string>
+    <string name="no_country_found">No Country Found</string>
+    <string name="update_address">Update Address</string>
+    <string name="would_you_like_to_update_your_address">Would you like to update your address?</string>
+    <string name="update_offer">Update Offer</string>
+    <string name="would_you_like_to_update_your_offer_details">Would you like to update your offer details?</string>
+    <string name="update_service">Update Service</string>
+    <string name="would_you_like_to_update_your_service_details">Would you like to update your service details?</string>
 </resources>

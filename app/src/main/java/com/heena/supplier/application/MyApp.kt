@@ -2,24 +2,22 @@ package com.heena.supplier.application
 
 import android.app.Application
 import android.content.Context
+import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.multidex.MultiDex
 import com.google.android.libraries.places.api.Places
 import com.google.firebase.FirebaseApp
 import com.heena.supplier.R
 import com.heena.supplier.utils.LogUtils
-import com.stripe.android.PaymentConfiguration
 import io.socket.client.IO
 import io.socket.client.Manager
 import io.socket.client.Socket
 import okhttp3.OkHttpClient
-import java.util.*
 import javax.net.ssl.HostnameVerifier
 import javax.net.ssl.SSLContext
 import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
 import javax.security.cert.CertificateException
-import javax.security.cert.X509Certificate
 
 class MyApp : Application() {
     companion object {
@@ -43,11 +41,6 @@ class MyApp : Application() {
         super.onCreate()
         FirebaseApp.initializeApp(this)
         Places.initialize(this, getString(R.string.places_api_key))
-
-/*        PaymentConfiguration.init(
-                 applicationContext,
-                 "pk_test_TYooMQauvdEDq54NiTphI7jx"
-         )*/
          AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
 
          try {
@@ -57,13 +50,14 @@ class MyApp : Application() {
                      p0: Array<out java.security.cert.X509Certificate>?,
                      p1: String?
                  ) {
+                     Log.e("message", p1.toString())
                  }
 
                  override fun checkServerTrusted(
                      p0: Array<out java.security.cert.X509Certificate>?,
                      p1: String?
                  ) {
-                     TODO("Not yet implemented")
+                     Log.e("message", p1.toString())
                  }
 
                  override fun getAcceptedIssuers(): Array<out java.security.cert.X509Certificate>? {
@@ -85,6 +79,7 @@ class MyApp : Application() {
                          p0: Array<out java.security.cert.X509Certificate>?,
                          authType: String?
                      ) {
+                         Log.e("message", authType.toString())
                      }
 
                      @Throws(CertificateException::class)
@@ -92,6 +87,7 @@ class MyApp : Application() {
                          p0: Array<out java.security.cert.X509Certificate>?,
                          authType: String?
                      ) {
+                         Log.e("message", authType.toString())
                      }
                  })
                  .build()

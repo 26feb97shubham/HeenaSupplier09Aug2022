@@ -15,6 +15,7 @@ import com.heena.supplier.R
 import com.heena.supplier.extras.MyWebViewClient
 import com.heena.supplier.utils.SharedPreferenceUtility
 import com.heena.supplier.utils.Utility
+import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
 import kotlinx.android.synthetic.main.activity_home2.*
 import kotlinx.android.synthetic.main.fragment_c_m_s.view.*
 private const val ARG_PARAM1 = "param1"
@@ -41,11 +42,27 @@ class CMSFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         mView = inflater.inflate(R.layout.fragment_c_m_s, container, false)
+        Utility.changeLanguage(
+            requireContext(),
+            SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, "")
+        )
         setUpViews()
         return mView
     }
 
     private fun setUpViews() {
+
+        requireActivity().iv_back.setSafeOnClickListener {
+            requireActivity().iv_back.startAnimation(AlphaAnimation(1F,0.5F))
+            SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_back)
+            findNavController().popBackStack()
+        }
+
+        requireActivity().iv_notification.setSafeOnClickListener {
+            requireActivity().iv_notification.startAnimation(AlphaAnimation(1F,0.5F))
+            SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_notification)
+            findNavController().navigate(R.id.notificationsFragment)
+        }
 
         if (SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, "").equals("en")){
             about_us_url = "https://henna.devtechnosys.info/about-us/en"
@@ -59,37 +76,27 @@ class CMSFragment : Fragment() {
             faq_url = "https://henna.devtechnosys.info/faq/ar"
         }
 
+        instance = SharedPreferenceUtility.getInstance()
+        lang = instance!!.get(SharedPreferenceUtility.SelectedLang,"").toString()
+        Utility.setLanguage(requireContext(),lang)
+
         if(!Utility.hasConnection(requireContext())){
             val noInternetDialog = NoInternetDialog()
             noInternetDialog.isCancelable = false
             noInternetDialog.setRetryCallback(object : NoInternetDialog.RetryInterface{
                 override fun retry() {
                     noInternetDialog.dismiss()
-                    if(title.equals(getString(R.string.about_us))){
-                        mView!!.web_view.loadUrl(about_us_url)
-                    }else if (title.equals(getString(R.string.privacy_and_policy))){
-                        mView!!.web_view.loadUrl(privacy_policy_url)
-                    }else if(title.equals(getString(R.string.terms_and_conditions))){
-                        mView!!.web_view.loadUrl(tnc_url)
-                    }else if (title.equals(getString(R.string.frequently_asked_questions))){
-                        mView!!.web_view.loadUrl(faq_url)
-                    }else{
-                        mView!!.web_view.loadUrl(about_us_url)
-                    }
+                    webView()
                 }
             })
             noInternetDialog.show(requireActivity().supportFragmentManager, "CMS Fragment")
-        }
-        requireActivity().iv_back.setOnClickListener {
-            requireActivity().iv_back.startAnimation(AlphaAnimation(1F,0.5F))
-            SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_back)
-            findNavController().popBackStack()
+        }else{
+            webView()
         }
 
-        instance = SharedPreferenceUtility.getInstance()
-        lang = instance!!.get(SharedPreferenceUtility.SelectedLang,"").toString()
-        Utility.setLanguage(requireContext(),lang)
+    }
 
+    private fun webView(){
         mView!!.web_view.webViewClient = MyWebViewClient()
         mView!!.web_view.settings.javaScriptEnabled = true
         //Enable Multitouch if supported by ROM
@@ -97,7 +104,7 @@ class CMSFragment : Fragment() {
         mView!!.web_view.getSettings().setLoadWithOverviewMode(false)
         mView!!.web_view.setBackgroundColor(Color.TRANSPARENT)
         if (Build.VERSION.SDK_INT >= 11) mView!!.web_view?.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null)
-//        mView!!.tv_title.text = title
+        mView!!.tv_title.text = title
         if(title.equals(getString(R.string.about_us))){
             mView!!.web_view.loadUrl(about_us_url)
         }else if (title.equals(getString(R.string.privacy_and_policy))){

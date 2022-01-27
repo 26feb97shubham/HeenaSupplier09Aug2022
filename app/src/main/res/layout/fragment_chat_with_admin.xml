@@ -52,28 +52,28 @@
                     android:id="@+id/layout_arrow"
                     android:layout_width="@dimen/_25sdp"
                     android:layout_height="@dimen/_25sdp"
+                    android:padding="@dimen/_5sdp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
-                    <ImageView
+                    <com.google.android.material.imageview.ShapeableImageView
                         android:id="@+id/imgDown"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:src="@drawable/dark_brown_right_arrow"
-                        android:padding="@dimen/_5sdp"
+                        android:src="@drawable/ic_baseline_keyboard_brown_arrow_down_24"
+                        android:rotation="180"
                         android:visibility="gone"
                         />
-                    <ImageView
+                    <com.google.android.material.imageview.ShapeableImageView
                         android:id="@+id/imgRight"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:padding="@dimen/_5sdp"
-                        android:rotation="90"
-                        android:src="@drawable/dark_brown_right_arrow" />
+                        android:src="@drawable/ic_baseline_keyboard_brown_arrow_down_24" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/sub_main_card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_10sdp"
@@ -115,7 +115,7 @@
                             android:layout_height="match_parent"
                             android:src="@drawable/dark_brown_right_arrow"
                             android:padding="@dimen/_5sdp"
-                            android:visibility="visible"
+                            android:visibility="gone"
                             android:rotation="180"/>
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -140,6 +140,15 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:padding="@dimen/_12sdp"/>
+        <ProgressBar
+            android:id="@+id/frag_chat_progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:elevation="@dimen/_5sdp"
+            android:visibility="gone"
+            style="@style/Theme.Progressbar"
+            android:indeterminateTint="@color/gold" />
     </com.google.android.material.card.MaterialCardView>
 
 
@@ -161,6 +170,8 @@
             android:layout_height="@dimen/_40sdp"
             android:orientation="horizontal">
             <com.google.android.material.textfield.TextInputEditText
+                android:textDirection="locale"
+                android:textAlignment="viewStart"
                 android:id="@+id/et_enter_message"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -170,7 +181,6 @@
                 android:hint="@string/enter_message"
                 android:textColorHint="#DEDEDE"
                 android:textColor="#DEDEDE"
-                android:gravity="center_vertical"
                 android:textSize="@dimen/_12ssp"
                 android:inputType="text"/>
 
@@ -181,7 +191,7 @@
                 android:layout_weight="0.1"
                 android:padding="@dimen/_6sdp"
                 app:cardBackgroundColor="#F1F1F1">
-                <ImageView
+                <com.google.android.material.imageview.ShapeableImageView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:src="@drawable/share"/>
@@ -196,7 +206,7 @@
                 android:padding="@dimen/_6sdp"
                 android:layout_marginStart="@dimen/_3sdp"
                 app:cardBackgroundColor="#F1F1F1">
-                <ImageView
+                <com.google.android.material.imageview.ShapeableImageView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:src="@drawable/send_msg"/>

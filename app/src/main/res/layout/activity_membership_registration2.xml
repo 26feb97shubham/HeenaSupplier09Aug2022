@@ -56,8 +56,7 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:paddingHorizontal="@dimen/_8sdp"
-                    android:paddingVertical="@dimen/_8sdp">
+                    android:paddingVertical="@dimen/_4sdp">
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rv_membership_plans"
                         android:layout_width="match_parent"
@@ -68,6 +67,19 @@
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                         android:orientation="horizontal"
                         app:layout_constraintEnd_toEndOf="parent"/>
+
+                    <com.chahinem.pageindicator.PageIndicator
+                        android:id="@+id/pageIndicator2_activity"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:piSelectedColor="@color/gold"
+                        app:piDefaultColor="@color/gray"
+                        android:visibility="visible"
+                        app:piDotSpacing="@dimen/_5sdp"
+                        app:layout_constraintTop_toBottomOf="@+id/rv_membership_plans"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>
 

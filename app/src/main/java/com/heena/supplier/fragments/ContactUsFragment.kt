@@ -14,7 +14,9 @@ import com.heena.supplier.models.ContactUsResponse
 import com.heena.supplier.rest.APIClient
 import com.heena.supplier.utils.LogUtils
 import com.heena.supplier.utils.SharedPreferenceUtility
+import com.heena.supplier.utils.Utility
 import com.heena.supplier.utils.Utility.Companion.apiInterface
+import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
 import kotlinx.android.synthetic.main.activity_home2.*
 import kotlinx.android.synthetic.main.fragment_contact_us.view.*
 import org.json.JSONException
@@ -35,18 +37,28 @@ class ContactUsFragment : Fragment() {
         // Inflate the layout for this fragment
         mView = inflater.inflate(
             R.layout.fragment_contact_us, container, false)
+        Utility.changeLanguage(
+            requireContext(),
+            SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, "")
+        )
         setUpViews()
         return mView
     }
 
     private fun setUpViews() {
-        requireActivity().iv_back.setOnClickListener {
+        requireActivity().iv_back.setSafeOnClickListener {
             requireActivity().iv_back.startAnimation(AlphaAnimation(1F,0.5F))
             SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_back)
             findNavController().popBackStack()
         }
 
-        mView!!.tv_contact_us_submit.setOnClickListener {
+        requireActivity().iv_notification.setSafeOnClickListener {
+            requireActivity().iv_notification.startAnimation(AlphaAnimation(1F,0.5F))
+            SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_notification)
+            findNavController().navigate(R.id.notificationsFragment)
+        }
+
+        mView!!.tv_contact_us_submit.setSafeOnClickListener {
            validate()
         }
     }

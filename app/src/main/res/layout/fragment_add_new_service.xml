@@ -41,25 +41,39 @@
                 android:id="@+id/rl_upload_photo"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_100sdp"
-                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_8sdp"
                 app:layout_constraintTop_toBottomOf="@id/view1">
 
                 <ImageView
                     android:id="@+id/iv_upload_photo"
-                    android:layout_width="@dimen/_80sdp"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/upload_photo"
+                    android:layout_width="@dimen/_25sdp"
+                    android:layout_height="@dimen/_25sdp"
+                    android:layout_alignStart="@id/mtv_upload_photo"
+                    android:layout_alignEnd="@id/mtv_upload_photo"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/plus_layer_list"
                     android:text="@string/upload_photo"
                     android:textColor="@color/gold"
                     android:textSize="@dimen/_12ssp" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/mtv_upload_photo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/iv_upload_photo"
+                    android:fontFamily="@font/avenir_45_book"
+                    android:gravity="center"
+                    android:text="@string/upload_photo"
+                    android:textColor="@color/gold"
+                    android:textSize="@dimen/_9ssp" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_uploaded_photos"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_toEndOf="@id/iv_upload_photo"
                     android:layout_marginStart="@dimen/_8sdp"
-                    android:visibility="visible"/>
+                    android:layout_toEndOf="@id/mtv_upload_photo"
+                    android:visibility="visible" />
             </RelativeLayout>
 
             <LinearLayout
@@ -68,7 +82,7 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@id/rl_upload_photo"
                 android:orientation="vertical"
-                android:layout_marginTop="@dimen/_30sdp">
+                android:layout_marginTop="@dimen/_10sdp">
                 <com.google.android.material.textview.MaterialTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -83,25 +97,28 @@
                     android:layout_height="@dimen/_30sdp"
                     android:layout_marginTop="@dimen/_8sdp"
                     android:background="@drawable/gold_border_white_filled_rect_box_curved">
+
                     <com.google.android.material.textfield.TextInputEditText
+                        android:textDirection="locale"
+                        android:textAlignment="viewStart"
+                        android:paddingHorizontal="@dimen/_4sdp"
                         android:id="@+id/et_service_title"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:backgroundTint="@color/gray"
-                        android:hint="@string/services"
-                        android:textColorHint="@color/gold"
-                        android:gravity="center_vertical"
-                        android:singleLine="true"
-                        android:maxLength="30"
-                        android:paddingStart="@dimen/_8sdp"
-                        android:textColor="@color/gold"
-                        android:textCursorDrawable="@color/gold"
-                        android:cursorVisible="true"
-                        android:textStyle="normal"
                         android:background="@null"
-                        android:inputType="text"
+                        android:backgroundTint="@color/gray"
+                        android:cursorVisible="true"
                         android:fontFamily="@font/avenir_medium"
-                        android:textSize="@dimen/_11ssp"/>
+                        android:hint="@string/services"
+                        android:inputType="text"
+                        android:maxLength="30"
+                        android:singleLine="true"
+                        android:textColor="@color/gold"
+                        android:textColorHint="@color/gold"
+                        android:textCursorDrawable="@color/gold"
+                        android:textSize="@dimen/_11ssp"
+                        android:textStyle="normal"
+                        tools:ignore="TouchTargetSizeCheck" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -116,7 +133,7 @@
                 <com.google.android.material.textview.MaterialTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/location"
+                    android:text="@string/your_location"
                     android:textAllCaps="false"
                     android:textSize="@dimen/_10ssp"
                     android:textStyle="normal"
@@ -135,7 +152,7 @@
                         android:background="@null"
                         android:backgroundTint="@color/gray"
                         android:drawablePadding="@dimen/_10sdp"
-                        android:paddingStart="@dimen/_8sdp"
+                        android:paddingHorizontal="@dimen/_8sdp"
                         android:fontFamily="@font/avenir_medium"
                         android:gravity="center_vertical"
                         android:hint="@string/location"
@@ -236,22 +253,25 @@
                         android:layout_height="@dimen/_30sdp"
                         android:layout_marginTop="@dimen/_8sdp"
                         android:background="@drawable/gold_border_white_filled_rect_box_curved">
+
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/et_price"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:backgroundTint="@color/gray"
-                            android:inputType="numberDecimal"
-                            android:padding="@dimen/_8sdp"
-                            android:textColor="@color/gold"
-                            android:textStyle="normal"
-                            android:maxLength="10"
-                            android:gravity="center_vertical"
                             android:background="@null"
+                            android:backgroundTint="@color/gray"
                             android:cursorVisible="true"
-                            android:singleLine="true"
                             android:fontFamily="@font/avenir_medium"
-                            android:textSize="@dimen/_11ssp"/>
+                            android:inputType="numberDecimal"
+                            android:maxLength="10"
+                            android:textDirection="locale"
+                            android:textAlignment="viewStart"
+                            android:paddingHorizontal="@dimen/_4sdp"
+                            android:singleLine="true"
+                            android:textColor="@color/gold"
+                            android:textSize="@dimen/_11ssp"
+                            android:textStyle="normal"
+                            tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -330,10 +350,13 @@
                         android:gravity="start"
                         android:textCursorDrawable="@color/gold"
                         android:padding="@dimen/_8sdp"
+                        android:textDirection="locale"
+                        android:textAlignment="viewStart"
                         android:textColor="@color/gold"
                         android:textStyle="normal"
                         android:background="@null"
-                        android:inputType="text"
+                        android:inputType="textCapSentences|textMultiLine"
+                        android:scrollHorizontally="false"
                         android:maxLines="5"
                         android:ellipsize="end"
                         android:fontFamily="@font/avenir_medium"

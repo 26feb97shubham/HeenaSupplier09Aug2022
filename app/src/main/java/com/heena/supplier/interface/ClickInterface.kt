@@ -1,7 +1,8 @@
 package com.heena.supplier.`interface`
 
-import com.android.billingclient.api.SkuDetails
+
 import com.heena.supplier.models.CategoryItem
+import com.heena.supplier.models.Content
 import java.util.*
 
 interface ClickInterface {
@@ -29,11 +30,6 @@ interface ClickInterface {
         fun onServiceEdit(position: Int)
     }
 
-    interface CalendarListener {
-        fun onFirstDateSelected(startDate: Calendar?)
-        fun onDateRangeSelected(startDate: Calendar?, endDate: Calendar?)
-    }
-
     interface onOffersItemClick{
         fun onOfferDelete(position: Int)
         fun onOfferEdit(position: Int)
@@ -44,57 +40,13 @@ interface ClickInterface {
         fun OnBookService()
     }
 
-    interface OnButtonClick{
-        fun OnButtonClick()
-    }
-
-    interface onSaveAddress{
-        fun saveAddress(address : String, latitude : Double, longitude : Double)
-    }
-
-    /*interface setAddressClick{
-        fun setAddress(myaddressItem: AddressItem?)
-    }*/
-
-    interface OnAddAddressClick{
-        fun OnAddAddress()
-    }
 
     interface OnServiceClick{
         fun OnAddService(position: Int, service: String)
     }
 
-    interface OnAddressClick{
-        fun OnAddress()
-    }
-
-    interface OnAvailableNaqashaClick{
-        fun OnAvailableNaqasha()
-    }
-
-    interface OnCancelledServiceClick{
-        fun OnCancelledService()
-    }
-
     interface OnCancelServiceClick{
         fun OnCancelService(rsn_for_cancellation: String?)
-    }
-
-    interface OnRateNaqashaClick{
-        fun OnRateNaqasha()
-    }
-
-    interface OnRescheduleServiceClick{
-        fun OnRescheduleService()
-    }
-
-    interface OnChatWithAdminClick{
-        fun OnChatWithAdmin()
-    }
-
-    interface OnQueryProductsListener {
-        fun onSuccess(products: List <SkuDetails> )
-        fun onFailure(error: Error)
     }
 
     interface mainhelpCategoryClicked{
@@ -102,6 +54,6 @@ interface ClickInterface {
     }
 
     interface subhelpCategoryClicked{
-        fun subHelpCategory(position: Int)
+        fun subHelpCategory(position: Int, content: ArrayList<Content>)
     }
 }

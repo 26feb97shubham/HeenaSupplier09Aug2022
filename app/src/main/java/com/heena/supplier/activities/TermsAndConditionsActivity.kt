@@ -1,16 +1,21 @@
 package com.heena.supplier.activities
 
 import android.annotation.SuppressLint
+import android.graphics.Bitmap
 import android.graphics.Color
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.view.animation.AlphaAnimation
 import android.webkit.WebView
+import android.webkit.WebViewClient
 import com.heena.supplier.Dialogs.NoInternetDialog
 import com.heena.supplier.R
 import com.heena.supplier.extras.MyWebViewClient
 import com.heena.supplier.utils.SharedPreferenceUtility
 import com.heena.supplier.utils.Utility
+import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
 import kotlinx.android.synthetic.main.activity_terms_and_conditions.*
 
 class TermsAndConditionsActivity : AppCompatActivity() {
@@ -23,7 +28,7 @@ class TermsAndConditionsActivity : AppCompatActivity() {
 
     @SuppressLint("SetJavaScriptEnabled")
     private fun setUpViews() {
-        ic_arrow_back.setOnClickListener {
+        ic_arrow_back.setSafeOnClickListener {
             ic_arrow_back.startAnimation(AlphaAnimation(1f, 0.5f))
             onBackPressed()
         }
@@ -34,7 +39,27 @@ class TermsAndConditionsActivity : AppCompatActivity() {
             tnc_url = "https://henna.devtechnosys.info/terms-and-conditions/ar"
         }
 
-        tnc_webview.webViewClient = MyWebViewClient()
+        tnc_webview.webViewClient = object : WebViewClient() {
+            override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
+                super.onPageStarted(view, url, favicon)
+                progressBarTnC.visibility = View.VISIBLE
+                view?.setBackgroundColor(Color.TRANSPARENT)
+                if (Build.VERSION.SDK_INT >= 11) view?.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null)
+            }
+
+            override fun onPageFinished(view: WebView?, url: String?) {
+                super.onPageFinished(view, url)
+                progressBarTnC.visibility = View.GONE
+                view?.setBackgroundColor(Color.TRANSPARENT)
+                if (Build.VERSION.SDK_INT >= 11) view?.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null)
+            }
+
+            override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
+                if (Build.VERSION.SDK_INT >= 11) view?.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null)
+                view!!.loadUrl(url!!)
+                return super.shouldOverrideUrlLoading(view, url)
+            }
+        }
         tnc_webview.settings.javaScriptEnabled = true
         tnc_webview.settings.setSupportZoom(true)
         tnc_webview.getSettings().setBuiltInZoomControls(true)

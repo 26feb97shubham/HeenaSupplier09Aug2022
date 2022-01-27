@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/black"
     tools:context=".bottomsheets.AddAddressBottomSheetFragment">
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:paddingVertical="@dimen/_12sdp">
             <LinearLayout
                 android:id="@+id/flat_villa_layout"
@@ -33,7 +37,10 @@
                     android:id="@+id/et_flat_villa"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_40sdp"
-                    android:hint="@string/enter_flat_villa"
+                    android:hint="- -"
+                    android:textDirection="locale"
+                    android:textAlignment="viewStart"
+                    android:paddingStart="@dimen/_4sdp"
                     android:textColorHint="@color/gold"
                     android:layout_marginTop="@dimen/_6sdp"
                     app:backgroundTint="@color/gold"
@@ -69,7 +76,10 @@
                     android:id="@+id/et_building_name"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_40sdp"
-                    android:hint="@string/enter_building_name"
+                    android:textDirection="locale"
+                    android:textAlignment="viewStart"
+                    android:paddingStart="@dimen/_4sdp"
+                    android:hint="- -"
                     android:textColorHint="@color/gold"
                     android:layout_marginTop="@dimen/_6sdp"
                     app:backgroundTint="@color/gold"
@@ -105,7 +115,10 @@
                     android:id="@+id/et_title"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_40sdp"
-                    android:hint="@string/enter_your_title"
+                    android:textDirection="locale"
+                    android:textAlignment="viewStart"
+                    android:paddingStart="@dimen/_4sdp"
+                    android:hint="- -"
                     android:textColorHint="@color/gold"
                     android:layout_marginTop="@dimen/_6sdp"
                     app:backgroundTint="@color/gold"
@@ -141,7 +154,10 @@
                     android:id="@+id/et_street_area"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_40sdp"
-                    android:hint="@string/enter_your_street_area"
+                    android:textDirection="locale"
+                    android:textAlignment="viewStart"
+                    android:paddingStart="@dimen/_4sdp"
+                    android:hint="- -"
                     android:textColorHint="@color/gold"
                     android:layout_marginTop="@dimen/_6sdp"
                     app:backgroundTint="@color/gold"
@@ -178,36 +194,45 @@
                     android:id="@+id/tv_emirate"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_40sdp"
-                    android:text="@string/select_country"
                     android:layout_marginTop="@dimen/_6sdp"
-                    android:background="@drawable/tv_divider_gold"
-                    android:textColor="@color/gold"
-                    android:textAllCaps="false"
-                    android:textSize="@dimen/_11ssp"
-                    android:textCursorDrawable="@drawable/cursor_color"
-                    android:gravity="center_vertical"
-                    android:fontFamily="@font/avenir_medium"
                     android:drawablePadding="@dimen/_8sdp"
+                    android:fontFamily="@font/avenir_medium"
+                    android:gravity="center_vertical"
                     android:paddingHorizontal="@dimen/_10sdp"
+                    android:text="@string/select_country"
+                    android:textAllCaps="false"
+                    android:textColor="@color/gold"
+                    android:hint="@string/select_country"
+                    android:textColorHint="@color/gold"
+                    android:textCursorDrawable="@drawable/cursor_color"
+                    android:textSize="@dimen/_11ssp"
                     app:drawableEndCompat="@drawable/dark_brown_right_arrow" />
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/cards_countries_listing"
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_1sdp"
+                    android:background="@color/gold"/>
+            </LinearLayout>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cards_countries_listing"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                app:cardCornerRadius="@dimen/_6sdp"
+                app:strokeColor="@color/gold"
+                android:visibility="gone"
+                app:strokeWidth="@dimen/_1sdp"
+                app:layout_constraintTop_toBottomOf="@id/emirate_layout"
+                app:layout_constraintStart_toStartOf="parent">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_countries_listing"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_10sdp"
-                    app:cardCornerRadius="@dimen/_6sdp"
-                    app:strokeColor="@color/gold"
-                    android:visibility="gone"
-                    app:strokeWidth="@dimen/_1sdp">
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/rv_countries_listing"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:cardBackgroundColor="@android:color/transparent"
-                        android:padding="@dimen/_10sdp"/>
-                </com.google.android.material.card.MaterialCardView>
-            </LinearLayout>
+                    android:padding="@dimen/_10sdp"/>
+            </com.google.android.material.card.MaterialCardView>
 
 
             <RelativeLayout
@@ -216,7 +241,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/_10sdp"
                 android:layout_marginTop="@dimen/_14sdp"
-                app:layout_constraintTop_toBottomOf="@id/emirate_layout">
+                app:layout_constraintTop_toBottomOf="@id/cards_countries_listing">
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_switch_txt"
                     android:layout_width="wrap_content"
@@ -232,26 +257,10 @@
                     android:textSize="@dimen/_12ssp"
                     tools:ignore="RelativeOverlap" />
 
-                <com.google.android.material.switchmaterial.SwitchMaterial
-                    android:id="@+id/switchDefault"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_alignParentEnd="true"
-                    app:layout_constraintTop_toTopOf="@id/tv_switch_txt"
-                    android:button="@drawable/selected_switch_on_off"
-                    android:thumb="@null"
-                    android:layout_marginStart="@dimen/_15sdp"
-                    android:layout_marginEnd="@dimen/_15sdp"
-                    android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
-                    android:scaleX="0.3"
-                    android:scaleY="0.3"
-                    android:visibility="gone"/>
-
                 <LinearLayout
                     android:id="@+id/ll_toggle"
                     android:layout_width="@dimen/_40sdp"
-                    android:layout_height="match_parent"
+                    android:layout_height="@dimen/_20sdp"
                     android:layout_alignParentEnd="true"
                     android:layout_marginHorizontal="@dimen/_10sdp"
                     android:layout_centerVertical="true"
@@ -261,11 +270,12 @@
                         android:layout_height="match_parent"
                         app:layout_constraintTop_toBottomOf="@+id/view1"
                         android:id="@+id/iv_toggle_off"
+                        android:visibility="visible"
                         android:src="@drawable/toggle_off"/>
 
                     <com.google.android.material.imageview.ShapeableImageView
-                        android:layout_width="@dimen/_40sdp"
-                        android:layout_height="@dimen/_20sdp"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
                         app:layout_constraintTop_toBottomOf="@+id/view1"
                         android:id="@+id/iv_toggle_on"
                         android:src="@drawable/toggle_on"
@@ -280,8 +290,8 @@
                 android:layout_height="@dimen/_40sdp"
                 android:background="@drawable/curved_gold_filled_rect_box"
                 android:text="@string/save"
-                android:fontFamily="@font/avenir_45_book"
-                android:textStyle="normal"
+                android:fontFamily="@font/avenir_medium"
+                android:textStyle="bold"
                 android:textColor="@color/black"
                 android:gravity="center"
                 android:textSize="@dimen/_15sdp"
@@ -291,6 +301,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginHorizontal="@dimen/_30sdp"
                 app:layout_constraintTop_toBottomOf="@id/set_as_default_layout"
-                android:layout_marginTop="@dimen/_20sdp"/>
+                android:layout_marginTop="@dimen/_40sdp"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
-</ScrollView>
+    </androidx.core.widget.NestedScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

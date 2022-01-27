@@ -10,6 +10,7 @@ import com.heena.supplier.R
 import com.heena.supplier.`interface`.ClickInterface
 import com.heena.supplier.models.AddressItem
 import com.heena.supplier.utils.SharedPreferenceUtility
+import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
 import kotlinx.android.synthetic.main.saved_address_listing.view.*
 
 class AddressListAdapter(
@@ -25,11 +26,11 @@ class AddressListAdapter(
             itemView.tv_address_title.text = addressItem.title
             itemView.tv_address.text = addressItem.flat + "," + addressItem.street
 
-            itemView.tv_address_edit.setOnClickListener {
+            itemView.tv_address_edit.setSafeOnClickListener {
                 OnAddressItemClick.editAdddress(position)
             }
 
-            itemView.tv_address_delete.setOnClickListener {
+            itemView.tv_address_delete.setSafeOnClickListener {
                 OnAddressItemClick.deleteAddress(position)
             }
         }

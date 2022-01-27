@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@android:color/transparent"
+    tools:context=".fragments.HelpPageFragment2">
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/iv_logo"
+        android:layout_width="@dimen/_150sdp"
+        android:layout_height="@dimen/_80sdp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:src="@drawable/golden_logo" />
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_title"
+        android:layout_width="@dimen/_200sdp"
+        android:layout_height="@dimen/_40sdp"
+        android:layout_below="@id/iv_logo"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:fontFamily="@font/avenir_medium"
+        android:gravity="center"
+        android:text="@string/help_page"
+        android:textAllCaps="false"
+        android:textColor="@color/gold"
+        android:textSize="@dimen/_24ssp" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/tv_title"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:background="@drawable/left_right_light_brown_filled_bg"
+        android:paddingHorizontal="@dimen/_10sdp"
+        android:paddingTop="@dimen/_20sdp"
+        android:paddingBottom="@dimen/_10sdp"
+        android:orientation="vertical">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/mtv_help_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:fontFamily="@font/avenir_medium"
+            android:text="@string/sorry_to_hear_about_that"
+            android:textAllCaps="false"
+            android:textColor="@color/text_gold_color_dark"
+            android:textSize="@dimen/_14ssp"
+            android:textStyle="normal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_sub_category"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/mtv_help_desc"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:visibility="visible"
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="@dimen/_5sdp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/_8sdp"
+                android:orientation="vertical">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/sub_category_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/expressway_rg"
+                    android:text="@string/solutions"
+                    android:textSize="@dimen/_13ssp"
+                    app:drawableTint="@color/text_gold_color_dark" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/solutions_content_rv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_4sdp"
+                    android:visibility="gone" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/text_no_solutions_found"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_30sdp"
+                    android:text="@string/no_solutions_found"
+                    android:fontFamily="@font/expressway_rg"
+                    android:textColor="#836853"
+                    android:layout_gravity="center"
+                    android:textSize="@dimen/_13ssp"
+                    android:visibility="gone"
+                    android:paddingStart="@dimen/_8sdp"
+                    android:gravity="center" />
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <LinearLayout
+            android:id="@+id/ll_need_more_help"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="visible"
+            android:layout_alignParentBottom="true"
+            app:layout_constraintBottom_toBottomOf="parent">
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_need_more_help"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:fontFamily="@font/avenir_medium"
+                android:text="@string/need_more_help"
+                android:textAllCaps="false"
+                android:textColor="@color/text_gold_color_dark"
+                android:textSize="@dimen/_14ssp"
+                android:textStyle="normal"
+                android:layout_marginHorizontal="@dimen/_6sdp"
+                app:layout_constraintStart_toStartOf="parent" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/faq_card_2"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/_30sdp"
+                    android:layout_marginHorizontal="@dimen/_6sdp"
+                    android:layout_marginVertical="@dimen/_8sdp"
+                    android:layout_weight="1"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardCornerRadius="@dimen/_6sdp"
+                    app:cardElevation="@dimen/_4sdp">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:fontFamily="@font/avenir_medium"
+                        android:gravity="center"
+                        android:text="@string/faq_page"
+                        android:textAllCaps="true"
+                        android:id="@+id/mtv_faq_2"
+                        android:textColor="@color/text_gold_color_dark"
+                        android:textSize="@dimen/_15ssp" />
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/admin_chat_card_2"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/_30sdp"
+                    android:layout_marginHorizontal="@dimen/_6sdp"
+                    android:layout_marginVertical="@dimen/_8sdp"
+                    android:layout_weight="1"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardCornerRadius="@dimen/_6sdp"
+                    app:cardElevation="@dimen/_4sdp">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:fontFamily="@font/avenir_medium"
+                        android:gravity="center"
+                        android:text="@string/admin_chat"
+                        android:textAllCaps="true"
+                        android:textColor="@color/text_gold_color_dark"
+                        android:textSize="@dimen/_15ssp" />
+                </com.google.android.material.card.MaterialCardView>
+
+            </LinearLayout>
+        </LinearLayout>
+    </RelativeLayout>
+
+    <ProgressBar
+        android:id="@+id/frag_help_progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        android:elevation="@dimen/_5sdp"
+        android:visibility="gone"
+        style="@style/Theme.Progressbar"
+        android:indeterminateTint="@color/gold"
+        android:layout_centerInParent="true"/>
+
+</RelativeLayout>

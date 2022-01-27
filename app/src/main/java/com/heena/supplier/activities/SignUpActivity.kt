@@ -12,6 +12,8 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
+import android.os.Handler
+import android.os.Looper
 import android.provider.MediaStore
 import android.text.TextUtils
 import android.text.method.PasswordTransformationMethod
@@ -20,6 +22,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
 import android.view.animation.AlphaAnimation
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
@@ -52,6 +55,7 @@ import com.google.android.libraries.places.api.model.AddressComponent
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
+import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
 import kotlinx.android.synthetic.main.activity_sign_up2.*
 import okhttp3.MediaType
 import okhttp3.RequestBody
@@ -95,6 +99,7 @@ class SignUpActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRec
     var my_click = ""
     var emiratesClick = false
     var isChecked: Boolean=false
+    var doubleClick:Boolean=false
     private var networkChangeReceiver: ConnectivityReceiver? = null
 
     private var activityResultLauncher: ActivityResultLauncher<Array<String>> =
@@ -239,15 +244,18 @@ class SignUpActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRec
                                 countryList = response.body()!!.country as ArrayList<CountryItem>
                                 countryListingAdapter = CountryListingAdapter(this@SignUpActivity, countryList, object :  ClickInterface.OnRecyclerItemClick{
                                     override fun OnClickAction(position: Int) {
-                                        tv_emirate.text = countryList[position].name
+                                        if (SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, "").equals("ar")){
+                                            tv_emirate.text = countryList[position].name_ar
+                                        }else{
+                                            tv_emirate.text = countryList[position].name
+                                        }
                                         selectedCountry = tv_emirate.text.toString().trim()
+                                        countryId = countryList[position].country_id
+                                        Log.e("countryId", countryId.toString())
                                         cards_countries_listing.visibility = View.GONE
-                                        countryId = returnCountryId(selectedCountry!!, countryList)
-                                        Log.e("service_id", countryId.toString())
                                     }
                                 })
                                 rv_countries_listing.adapter = countryListingAdapter
-                                countryListingAdapter.notifyDataSetChanged()
                             }else{
                                 cards_countries_listing.visibility = View.GONE
                                 LogUtils.shortToast(this@SignUpActivity, getString(R.string.response_isnt_successful))
@@ -276,18 +284,9 @@ class SignUpActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRec
 
     }
 
-    private fun returnCountryId(selectedCountry: String, countryList: ArrayList<CountryItem>): Int? {
-        for (country : CountryItem in countryList) {
-            if (country.name.equals(selectedCountry)) {
-                return country.country_id
-            }
-        }
-        return null
-    }
-
 
     private fun setUpViews() {
-        btnSignUp.setOnClickListener {
+        btnSignUp.setSafeOnClickListener {
             btnSignUp.startAnimation(AlphaAnimation(1f, 0.5f))
             SharedPreferenceUtility.getInstance().hideSoftKeyBoard(this, btnSignUp)
             if(!Utility.hasConnection(this)){
@@ -305,7 +304,7 @@ class SignUpActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRec
             validateAndSignUp()
         }
 
-        tv_login.setOnClickListener {
+        tv_login.setSafeOnClickListener {
             tv_login.startAnimation(AlphaAnimation(1f,0.5f))
             startActivity(Intent(this, LoginActivity::class.java))
         }
@@ -366,16 +365,18 @@ class SignUpActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRec
             activityResultLauncher.launch(PERMISSIONS_1)
         }
 
-        edtlocation_signup.setOnClickListener {
+        edtlocation_signup.setSafeOnClickListener {
             edtlocation_signup.startAnimation(AlphaAnimation(1f, 0.5f))
             my_click = "location"
             activityResultLauncher.launch(PERMISSIONS_2)
         }
 
-        tv_emirate.setOnClickListener {
+        tv_emirate.setSafeOnClickListener {
             if (!emiratesClick){
                 emiratesClick = true
+
                 getCountires()
+
 
             }else{
                 emiratesClick = false
@@ -395,7 +396,7 @@ class SignUpActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRec
             }
         }
 
-        txtTermsConditions.setOnClickListener {
+        txtTermsConditions.setSafeOnClickListener {
             startActivity(Intent(this, TermsAndConditionsActivity::class.java))
         }
     }
@@ -511,72 +512,57 @@ class SignUpActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRec
             scrollView.scrollTo(0, 150)
             edtUsername_signup.requestFocus()
             edtUsername_signup.error=getString(R.string.please_enter_your_username)
-            LogUtils.shortToast(this, getString(R.string.please_enter_your_username))
         }else if (!isCharacterAllowed(username)) {
             scrollView.scrollTo(0, 150)
             edtUsername_signup.requestFocus()
             edtUsername_signup.error=getString(R.string.emojis_are_not_allowed)
-              LogUtils.shortToast(this, getString(R.string.emojis_are_not_allowed))
-        }else if(!SharedPreferenceUtility.getInstance().isUserNameValid(username)) {
+        }/*else if(!SharedPreferenceUtility.getInstance().isUserNameValid(username)) {
             scrollView.scrollTo(0, 150)
             edtUsername_signup.requestFocus()
             edtUsername_signup.error=getString(R.string.username_invalid)
-            LogUtils.shortToast(this, getString(R.string.username_invalid))
-        }else if (TextUtils.isEmpty(mobilenumber)) {
+        }*/else if (TextUtils.isEmpty(mobilenumber)) {
             scrollView.scrollTo(0, 180)
             edtmobilenumber_signup.requestFocus()
             edtmobilenumber_signup.error=getString(R.string.please_enter_your_phone_number)
-             LogUtils.shortToast(this, getString(R.string.please_enter_your_phone_number))
-
         }else if ((mobilenumber.length < 7 || mobilenumber.length > 15)) {
             scrollView.scrollTo(0, 180)
             edtmobilenumber_signup.requestFocus()
             edtmobilenumber_signup.error=getString(R.string.mob_num_length_valid)
-             LogUtils.shortToast(this, getString(R.string.mob_num_length_valid))
         }else if (TextUtils.isEmpty(emailaddress)) {
             scrollView.scrollTo(0, 210)
             edtemailaddress_signup.requestFocus()
             edtemailaddress_signup.error=getString(R.string.please_enter_valid_email)
-            LogUtils.shortToast(this, getString(R.string.please_enter_valid_email))
         }else if (!SharedPreferenceUtility.getInstance().isEmailValid(emailaddress)) {
             scrollView.scrollTo(0, 210)
             edtemailaddress_signup.requestFocus()
             edtemailaddress_signup.error=getString(R.string.please_enter_valid_email)
-            LogUtils.shortToast(this, getString(R.string.please_enter_valid_email))
         }else if (TextUtils.isEmpty(emirates)) {
             scrollView.scrollTo(0, 210)
             tv_emirate.requestFocus()
             tv_emirate.error=getString(R.string.please_enter_valid_emirates)
-            LogUtils.shortToast(this, getString(R.string.please_enter_valid_emirates))
         }else if (TextUtils.isEmpty(location)) {
             scrollView.scrollTo(0, 210)
             edtlocation_signup.requestFocus()
             edtlocation_signup.error=getString(R.string.please_enter_valid_loc)
-            LogUtils.shortToast(this, getString(R.string.please_enter_valid_loc))
         }else if (TextUtils.isEmpty(password)) {
             edtpassword_signup.requestFocus()
             scrollView.scrollTo(0, 240)
             edtpassword_signup.error=getString(R.string.please_enter_your_password)
-            LogUtils.shortToast(this, getString(R.string.please_enter_your_password))
         }else if (password.length < 6) {
             edtpassword_signup.requestFocus()
             edtpassword_signup.error=getString(R.string.verify_password_length_valid)
-                        LogUtils.shortToast(this, getString(R.string.verify_password_length_valid))
         }else if (!SharedPreferenceUtility.getInstance().isPasswordValid(password)) {
             edtpassword_signup.requestFocus()
             scrollView.scrollTo(0, 240)
             edtpassword_signup.error=getString(R.string.password_length_valid)
-            LogUtils.shortToast(this, getString(R.string.password_length_valid))
         }else if (TextUtils.isEmpty(confirmPassword)) {
             scrollView.scrollTo(0, 270)
             edtcnfrmpassword_signup.requestFocus()
             edtcnfrmpassword_signup.error=getString(R.string.please_verify_your_password)
-            LogUtils.shortToast(this, getString(R.string.please_verify_your_password))
         }else if (!confirmPassword.equals(password)) {
             scrollView.scrollTo(0, 270)
             edtcnfrmpassword_signup.requestFocus()
             edtcnfrmpassword_signup.error=getString(R.string.password_doesnt_match_with_verify_password)
-            LogUtils.shortToast(this, getString(R.string.password_doesnt_match_with_verify_password))
         }else if(!isChecked){
             LogUtils.shortToast(this, getString(R.string.please_accept_terms_conditions))
         }else{
@@ -625,6 +611,7 @@ class SignUpActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRec
                                 myuserId = response.body()!!.user!!.user_id!!
                                 SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.UserId, myuserId)
                                 SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.UserEmail, emailaddress)
+                                SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.Address, location)
                                 LogUtils.longToast(this@SignUpActivity, response.body()!!.message)
                                 startActivity(Intent(applicationContext,OtpVerificationActivity::class.java).putExtra("ref", "1").putExtra(EMAILADDRESS, emailaddress))
 //
@@ -666,6 +653,10 @@ class SignUpActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRec
         if (networkChangeReceiver != null) {
             unregisterReceiver(networkChangeReceiver)
         }
+    }
+
+    override fun onBackPressed() {
+        Utility.exitApp(this, this)
     }
 
     companion object{

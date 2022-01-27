@@ -38,8 +38,6 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             val messageData = remoteMessage.data.toString().replace("data=", "data:")
             LogUtils.e("message", "message $messageData")
             if(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId, 0) !=0){
-                /*val intent =  Intent("MyData")
-               broadcaster.sendBroadcast(intent)*/
                 makeNotification(messageData)
             }
         }else{
@@ -64,6 +62,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             mChannel.setShowBadge(true)
             notificationManager.createNotificationChannel(mChannel)
         }
+
         val builder = NotificationCompat.Builder(this, channelId)
             .setSmallIcon(R.mipmap.ic_launcher)
             .setDefaults(Notification.DEFAULT_SOUND)
@@ -71,6 +70,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             .setAutoCancel(true)
             .setBadgeIconType(NotificationCompat.BADGE_ICON_SMALL)
         val jsonObject: JSONObject
+
         try {
             jsonObject = JSONObject(messageData)
             val jsonObject1 = jsonObject.getJSONObject("data")
@@ -81,7 +81,6 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
             val bodyObject = jsonObject1.getJSONObject("body")
             builder.setContentText(bodyObject.getString("msg"))
-
 
             val intent = Intent(this, HomeActivity::class.java)
             intent.putExtra("type", bodyObject.getString("type"))

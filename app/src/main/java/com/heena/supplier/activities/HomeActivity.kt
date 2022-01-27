@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import android.view.View
 import android.view.animation.AlphaAnimation
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -21,15 +22,21 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.heena.supplier.R
 import com.heena.supplier.utils.SharedPreferenceUtility
+import com.heena.supplier.utils.Utility
+import com.heena.supplier.utils.Utility.Companion.exitApp
+import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
 import kotlinx.android.synthetic.main.activity_home2.*
 import kotlinx.android.synthetic.main.side_top_view.view.*
 
 
 class HomeActivity : AppCompatActivity() {
-    private var doubleClick:Boolean=false
     private lateinit var navController: NavController
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Utility.changeLanguage(
+            this,
+            SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, "")
+        )
         setContentView(R.layout.activity_home2)
         initview()
         setUpViews()
@@ -66,13 +73,12 @@ class HomeActivity : AppCompatActivity() {
             myuserId = intent.getIntExtra(SharedPreferenceUtility.UserId, 0)
         }
 
-        home_layout.setOnClickListener {
+        home_layout.setSafeOnClickListener {
             SharedPreferenceUtility.getInstance().hideSoftKeyBoard(this, home_layout)
         }
 
         profile_picture = SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.ProfilePic, ""]
         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, GravityCompat.START)
-
 
         val requestOption = RequestOptions().centerCrop()
         Glide.with(this).load(SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.ProfilePic, ""])
@@ -84,8 +90,6 @@ class HomeActivity : AppCompatActivity() {
                 }
 
                 override fun onResourceReady(p0: Drawable?, p1: Any?, target: com.bumptech.glide.request.target.Target<Drawable>?, dataSource: com.bumptech.glide.load.DataSource?, p4: Boolean): Boolean {
-
-
                     return false
                 }
             }).apply(requestOption).into(menuImg)
@@ -96,30 +100,25 @@ class HomeActivity : AppCompatActivity() {
             .listener(object : RequestListener<Drawable> {
                 override fun onLoadFailed(p0: GlideException?, p1: Any?, p2: com.bumptech.glide.request.target.Target<Drawable>?, p3: Boolean): Boolean {
                     Log.e("err", p0?.message.toString())
+                    headerView.user_icon_progress_bar_side_top_view.visibility = View.GONE
                     return false
                 }
 
                 override fun onResourceReady(p0: Drawable?, p1: Any?, target: com.bumptech.glide.request.target.Target<Drawable>?, dataSource: com.bumptech.glide.load.DataSource?, p4: Boolean): Boolean {
-
-
+                    headerView.user_icon_progress_bar_side_top_view.visibility = View.GONE
                     return false
                 }
             }).apply(requestOption).into(headerView.userIcon)
 
-
-        headerView.tv_name.text = SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.Username, ""]
-        headerView.tv_address.text = SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.Address, ""]
-
-        iv_back.setOnClickListener {
+        iv_back.setSafeOnClickListener {
             Log.e("Dest", findNavController(R.id.nav_home_host_fragment).currentDestination?.id.toString())
             onBackPressed()
         }
 
-        iv_notification.setOnClickListener {
+        iv_notification.setSafeOnClickListener {
             iv_notification.startAnimation(AlphaAnimation(1F, 0.5F))
             findNavController(R.id.nav_home_host_fragment).currentDestination?.id?.let { it1 -> openNotificationFragment(it1) }
         }
-
     }
 
     private fun openCloseDrawer() {
@@ -139,7 +138,7 @@ class HomeActivity : AppCompatActivity() {
         }
 
         when(findNavController(R.id.nav_home_host_fragment).currentDestination?.id){
-            R.id.homeFragment -> exitApp()
+            R.id.homeFragment -> exitApp(this, this)
             else-> findNavController(R.id.nav_home_host_fragment).popBackStack()
         }
     }
@@ -148,26 +147,6 @@ class HomeActivity : AppCompatActivity() {
         findNavController(destFragment).navigate(R.id.notificationsFragment)
     }
 
-    private fun exitApp() {
-        val toast = Toast.makeText(
-                this,
-                getString(R.string.please_click_back_again_to_exist),
-                Toast.LENGTH_SHORT
-        )
 
-
-        if(doubleClick){
-            finishAffinity()
-            doubleClick=false
-        }
-        else{
-
-            doubleClick=true
-            Handler(Looper.getMainLooper()).postDelayed({
-                toast.show()
-                doubleClick = false
-            }, 500)
-        }
-    }
 
 }

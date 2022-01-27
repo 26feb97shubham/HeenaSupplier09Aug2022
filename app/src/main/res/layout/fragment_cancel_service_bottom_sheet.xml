@@ -53,20 +53,30 @@
             <LinearLayout
                 android:id="@+id/ll_rsn_for_cancellation"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_100sdp"
+                android:layout_height="@dimen/_80sdp"
                 android:layout_marginHorizontal="@dimen/_10sdp"
                 android:layout_marginTop="@dimen/_10sdp"
                 app:layout_constraintTop_toBottomOf="@id/tv_plz_prvd_valid_rsn_txt"
                 android:background="@drawable/little_curved_white_filled_gold_border_rect_box">
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/et_rsn_for_cancellation"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:inputType="text"
-                    android:textColor="@color/gold"
-                    android:textSize="@dimen/_12ssp"
-                    android:fontFamily="@font/avenir_medium"
-                    android:background="@null"/>
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_rsn_for_cancellation"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:textDirection="locale"
+                        android:textAlignment="viewStart"
+                        android:background="@null"
+                        android:fontFamily="@font/avenir_medium"
+                        android:inputType="text|textMultiLine"
+                        android:padding="@dimen/_8sdp"
+                        android:gravity="start"
+                        android:minLines="3"
+                        android:cursorVisible="true"
+                        android:overScrollMode="always"
+                        android:scrollbarStyle="insideInset"
+                        android:textCursorDrawable="@drawable/cursor_color"
+                        android:textColor="@color/gold"
+                        android:textSize="@dimen/_12ssp"
+                        tools:ignore="SpeakableTextPresentCheck" />
             </LinearLayout>
 
 

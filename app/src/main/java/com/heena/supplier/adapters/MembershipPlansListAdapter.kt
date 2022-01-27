@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.heena.supplier.R
 import com.heena.supplier.`interface`.ClickInterface
 import com.heena.supplier.models.Membership
+import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
 import kotlinx.android.synthetic.main.membership_plan_items.view.*
 
 class MembershipPlansListAdapter(private val context: Context,
@@ -35,10 +36,10 @@ class MembershipPlansListAdapter(private val context: Context,
 
         fun onBindData() {
             itemView.tv_membership_title.text = membershipList[position].name
-            itemView.tv_membership_plan_price.text = membershipList[position].price.toString()
+            itemView.tv_membership_plan_price.text = "AED "+membershipList[position].price.toString()
             itemView.tv_membership_desc.text = membershipList[position].description
 
-            itemView.setOnClickListener {
+            itemView.setSafeOnClickListener {
                 itemView.iv_selected_unselected.visibility = View.VISIBLE
                 if (checkedPosition!=adapterPosition){
                     notifyItemChanged(checkedPosition)

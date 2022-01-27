@@ -162,4 +162,10 @@ interface APIInterface {
 
     @POST(APIUtils.GET_OLD_MESSAGE_LIST)
     fun getOldMessageList(@Body body: RequestBody?) : Call<OldMessagesResponse?>?
+
+    @POST(APIUtils.CHAT_FILE_UPLOAD)
+    fun chatFileUpload(@Body body: RequestBody?) : Call<ChatFileUploadResponse?>?
+
+    @GET(APIUtils.SUBSCRIPTION_PLANS)
+    fun subscription_plans(@Path("user_id") user_id: Int, @Query("lang") lang : String) : Call<SubscriptionPlansResponse?>
 }

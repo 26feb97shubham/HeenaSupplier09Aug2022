@@ -18,7 +18,7 @@
         android:textSize="@dimen/_13ssp"
         android:paddingStart="@dimen/_8sdp"
         android:gravity="center_vertical"
-        android:drawableEnd="@drawable/dark_brown_right_arrow"
+        android:drawableEnd="@drawable/ic_baseline_keyboard_arrow_right_24"
         android:drawablePadding="@dimen/_8sdp"
         android:paddingEnd="@dimen/_8sdp"/>
 

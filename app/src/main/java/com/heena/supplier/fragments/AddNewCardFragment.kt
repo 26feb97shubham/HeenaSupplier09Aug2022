@@ -1,6 +1,7 @@
 package com.heena.supplier.fragments
 
 import android.annotation.SuppressLint
+import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
 import androidx.fragment.app.Fragment
@@ -9,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.animation.AlphaAnimation
+import androidx.annotation.RequiresApi
 import androidx.core.widget.doAfterTextChanged
 import androidx.core.widget.doOnTextChanged
 import androidx.navigation.fragment.findNavController
@@ -19,6 +21,8 @@ import com.heena.supplier.rest.APIClient
 import com.heena.supplier.utils.LogUtils
 import com.heena.supplier.utils.SharedPreferenceUtility
 import com.heena.supplier.utils.Utility.Companion.apiInterface
+import com.heena.supplier.utils.Utility.Companion.changeLanguage
+import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
 import kotlinx.android.synthetic.main.activity_home2.*
 import kotlinx.android.synthetic.main.fragment_add_new_card.*
 import kotlinx.android.synthetic.main.fragment_add_new_card.view.*
@@ -36,7 +40,7 @@ class AddNewCardFragment : Fragment() {
     var card_number = ""
     var card_cvv = ""
     var card_expiry = ""
-    val sdf = SimpleDateFormat("MM/YYYY")
+    val sdf = SimpleDateFormat("MM/yyyy", Locale.US)
     var expiry_date : Date?=null
     var expired = false
     override fun onCreateView(
@@ -46,6 +50,7 @@ class AddNewCardFragment : Fragment() {
         // Inflate the layout for this fragment
         mView = inflater.inflate(
                 R.layout.fragment_add_new_card, container, false)
+        changeLanguage(requireContext(), SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, ""))
         sdf.isLenient = false
         setUpViews()
         return mView
@@ -54,15 +59,22 @@ class AddNewCardFragment : Fragment() {
 
     @SuppressLint("UseCompatLoadingForDrawables")
     private fun setUpViews() {
-        requireActivity().iv_back.setOnClickListener {
+        requireActivity().iv_back.setSafeOnClickListener {
             requireActivity().iv_back.startAnimation(AlphaAnimation(1F,0.5F))
             SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_back)
             findNavController().popBackStack()
         }
 
-        mView!!.tv_save_card.setOnClickListener {
+        requireActivity().iv_notification.setSafeOnClickListener {
+            requireActivity().iv_notification.startAnimation(AlphaAnimation(1F,0.5F))
+            SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_notification)
+            findNavController().navigate(R.id.notificationsFragment)
+        }
+
+        mView!!.tv_save_card.setSafeOnClickListener {
+            card_expiry = mView!!.et_expiry.text.toString().trim()
             if (card_expiry.equals("")){
-                LogUtils.shortToast(requireContext(), "Unparseable date")
+                LogUtils.shortToast(requireContext(), getString(R.string.please_enter_valid_expiry_date))
             }else{
                 expiry_date=sdf.parse(card_expiry)
                 expired= expiry_date!!.before(Date())
@@ -87,7 +99,6 @@ class AddNewCardFragment : Fragment() {
         card_cvv = mView!!.et_cvv.text.toString().trim()
         card_expiry = mView!!.et_expiry.text.toString().trim()
 
-
         if (TextUtils.isEmpty(card_title)){
             mView!!.et_card_title.requestFocus()
             mView!!.et_card_title.error = getString(R.string.please_enter_valid_card_title)
@@ -103,9 +114,6 @@ class AddNewCardFragment : Fragment() {
         }else if (card_cvv.length<3){
             mView!!.et_cvv.requestFocus()
             mView!!.et_cvv.error = getString(R.string.please_enter_valid_cvv)
-        }else if (TextUtils.isEmpty(card_expiry)){
-            mView!!.et_expiry.requestFocus()
-            mView!!.et_expiry.error = getString(R.string.please_enter_valid_expiry_date)
         }else if (expired){
             LogUtils.shortToast(requireContext(), getString(R.string.card_is_expired))
         }else{

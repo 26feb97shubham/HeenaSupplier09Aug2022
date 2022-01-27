@@ -6,6 +6,7 @@ data class Booking(
         val cancelled_by: Int? = null,
         val booking_date: String? = null,
         val message: String? = null,
+        val commission: String? = null,
         val booking_created_at: String? = null,
         val address_id: Int? = null,
         val c_children: Int? = null,

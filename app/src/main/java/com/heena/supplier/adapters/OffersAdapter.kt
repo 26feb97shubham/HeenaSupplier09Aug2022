@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.heena.supplier.R
 import com.heena.supplier.`interface`.ClickInterface
+import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
 
 class OffersAdapter(private val context: Context, private val onCLickAction : ClickInterface.OnRecyclerItemClick) :
     RecyclerView.Adapter<OffersAdapter.OffersAdapterVH>() {
@@ -21,7 +22,7 @@ class OffersAdapter(private val context: Context, private val onCLickAction : Cl
     }
 
     override fun onBindViewHolder(holder: OffersAdapterVH, position: Int) {
-      holder.itemView.setOnClickListener {
+      holder.itemView.setSafeOnClickListener {
           onCLickAction.OnClickAction(position)
       }
     }

@@ -51,48 +51,26 @@
                 android:background="@drawable/little_curved_transparent"
                 android:padding="@dimen/_10sdp">
 
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/tv_subscription_title"
-                    android:layout_width="@dimen/_150sdp"
-                    android:layout_height="@dimen/_20sdp"
-                    android:text="@string/subscription_title"
-                    android:fontFamily="@font/avenir_heavy"
-                    android:textColor="@color/gold"
-                    android:textSize="@dimen/_14ssp"
-                    android:textStyle="normal"
-                    android:layout_centerHorizontal="true"
-                    android:gravity="center"/>
-
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/tv_subscription_price"
-                    android:layout_width="@dimen/_150sdp"
-                    android:layout_height="@dimen/_20sdp"
-                    android:text="AED 100"
-                    android:fontFamily="@font/avenir_heavy"
-                    android:textColor="@color/gold"
-                    android:textSize="@dimen/_12ssp"
-                    android:textStyle="normal"
-                    android:layout_below="@id/tv_subscription_title"
-                    android:layout_marginTop="@dimen/_8sdp"
-                    android:layout_centerHorizontal="true"
-                    android:gravity="center"/>
-
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/tv_subscription_desc"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_subscription_plans"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="@string/service_desc"
-                    android:fontFamily="@font/avenir_heavy"
-                    android:textColor="@color/gold"
-                    android:textSize="@dimen/_12ssp"
-                    android:textStyle="normal"
-                    android:layout_below="@id/tv_subscription_price"
-                    android:layout_marginTop="@dimen/_8sdp"
-                    android:layout_centerHorizontal="true"
-                    android:maxLines="6"
-                    android:ellipsize="end"
-                    android:gravity="start"/>
+                    android:layout_height="match_parent" />
             </RelativeLayout>
+
+            <com.chahinem.pageindicator.PageIndicator
+                android:id="@+id/pageIndicator_subscription_plans"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:piSelectedColor="@color/gold"
+                app:piDefaultColor="@color/bg_gray"
+                android:visibility="visible"
+                app:piDotSpacing="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:paddingVertical="@dimen/_8sdp"
+                app:layout_constraintTop_toBottomOf="@+id/rl_subs_details"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_buy_subscription"

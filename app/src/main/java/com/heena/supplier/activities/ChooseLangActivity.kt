@@ -13,10 +13,10 @@ import com.heena.supplier.R
 import com.heena.supplier.utils.LogUtils
 import com.heena.supplier.utils.SharedPreferenceUtility
 import com.heena.supplier.utils.Utility
+import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
 import kotlinx.android.synthetic.main.activity_choose_lang2.*
 
 class ChooseLangActivity : AppCompatActivity() {
-    private var doubleClick:Boolean=false
     private var selectLang:String=""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,11 +24,14 @@ class ChooseLangActivity : AppCompatActivity() {
         setUpViews()
     }
     private fun setUpViews() {
+        selectLang = "ar"
         if(SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""] =="en"){
+            selectLang = SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""]
             selectEnglish()
         }
 
         else if(SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""] =="ar"){
+            selectLang = SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""]
             selectArabic()
         }
 
@@ -45,7 +48,7 @@ class ChooseLangActivity : AppCompatActivity() {
             }
         }
 
-        btnContinue.setOnClickListener {
+        btnContinue.setSafeOnClickListener {
             btnContinue.startAnimation(AlphaAnimation(1f, 0.5f))
             if(TextUtils.isEmpty(selectLang)){
                 LogUtils.shortToast(this, getString(R.string.please_choose_your_language))
@@ -81,32 +84,10 @@ class ChooseLangActivity : AppCompatActivity() {
 
     private fun setTextForLang(){
         tv_choose_lang.text = getString(R.string.choose_language)
-        txtArabic.text = getString(R.string.arabic)
         btnContinue.text = getString(R.string.continue_btn)
     }
 
     override fun onBackPressed() {
-        exitApp()
-    }
-    private fun exitApp() {
-        val toast = Toast.makeText(
-            this,
-            getString(R.string.please_click_back_again_to_exist),
-            Toast.LENGTH_SHORT
-        )
-
-
-        if(doubleClick){
-            finishAffinity()
-            doubleClick=false
-        }
-        else{
-
-            doubleClick=true
-            Handler(Looper.getMainLooper()).postDelayed({
-                toast.show()
-                doubleClick=false
-            }, 500)
-        }
+        Utility.exitApp(this, this)
     }
 }

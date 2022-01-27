@@ -1,36 +1,54 @@
 package com.heena.supplier.fragments
 
+import android.Manifest
+import android.app.Activity
 import android.content.ContentValues
+import android.content.Intent
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AlphaAnimation
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
+import androidx.core.content.FileProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.arasthel.spannedgridlayoutmanager.BuildConfig
+import com.heena.supplier.BuildConfig.APPLICATION_ID
 import com.heena.supplier.R
 import com.heena.supplier.adapters.MessagesTypeAdapter
 import com.heena.supplier.application.MyApp
 import com.heena.supplier.application.MyApp.Companion.socket
-import com.heena.supplier.models.HelpCategory
-import com.heena.supplier.models.HelpSubCategory
-import com.heena.supplier.models.Message
-import com.heena.supplier.models.OldMessagesResponse
+import com.heena.supplier.custom.FetchPath
+import com.heena.supplier.models.*
 import com.heena.supplier.rest.APIClient
 import com.heena.supplier.utils.LogUtils
 import com.heena.supplier.utils.SharedPreferenceUtility
 import com.heena.supplier.utils.Utility
 import com.heena.supplier.utils.Utility.Companion.apiInterface
+import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
 import io.socket.client.IO
 import io.socket.client.Socket.*
 import io.socket.emitter.Emitter
+import kotlinx.android.synthetic.main.activity_home2.*
 import kotlinx.android.synthetic.main.fragment_chat_with_admin.view.*
+import okhttp3.MediaType
+import okhttp3.RequestBody
 import org.json.JSONException
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.File
 import java.net.Socket
 import java.text.SimpleDateFormat
 import java.util.*
@@ -54,6 +72,150 @@ class ChatWithAdminFragment : Fragment() {
     private var messagesList = ArrayList<Message>()
     private var messagesTypeAdapter:MessagesTypeAdapter?=null
 
+    var status = 0
+    private var uri: Uri? = null
+    private var imagePath = ""
+    private var chat_file = ""
+    private var mime_type = ""
+    private var image_url = ""
+    private val PICK_IMAGE_FROM_GALLERY = 10
+    private val MEDIA_TYPE_IMAGE = 1
+    private val CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 100
+    private var message_type = ""
+    private var is_share_clicked = false
+
+    private val PERMISSIONS =  arrayOf(
+        Manifest.permission.CAMERA,
+        Manifest.permission.WRITE_EXTERNAL_STORAGE)
+
+
+    private var activityResultLauncher: ActivityResultLauncher<Array<String>> =
+        registerForActivityResult(
+            ActivityResultContracts.RequestMultiplePermissions()) { result ->
+            var allAreGranted = true
+            for(b in result.values) {
+                allAreGranted = allAreGranted && b
+            }
+            if(allAreGranted) {
+                Log.e("Granted", "Permissions")
+                openCameraDialog()
+            }else{
+                LogUtils.shortToast(requireContext(), getString(R.string.please_allow_permissions))
+                Log.e("Denied", "Permissions")
+            }
+        }
+
+    private var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { it ->
+        if (status == CAMERA_CAPTURE_IMAGE_REQUEST_CODE){
+            if (it.resultCode == Activity.RESULT_OK){
+                if (uri != null) {
+                    imagePath = ""
+                    Log.e("uri", uri.toString())
+                    imagePath = uri!!.path!!
+                    Log.e("image_path", imagePath)
+                    /* Perform API For Image Upload*/
+                    is_share_clicked = true
+                    postImage(imagePath, room)
+                } else {
+                    LogUtils.shortToast(requireContext(), "something went wrong! please try again")
+                }
+            }
+        }else if (status.equals(PICK_IMAGE_FROM_GALLERY)){
+            if (it.resultCode== Activity.RESULT_OK){
+                val data: Intent? = it.data
+                if (data!!.data != null) {
+                    imagePath = ""
+                    val uri = data.data
+                    (if (uri.toString().startsWith("content")) {
+                        FetchPath.getPath(requireContext(), uri!!)!!
+                    } else {
+                        uri!!.path!!
+                    }).also { imagePath = it }
+                    Log.e("image_path", imagePath)
+                    /* Perform API For Image Upload*/
+                    is_share_clicked = true
+                    postImage(imagePath, room)
+                }
+            }
+        }
+    }
+
+    private fun openCameraDialog() {
+        val items = arrayOf<CharSequence>(getString(R.string.camera), getString(R.string.gallery), getString(R.string.cancel))
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setTitle(getString(R.string.add_photo))
+        builder.setItems(items) { dialogInterface, i ->
+            when {
+                items[i] == getString(R.string.camera) -> {
+                    captureImage()
+                }
+                items[i] == getString(R.string.gallery) -> {
+                    chooseImage()
+                }
+                items[i] == getString(R.string.cancel) -> {
+                    dialogInterface.dismiss()
+                }
+            }
+        }
+        builder.show()
+    }
+
+    private fun chooseImage() {
+        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        intent.type = "image/*"
+        intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+        status = PICK_IMAGE_FROM_GALLERY
+        resultLauncher.launch(intent)
+    }
+
+
+    private fun captureImage() {
+        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        uri = getOutputMediaFileUri(MEDIA_TYPE_IMAGE)
+        intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
+        status = CAMERA_CAPTURE_IMAGE_REQUEST_CODE
+        resultLauncher.launch(intent)
+    }
+
+
+    fun getOutputMediaFileUri(type: Int): Uri {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            FileProvider.getUriForFile(requireContext(),
+                "${APPLICATION_ID}.provider", getOutputMediaFile(type)!!)
+        } else {
+            Uri.fromFile(getOutputMediaFile(type))
+        }
+    }
+
+    private fun getOutputMediaFile(type: Int): File? {
+        val mediaStorageDir = File(
+            Environment
+                .getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), Utility.IMAGE_DIRECTORY_NAME
+        )
+        // Create the storage directory if it does not exist
+        if (!mediaStorageDir.exists()) {
+            mediaStorageDir.mkdirs()
+        }
+        // Create a media file name
+        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss",
+            Locale.getDefault()).format(Date())
+        val mediaFile: File = when (type) {
+            MEDIA_TYPE_IMAGE -> {
+                File(mediaStorageDir.path + File.separator
+                        + "IMG_" + timeStamp + ".png")
+            }
+            MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO -> {
+                File(mediaStorageDir.path + File.separator
+                        + "VID_" + timeStamp + ".mp4")
+            }
+            else -> {
+                return null
+            }
+        }
+        return mediaFile
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -71,23 +233,46 @@ class ChatWithAdminFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         mView = inflater.inflate(R.layout.fragment_chat_with_admin, container, false)
+        Utility.changeLanguage(
+            requireContext(),
+            SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, "")
+        )
         return mView
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        requireActivity().iv_back.setSafeOnClickListener {
+            requireActivity().iv_back.startAnimation(
+                AlphaAnimation(1f, 0.5f)
+            )
+            SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_back)
+            findNavController().popBackStack()
+        }
+
+        requireActivity().iv_notification.setSafeOnClickListener {
+            requireActivity().iv_notification.startAnimation(AlphaAnimation(1F,0.5F))
+            SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_notification)
+            findNavController().navigate(R.id.notificationsFragment)
+        }
+
         mView!!.title.text=help_category!!.title
         mView!!.tv_title.text=sub_help_category!!.title
 
         if (Utility.isNetworkAvailable()){
+            getOldMessageList()
             initSocket()
         }
         currentDate
 
-        mView!!.send_msg.setOnClickListener {
+        mView!!.send_msg.setSafeOnClickListener {
             if (mView!!.et_enter_message.text.toString().trim { it<=' '}.isNotEmpty() ||
-                mView!!.et_enter_message.text.toString().trim { it<=' '}.equals("", true)){
+                !mView!!.et_enter_message.text.toString().trim { it<=' '}.equals("", true)){
                 val strMessage = mView!!.et_enter_message.text.toString().trim { it<=' '}
+                message_type = "1"
+                is_share_clicked = false
+
                 val messageObject = JSONObject()
                 try {
                     messageObject.put("message",strMessage)
@@ -97,8 +282,9 @@ class ChatWithAdminFragment : Fragment() {
                     messageObject.put("help_id",""+help_category!!.id )
                     messageObject.put("sub_help_id",""+sub_help_category!!.id )
                     messageObject.put("type", ""+type)
-                    messageObject.put("message_type", "1")
-                    messageObject.put("mime_type", "")
+                    messageObject.put("message_type", message_type)
+                    messageObject.put("mime_type", mime_type)
+                    messageObject.put("url", image_url)
                     messageObject.put("created_at", "" + date_time)
                 } catch (e: JSONException) {
                     e.printStackTrace()
@@ -110,12 +296,30 @@ class ChatWithAdminFragment : Fragment() {
                     disableSendMsg()
                 }
             }else {
-                LogUtils.shortToast(requireContext(), "Please enter message")
+                LogUtils.shortToast(requireContext(), requireContext().getString(R.string.message_field_cannot_be_empty))
             }
+        }
+
+        mView!!.share.setSafeOnClickListener {
+            mView!!.share.startAnimation(AlphaAnimation(1f, 0.5f))
+            activityResultLauncher.launch(PERMISSIONS)
+        }
+
+        mView!!.imgRight.setSafeOnClickListener {
+            mView!!.imgRight.visibility = View.GONE
+            mView!!.imgDown.visibility = View.VISIBLE
+            mView!!.sub_main_card.visibility = View.GONE
+        }
+
+        mView!!.imgDown.setSafeOnClickListener {
+            mView!!.imgRight.visibility = View.VISIBLE
+            mView!!.imgDown.visibility = View.GONE
+            mView!!.sub_main_card.visibility = View.VISIBLE
         }
     }
 
     private fun getOldMessageList() {
+        mView!!.frag_chat_progressBar.visibility = View.VISIBLE
         val builder = APIClient.createBuilder(arrayOf("user_id","room"),
             arrayOf(SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.UserId, 0].toString(), room.toString()))
         val call = apiInterface.getOldMessageList(builder!!.build())
@@ -124,13 +328,14 @@ class ChatWithAdminFragment : Fragment() {
                 call: Call<OldMessagesResponse?>,
                 response: Response<OldMessagesResponse?>
             ) {
+                mView!!.frag_chat_progressBar.visibility = View.GONE
                 if (response.isSuccessful){
+                    messagesList.clear()
                     messagesList = response.body()!!.messages as ArrayList<Message>
                     if (messagesList.size>0){
                         mView!!.msgs_list.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
                         messagesTypeAdapter = MessagesTypeAdapter(requireContext(),messagesList)
                         mView!!.msgs_list.adapter=messagesTypeAdapter
-                        messagesTypeAdapter!!.notifyDataSetChanged()
                         scrollToBottom()
 
                     }else{
@@ -142,7 +347,7 @@ class ChatWithAdminFragment : Fragment() {
             }
 
             override fun onFailure(call: Call<OldMessagesResponse?>, t: Throwable) {
-                TODO("Not yet implemented")
+                mView!!.frag_chat_progressBar.visibility = View.GONE
             }
 
         })
@@ -152,6 +357,7 @@ class ChatWithAdminFragment : Fragment() {
     //SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
             Unit
         get() {
+            Locale.setDefault(Locale.ENGLISH)
             val c = Calendar.getInstance()
             //SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
             val hour = c[Calendar.HOUR_OF_DAY]
@@ -218,7 +424,6 @@ class ChatWithAdminFragment : Fragment() {
         try {
             joinRoom.put("userid", "" + SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.UserId, 0])
             joinRoom.put("room", room)
-            getOldMessageList()
         } catch (e: JSONException) {
             e.printStackTrace()
         }
@@ -232,7 +437,6 @@ class ChatWithAdminFragment : Fragment() {
             if (!isConnected) {
                 isConnected = true
                 Log.e("socketStatus", "isConnected")
-                getOldMessageList()
             }
         }
     }
@@ -263,7 +467,7 @@ class ChatWithAdminFragment : Fragment() {
                 val message = jsonObject.getString("message")
                 val room = jsonObject.getString("room")
                 val sender_id = jsonObject.getString("sender_id")
-                val type = jsonObject.getString("type")
+//                val type = jsonObject.getString("type")
                 val message_type = jsonObject.getString("message_type")
                 val receiver_id = jsonObject.getString("receiver_id")
                 val created_at = jsonObject.getString("created_at")
@@ -278,7 +482,7 @@ class ChatWithAdminFragment : Fragment() {
                     }
                 }
 
-                updateMessageIsReadStatus()
+               // updateMessageIsReadStatus()
 
             } catch (e: JSONException) {
                 e.printStackTrace()
@@ -316,7 +520,7 @@ class ChatWithAdminFragment : Fragment() {
         chat_room: String,
         date_time: String
     ) {
-        messagesList.add(Message(0,"",date_time,0,0,"",0,message,message_type, mime_type, "",receiver_id, chat_room, sender_id, 0,0,""))
+        messagesList.add(Message(0,"",date_time,0,0,"","",0,message,message_type, mime_type, "",receiver_id, chat_room, sender_id, 0,0,""))
         mView!!.msgs_list.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         messagesTypeAdapter = MessagesTypeAdapter(requireContext(),messagesList)
         mView!!.msgs_list.adapter=messagesTypeAdapter
@@ -333,6 +537,60 @@ class ChatWithAdminFragment : Fragment() {
         }
     }
 
+    private fun postImage(imagePath: String, room: String?) {
+        val builder = APIClient.createMultipartBodyBuilder(arrayOf("room"),
+            arrayOf(room.toString()))
+        val file = File(imagePath)
+        val requestBody = RequestBody.create(MediaType.parse("image/*"), file)
+        builder!!.addFormDataPart("chat_file", file.name, requestBody)
+        val call = apiInterface.chatFileUpload(builder.build())
+        call!!.enqueue(object : Callback<ChatFileUploadResponse?>{
+            override fun onResponse(
+                call: Call<ChatFileUploadResponse?>,
+                response: Response<ChatFileUploadResponse?>
+            ) {
+                if (response.isSuccessful){
+                    if (response.body()!=null){
+                        chat_file = response.body()!!.chat_file.chat_file
+                        mime_type = response.body()!!.chat_file.mime_type
+                        image_url = response.body()!!.chat_file.url
+                        message_type = "2"
+                        val messageObject = JSONObject()
+                        try {
+                            messageObject.put("message",chat_file)
+                            messageObject.put("room", "" + room)
+                            messageObject.put("sender_id", ""+SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.UserId, 0])
+                            messageObject.put("receiver_id", ""+admin_id)
+                            messageObject.put("help_id",""+help_category!!.id )
+                            messageObject.put("sub_help_id",""+sub_help_category!!.id )
+                            messageObject.put("type", ""+type)
+                            messageObject.put("message_type", message_type)
+                            messageObject.put("mime_type", mime_type)
+                            messageObject.put("url", image_url)
+                            messageObject.put("created_at", "" + date_time)
+                        } catch (e: JSONException) {
+                            e.printStackTrace()
+                        }
+                        mSocket!!.emit("chatMessage", messageObject)
+                        Log.e("emitMessage", messageObject.toString())
+                        mView!!.et_enter_message.setText("")
+                        if (type == "direct" && directMessageStatus == 0){
+                            disableSendMsg()
+                        }
+
+                    }
+                }else{
+                    LogUtils.shortToast(requireContext(), requireContext().getString(R.string.response_isnt_successful))
+                }
+            }
+
+            override fun onFailure(call: Call<ChatFileUploadResponse?>, t: Throwable) {
+                LogUtils.shortToast(requireContext(), t.message)
+            }
+
+        })
+    }
+
     private fun scrollToBottom() {
         /*   binding.recyclerView.scrollToPosition(adapter.itemCount - 1)*/
         mView!!.msgs_list.scrollToPosition(messagesTypeAdapter!!.itemCount-1)
@@ -341,6 +599,7 @@ class ChatWithAdminFragment : Fragment() {
         super.onResume()
         if (Utility.hasConnection(requireContext()))
             initSocket()
+        getOldMessageList()
     }
 
     public override fun onDestroy() {

@@ -19,7 +19,9 @@ import com.heena.supplier.rest.APIClient
 import com.heena.supplier.utils.ConstClass
 import com.heena.supplier.utils.LogUtils
 import com.heena.supplier.utils.SharedPreferenceUtility
+import com.heena.supplier.utils.Utility
 import com.heena.supplier.utils.Utility.Companion.apiInterface
+import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
 import kotlinx.android.synthetic.main.activity_login2.*
 import kotlinx.android.synthetic.main.activity_otp_verification2.*
 import kotlinx.android.synthetic.main.activity_sign_up2.*
@@ -69,13 +71,13 @@ class OtpVerificationActivity : AppCompatActivity() {
         pin = firstPinView.text.toString().trim()
 
 
-        btnVerify.setOnClickListener {
+        btnVerify.setSafeOnClickListener {
             btnVerify.startAnimation(AlphaAnimation(1f, 0.5f))
             validateAndVerification()
 
         }
 
-        resend.setOnClickListener {
+        resend.setSafeOnClickListener {
             resend.startAnimation(AlphaAnimation(1f, 0.5f))
             firstPinView.setText("")
             SharedPreferenceUtility.getInstance().hideSoftKeyBoard(this@OtpVerificationActivity, it)
@@ -97,13 +99,10 @@ class OtpVerificationActivity : AppCompatActivity() {
 
         else {
             if(ref=="1"){
-//                SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.UserId, user_id.toInt()
                 verifyAccount()
-
             }
             else{
                 forgotPassVerify()
-
             }
         }
 
@@ -162,7 +161,7 @@ class OtpVerificationActivity : AppCompatActivity() {
                      if (response.isSuccessful){
                          if (response.body()!!.status==1){
                              SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.IsVerified, true)
-                             SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.IsLogin, true)
+                             SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.IsLogin, false)
                              startActivity(Intent(this@OtpVerificationActivity, MembershipRegistrationActivity::class.java).putExtra(ConstClass.EMAILADDRESS, emailaddress))
 
                          }else{
@@ -231,28 +230,7 @@ class OtpVerificationActivity : AppCompatActivity() {
 
 
     override fun onBackPressed() {
-        exitApp()
-    }
-    private fun exitApp() {
-        val toast = Toast.makeText(
-            this,
-            getString(R.string.please_click_back_again_to_exist),
-            Toast.LENGTH_SHORT
-        )
-
-
-        if(doubleClick){
-            finishAffinity()
-            doubleClick=false
-        }
-        else{
-
-            doubleClick=true
-            Handler(Looper.getMainLooper()).postDelayed({
-                toast.show()
-                doubleClick=false
-            }, 500)
-        }
+        Utility.exitApp(this, this)
     }
 
     companion object{

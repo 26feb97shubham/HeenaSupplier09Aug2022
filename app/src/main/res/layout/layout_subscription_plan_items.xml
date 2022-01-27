@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_subscription_title"
+        android:layout_width="@dimen/_150sdp"
+        android:layout_height="@dimen/_20sdp"
+        android:layout_centerHorizontal="true"
+        android:fontFamily="@font/avenir_heavy"
+        android:gravity="center"
+        android:text="@string/subscription_title"
+        android:textColor="@color/gold"
+        android:textSize="@dimen/_14ssp"
+        android:textStyle="normal" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_subscription_price"
+        android:layout_width="@dimen/_150sdp"
+        android:layout_height="@dimen/_20sdp"
+        android:layout_below="@id/tv_subscription_title"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/_8sdp"
+        android:fontFamily="@font/avenir_heavy"
+        android:gravity="center"
+        android:text="AED 100"
+        android:textColor="@color/gold"
+        android:textSize="@dimen/_12ssp"
+        android:textStyle="normal" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_subscription_desc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_subscription_price"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/_8sdp"
+        android:ellipsize="end"
+        android:fontFamily="@font/avenir_heavy"
+        android:gravity="start"
+        android:maxLines="6"
+        android:text="@string/service_desc"
+        android:textAlignment="viewStart"
+        android:textColor="@color/gold"
+        android:textDirection="locale"
+        android:textSize="@dimen/_12ssp"
+        android:textStyle="normal" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/iv_selected_unselected_subscription"
+        android:layout_width="@dimen/_20sdp"
+        android:layout_height="@dimen/_20sdp"
+        android:src="@drawable/ic_baseline_check_24"
+        android:layout_marginStart="@dimen/_8sdp"
+        android:visibility="gone"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="@dimen/_8sdp" />
+
+</RelativeLayout>

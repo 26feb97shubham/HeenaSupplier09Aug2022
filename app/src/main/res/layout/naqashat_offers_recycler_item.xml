@@ -24,12 +24,25 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <com.google.android.material.imageview.ShapeableImageView
-                    android:id="@+id/img"
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/def_henna"/>
+                    android:layout_height="match_parent">
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/img"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/def_henna"/>
+
+                    <ProgressBar
+                        android:layout_width="@dimen/_15sdp"
+                        android:layout_height="@dimen/_15sdp"
+                        android:layout_centerInParent="true"
+                        android:id="@+id/offers_loader"
+                        android:visibility="visible"/>
+                </RelativeLayout>
+
+
 
                 <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/iv_edit"
@@ -75,6 +88,8 @@
             android:textColor="@color/text_gold_color_dark"
             android:layout_marginTop="@dimen/_6sdp"
             android:layout_marginStart="@dimen/_10sdp"
+            android:maxLines="1"
+            android:ellipsize="end"
             android:fontFamily="@font/avenir_medium"
             android:gravity="center_vertical"
             android:textStyle="normal"

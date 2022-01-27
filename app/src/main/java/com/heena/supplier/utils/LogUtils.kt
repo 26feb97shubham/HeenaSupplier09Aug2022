@@ -3,7 +3,7 @@ package com.heena.supplier.utils
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
-import androidx.viewbinding.BuildConfig
+import com.heena.supplier.BuildConfig
 
 
 class LogUtils {

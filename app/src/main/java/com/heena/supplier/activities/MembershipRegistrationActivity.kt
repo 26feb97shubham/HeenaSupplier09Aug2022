@@ -5,24 +5,29 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.view.WindowManager
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.android.billingclient.api.SkuDetails
 import com.heena.supplier.R
 import com.heena.supplier.`interface`.ClickInterface
 import com.heena.supplier.adapters.RegistrationMembershipPlansListAdapter
-import com.heena.supplier.billing.BillingClientWrapper
+import com.heena.supplier.models.BuyMembership
 import com.heena.supplier.models.Membership
 import com.heena.supplier.models.MembershipListResponse
 import com.heena.supplier.utils.ConstClass
 import com.heena.supplier.utils.LogUtils
 import com.heena.supplier.utils.SharedPreferenceUtility
+import com.heena.supplier.utils.Utility
 import com.heena.supplier.utils.Utility.Companion.apiInterface
 import com.heena.supplier.utils.Utility.Companion.isNetworkAvailable
+import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
 import kotlinx.android.synthetic.main.activity_membership_registration2.*
 import kotlinx.android.synthetic.main.activity_membership_registration2.btnSignUp
 import kotlinx.android.synthetic.main.activity_membership_registration2.rv_membership_plans
+import kotlinx.android.synthetic.main.activity_payment_fragment.*
 import kotlinx.android.synthetic.main.activity_sign_up2.*
 import kotlinx.android.synthetic.main.fragment_membership_bottom_sheet_dialog.*
 import org.json.JSONException
@@ -39,13 +44,12 @@ class MembershipRegistrationActivity : AppCompatActivity() {
     private var membershipList = ArrayList<Membership>()
     private var membership : Membership?=null
     private var mContext : Context?=null
-
-    @Inject
-    lateinit var billingClientWrapper: BillingClientWrapper
+    var doubleClick:Boolean=false
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         mContext = this
         setContentView(R.layout.activity_membership_registration2)
 
@@ -69,7 +73,7 @@ class MembershipRegistrationActivity : AppCompatActivity() {
 
         registrationMembershipPlansListAdapter.notifyDataSetChanged()
 
-        btnSignUp.setOnClickListener {
+        btnSignUp.setSafeOnClickListener {
             if (registrationMembershipPlansListAdapter.getSelected() != null) {
                 membershipId = registrationMembershipPlansListAdapter.getSelected()!!.membership_id
                 membership = registrationMembershipPlansListAdapter.getSelected()
@@ -77,13 +81,16 @@ class MembershipRegistrationActivity : AppCompatActivity() {
                 ) {
                     LogUtils.shortToast(this, getString(R.string.plan_already_purchased))
                 } else {
-                    startActivity(
+                    /*startActivity(
                         Intent(this, PaymentFragmentActivity::class.java).putExtra(
                             ConstClass.EMAILADDRESS,
                             emailaddress
                         ).putExtra("membership", membership)
                     )
-                    finish()
+                    finish()*/
+
+
+                    purchaseMembership()
                 }
             } else {
                 LogUtils.shortToast(
@@ -118,6 +125,7 @@ class MembershipRegistrationActivity : AppCompatActivity() {
                                         }
                                     })
                                     rv_membership_plans.adapter = registrationMembershipPlansListAdapter
+                                    pageIndicator2_activity.attachTo(rv_membership_plans)
                                     registrationMembershipPlansListAdapter.notifyDataSetChanged()
                                 }else{
                                     LogUtils.longToast(this@MembershipRegistrationActivity, response.body()!!.message)
@@ -151,24 +159,53 @@ class MembershipRegistrationActivity : AppCompatActivity() {
         }
     }
 
-    private fun displayProducts() {
-        billingClientWrapper.queryProducts(object : BillingClientWrapper.OnQueryProductsListener {
-            override fun onSuccess(products: List<SkuDetails>) {
-                /*products.forEach { product ->
-                    purchaseButtonsMap[product.sku]?.apply {
-                        text = "${product.description} for ${product.price}"
-                        setOnClickListener {
-                            billingClientWrapper.purchase(this@PaywallActivity, product) //will be declared below
+    private fun purchaseMembership() {
+        if (isNetworkAvailable()){
+            window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+            membership_registration_progressBar.visibility= View.VISIBLE
+            val call = apiInterface.buyMembership(user_id = SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.UserId, 0].toString(), membership_id = membershipId.toString())
+            call!!.enqueue(object : Callback<BuyMembership?> {
+                override fun onResponse(
+                    call: Call<BuyMembership?>,
+                    response: Response<BuyMembership?>
+                ) {
+                    membership_registration_progressBar.visibility = View.GONE
+                    window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                    if (response.isSuccessful){
+                        if (response.body()!!.status==1){
+                            LogUtils.shortToast(this@MembershipRegistrationActivity, response.body()!!.message)
+                            SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.IsLogin, true)
+                            SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.MembershipId,response.body()!!.membership.membership_id)
+                            SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.MembershipTimeLimit,response.body()!!.membership.day)
+                            SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.MembershipName,response.body()!!.membership.name)
+                            SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.MembershipPrice,response.body()!!.membership.price)
+                            SharedPreferenceUtility.getInstance().saveMembershipInfo(this@MembershipRegistrationActivity,response.body()!!.membership)
+                            startActivity(Intent(this@MembershipRegistrationActivity, LoginActivity::class.java))
+                            finishAffinity()
+                        }else{
+                            LogUtils.longToast(this@MembershipRegistrationActivity, response.body()!!.message)
                         }
+                    }else{
+                        LogUtils.longToast(this@MembershipRegistrationActivity,getString(R.string.response_isnt_successful))
                     }
-                }*/
-            }
+                }
 
-            override fun onFailure(error: BillingClientWrapper.Error) {
-                //handle error
-            }
-        })
+                override fun onFailure(call: Call<BuyMembership?>, throwable: Throwable) {
+                    LogUtils.e("msg", throwable.message)
+                    LogUtils.shortToast(this@MembershipRegistrationActivity,throwable.localizedMessage)
+                    membership_registration_progressBar.visibility = View.GONE
+                    window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                }
+
+            })
+        }
     }
+
+
+    override fun onBackPressed() {
+        Utility.exitApp(this, this)
+    }
+
 
     companion object{
         private var instance: SharedPreferenceUtility? = null

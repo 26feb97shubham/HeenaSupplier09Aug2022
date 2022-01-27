@@ -31,6 +31,15 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_margin="@dimen/_6sdp"
             android:scaleType="centerCrop"/>
+
+        <ProgressBar
+            android:layout_width="@dimen/_15sdp"
+            android:layout_height="@dimen/_15sdp"
+            android:id="@+id/img_loader_photos"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

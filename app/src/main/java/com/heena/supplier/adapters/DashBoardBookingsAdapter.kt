@@ -9,6 +9,7 @@ import com.bumptech.glide.Glide
 import com.heena.supplier.R
 import com.heena.supplier.`interface`.ClickInterface
 import com.heena.supplier.models.BookingItem
+import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
 import kotlinx.android.synthetic.main.layout_current_bokings_item.view.*
 
 class DashBoardBookingsAdapter(
@@ -26,7 +27,7 @@ class DashBoardBookingsAdapter(
             dashboarditemView.tv_service_date_booking.text = bookingItem.date
             Glide.with(context).load(bookingItem.user!!.image).into(dashboarditemView.civ_profile)
 
-            dashboarditemView.setOnClickListener {
+            dashboarditemView.setSafeOnClickListener {
                 onRecyclerItemClick.OnClickAction(position)
             }
         }

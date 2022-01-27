@@ -42,7 +42,7 @@
                 android:textAllCaps="false"
                 android:fontFamily="@font/avenir_medium"/>
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
@@ -50,33 +50,32 @@
                 app:layout_constraintTop_toTopOf="@id/tv_membership_title"
                 app:layout_constraintBottom_toBottomOf="@id/tv_membership_title"
                 android:layout_marginStart="@dimen/_20sdp">
+
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_membership_plan_price"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="start"
-                    android:text="AED 1,000"
-                    android:textAlignment="viewStart"
-                    android:textDirection="locale"
-                    android:textColor="@color/text_gold_color_dark"
-                    android:textSize="@dimen/_10ssp"
-                    android:textStyle="normal"
-                    android:maxLines="1"
+                    android:layout_marginEnd="@dimen/_8sdp"
                     android:ellipsize="end"
+                    android:fontFamily="@font/avenir_medium"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:text="AED 1,000"
                     android:textAllCaps="false"
-                    android:fontFamily="@font/avenir_medium"/>
+                    android:textColor="@color/text_gold_color_dark"
+                    android:textDirection="locale"
+                    android:textSize="@dimen/_10ssp"
+                    android:textStyle="normal" />
 
                 <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/iv_selected_unselected"
                     android:layout_width="@dimen/_20sdp"
                     android:layout_height="@dimen/_20sdp"
                     android:src="@drawable/ic_baseline_check_24"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/tv_membership_title"
                     android:layout_marginStart="@dimen/_8sdp"
                     android:visibility="gone"
-                    app:layout_constraintBottom_toBottomOf="@id/tv_membership_title"/>
-            </LinearLayout>
+                    android:layout_toEndOf="@id/tv_membership_plan_price" />
+            </RelativeLayout>
 
 
             <com.google.android.material.textview.MaterialTextView

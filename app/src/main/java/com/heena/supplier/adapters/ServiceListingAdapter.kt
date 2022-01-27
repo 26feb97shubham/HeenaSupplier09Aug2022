@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.heena.supplier.R
 import com.heena.supplier.`interface`.ClickInterface
+import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
 import kotlinx.android.synthetic.main.services_categories_items.view.*
 
 class ServiceListingAdapter(
@@ -18,7 +19,7 @@ class ServiceListingAdapter(
         fun bind(service: String, position: Int) {
             serviceItemView.tv_services_categories.text = serviceListing[position]
             serviceItemView.rb_address.isChecked = position == mSelectedItem
-            serviceItemView.setOnClickListener {
+            serviceItemView.setSafeOnClickListener {
                 mSelectedItem = adapterPosition
                 notifyDataSetChanged()
                 onRecyclerItemClick.OnAddService(mSelectedItem, service)

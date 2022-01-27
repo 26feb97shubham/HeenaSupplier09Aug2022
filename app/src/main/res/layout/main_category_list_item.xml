@@ -1,25 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:cardBackgroundColor="@color/white"
-    app:cardCornerRadius="@dimen/_5sdp"
-    android:layout_margin="@dimen/_4sdp"
-    android:id="@+id/card_main_category">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/text_main_category"
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_30sdp"
-        android:text="Sample Text"
-        android:fontFamily="@font/expressway_rg"
-        android:textColor="#836853"
-        android:textSize="@dimen/_13ssp"
-        android:paddingStart="@dimen/_8sdp"
-        android:gravity="center_vertical"
-        android:drawableEnd="@drawable/dark_brown_right_arrow"
-        android:drawablePadding="@dimen/_8sdp"
-        android:paddingEnd="@dimen/_8sdp"/>
+        android:layout_height="wrap_content"
+        app:cardBackgroundColor="@color/white"
+        app:cardCornerRadius="@dimen/_5sdp"
+        android:layout_margin="@dimen/_4sdp"
+        android:id="@+id/card_main_category"
+        app:layout_constraintTop_toTopOf="parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="center_vertical">
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/text_main_category"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_30sdp"
+                android:text="Sample Text"
+                android:fontFamily="@font/expressway_rg"
+                android:textColor="#836853"
+                android:textSize="@dimen/_13ssp"
+                android:paddingStart="@dimen/_8sdp"
+                android:gravity="center_vertical"
+                android:drawableEnd="@drawable/ic_baseline_keyboard_arrow_right_24"
+                android:drawablePadding="@dimen/_8sdp"
+                android:paddingEnd="@dimen/_8sdp"/>
 
-</com.google.android.material.card.MaterialCardView>
+            <LinearLayout
+                android:id="@+id/card_sub_category"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_margin="@dimen/_8sdp"
+                android:visibility="gone">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/rv_sub_category"
+                    android:layout_marginVertical="@dimen/_8sdp"/>
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/text_no_sub_categories_found"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_30sdp"
+                    android:text="@string/no_sub_categories_found"
+                    android:fontFamily="@font/expressway_rg"
+                    android:textColor="#836853"
+                    android:layout_gravity="center"
+                    android:textSize="@dimen/_13ssp"
+                    android:visibility="gone"
+                    android:paddingStart="@dimen/_8sdp"
+                    android:gravity="center" />
+            </LinearLayout>
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

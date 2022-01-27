@@ -1,180 +1,193 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/transparent"
     tools:context=".fragments.ContactUsFragment">
-
-    <ImageView
-        android:id="@+id/iv_logo"
-        android:layout_width="@dimen/_150sdp"
-        android:layout_height="@dimen/_80sdp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/_20sdp"
-        android:src="@drawable/golden_logo" />
-
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/tv_title"
-        android:layout_width="@dimen/_200sdp"
-        android:layout_height="@dimen/_40sdp"
-        android:layout_below="@id/iv_logo"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/_20sdp"
-        android:fontFamily="@font/avenir_medium"
-        android:gravity="center"
-        android:text="@string/contact_us"
-        android:textAllCaps="false"
-        android:textColor="@color/gold"
-        android:textSize="@dimen/_24ssp" />
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/tv_title"
-        android:layout_marginTop="@dimen/_10sdp"
-        android:background="@drawable/left_right_light_brown_filled_bg"
-        android:paddingHorizontal="@dimen/_20sdp"
-        android:paddingTop="@dimen/_20sdp">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/iv_logo"
+            android:layout_width="@dimen/_150sdp"
+            android:layout_height="@dimen/_80sdp"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:src="@drawable/golden_logo"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
-        <androidx.core.widget.NestedScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_title"
+            android:layout_width="@dimen/_200sdp"
+            android:layout_height="@dimen/_40sdp"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:fontFamily="@font/avenir_medium"
+            android:gravity="center"
+            android:text="@string/contact_us"
+            android:textAllCaps="false"
+            android:textColor="@color/gold"
+            android:textSize="@dimen/_24ssp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/iv_logo"/>
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="410dp"
+            android:layout_height="509dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:background="@drawable/left_right_light_brown_filled_bg"
+            android:paddingHorizontal="@dimen/_20sdp"
+            android:paddingTop="@dimen/_20sdp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_title">
+
+            <LinearLayout
+                android:id="@+id/ll_fullname"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingVertical="@dimen/_8sdp">
-
-                <LinearLayout
-                    android:id="@+id/ll_fullname"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_10sdp"
-                    android:orientation="vertical"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <com.google.android.material.textview.MaterialTextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/avenir_medium"
-                        android:text="@string/full_name"
-                        android:textAllCaps="false"
-                        android:textColor="@color/text_gold_color_dark"
-                        android:textSize="@dimen/_11ssp"
-                        android:textStyle="normal" />
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/et_fullname"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/_60sdp"
-                        android:backgroundTint="@color/gray"
-                        android:fontFamily="@font/avenir_medium"
-                        android:hint=" - - "
-                        android:inputType="text"
-                        android:textColor="@color/gold"
-                        android:textCursorDrawable="@drawable/cursor_color"
-                        android:textSize="@dimen/_11ssp"
-                        android:textStyle="normal" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/ll_card_number"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_10sdp"
-                    android:orientation="vertical"
-                    app:layout_constraintTop_toBottomOf="@id/ll_fullname">
-
-                    <com.google.android.material.textview.MaterialTextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/avenir_medium"
-                        android:text="@string/email_address"
-                        android:textAllCaps="false"
-                        android:textColor="@color/text_gold_color_dark"
-                        android:textSize="@dimen/_11ssp"
-                        android:textStyle="normal" />
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/et_email_address"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/_60sdp"
-                        android:backgroundTint="@color/gray"
-                        android:fontFamily="@font/avenir_medium"
-                        android:hint=" - - "
-                        android:inputType="textEmailAddress"
-                        android:textColor="@color/gold"
-                        android:textCursorDrawable="@drawable/cursor_color"
-                        android:textSize="@dimen/_11ssp"
-                        android:textStyle="normal" />
-                </LinearLayout>
-
-
-                <LinearLayout
-                    android:id="@+id/ll_message"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_10sdp"
-                    android:orientation="vertical"
-                    app:layout_constraintTop_toBottomOf="@id/ll_card_number">
-
-                    <com.google.android.material.textview.MaterialTextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/avenir_medium"
-                        android:text="@string/message"
-                        android:textAllCaps="false"
-                        android:textColor="@color/text_gold_color_dark"
-                        android:textSize="@dimen/_11ssp"
-                        android:textStyle="normal" />
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/et_message"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/_60sdp"
-                        android:backgroundTint="@color/gray"
-                        android:fontFamily="@font/avenir_medium"
-                        android:hint=" - - "
-                        android:inputType="text"
-                        android:textColor="@color/gold"
-                        android:textCursorDrawable="@drawable/cursor_color"
-                        android:textSize="@dimen/_11ssp"
-                        android:textStyle="normal" />
-                </LinearLayout>
+                android:layout_marginTop="@dimen/_10sdp"
+                android:orientation="vertical"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/tv_contact_us_submit"
-                    android:layout_width="@dimen/_200sdp"
-                    android:layout_height="@dimen/_40sdp"
-                    android:layout_marginTop="@dimen/_40sdp"
-                    android:background="@drawable/curved_gold_filled_rect_box"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:fontFamily="@font/avenir_medium"
-                    android:gravity="center"
-                    android:text="@string/submit"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/_15ssp"
-                    android:textStyle="normal"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ll_message" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                    android:text="@string/full_name"
+                    android:textAllCaps="false"
+                    android:textColor="@color/text_gold_color_dark"
+                    android:textSize="@dimen/_11ssp"
+                    android:textStyle="normal" />
 
-        </androidx.core.widget.NestedScrollView>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:textDirection="locale"
+                    android:textAlignment="viewStart"
+                    android:paddingStart="@dimen/_4sdp"
+                    android:id="@+id/et_fullname"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_60sdp"
+                    android:backgroundTint="@color/gray"
+                    android:imeOptions="actionNext"
+                    android:fontFamily="@font/avenir_medium"
+                    android:hint=" - - "
+                    android:inputType="text"
+                    android:textColor="@color/gold"
+                    android:textCursorDrawable="@drawable/cursor_color"
+                    android:textSize="@dimen/_11ssp"
+                    android:textStyle="normal" />
 
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_card_number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:orientation="vertical"
+                app:layout_constraintTop_toBottomOf="@id/ll_fullname">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/avenir_medium"
+                    android:text="@string/email_address"
+                    android:textAllCaps="false"
+                    android:textColor="@color/text_gold_color_dark"
+                    android:textSize="@dimen/_11ssp"
+                    android:textStyle="normal" />
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:textDirection="locale"
+                    android:textAlignment="viewStart"
+                    android:paddingStart="@dimen/_4sdp"
+                    android:id="@+id/et_email_address"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_60sdp"
+                    android:backgroundTint="@color/gray"
+                    android:fontFamily="@font/avenir_medium"
+                    android:hint=" - - "
+                    android:inputType="textEmailAddress"
+                    android:textColor="@color/gold"
+                    android:imeOptions="actionNext"
+                    android:textCursorDrawable="@drawable/cursor_color"
+                    android:textSize="@dimen/_11ssp"
+                    android:textStyle="normal" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/ll_message"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:orientation="vertical"
+                app:layout_constraintTop_toBottomOf="@id/ll_card_number">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/avenir_medium"
+                    android:text="@string/message"
+                    android:textAllCaps="false"
+                    android:textColor="@color/text_gold_color_dark"
+                    android:textSize="@dimen/_11ssp"
+                    android:textStyle="normal" />
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:textDirection="locale"
+                    android:textAlignment="viewStart"
+                    android:paddingStart="@dimen/_4sdp"
+                    android:id="@+id/et_message"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_60sdp"
+                    android:backgroundTint="@color/gray"
+                    android:fontFamily="@font/avenir_medium"
+                    android:hint=" - - "
+                    android:inputType="text"
+                    android:textColor="@color/gold"
+                    android:imeOptions="actionDone"
+                    android:textCursorDrawable="@drawable/cursor_color"
+                    android:textSize="@dimen/_11ssp"
+                    android:textStyle="normal" />
+            </LinearLayout>
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_contact_us_submit"
+                android:layout_width="@dimen/_200sdp"
+                android:layout_height="@dimen/_40sdp"
+                android:layout_marginTop="@dimen/_40sdp"
+                android:background="@drawable/curved_gold_filled_rect_box"
+                android:fontFamily="@font/avenir_medium"
+                android:gravity="center"
+                android:text="@string/submit"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_15ssp"
+                android:textStyle="normal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ll_message" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <ProgressBar
+            android:id="@+id/fragment_contact_us_progressBar"
+            style="@style/Theme.Progressbar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:elevation="@dimen/_5sdp"
+            android:indeterminateTint="@color/gold"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:visibility="gone" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <ProgressBar
-        android:id="@+id/fragment_contact_us_progressBar"
-        style="@style/Theme.Progressbar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:elevation="@dimen/_5sdp"
-        android:indeterminateTint="@color/gold"
-        android:visibility="gone" />
-
-</RelativeLayout>
+</ScrollView>

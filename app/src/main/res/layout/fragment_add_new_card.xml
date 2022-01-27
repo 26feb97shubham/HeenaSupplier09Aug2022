@@ -99,6 +99,9 @@
                         android:fontFamily="@font/avenir_medium"
                         android:textColor="@color/text_gold_color_dark"/>
                     <com.google.android.material.textfield.TextInputEditText
+                        android:textDirection="locale"
+                        android:textAlignment="viewStart"
+                        android:paddingStart="@dimen/_4sdp"
                         android:id="@+id/et_card_title"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/_60sdp"
@@ -131,6 +134,9 @@
                         android:fontFamily="@font/avenir_medium"
                         android:textColor="@color/text_gold_color_dark"/>
                     <com.google.android.material.textfield.TextInputEditText
+                        android:textDirection="locale"
+                        android:textAlignment="viewStart"
+                        android:paddingStart="@dimen/_4sdp"
                         android:id="@+id/et_card_number"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/_60sdp"
@@ -169,6 +175,9 @@
                             android:fontFamily="@font/avenir_medium"
                             android:textColor="@color/text_gold_color_dark"/>
                         <com.google.android.material.textfield.TextInputEditText
+                            android:textDirection="locale"
+                            android:textAlignment="viewStart"
+                            android:paddingStart="@dimen/_4sdp"
                             android:id="@+id/et_cvv"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/_60sdp"
@@ -198,6 +207,9 @@
                             android:fontFamily="@font/avenir_medium"
                             android:textColor="@color/text_gold_color_dark"/>
                         <com.google.android.material.textfield.TextInputEditText
+                            android:textDirection="locale"
+                            android:textAlignment="viewStart"
+                            android:paddingStart="@dimen/_4sdp"
                             android:id="@+id/et_expiry"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/_60sdp"

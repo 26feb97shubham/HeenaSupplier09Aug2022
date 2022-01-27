@@ -8,5 +8,11 @@ data class Cards(
     var cvv : String,
     var expiry_date : String,
     var created_at : String,
-    var updated_at : String
+    var updated_at : String,
+    var card_id : String,
+    var brand : String,
+    var scheme : String,
+    var bank : String,
+    var country : String,
+    var first_six : String
 )

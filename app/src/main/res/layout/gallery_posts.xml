@@ -33,6 +33,16 @@
             android:layout_margin="@dimen/_8sdp"
             android:src="@drawable/delete_icon"
             android:contentDescription="@string/delete_gallery_image" />
+
+        <ProgressBar
+            android:id="@+id/gallery_loader"
+            android:layout_width="@dimen/_25sdp"
+            android:layout_height="@dimen/_25sdp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:visibility="visible"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

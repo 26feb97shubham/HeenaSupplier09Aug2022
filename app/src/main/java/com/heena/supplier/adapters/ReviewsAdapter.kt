@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.heena.supplier.R
 import com.heena.supplier.models.CommentsItem
 import kotlinx.android.synthetic.main.layout_reviews_items.view.*
@@ -12,11 +13,21 @@ import kotlinx.android.synthetic.main.layout_reviews_items.view.*
 class ReviewsAdapter(private val context: Context, private val commentsListing: ArrayList<CommentsItem>) : RecyclerView.Adapter<ReviewsAdapter.ReviewsAdapterVH>() {
     inner class ReviewsAdapterVH(itemView : View) : RecyclerView.ViewHolder(itemView) {
         fun bind(commentsItem: CommentsItem) {
-            itemView.tv_naqasha_name.text = commentsItem.owner!!.name
+            if(commentsItem.owner!!.name.isNullOrBlank()){
+                itemView.tv_naqasha_name.text = commentsItem.owner.username
+            }else{
+                itemView.tv_naqasha_name.text = commentsItem.owner.name
+            }
+            Glide.with(context).load(commentsItem.owner.image).into(itemView.civ_profile)
             itemView.tv_service_date.text = commentsItem.create_at
             itemView.tv_service_desc.text = commentsItem.message
-            itemView.txtRating.text = commentsItem.star.toString()
-            itemView.ratingBar.rating = commentsItem.star!!.toFloat()
+            if (commentsItem.star.toString().equals("")||commentsItem.star.toString()==null){
+                itemView.txtRating.text = "0.0"
+                itemView.ratingBar.rating = 0F
+            }else{
+                itemView.txtRating.text = String.format("%.1f",commentsItem.star.toString().toDouble())
+                itemView.ratingBar.rating = commentsItem.star!!.toFloat()
+            }
         }
     }
 

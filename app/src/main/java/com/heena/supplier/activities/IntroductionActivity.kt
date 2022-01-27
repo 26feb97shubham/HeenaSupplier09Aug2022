@@ -2,10 +2,14 @@ package com.heena.supplier.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.widget.Toast
 import com.heena.supplier.R
 import com.heena.supplier.adapters.ScreenSlidePagerAdapter
 import com.heena.supplier.utils.SharedPreferenceUtility
 import com.google.android.material.tabs.TabLayoutMediator
+import com.heena.supplier.utils.Utility
 import kotlinx.android.synthetic.main.activity_introduction2.*
 
 class IntroductionActivity : AppCompatActivity() {
@@ -20,7 +24,6 @@ class IntroductionActivity : AppCompatActivity() {
         val pagerAdapter = ScreenSlidePagerAdapter(this)
         intro_view_pager.adapter = pagerAdapter
 
-        //Attaching tab to view pager
         TabLayoutMediator(tabLayout,   intro_view_pager){ _, _ ->
         }.attach()
     }
@@ -33,6 +36,10 @@ class IntroductionActivity : AppCompatActivity() {
             }
             return instance as SharedPreferenceUtility
         }
+    }
+
+    override fun onBackPressed() {
+        Utility.exitApp(this, this)
     }
 
 }

@@ -24,6 +24,7 @@ import com.heena.supplier.rest.APIInterface
 import com.heena.supplier.utils.LogUtils
 import com.heena.supplier.utils.SharedPreferenceUtility
 import com.heena.supplier.utils.Utility
+import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
 import kotlinx.android.synthetic.main.activity_home2.*
 import kotlinx.android.synthetic.main.activity_notifications_fragment.view.*
 import org.json.JSONException
@@ -57,6 +58,10 @@ class NotificationsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         mView = inflater.inflate(R.layout.activity_notifications_fragment, container, false)
+        Utility.changeLanguage(
+            requireContext(),
+            SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, "")
+        )
         setUpViews()
         getNotifications(false)
         return mView
@@ -143,7 +148,7 @@ class NotificationsFragment : Fragment() {
             noInternetDialog.show(requireActivity().supportFragmentManager, "Notification Fragment")
         }
 
-        requireActivity().iv_back.setOnClickListener {
+        requireActivity().iv_back.setSafeOnClickListener {
             requireActivity().iv_back.startAnimation(AlphaAnimation(1F,0.5F))
             SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_back)
             findNavController().popBackStack()

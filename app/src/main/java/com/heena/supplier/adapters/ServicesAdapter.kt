@@ -1,15 +1,22 @@
 package com.heena.supplier.adapters
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.Target
 import com.heena.supplier.R
 import com.heena.supplier.`interface`.ClickInterface
 import com.heena.supplier.models.Service
+import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
 import kotlinx.android.synthetic.main.layout_services_item.view.*
 
 class ServicesAdapter(private val context: Context,
@@ -17,11 +24,37 @@ class ServicesAdapter(private val context: Context,
                       private val subscription_id : Int,
                       private val onServicesItemClick: ClickInterface.onServicesItemClick) : RecyclerView.Adapter<ServicesAdapter.ServicesAdapterVH>() {
     inner class ServicesAdapterVH(itemView : View) : RecyclerView.ViewHolder(itemView){
+        @SuppressLint("CheckResult")
         fun onBind(service: Service, position: Int) {
             if (service.gallery?.size==0){
                 itemView.img.setImageResource(R.drawable.user)
             }else{
-                Glide.with(context).applyDefaultRequestOptions(RequestOptions().placeholder(R.drawable.user)).load(service.gallery!![0]).into(itemView.img)
+                Glide.with(context)
+                    .load(service.gallery!![0])
+                    .apply(RequestOptions().placeholder(R.drawable.user).error(R.drawable.user))
+                    .listener(object : RequestListener<Drawable>{
+                        override fun onLoadFailed(
+                            e: GlideException?,
+                            model: Any?,
+                            target: Target<Drawable>?,
+                            isFirstResource: Boolean
+                        ): Boolean {
+                            itemView.img_loader.visibility = View.GONE
+                            return false
+                        }
+
+                        override fun onResourceReady(
+                            resource: Drawable?,
+                            model: Any?,
+                            target: Target<Drawable>?,
+                            dataSource: DataSource?,
+                            isFirstResource: Boolean
+                        ): Boolean {
+                            itemView.img_loader.visibility = View.GONE
+                            return false
+                        }
+
+                    }).into(itemView.img)
             }
 
             itemView.tv_services.text = service.name
@@ -35,15 +68,15 @@ class ServicesAdapter(private val context: Context,
                 itemView.iv_edit.setImageResource(R.drawable.edit_icon)
             }
 
-            itemView.iv_delete.setOnClickListener {
+            itemView.iv_delete.setSafeOnClickListener {
                 onServicesItemClick.onServiceDele(position = position)
             }
 
-            itemView.iv_edit.setOnClickListener {
+            itemView.iv_edit.setSafeOnClickListener {
                 onServicesItemClick.onServiceEdit(position)
             }
 
-            itemView.cv_image.setOnClickListener {
+            itemView.cv_image.setSafeOnClickListener {
                 onServicesItemClick.onServicClick(position)
             }
         }

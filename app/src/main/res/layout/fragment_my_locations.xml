@@ -71,22 +71,23 @@
             android:layout_marginTop="@dimen/_10sdp"
             tools:listitem="@layout/saved_address_listing"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
+
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_add_new_address"
         android:layout_width="@dimen/_200sdp"
         android:layout_height="@dimen/_40sdp"
-        android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginVertical="@dimen/_20sdp"
+        android:layout_marginTop="@dimen/_40sdp"
+        android:background="@drawable/curved_gold_filled_rect_box"
+        android:fontFamily="@font/avenir_medium"
+        android:gravity="center"
         android:text="@string/add_new_address"
         android:textAllCaps="true"
-        android:layout_marginVertical="@dimen/_20sdp"
         android:textColor="@color/black"
-        android:gravity="center"
-        android:background="@drawable/curved_gold_filled_rect_box"
-        android:layout_marginTop="@dimen/_40sdp"
-        android:fontFamily="@font/avenir_medium"
         android:textSize="@dimen/_13ssp"
-        android:textStyle="normal"/>
+        android:textStyle="normal" />
 
 
 </RelativeLayout>

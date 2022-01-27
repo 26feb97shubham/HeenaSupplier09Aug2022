@@ -81,11 +81,12 @@
                 android:text="@string/service_desc"
                 android:maxLines="5"
                 android:ellipsize="end"
+                android:textDirection="locale"
+                android:textAlignment="viewStart"
                 android:textColor="@color/gold"
                 android:layout_marginTop="@dimen/_6sdp"
                 android:layout_marginHorizontal="@dimen/_10sdp"
                 android:fontFamily="@font/avenir_medium"
-                android:gravity="center_vertical"
                 android:textStyle="normal"
                 android:layout_gravity="center"
                 android:textSize="@dimen/_12ssp" />

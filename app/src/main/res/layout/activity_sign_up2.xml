@@ -91,6 +91,8 @@
 
 
             <com.google.android.material.textfield.TextInputEditText
+                android:textDirection="locale"
+                android:textAlignment="viewStart"
                 android:id="@+id/edtUsername_signup"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_40sdp"
@@ -117,6 +119,8 @@
 
 
             <com.google.android.material.textfield.TextInputEditText
+                android:textDirection="locale"
+                android:textAlignment="viewStart"
                 android:id="@+id/edtmobilenumber_signup"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_40sdp"
@@ -141,6 +145,8 @@
                 android:hint="@string/mobile_number"/>
 
             <com.google.android.material.textfield.TextInputEditText
+                android:textDirection="locale"
+                android:textAlignment="viewStart"
                 android:id="@+id/edtemailaddress_signup"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_40sdp"
@@ -161,7 +167,7 @@
                 android:textAllCaps="false"
                 android:elevation="@dimen/_5sdp"
                 android:inputType="textEmailAddress"
-                android:imeOptions="actionDone"
+                android:imeOptions="actionNext"
                 android:hint="@string/email_address"/>
 
             <com.google.android.material.textview.MaterialTextView
@@ -249,6 +255,8 @@
                 android:orientation="horizontal"
                 android:background="@drawable/gold_border_white_filled_rect_box_curved">
                 <com.google.android.material.textfield.TextInputEditText
+                    android:textDirection="locale"
+                    android:textAlignment="viewStart"
                     android:id="@+id/edtpassword_signup"
                     android:layout_width="0dp"
                     android:layout_weight="0.9"
@@ -284,6 +292,8 @@
                 android:layout_marginHorizontal="@dimen/_30sdp"
                 android:background="@drawable/gold_border_white_filled_rect_box_curved">
                 <com.google.android.material.textfield.TextInputEditText
+                    android:textDirection="locale"
+                    android:textAlignment="viewStart"
                     android:id="@+id/edtcnfrmpassword_signup"
                     android:layout_width="0dp"
                     android:layout_weight="0.9"
@@ -377,6 +387,7 @@
                 app:layout_constraintTop_toBottomOf="@id/cnfrmpasslayout"
                 app:layout_constraintStart_toStartOf="parent"
                 android:layout_marginHorizontal="@dimen/_30sdp"
+                android:gravity="center_vertical"
                 android:layout_marginTop="@dimen/_20sdp">
 
                 <com.google.android.material.imageview.ShapeableImageView

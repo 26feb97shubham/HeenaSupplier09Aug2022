@@ -8,16 +8,23 @@ import androidx.recyclerview.widget.RecyclerView
 import com.heena.supplier.R
 import com.heena.supplier.`interface`.ClickInterface
 import com.heena.supplier.models.HelpSubCategory
+import com.heena.supplier.utils.Utility
+import com.heena.supplier.utils.Utility.Companion.content
+import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
 import kotlinx.android.synthetic.main.sub_category_items.view.*
 
 
 class SubHelpCategoryAdapter(private val context : Context, private val subCategoryList : ArrayList<HelpSubCategory>, private val subhelpCategoryClicked: ClickInterface.subhelpCategoryClicked)
     : RecyclerView.Adapter<SubHelpCategoryAdapter.SubHelpCategoryAdapterVH>() {
+    private var sub_help_category : HelpSubCategory?=null
     inner class SubHelpCategoryAdapterVH(private val itemView : View) : RecyclerView.ViewHolder(itemView){
         fun bind(helpSubCategory: HelpSubCategory, position: Int) {
             itemView.text_sub_category.text = helpSubCategory.title
-            itemView.card_sub_category.setOnClickListener {
-                subhelpCategoryClicked.subHelpCategory(position)
+            itemView.card_sub_category.setSafeOnClickListener {
+                sub_help_category = subCategoryList[position]
+                content = sub_help_category!!.content
+                Utility.helpSubCategory = sub_help_category
+                subhelpCategoryClicked.subHelpCategory(position,sub_help_category!!.content)
             }
         }
 

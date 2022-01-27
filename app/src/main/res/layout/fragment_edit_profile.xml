@@ -58,10 +58,23 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent" />
 
+
+                <ProgressBar
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/edit_image_progress_bar"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:visibility="visible"/>
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
 
             <com.google.android.material.textfield.TextInputEditText
+                android:textDirection="locale"
+                android:textAlignment="viewStart"
                 android:id="@+id/edtUsername_update"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_40sdp"
@@ -87,6 +100,8 @@
 
 
             <com.google.android.material.textfield.TextInputEditText
+                android:textDirection="locale"
+                android:textAlignment="viewStart"
                 android:id="@+id/edtFullName_update"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_40sdp"
@@ -113,6 +128,8 @@
 
 
             <com.google.android.material.textfield.TextInputEditText
+                android:textDirection="locale"
+                android:textAlignment="viewStart"
                 android:id="@+id/edtmobilenumber_update"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_40sdp"
@@ -136,6 +153,8 @@
                 android:hint="@string/mobile_number"/>
 
             <com.google.android.material.textfield.TextInputEditText
+                android:textDirection="locale"
+                android:textAlignment="viewStart"
                 android:id="@+id/edtemailaddress_update"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_40sdp"
@@ -159,6 +178,8 @@
                 android:hint="@string/email_address"/>
 
             <com.google.android.material.textview.MaterialTextView
+                android:textDirection="locale"
+                android:textAlignment="viewStart"
                 android:id="@+id/edtlocation_update"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_40sdp"

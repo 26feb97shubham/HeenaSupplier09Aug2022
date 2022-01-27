@@ -15,7 +15,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AlphaAnimation
-import android.widget.CompoundButton
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.navigation.fragment.findNavController
@@ -39,32 +38,21 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
+import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
 import kotlinx.android.synthetic.main.activity_home2.*
 import kotlinx.android.synthetic.main.fragment_address_sheet.*
+import kotlinx.android.synthetic.main.fragment_address_sheet.view.*
 import org.json.JSONException
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.IOException
-import java.util.ArrayList
+import java.util.*
+import kotlin.collections.HashMap
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [AddressSheetFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class AddressSheetFragment : Fragment(),
     OnMapReadyCallback,
-    GoogleMap.OnCameraIdleListener,
-    CompoundButton.OnCheckedChangeListener{
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    GoogleMap.OnCameraIdleListener{
 
     val apiInterface = APIClient.getClient()!!.create(APIInterface::class.java)
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -111,6 +99,10 @@ class AddressSheetFragment : Fragment(),
     ): View? {
         // Inflate the layout for this fragment
         mView = inflater.inflate(R.layout.fragment_address_sheet, container, false)
+        Utility.changeLanguage(
+            requireContext(),
+            SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, "")
+        )
         getCountires()
         return mView
     }
@@ -118,18 +110,15 @@ class AddressSheetFragment : Fragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
-        fetchCurrentLocation()
 
-        //requireActivity().tv_title.text = ""
-
-        requireActivity().iv_back.setOnClickListener {
+        requireActivity().iv_back.setSafeOnClickListener {
             requireActivity().iv_back.startAnimation(AlphaAnimation(1F, 0.5F))
             SharedPreferenceUtility.getInstance()
                 .hideSoftKeyBoard(requireContext(), requireActivity().iv_back)
             findNavController().popBackStack()
         }
 
-        requireActivity().iv_notification.setOnClickListener {
+        requireActivity().iv_notification.setSafeOnClickListener {
             requireActivity().iv_notification.startAnimation(AlphaAnimation(1F, 0.5F))
             SharedPreferenceUtility.getInstance()
                 .hideSoftKeyBoard(requireContext(), requireActivity().iv_notification)
@@ -141,29 +130,28 @@ class AddressSheetFragment : Fragment(),
             mapViewBundle = savedInstanceState.getBundle(getString(R.string.google_map_api_key))
         }
 
-        switchDefault1.setOnCheckedChangeListener(this)
 
-        iv_toggle_off.setOnClickListener {
+        mView!!.iv_toggle_off.setOnClickListener {
             is_set_default = true
             is_default = 0
-            iv_toggle_off.visibility = View.GONE
-            iv_toggle_on.visibility = View.VISIBLE
+            mView!!.iv_toggle_off.visibility = View.GONE
+            mView!!.iv_toggle_on.visibility = View.VISIBLE
         }
 
-        iv_toggle_on.setOnClickListener {
+        mView!!.iv_toggle_on.setOnClickListener {
             is_set_default = false
             is_default = 1
-            iv_toggle_off.visibility = View.VISIBLE
-            iv_toggle_on.visibility = View.GONE
+            mView!!.iv_toggle_off.visibility = View.VISIBLE
+            mView!!.iv_toggle_on.visibility = View.GONE
         }
         placeClick =
             SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.PLACECLICK, false)
 
-        mapView.onCreate(mapViewBundle)
-        mapView.getMapAsync(this)
+        mView!!.mapView.onCreate(mapViewBundle)
+        mView!!.mapView.getMapAsync(this)
 
 
-        tv_location.setOnClickListener {
+        /*mView!!.tv_location.setSafeOnClickListener {
             placeClick = true
             SharedPreferenceUtility.getInstance()
                 .save(SharedPreferenceUtility.PLACECLICK, placeClick)
@@ -178,12 +166,9 @@ class AddressSheetFragment : Fragment(),
             val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
                 .build(requireContext())
             placeAPIresultLauncher.launch(intent)
-        }
+        }*/
 
-        switchDefault1.setOnCheckedChangeListener(this)
-
-        tv_enter_manually.setOnClickListener {
-//            dismiss()
+        mView!!.tv_enter_manually.setSafeOnClickListener {
             val bundle = Bundle()
             bundle.putString("status", "add")
             bundle.putInt("addressId", 0)
@@ -196,8 +181,13 @@ class AddressSheetFragment : Fragment(),
             )
         }
 
-        tv_submit.setOnClickListener {
-
+        mView!!.tv_submit.setSafeOnClickListener {
+            for (i in 0 until countryList.size){
+                if (countryName!!.equals(countryList[i].name)||countryName!!.equals(countryList[i].name_ar)){
+                    countryId = countryList[i].country_id
+                    break
+                }
+            }
             if (direction.equals("Payment Fragment")) {
                 Log.e("Address", tv_location.text.toString())
                 Log.e("Lat", mLatitude.toString())
@@ -211,19 +201,20 @@ class AddressSheetFragment : Fragment(),
                     .save(SharedPreferenceUtility.SavedLng, mLongitude.toString())
                 findNavController().popBackStack()
             } else {
-                validateAndSave()
+                validateAndSave(countryId)
             }
         }
     }
 
     private fun getCountires() {
         if (Utility.isNetworkAvailable()){
-            val call = Utility.apiInterface.getCountries(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, ""))
+            val call = Utility.apiInterface.getCountries(SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""])
             call!!.enqueue(object : Callback<CountryResponse?> {
                 override fun onResponse(call: Call<CountryResponse?>, response: Response<CountryResponse?>) {
                     try {
                         if (response.body() != null) {
                             if (response.body()!!.status==1){
+                                countryList.clear()
                                 countryList = response.body()!!.country as ArrayList<CountryItem>
                             }else{
                                 LogUtils.shortToast(requireContext(), getString(R.string.response_isnt_successful))
@@ -251,24 +242,25 @@ class AddressSheetFragment : Fragment(),
 
     }
 
-    private fun validateAndSave() {
-        title = et_title.text.toString().trim()
-
+    private fun validateAndSave(countryId: Int?) {
+        title = mView!!.et_title.text.toString().trim()
         if(TextUtils.isEmpty(title)){
-            et_title.requestFocus()
-            et_title.error = getString(R.string.please_enter_valid_title)
+            mView!!.et_title.requestFocus()
+            mView!!.et_title.error = getString(R.string.please_enter_valid_title)
+        }else if (countryId==null || countryId==0){
+            LogUtils.shortToast(requireContext(), requireContext().getString(R.string.no_country_found))
         }else{
-            saveAddress()
+            saveAddress(countryId)
         }
     }
 
-    private fun saveAddress() {
+    private fun saveAddress(country_Id: Int?) {
         val builder = APIClient.createBuilder(arrayOf("flat", "title", "street", "is_default", "country_id", "building_name", "user_id"),
             arrayOf(flat_villa.toString(),
                 title.toString(),
                 street_area.toString(),
                 is_default.toString(),
-                countryId.toString(),
+                country_Id.toString(),
                 building_name.toString(),
                 SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId, 0).toString()))
         val call = Utility.apiInterface.addAddress(builder.build())
@@ -298,13 +290,8 @@ class AddressSheetFragment : Fragment(),
 
     companion object {
         const val TAG = "AddressBottomSheetFragment"
-        private var onAddressCallback : ClickInterface.OnAddressClick?=null
         private var instance: SharedPreferenceUtility? = null
         private var gMap : GoogleMap?=null
-        fun newInstance(context: Context?, onAddressCallback: ClickInterface.OnAddressClick): AddressSheetFragment {
-            this.onAddressCallback = onAddressCallback
-            return AddressSheetFragment()
-        }
         @Synchronized
         fun getInstance(): SharedPreferenceUtility {
             if (instance == null) {
@@ -315,8 +302,8 @@ class AddressSheetFragment : Fragment(),
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
+        Locale.setDefault(Locale.ENGLISH)
         gMap = googleMap
-        gMap!!.setMinZoomPreference(12F)
         gMap!!.setMapType(GoogleMap.MAP_TYPE_NORMAL)
         gMap!!.getUiSettings().setCompassEnabled(true)
         gMap!!.uiSettings.isMapToolbarEnabled = true;
@@ -336,7 +323,7 @@ class AddressSheetFragment : Fragment(),
                     lastLocation = location
                     val currentLatLng = LatLng(lastLocation!!.latitude, lastLocation!!.longitude)
                     gMap!!.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 15f))
-                    mapView.onResume()
+                    mView!!.mapView.onResume()
                     gMap!!.setOnCameraIdleListener(this)
                 }else{
                     Log.e("Location", "" +location)
@@ -349,15 +336,6 @@ class AddressSheetFragment : Fragment(),
     override fun onCameraIdle() {
         val mapLatLng = gMap!!.cameraPosition.target
         setAddress(mapLatLng)
-    }
-
-    private fun returnCountryId(selectedCountry: String, countryList: ArrayList<CountryItem>): Int? {
-        for (country : CountryItem in countryList) {
-            if (country.name.equals(selectedCountry)) {
-                return country.country_id
-            }
-        }
-        return null
     }
 
     fun setAddress(maplatLng: LatLng?) {
@@ -374,9 +352,7 @@ class AddressSheetFragment : Fragment(),
                     Log.e("cureent_lati", current_latitude.toString())
                     Log.e("cureent_longni", current_longitude.toString())
                     strAddress = addressList[0].getAddressLine(0)
-//                    flat_villa = addressList[0].getAddressLine(1)
                     Log.e("tesr", "" + strAddress)
-//                    Log.e("flat_villa", "" + flat_villa)
                 }
                 if (addressList[0].locality != null) {
                     flat_villa = addressList[0].featureName
@@ -386,7 +362,12 @@ class AddressSheetFragment : Fragment(),
                     val ghi = addressList[0].thoroughfare + addressList[0].subThoroughfare
                     street_area = addressList[0].subLocality +  " " + addressList[0].locality
                     countryName = addressList[0].countryName
-                    countryId = returnCountryId(countryName!!, countryList)
+                    for (i in 0 until countryList.size){
+                        if (countryName!!.equals(countryList[i].name)||countryName!!.equals(countryList[i].name_ar)){
+                            countryId = countryList[i].country_id
+                            break
+                        }
+                    }
                     Log.e("flat_villa", "" + flat_villa)
                     Log.e("country", "" + addressList[0].countryName)
                     Log.e("street_area", "" + street_area)
@@ -396,7 +377,6 @@ class AddressSheetFragment : Fragment(),
                     Log.e("ghi", "" + ghi)
                     strCity = addressList[0].locality + addressList[0].countryCode + addressList[0].countryName
                     val addList = strAddress.split(",".toRegex()).toTypedArray()
-//                    val addList = strAddress.split(",".toRegex(), 5)
                     Log.e("addList", "" + addList.toString())
                     strAddress = ""
                     for (s in addList) {
@@ -411,7 +391,13 @@ class AddressSheetFragment : Fragment(),
                         addressMap.put("flat_villa", flat_villa!!)
                         addressMap.put("street_area", street_area!!)
                         addressMap.put("country", countryName!!)
-                        addressMap.put("countryId", countryId!!.toString())
+                        for (i in 0 until countryList.size){
+                            if (countryName!!.equals(countryList[i].name)||countryName!!.equals(countryList[i].name_ar)){
+                                countryId = countryList[i].country_id
+                                break
+                            }
+                        }
+                        addressMap.put("countryId", countryId.toString())
                     }
                     else
                     {
@@ -419,10 +405,10 @@ class AddressSheetFragment : Fragment(),
                         addressMap.put("street_area", street_area!!)
                         addressMap.put("country", countryName!!)
                     }
-                    tv_location.text = strAddress
+                    mView!!.tv_location.text = strAddress
                 }else{
                     strAddress = ""
-                    tv_location.text = strAddress
+                    mView!!.tv_location.text = strAddress
                 }
             }else{
                 Log.e("err1", "err1")
@@ -431,17 +417,5 @@ class AddressSheetFragment : Fragment(),
             e.printStackTrace()
         }
 
-    }
-
-    override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
-        when (buttonView!!.id) {
-            R.id.switchDefault1 -> {
-                if (isChecked) {
-                    is_default = 1
-                } else {
-                    is_default = 0
-                }
-            }
-        }
     }
 }

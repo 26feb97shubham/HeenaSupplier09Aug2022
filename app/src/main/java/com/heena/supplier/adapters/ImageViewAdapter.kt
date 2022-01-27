@@ -1,11 +1,17 @@
 package com.heena.supplier.adapters
 
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import com.heena.supplier.R
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
@@ -22,17 +28,29 @@ class ImageViewAdapter(
         imageViewItemView
     ){
         fun bind(images: String) {
-            Picasso.get().load(images).into(imageViewItemView.viewMap, object : Callback{
-                override fun onSuccess() {
+            Glide.with(context).load(images).listener(object : RequestListener<Drawable>{
+                override fun onLoadFailed(
+                    e: GlideException?,
+                    model: Any?,
+                    target: Target<Drawable>?,
+                    isFirstResource: Boolean
+                ): Boolean {
                     imageViewItemView.loadMapimage.visibility = View.GONE
+                    return false
                 }
 
-                override fun onError(e: Exception?) {
-                    Toast.makeText(context, "can not load this Images", Toast.LENGTH_SHORT).show()
+                override fun onResourceReady(
+                    resource: Drawable?,
+                    model: Any?,
+                    target: Target<Drawable>?,
+                    dataSource: DataSource?,
+                    isFirstResource: Boolean
+                ): Boolean {
                     imageViewItemView.loadMapimage.visibility = View.GONE
+                    return false
                 }
 
-            })
+            }).into(imageViewItemView.viewMap)
         }
     }
 

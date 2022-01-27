@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.heena.supplier.R
 import com.heena.supplier.`interface`.ClickInterface
 import com.heena.supplier.models.CategoryItem
+import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
 import kotlinx.android.synthetic.main.spinner_layout.view.*
 
 class CategoryAdapter(private val context: Context,
@@ -17,7 +18,7 @@ private val OnCategoryItemClick : ClickInterface.OnCategoryItemClick
     inner class CategoryAdapterVH(private val itemView:View) : RecyclerView.ViewHolder(itemView){
         fun bind(categoryItem: CategoryItem, position: Int) {
             itemView.spinner_item.text = categoryItem.name
-            itemView.setOnClickListener {
+            itemView.setSafeOnClickListener {
                 OnCategoryItemClick.OnClickAction(position, categoryItem)
             }
         }

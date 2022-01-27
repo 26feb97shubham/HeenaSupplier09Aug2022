@@ -12,6 +12,14 @@ import com.heena.supplier.utils.SharedPreferenceUtility
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.android.synthetic.main.fragment_cancel_service_bottom_sheet.*
 import kotlinx.android.synthetic.main.fragment_cancel_service_bottom_sheet.view.*
+import android.view.MotionEvent
+
+import android.view.View.OnTouchListener
+
+import com.heena.supplier.*
+
+
+
 
 class CancelServiceBottomSheetFragment : BottomSheetDialogFragment() {
     private var mView : View?=null
@@ -31,6 +39,18 @@ class CancelServiceBottomSheetFragment : BottomSheetDialogFragment() {
         super.onActivityCreated(savedInstanceState)
         tv_proceed!!.setOnClickListener { // dismiss dialog
             /*findNavController().navigate(R.id.action_filterbottomsheetdialogfragment_to_filteredproductsfragment)*/
+
+            mView!!.et_rsn_for_cancellation.setOnTouchListener { view, event ->
+                if (view.id == R.id.et_rsn_for_cancellation) {
+                    view.parent.requestDisallowInterceptTouchEvent(true)
+                    when (event.action and MotionEvent.ACTION_MASK) {
+                        MotionEvent.ACTION_UP -> view.parent.requestDisallowInterceptTouchEvent(
+                            false
+                        )
+                    }
+                }
+                false
+            }
 
             rsn_for_cancellation = mView!!.et_rsn_for_cancellation.text.toString().trim()
             if (TextUtils.isEmpty(rsn_for_cancellation)){

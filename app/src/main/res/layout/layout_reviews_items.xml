@@ -88,14 +88,17 @@
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_service_desc"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginTop="@dimen/_8sdp"
             app:layout_constraintTop_toBottomOf="@id/ratingView"
             app:layout_constraintStart_toStartOf="@id/ratingView"
+            app:layout_constraintEnd_toEndOf="parent"
             android:text="@string/service_desc"
             android:textColor="@color/text_gold_color_dark"
             android:textSize="@dimen/_9ssp"
+            android:textDirection="locale"
+            android:textAlignment="viewStart"
             android:fontFamily="@font/avenir_medium"
             android:textAllCaps="false"
             android:maxLines="5"

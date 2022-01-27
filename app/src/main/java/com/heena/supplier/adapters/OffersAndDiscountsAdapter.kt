@@ -1,14 +1,20 @@
 package com.heena.supplier.adapters
 
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import com.heena.supplier.R
 import com.heena.supplier.`interface`.ClickInterface
 import com.heena.supplier.models.OfferItem
+import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
 import kotlinx.android.synthetic.main.naqashat_offers_recycler_item.view.*
 
 class OffersAndDiscountsAdapter(
@@ -20,7 +26,31 @@ class OffersAndDiscountsAdapter(
     var favAdded : Boolean = true
     inner class OffersAndDiscountsAdapterVH(val offeritemView : View) : RecyclerView.ViewHolder(offeritemView){
         fun bind(offerItem: OfferItem, position: Int) {
-            Glide.with(context).load(offerItem.gallery!![0]).into(offeritemView.img)
+            Glide.with(context).load(offerItem.gallery!![0])
+                .listener(object : RequestListener<Drawable>{
+                    override fun onLoadFailed(
+                        e: GlideException?,
+                        model: Any?,
+                        target: Target<Drawable>?,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        offeritemView.offers_loader.visibility = View.GONE
+                        return false
+                    }
+
+                    override fun onResourceReady(
+                        resource: Drawable?,
+                        model: Any?,
+                        target: Target<Drawable>?,
+                        dataSource: DataSource?,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        offeritemView.offers_loader.visibility = View.GONE
+                        return false
+                    }
+
+                })
+                .into(offeritemView.img)
             offeritemView.tv_services.text = offerItem.name
             offeritemView.tv_original_price.text = "AED ${offerItem.price}"
             offeritemView.tv_discounted_price.text = "AED ${offerItem.offer_price}"
@@ -34,11 +64,11 @@ class OffersAndDiscountsAdapter(
                     offeritemView.iv_add_to_fav.setImageDrawable(drawable)
                 }
             }
-            offeritemView.iv_edit.setOnClickListener {
+            offeritemView.iv_edit.setSafeOnClickListener {
                 onOffersItemClick.onOfferEdit(position)
             }
 
-            offeritemView.iv_delete.setOnClickListener {
+            offeritemView.iv_delete.setSafeOnClickListener {
                 onOffersItemClick.onOfferDelete(position)
             }
         }

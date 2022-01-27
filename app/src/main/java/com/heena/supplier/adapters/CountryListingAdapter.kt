@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.heena.supplier.R
 import com.heena.supplier.`interface`.ClickInterface
 import com.heena.supplier.models.CountryItem
+import com.heena.supplier.utils.SharedPreferenceUtility
+import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
 import kotlinx.android.synthetic.main.country_list_items.view.*
 
 class CountryListingAdapter(
@@ -16,10 +18,16 @@ class CountryListingAdapter(
 ): RecyclerView.Adapter<CountryListingAdapter.CountryListingAdapterVH>()  {
     inner class CountryListingAdapterVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(country: CountryItem, position: Int) {
-            itemView.tv_country_name.text = country.name
-            itemView.setOnClickListener {
+            if (SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, "").equals("ar")){
+                itemView.tv_country_name.text = country.name_ar
+            }else{
+                itemView.tv_country_name.text = country.name
+            }
+
+            itemView.setSafeOnClickListener {
                 onRecyclerItemClick.OnClickAction(position)
             }
+
         }
     }
 

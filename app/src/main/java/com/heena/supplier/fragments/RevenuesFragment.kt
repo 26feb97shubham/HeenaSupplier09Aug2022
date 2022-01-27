@@ -25,6 +25,7 @@ import com.heena.supplier.rest.APIInterface
 import com.heena.supplier.utils.LogUtils
 import com.heena.supplier.utils.SharedPreferenceUtility
 import com.heena.supplier.utils.Utility
+import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
 import kotlinx.android.synthetic.main.activity_home2.*
 import kotlinx.android.synthetic.main.fragment_revenues.view.*
 import kotlinx.android.synthetic.main.fragment_revenues.view.cards_service_categories_listing
@@ -75,6 +76,18 @@ class RevenuesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        requireActivity().iv_back.setSafeOnClickListener {
+            requireActivity().iv_back.startAnimation(AlphaAnimation(1F,0.5F))
+            SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_back)
+            findNavController().popBackStack()
+        }
+
+        requireActivity().iv_notification.setSafeOnClickListener {
+            requireActivity().iv_notification.startAnimation(AlphaAnimation(1F,0.5F))
+            SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_notification)
+            findNavController().navigate(R.id.notificationsFragment)
+        }
+
         if(!Utility.hasConnection(requireContext())){
             val noInternetDialog = NoInternetDialog()
             noInternetDialog.isCancelable = false
@@ -87,22 +100,22 @@ class RevenuesFragment : Fragment() {
                     queryMap.put("to", "")
                     queryMap.put("search", "")
                     getTransactionsList(queryMap)
+                    getServices()
                 }
 
             })
             noInternetDialog.show(requireActivity().supportFragmentManager, "Revenues Fragment")
+        }else{
+            queryMap.put("lang", SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, ""))
+            queryMap.put("service_id", "")
+            queryMap.put("from", "")
+            queryMap.put("to", "")
+            queryMap.put("search", "")
+            getTransactionsList(queryMap)
+            getServices()
         }
-        requireActivity().iv_back.setOnClickListener {
-            requireActivity().iv_back.startAnimation(AlphaAnimation(1F,0.5F))
-            SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_back)
-            findNavController().popBackStack()
-        }
-        queryMap.put("lang", SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, ""))
-        queryMap.put("service_id", "")
-        queryMap.put("from", "")
-        queryMap.put("to", "")
-        queryMap.put("search", "")
-        getTransactionsList(queryMap)
+
+
 
 
         mView!!.et_search.setOnEditorActionListener(object : TextView.OnEditorActionListener{
@@ -126,7 +139,7 @@ class RevenuesFragment : Fragment() {
             }
         })
 
-        mView!!.civ_filter.setOnClickListener {
+        mView!!.civ_filter.setSafeOnClickListener {
             if (!isFilterClicked){
                 isFilterClicked = true
                 mView!!.card_filter.visibility = View.VISIBLE
@@ -136,18 +149,17 @@ class RevenuesFragment : Fragment() {
             }
         }
 
-        mView!!.card_services.setOnClickListener {
+        mView!!.card_services.setSafeOnClickListener {
             if (!isServicesClicked){
                 isServicesClicked = true
                 mView!!.cards_service_categories_listing.visibility = View.VISIBLE
-                getServices()
             }else{
                 isServicesClicked = false
                 mView!!.cards_service_categories_listing.visibility = View.GONE
             }
         }
 
-        mView!!.card_duration.setOnClickListener {
+        mView!!.card_duration.setSafeOnClickListener {
             if (!open_calendar_status){
                 open_calendar_status = true
                 mView!!.cv_Calendar_Revenue.visibility = View.VISIBLE
@@ -178,7 +190,7 @@ class RevenuesFragment : Fragment() {
 
         })
 
-        mView!!.tv_apply_filter.setOnClickListener {
+        mView!!.tv_apply_filter.setSafeOnClickListener {
             validateAndProceed()
         }
 
@@ -203,7 +215,8 @@ class RevenuesFragment : Fragment() {
                 try {
                     if (response.isSuccessful) {
                         if (response.body()!!.status == 1) {
-                            mView!!.cards_service_categories_listing.visibility = View.VISIBLE
+                            serviceList.clear()
+                            serviceNames.clear()
                             serviceList = response.body()!!.service as ArrayList<Service>
                             for (i in 0 until serviceList.size) {
                                 serviceList.get(i).name?.let { serviceNames.add(it) }
@@ -211,6 +224,7 @@ class RevenuesFragment : Fragment() {
                             mView!!.rv_services_listing.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
                             serviceListingAdapter = ServiceListingAdapter(requireContext(), serviceNames, object : ClickInterface.OnServiceClick {
                                 override fun OnAddService(position: Int, service : String) {
+                                    isServicesClicked = false
                                     mView!!.tv_service.text = service
                                     selected_category = mView!!.tv_service.text.toString().trim()
                                     mView!!.cards_service_categories_listing.visibility = View.GONE
@@ -221,11 +235,9 @@ class RevenuesFragment : Fragment() {
                             mView!!.rv_services_listing.adapter = serviceListingAdapter
                             serviceListingAdapter.notifyDataSetChanged()
                         } else {
-                            mView!!.cards_service_categories_listing.visibility = View.GONE
                             LogUtils.longToast(requireContext(), response.body()!!.message)
                         }
                     } else {
-                        mView!!.cards_service_categories_listing.visibility = View.GONE
                         LogUtils.shortToast(requireContext(), getString(R.string.response_isnt_successful))
                     }
                 } catch (e: IOException) {
@@ -238,7 +250,6 @@ class RevenuesFragment : Fragment() {
             }
 
             override fun onFailure(call: Call<ServiceListingResponse?>, t: Throwable) {
-                mView!!.cards_service_categories_listing.visibility = View.GONE
                 LogUtils.shortToast(requireContext(), t.message)
             }
 
@@ -264,7 +275,7 @@ class RevenuesFragment : Fragment() {
                 requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 if (response.isSuccessful){
                     if (response.body()!!.status==1){
-
+                        transactionsList.clear()
                         transactionsList = response.body()!!.transaction as ArrayList<TransactionItem>
                         if (transactionsList.size==0){
                             mView!!.card_search_filter.visibility = View.GONE

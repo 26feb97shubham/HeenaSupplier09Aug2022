@@ -19,7 +19,9 @@ import com.heena.supplier.models.BookingDetailsResponse
 import com.heena.supplier.rest.APIClient
 import com.heena.supplier.utils.LogUtils
 import com.heena.supplier.utils.SharedPreferenceUtility
+import com.heena.supplier.utils.Utility
 import com.heena.supplier.utils.Utility.Companion.apiInterface
+import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
 import kotlinx.android.synthetic.main.activity_home2.*
 import kotlinx.android.synthetic.main.fragment_bookingdetails.*
 import kotlinx.android.synthetic.main.fragment_bookingdetails.view.*
@@ -44,29 +46,40 @@ class BookingdetailsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         mView= inflater.inflate(R.layout.fragment_bookingdetails, container, false)
+        Utility.changeLanguage(
+            requireContext(),
+            SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, "")
+        )
         return mView
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        requireActivity().iv_back.setOnClickListener {
+        requireActivity().iv_back.setSafeOnClickListener {
             requireActivity().iv_back.startAnimation(AlphaAnimation(1F,0.5F))
             SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_back)
             findNavController().popBackStack()
         }
 
+        requireActivity().iv_notification.setSafeOnClickListener {
+            requireActivity().iv_notification.startAnimation(AlphaAnimation(1F,0.5F))
+            SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_notification)
+            findNavController().navigate(R.id.notificationsFragment)
+        }
+
         showBookingDetails()
 
-        tv_accept_booking.setOnClickListener {
+        tv_accept_booking.setSafeOnClickListener {
             acceptBooking()
         }
 
-        tv_reject_booking.setOnClickListener {
+        tv_reject_booking.setSafeOnClickListener {
             val bundle = Bundle()
             bundle.putInt("bookingId", booking_id!!)
 
             val cancelServiceBottomSheetFragment = CancelServiceBottomSheetFragment.newInstance(requireContext(), bundle)
             cancelServiceBottomSheetFragment.show(requireActivity().supportFragmentManager,CancelServiceBottomSheetFragment.TAG)
+            cancelServiceBottomSheetFragment.isCancelable = false
             cancelServiceBottomSheetFragment.setCancelServiceClickListenerCallback(object : ClickInterface.OnCancelServiceClick{
                 override fun OnCancelService(rsn_for_cancellation: String?) {
                     val builder = APIClient.createBuilder(arrayOf("booking_id", "message"), arrayOf(booking_id.toString(), rsn_for_cancellation.toString()))
@@ -157,17 +170,24 @@ class BookingdetailsFragment : Fragment() {
 
                         mView!!.tv_service.text = booking.service!!.name
                         mView!!.tv_service_desc.text = booking.service.description
-                        val street = booking.address!!.street
+                       /* val street = booking.address!!.street
                         val country = booking.address.country
-                        mView!!.tv_address.text = booking.location?.name
+                        mView!!.tv_address.text = booking.location?.name*/
+                        if(booking.address==null){
+                            mView!!.tv_address.text = booking.location!!.name
+                        }else{
+                            val street = booking.address!!.street
+                            val country = booking.address.country
+                            mView!!.tv_address.text = street+ " ," + country
+                        }
                         mView!!.tv_ladies_count.text = booking.c_ladies.toString()
                         mView!!.tv_childrens_count.text = booking.c_children.toString()
                         val booking_date_time = booking.booking_date + " - " + booking.booking_from
                         mView!!.tv_booking_date_time.text = booking_date_time
                         mView!!.tv_special_request_desc.text = booking.message
-                        mView!!.tv_service_charge.text = "AED " + booking.service.price
+                        mView!!.tv_service_charge.text = "AED " + booking.commission
                         mView!!.tv_sub_total.text = "AED " + booking.price!!.total
-                        val total = booking.service.price!!.toDouble() + booking.price.total!!.toDouble()
+                        val total = booking.commission!!.toDouble() + booking.price.total!!.toDouble()
                         mView!!.tv_total.text = "AED " + total
                         Glide.with(requireContext()).load(booking.user!!.image).into(mView!!.supplierImg)
                         if (booking.gallery?.size==0){
