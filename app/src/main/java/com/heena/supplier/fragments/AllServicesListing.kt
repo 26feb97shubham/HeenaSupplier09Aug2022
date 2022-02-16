@@ -19,8 +19,8 @@ import com.heena.supplier.models.ServiceListingResponse
 import com.heena.supplier.utils.LogUtils
 import com.heena.supplier.utils.SharedPreferenceUtility
 import com.heena.supplier.utils.Utility
-import com.heena.supplier.utils.Utility.Companion.apiInterface
-import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
+import com.heena.supplier.utils.Utility.apiInterface
+import com.heena.supplier.utils.Utility.setSafeOnClickListener
 import kotlinx.android.synthetic.main.activity_home2.*
 import kotlinx.android.synthetic.main.fragment_all_services_listing.view.*
 import retrofit2.Call
@@ -149,6 +149,15 @@ class AllServicesListing : Fragment() {
                                 updateServiceDialog.show()
                             }
 
+                            override fun onServiceView(position: Int) {
+                                val service_id = serviceslisting[position].service_id
+                                val status = "show"
+                                val bundle = Bundle()
+                                bundle.putInt("service_id", service_id!!)
+                                bundle.putString("status", status)
+                                findNavController().navigate(R.id.action_myServicesFragment_to_addNewFeaturedFragment, bundle)
+                            }
+
                         })
                         mView!!.rvServicesList.adapter = servicesAdapter
                         servicesAdapter.notifyDataSetChanged()
@@ -176,7 +185,7 @@ class AllServicesListing : Fragment() {
     }
 
     private fun deleteServices(serviceId: Int, position: Int) {
-        val call = apiInterface.deleteservice(serviceId)
+        val call = apiInterface.deleteservice(serviceId, SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""])
         call!!.enqueue(object : Callback<DeleteServiceResponse?>{
             override fun onResponse(
                     call: Call<DeleteServiceResponse?>,

@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.heena.supplier.R
 import com.heena.supplier.`interface`.ClickInterface
 import com.heena.supplier.models.Cards
-import com.heena.supplier.utils.Utility.Companion.mSelectedItem
+import com.heena.supplier.utils.Utility.mSelectedItem
 import kotlinx.android.synthetic.main.item_cards_list.view.*
 
 class PaymentsCardAdapter(private val  context: Context, private val data:ArrayList<Cards>, private val click: ClickInterface.OnRecyclerItemClick) : RecyclerView.Adapter<PaymentsCardAdapter.PaymentsCardAdapterVH>() {

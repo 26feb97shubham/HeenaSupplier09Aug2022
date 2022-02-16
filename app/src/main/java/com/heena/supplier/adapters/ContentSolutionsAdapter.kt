@@ -7,13 +7,19 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.heena.supplier.R
 import com.heena.supplier.models.Content
+import com.heena.supplier.utils.SharedPreferenceUtility
 import kotlinx.android.synthetic.main.solutions_items.view.*
 
 class ContentSolutionsAdapter(private val context: Context, private val solutionsList  :ArrayList<Content>) :
     RecyclerView.Adapter<ContentSolutionsAdapter.ContentSolutionsAdapterVH>() {
     inner class ContentSolutionsAdapterVH(private val itemView : View) : RecyclerView.ViewHolder(itemView) {
         fun bind(content: Content) {
-            itemView.tv_solutions.text=content.content
+            val content = if (SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""].equals("ar")){
+                content.content_ar
+            }else{
+                content.content
+            }
+            itemView.tv_solutions.text=content
         }
     }
 

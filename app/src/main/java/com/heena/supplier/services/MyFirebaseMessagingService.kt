@@ -6,6 +6,7 @@ import android.content.Intent
 import android.media.AudioAttributes
 import android.media.RingtoneManager
 import android.os.Build
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.heena.supplier.R
@@ -34,15 +35,10 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
-        if(remoteMessage.notification!=null){
-            val messageData = remoteMessage.data.toString().replace("data=", "data:")
-            LogUtils.e("message", "message $messageData")
-            if(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId, 0) !=0){
-                makeNotification(messageData)
-            }
-        }else{
-            LogUtils.e("message", "no notification found")
-        }
+
+        val messageData = remoteMessage.data.get("data").toString()
+        Log.e("fcmData", messageData)
+        makeNotification(messageData)
 
     }
 
@@ -64,26 +60,26 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         }
 
         val builder = NotificationCompat.Builder(this, channelId)
-            .setSmallIcon(R.mipmap.ic_launcher)
+            .setSmallIcon(R.mipmap.heena_supplier_round)
             .setDefaults(Notification.DEFAULT_SOUND)
             .setSound(soundUri)
             .setAutoCancel(true)
             .setBadgeIconType(NotificationCompat.BADGE_ICON_SMALL)
-        val jsonObject: JSONObject
+
 
         try {
-            jsonObject = JSONObject(messageData)
-            val jsonObject1 = jsonObject.getJSONObject("data")
-            val title = jsonObject1.getString("title")
+            val jsonObject = JSONObject(messageData)
+
+            val title = jsonObject.getString("title")
             builder.setContentTitle(title)
-            // builder.setSubText("Tap to view the website.");
+            val message = jsonObject.getJSONObject("body").getString("msg")
+            builder.setContentText(message)
+
             val stackBuilder = TaskStackBuilder.create(this)
-
-            val bodyObject = jsonObject1.getJSONObject("body")
-            builder.setContentText(bodyObject.getString("msg"))
-
             val intent = Intent(this, HomeActivity::class.java)
-            intent.putExtra("type", bodyObject.getString("type"))
+            //intent.putExtra("type", bodyObject.getString("type"))
+//            intent.putExtra("type", messageData)
+            intent.putExtra("notification", true)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP)
             stackBuilder.addNextIntent(intent)
 

@@ -9,6 +9,8 @@ import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.animation.AlphaAnimation
@@ -26,7 +28,6 @@ import com.heena.supplier.Dialogs.LogoutDialog
 import com.heena.supplier.Dialogs.NoInternetDialog
 import com.heena.supplier.R
 import com.heena.supplier.`interface`.ClickInterface
-import com.heena.supplier.activities.ChooseLoginSignUpActivity
 import com.heena.supplier.activities.HomeActivity
 import com.heena.supplier.activities.LoginActivity
 import com.heena.supplier.adapters.DashBoardBookingsAdapter
@@ -39,18 +40,24 @@ import com.heena.supplier.utils.LogUtils
 import com.heena.supplier.utils.SharedPreferenceUtility
 import com.heena.supplier.utils.SharedPreferenceUtility.Companion.SelectedLang
 import com.heena.supplier.utils.Utility
-import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
+import com.heena.supplier.utils.Utility.setSafeOnClickListener
 import kotlinx.android.synthetic.main.activity_home2.*
+import kotlinx.android.synthetic.main.fragment_add_new_service.view.*
 import kotlinx.android.synthetic.main.fragment_home.view.*
 import kotlinx.android.synthetic.main.fragment_home.view.tv_no_bookings_found
+import kotlinx.android.synthetic.main.fragment_my_profile.view.*
 import kotlinx.android.synthetic.main.side_menu_layout.*
 import kotlinx.android.synthetic.main.side_top_view.*
 import kotlinx.android.synthetic.main.side_top_view.view.*
+import kotlinx.android.synthetic.main.side_top_view.view.tv_location
 import org.json.JSONException
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.IOException
+import java.text.NumberFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 class HomeFragment : Fragment() {
     lateinit var currentBookingsAdapter: DashBoardBookingsAdapter
@@ -63,13 +70,14 @@ class HomeFragment : Fragment() {
     private var subscription : Subscriptions?=null
     private var subscription_id = 0
     private var membershipId :Int = 0
-    var profile_picture : String = ""
+    var user_profile_name : String = ""
+    var service : Service?= null
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         mView = inflater.inflate(R.layout.fragment_home, container, false)
         Utility.changeLanguage(
             requireContext(),
-            SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, "")
+            SharedPreferenceUtility.getInstance()[SelectedLang, ""]
         )
         setUpViews()
         return mView
@@ -77,29 +85,16 @@ class HomeFragment : Fragment() {
 
     private fun setUpViews() {
         instance = SharedPreferenceUtility.getInstance()
-        lang = instance!!.get(SelectedLang,"").toString()
+        lang = instance!![SelectedLang, ""].toString()
+
         Utility.setLanguage(requireContext(),lang)
 
-        Log.e("userid", SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId,0).toString())
-
-        profile_picture = SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.ProfilePic,"")
+        Log.e("userid", SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.UserId, 0].toString())
 
         requireActivity().iv_notification.setSafeOnClickListener {
             requireActivity().iv_notification.startAnimation(AlphaAnimation(1F,0.5F))
             SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_notification)
             findNavController().navigate(R.id.notificationsFragment)
-        }
-
-        if (TextUtils.isEmpty(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.Fullname, ""))){
-            requireActivity().tv_name.text = SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.Username,"")
-        }else{
-            requireActivity().tv_name.text = SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.Fullname,"")
-        }
-
-        if (TextUtils.isEmpty(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.Address, ""))){
-            requireActivity().tv_address.text =""
-        }else{
-            requireActivity().tv_address.text = SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.Address,"")
         }
 
 
@@ -109,12 +104,14 @@ class HomeFragment : Fragment() {
             noInternetDialog.setRetryCallback(object : NoInternetDialog.RetryInterface{
                 override fun retry() {
                     noInternetDialog.dismiss()
+                    getProfile()
                     getDashBoard()
                 }
 
             })
             noInternetDialog.show(requireActivity().supportFragmentManager, "Home Fragment")
         }else{
+            getProfile()
             getDashBoard()
         }
 
@@ -122,21 +119,98 @@ class HomeFragment : Fragment() {
         clickOnHomeItems()
     }
 
-    private fun getDashBoard() {
-        mView!!.fragment_home_progressBar.visibility = View.VISIBLE
+    private fun getProfile() {
+        mView!!.fragment_home_progressBar.visibility = VISIBLE
         requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-        val call = apiInterface.getDashboard(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId,0))
+        val call = apiInterface.showProfile(SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.UserId, 0], SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""])
+        call?.enqueue(object : Callback<ProfileShowResponse?>{
+            override fun onResponse(
+                call: Call<ProfileShowResponse?>,
+                response: Response<ProfileShowResponse?>
+            ) {
+                mView!!.fragment_home_progressBar.visibility = GONE
+                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                try {
+                    if (response.body() != null) {
+                        if(response.body()!!.status==1){
+                            val requestOption = RequestOptions().centerCrop()
+                            Glide.with(requireContext()).load(response.body()!!.profile!!.image)
+                                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                .listener(object : RequestListener<Drawable> {
+                                    override fun onLoadFailed(p0: GlideException?, p1: Any?, p2: com.bumptech.glide.request.target.Target<Drawable>?, p3: Boolean): Boolean {
+                                        Log.e("err", p0?.message.toString())
+                                        return false
+                                    }
+
+                                    override fun onResourceReady(p0: Drawable?, p1: Any?, target: com.bumptech.glide.request.target.Target<Drawable>?, dataSource: com.bumptech.glide.load.DataSource?, p4: Boolean): Boolean {
+                                        return false
+                                    }
+                                }).placeholder(R.drawable.user)
+                                .apply(requestOption).into(requireActivity().menuImg)
+
+
+                            Glide.with(requireContext()).load(response.body()!!.profile!!.image)
+                                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                .listener(object : RequestListener<Drawable> {
+                                    override fun onLoadFailed(p0: GlideException?, p1: Any?, p2: com.bumptech.glide.request.target.Target<Drawable>?, p3: Boolean): Boolean {
+                                        Log.e("err", p0?.message.toString())
+                                        requireActivity().headerView.user_icon_progress_bar_side_top_view.visibility =GONE
+                                        return false
+                                    }
+
+                                    override fun onResourceReady(p0: Drawable?, p1: Any?, target: com.bumptech.glide.request.target.Target<Drawable>?, dataSource: com.bumptech.glide.load.DataSource?, p4: Boolean): Boolean {
+                                        requireActivity().headerView.user_icon_progress_bar_side_top_view.visibility = GONE
+                                        return false
+                                    }
+                                }).placeholder(R.drawable.user)
+                                .apply(requestOption).into(requireActivity().headerView.userIcon)
+
+                            user_profile_name = if(response.body()!!.profile!!.name.equals("")){
+                                response.body()!!.profile!!.username!!
+                            }else{
+                                response.body()!!.profile!!.name!!
+                            }
+
+                            Log.e("username", user_profile_name)
+                            Log.e("address", response.body()!!.profile!!.address!!)
+
+                            requireActivity().tv_name.text = user_profile_name
+                            requireActivity().tv_address.text = response.body()!!.profile!!.address!!
+                        }
+                    }
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                } catch (e: JSONException) {
+                    e.printStackTrace()
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+
+            override fun onFailure(call: Call<ProfileShowResponse?>, throwable: Throwable) {
+                mView!!.fragment_home_progressBar.visibility = View.GONE
+                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+            }
+
+        })
+    }
+
+    private fun getDashBoard() {
+        mView!!.fragment_home_progressBar.visibility = VISIBLE
+        requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+        val call = apiInterface.getDashboard(SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.UserId, 0], SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""])
 
         call?.enqueue(object : Callback<DashboardResponse?>{
+            @SuppressLint("NotifyDataSetChanged")
             override fun onResponse(call: Call<DashboardResponse?>, response: Response<DashboardResponse?>) {
-                mView!!.fragment_home_progressBar.visibility = View.GONE
+                mView!!.fragment_home_progressBar.visibility = GONE
                 requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 if (response.isSuccessful){
                     if (response.body()!!.status==1){
-                        mView!!.rv_services.visibility = View.VISIBLE
-                        mView!!.tv_no_services_found.visibility = View.GONE
-                        mView!!.rv_current_bookings.visibility = View.VISIBLE
-                        mView!!.tv_no_bookings_found.visibility = View.GONE
+                        mView!!.rv_services.visibility = VISIBLE
+                        mView!!.tv_no_services_found.visibility = GONE
+                        mView!!.rv_current_bookings.visibility = VISIBLE
+                        mView!!.tv_no_bookings_found.visibility = GONE
                         membershipX = response.body()!!.membership!!
                         if (response.body()!!.subscriptions==null){
                             subscription = null
@@ -149,7 +223,9 @@ class HomeFragment : Fragment() {
                         membershipId = membershipX!!.id
                         if (membershipId!=0){
                             mView!!.tv_membership_title_txt.text = response.body()!!.membership!!.name
-                            mView!!.tv_membership_plan_price.text = "AED " +response.body()!!.membership!!.amount.toString()
+                            mView!!.tv_membership_plan_price.text = "AED " + Utility.convertDoubleValueWithCommaSeparator(
+                                response.body()!!.membership!!.amount!!.toDouble()
+                            )
                             mView!!.linearprogressindicator.max = response.body()!!.membership!!.total_day
                             mView!!.linearprogressindicator1.max = response.body()!!.membership!!.total_day
                             mView!!.linearprogressindicator1.progress = response.body()!!.membership!!.day
@@ -167,6 +243,8 @@ class HomeFragment : Fragment() {
                                             val bundle = Bundle()
                                             Log.e("membership_data", ""+membership)
                                             bundle.putSerializable("membership", membership)
+                                            bundle.putSerializable("subscription", null)
+                                            bundle.putInt("direction", 1)
                                             findNavController().navigate(R.id.myPaymentFragment, bundle)
                                         }
                                     })
@@ -180,18 +258,18 @@ class HomeFragment : Fragment() {
                         serviceslisting = response.body()!!.service as ArrayList<Service>
                         bookingslisting = response.body()!!.booking as ArrayList<BookingItem>
                         if (serviceslisting.size==0){
-                            mView!!.rv_services.visibility = View.GONE
-                            mView!!.tv_no_services_found.visibility = View.VISIBLE
+                            mView!!.rv_services.visibility = GONE
+                            mView!!.tv_no_services_found.visibility = VISIBLE
                         }else{
-                            mView!!.rv_services.visibility = View.VISIBLE
-                            mView!!.tv_no_services_found.visibility = View.GONE
+                            mView!!.rv_services.visibility = VISIBLE
+                            mView!!.tv_no_services_found.visibility = GONE
                         }
                         if (bookingslisting.size==0){
-                            mView!!.rv_current_bookings.visibility = View.GONE
-                            mView!!.tv_no_bookings_found.visibility = View.VISIBLE
+                            mView!!.rv_current_bookings.visibility = GONE
+                            mView!!.tv_no_bookings_found.visibility = VISIBLE
                         }else{
-                            mView!!.rv_current_bookings.visibility = View.VISIBLE
-                            mView!!.tv_no_bookings_found.visibility = View.GONE
+                            mView!!.rv_current_bookings.visibility = VISIBLE
+                            mView!!.tv_no_bookings_found.visibility = GONE
                         }
                         mView!!.rv_services.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL,false)
                         servicesAdapter = ServicesAdapter(requireContext(), serviceslisting, subscription_id, object : ClickInterface.onServicesItemClick{
@@ -204,7 +282,7 @@ class HomeFragment : Fragment() {
                             }
 
                             override fun onServiceDele(position: Int) {
-                                val service_id = serviceslisting.get(position).service_id
+                                val service_id = serviceslisting[position].service_id
                                 val deleteServiceDialog = AlertDialog.Builder(requireContext())
                                 deleteServiceDialog.setCancelable(false)
                                 deleteServiceDialog.setTitle(requireContext().getString(R.string.delete_service))
@@ -226,7 +304,7 @@ class HomeFragment : Fragment() {
                                 updateServiceDialog.setMessage(requireContext().getString(R.string.would_you_like_to_update_your_service_details))
                                 updateServiceDialog.setPositiveButton(requireContext().getString(R.string.yes)
                                 ) { dialog, _ ->
-                                    val service_id = serviceslisting.get(position).service_id
+                                    val service_id = serviceslisting[position].service_id
                                     val status = "edit"
                                     val bundle = Bundle()
                                     bundle.putInt("service_id", service_id!!)
@@ -237,6 +315,15 @@ class HomeFragment : Fragment() {
                                 updateServiceDialog.setNegativeButton(requireContext().getString(R.string.no)
                                 ) { dialog, _ -> dialog!!.cancel() }
                                 updateServiceDialog.show()
+                            }
+
+                            override fun onServiceView(position: Int) {
+                                val service_id = serviceslisting[position].service_id
+                                val status = "show"
+                                val bundle = Bundle()
+                                bundle.putInt("service_id", service_id!!)
+                                bundle.putString("status", status)
+                                findNavController().navigate(R.id.addNewServiceFragment, bundle)
                             }
                         })
                         mView!!.rv_services.adapter = servicesAdapter
@@ -256,21 +343,21 @@ class HomeFragment : Fragment() {
 
                     }
                 }else{
-                    mView!!.rv_services.visibility = View.GONE
-                    mView!!.tv_no_services_found.visibility = View.VISIBLE
-                    mView!!.rv_current_bookings.visibility = View.GONE
-                    mView!!.tv_no_bookings_found.visibility = View.VISIBLE
+                    mView!!.rv_services.visibility = GONE
+                    mView!!.tv_no_services_found.visibility = VISIBLE
+                    mView!!.rv_current_bookings.visibility = GONE
+                    mView!!.tv_no_bookings_found.visibility = VISIBLE
                     LogUtils.shortToast(requireContext(), getString(R.string.response_isnt_successful))
                 }
             }
 
             override fun onFailure(call: Call<DashboardResponse?>, throwable: Throwable) {
                 LogUtils.e("msg", throwable.message)
-                mView!!.fragment_home_progressBar.visibility= View.GONE
-                mView!!.rv_services.visibility = View.GONE
-                mView!!.tv_no_services_found.visibility = View.VISIBLE
-                mView!!.rv_current_bookings.visibility = View.GONE
-                mView!!.tv_no_bookings_found.visibility = View.VISIBLE
+                mView!!.fragment_home_progressBar.visibility= GONE
+                mView!!.rv_services.visibility = GONE
+                mView!!.tv_no_services_found.visibility = VISIBLE
+                mView!!.rv_current_bookings.visibility = GONE
+                mView!!.tv_no_bookings_found.visibility = VISIBLE
                 requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 LogUtils.shortToast(requireContext(), throwable.message)
             }
@@ -279,8 +366,9 @@ class HomeFragment : Fragment() {
     }
 
     private fun deleteServices(serviceId: Int, position: Int) {
-        val call = apiInterface.deleteservice(serviceId)
+        val call = apiInterface.deleteservice(serviceId,  SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""])
         call!!.enqueue(object : Callback<DeleteServiceResponse?>{
+            @SuppressLint("NotifyDataSetChanged")
             override fun onResponse(
                 call: Call<DeleteServiceResponse?>,
                 response: Response<DeleteServiceResponse?>
@@ -315,6 +403,8 @@ class HomeFragment : Fragment() {
                     val bundle = Bundle()
                     Log.e("membership_data", ""+membership)
                     bundle.putSerializable("membership", membership)
+                    bundle.putSerializable("subscription", null)
+                    bundle.putInt("direction", 1)
                     findNavController().navigate(R.id.myPaymentFragment, bundle)
                 }
             })
@@ -466,14 +556,14 @@ class HomeFragment : Fragment() {
 
     private fun logoutAPI() {
             requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-            mView!!.fragment_home_progressBar.visibility = View.VISIBLE
+            mView!!.fragment_home_progressBar.visibility = VISIBLE
 
             val apiInterface = APIClient.getClient()!!.create(APIInterface::class.java)
 
-            val call = apiInterface.logout(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId, 0))
+            val call = apiInterface.logout(SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.UserId, 0], SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""])
             call!!.enqueue(object : Callback<LogoutResponse?> {
                 override fun onResponse(call: Call<LogoutResponse?>, response: Response<LogoutResponse?>) {
-                    mView!!.fragment_home_progressBar.visibility = View.GONE
+                    mView!!.fragment_home_progressBar.visibility = GONE
                     requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                     try {
                         if (response.isSuccessful) {
@@ -499,7 +589,7 @@ class HomeFragment : Fragment() {
                 override fun onFailure(call: Call<LogoutResponse?>, throwable: Throwable) {
                     LogUtils.e("msg", throwable.message)
                     LogUtils.shortToast(requireContext(), getString(R.string.check_internet))
-                    mView!!.fragment_home_progressBar.visibility = View.GONE
+                    mView!!.fragment_home_progressBar.visibility = GONE
                     requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 }
             })
@@ -521,16 +611,16 @@ class HomeFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        requireActivity().iv_back.visibility = View.GONE
+        requireActivity().iv_back.visibility = GONE
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        requireActivity().iv_back.visibility = View.VISIBLE
+        requireActivity().iv_back.visibility = VISIBLE
     }
 
     override fun onStop() {
         super.onStop()
-        requireActivity().iv_back.visibility = View.VISIBLE
+        requireActivity().iv_back.visibility = VISIBLE
     }
 }

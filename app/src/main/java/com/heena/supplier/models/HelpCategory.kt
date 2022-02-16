@@ -7,5 +7,6 @@ data class HelpCategory(
     val id: Int,
     val parent_id: Any,
     val title: String,
+    val title_ar: String,
     var isShow: Boolean = false
 ): Serializable

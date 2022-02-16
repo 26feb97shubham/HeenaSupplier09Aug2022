@@ -221,16 +221,16 @@
         android:id="@+id/add_new_bank"
         android:layout_width="@dimen/_150sdp"
         android:layout_height="wrap_content"
-       android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
         android:layout_marginVertical="@dimen/_18sdp"
-       android:layout_alignParentBottom="true"
         android:background="@drawable/curved_gold_filled_rect_box"
-        android:text="@string/add_bank"
         android:fontFamily="@font/avenir_medium"
         android:padding="@dimen/_8sdp"
+        android:text="@string/add_bank"
+        android:textAlignment="center"
         android:textColor="@color/black"
-        android:textSize="@dimen/_14ssp"
-        android:textAlignment="center"/>
+        android:textSize="@dimen/_14ssp" />
 
     <ProgressBar
         android:id="@+id/frag_bank_details_progressBar"

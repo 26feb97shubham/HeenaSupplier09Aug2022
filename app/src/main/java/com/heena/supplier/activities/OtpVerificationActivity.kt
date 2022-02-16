@@ -3,13 +3,10 @@ package com.heena.supplier.activities
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.text.TextUtils
 import android.view.View
 import android.view.WindowManager
 import android.view.animation.AlphaAnimation
-import android.widget.Toast
 import androidx.core.widget.doOnTextChanged
 import com.heena.supplier.R
 import com.heena.supplier.models.ForgotPasswordVerifyResponse
@@ -20,11 +17,9 @@ import com.heena.supplier.utils.ConstClass
 import com.heena.supplier.utils.LogUtils
 import com.heena.supplier.utils.SharedPreferenceUtility
 import com.heena.supplier.utils.Utility
-import com.heena.supplier.utils.Utility.Companion.apiInterface
-import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
-import kotlinx.android.synthetic.main.activity_login2.*
+import com.heena.supplier.utils.Utility.apiInterface
+import com.heena.supplier.utils.Utility.setSafeOnClickListener
 import kotlinx.android.synthetic.main.activity_otp_verification2.*
-import kotlinx.android.synthetic.main.activity_sign_up2.*
 import okhttp3.FormBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -37,7 +32,6 @@ class OtpVerificationActivity : AppCompatActivity() {
     private lateinit var ref: String
     private lateinit var pin: String
     lateinit var emailaddress : String
-    private var doubleClick:Boolean=false
     lateinit var builder : FormBody.Builder
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

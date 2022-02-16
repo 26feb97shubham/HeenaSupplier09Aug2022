@@ -80,21 +80,19 @@
                       android:imeOptions="actionDone"
                       android:hint="@string/enter_keywords_here"/>
 
-                  <de.hdodenhof.circleimageview.CircleImageView
+                  <com.google.android.material.imageview.ShapeableImageView
                       android:id="@+id/civ_excel_doc"
                       android:layout_width="0dp"
                       android:layout_weight="0.1"
                       android:layout_height="@dimen/_40sdp"
-                      app:civ_border_color="@color/white"
                       app:civ_border_width="@dimen/_1sdp"
                       android:src="@drawable/excel_doc"/>
 
-                  <de.hdodenhof.circleimageview.CircleImageView
+                  <com.google.android.material.imageview.ShapeableImageView
                       android:id="@+id/civ_filter"
                       android:layout_width="0dp"
                       android:layout_weight="0.1"
                       android:layout_height="@dimen/_40sdp"
-                      app:civ_border_color="@color/white"
                       app:civ_border_width="@dimen/_1sdp"
                       android:src="@drawable/filter"/>
               </LinearLayout>

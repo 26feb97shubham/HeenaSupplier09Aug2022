@@ -1,13 +1,9 @@
 package com.heena.supplier.activities
 
-import android.graphics.drawable.Drawable
+import android.graphics.Point
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
-import android.view.View
 import android.view.animation.AlphaAnimation
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -15,16 +11,11 @@ import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.RequestOptions
 import com.heena.supplier.R
 import com.heena.supplier.utils.SharedPreferenceUtility
 import com.heena.supplier.utils.Utility
-import com.heena.supplier.utils.Utility.Companion.exitApp
-import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
+import com.heena.supplier.utils.Utility.exitApp
+import com.heena.supplier.utils.Utility.setSafeOnClickListener
 import kotlinx.android.synthetic.main.activity_home2.*
 import kotlinx.android.synthetic.main.side_top_view.view.*
 
@@ -44,9 +35,9 @@ class HomeActivity : AppCompatActivity() {
 
     companion object{
         var type:String=""
-        var profile_picture : String = ""
         var myuserId  :Int = 0
         var clickDirestion = ""
+        var notification = false
         private var instance: SharedPreferenceUtility? = null
         @Synchronized
         fun getInstance(): SharedPreferenceUtility {
@@ -70,45 +61,28 @@ class HomeActivity : AppCompatActivity() {
     private fun setUpViews() {
         if(intent != null){
             type=intent.getStringExtra("type").toString()
+            notification = intent.getBooleanExtra("notification", false)
             myuserId = intent.getIntExtra(SharedPreferenceUtility.UserId, 0)
         }
 
         home_layout.setSafeOnClickListener {
             SharedPreferenceUtility.getInstance().hideSoftKeyBoard(this, home_layout)
         }
+        val display = windowManager.defaultDisplay
+        val size = Point()
+        display.getSize(size)
 
-        profile_picture = SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.ProfilePic, ""]
+        val params = navView.layoutParams
+        params.width = (((size.x).toDouble()*(3.0/4))).toInt()
+        params.height = size.y
+        navView.layoutParams = params
+
         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, GravityCompat.START)
 
-        val requestOption = RequestOptions().centerCrop()
-        Glide.with(this).load(SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.ProfilePic, ""])
-            .diskCacheStrategy(DiskCacheStrategy.ALL)
-            .listener(object : RequestListener<Drawable> {
-                override fun onLoadFailed(p0: GlideException?, p1: Any?, p2: com.bumptech.glide.request.target.Target<Drawable>?, p3: Boolean): Boolean {
-                    Log.e("err", p0?.message.toString())
-                    return false
-                }
-
-                override fun onResourceReady(p0: Drawable?, p1: Any?, target: com.bumptech.glide.request.target.Target<Drawable>?, dataSource: com.bumptech.glide.load.DataSource?, p4: Boolean): Boolean {
-                    return false
-                }
-            }).apply(requestOption).into(menuImg)
-
-
-        Glide.with(this).load(SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.ProfilePic, ""])
-            .diskCacheStrategy(DiskCacheStrategy.ALL)
-            .listener(object : RequestListener<Drawable> {
-                override fun onLoadFailed(p0: GlideException?, p1: Any?, p2: com.bumptech.glide.request.target.Target<Drawable>?, p3: Boolean): Boolean {
-                    Log.e("err", p0?.message.toString())
-                    headerView.user_icon_progress_bar_side_top_view.visibility = View.GONE
-                    return false
-                }
-
-                override fun onResourceReady(p0: Drawable?, p1: Any?, target: com.bumptech.glide.request.target.Target<Drawable>?, dataSource: com.bumptech.glide.load.DataSource?, p4: Boolean): Boolean {
-                    headerView.user_icon_progress_bar_side_top_view.visibility = View.GONE
-                    return false
-                }
-            }).apply(requestOption).into(headerView.userIcon)
+        if (notification){
+            notification = false
+            findNavController(R.id.nav_home_host_fragment).navigate(R.id.notificationsFragment)
+        }
 
         iv_back.setSafeOnClickListener {
             Log.e("Dest", findNavController(R.id.nav_home_host_fragment).currentDestination?.id.toString())
@@ -146,7 +120,4 @@ class HomeActivity : AppCompatActivity() {
     private fun openNotificationFragment(destFragment: Int) {
         findNavController(destFragment).navigate(R.id.notificationsFragment)
     }
-
-
-
 }

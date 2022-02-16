@@ -6,12 +6,12 @@
     android:background="@color/black">
 
     <LinearLayout
+        android:layoutDirection="ltr"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_5sdp"
-        android:layout_marginStart="@dimen/_15sdp"
-        android:layout_marginEnd="@dimen/_15sdp"
-        android:paddingBottom="@dimen/_80sdp"
+        android:paddingBottom="@dimen/_40sdp"
+        android:paddingHorizontal="@dimen/_8sdp"
         android:orientation="vertical">
         <LinearLayout
             android:id="@+id/llAccount"
@@ -36,8 +36,9 @@
                 android:textAllCaps="false"
                 android:text="@string/my_profile"/>
             <com.google.android.material.imageview.ShapeableImageView
-                android:layout_width="@dimen/_22sdp"
-                android:layout_height="@dimen/_22sdp"
+                android:layout_width="@dimen/_20sdp"
+                android:layout_height="@dimen/_20sdp"
+                android:padding="@dimen/_2sdp"
                 android:src="@drawable/user_nav_icon"
                 android:layout_gravity="center_vertical"
                 android:layout_marginEnd="@dimen/_5sdp"/>
@@ -73,6 +74,7 @@
             <com.google.android.material.imageview.ShapeableImageView
                 android:layout_width="@dimen/_20sdp"
                 android:layout_height="@dimen/_20sdp"
+                android:padding="@dimen/_2sdp"
                 android:src="@drawable/featured_nav_icon"
                 android:layout_gravity="center_vertical"
                 android:layout_marginEnd="@dimen/_5sdp"/>
@@ -108,6 +110,7 @@
             <com.google.android.material.imageview.ShapeableImageView
                 android:layout_width="@dimen/_20sdp"
                 android:layout_height="@dimen/_20sdp"
+                android:padding="@dimen/_2sdp"
                 android:src="@drawable/bell_nav_icon"
                 android:layout_gravity="center_vertical"
                 android:layout_marginEnd="@dimen/_5sdp"/>
@@ -144,6 +147,7 @@
             <com.google.android.material.imageview.ShapeableImageView
                 android:layout_width="@dimen/_20sdp"
                 android:layout_height="@dimen/_20sdp"
+                android:padding="@dimen/_2sdp"
                 android:src="@drawable/settings_nav_icon"
                 android:layout_gravity="center_vertical"
                 android:layout_toEndOf="@id/tv_settings"
@@ -180,6 +184,7 @@
             <com.google.android.material.imageview.ShapeableImageView
                 android:layout_width="@dimen/_20sdp"
                 android:layout_height="@dimen/_20sdp"
+                android:padding="@dimen/_2sdp"
                 android:src="@drawable/revenues_nav_icon"
                 android:layout_gravity="center_vertical"
                 android:layout_marginEnd="@dimen/_5sdp"/>
@@ -216,6 +221,7 @@
             <com.google.android.material.imageview.ShapeableImageView
                 android:layout_width="@dimen/_20sdp"
                 android:layout_height="@dimen/_20sdp"
+                android:padding="@dimen/_2sdp"
                 android:src="@drawable/credit_cards_payment_nav_icon"
                 android:layout_gravity="center_vertical"
                 android:layout_marginEnd="@dimen/_5sdp"/>
@@ -252,6 +258,7 @@
             <com.google.android.material.imageview.ShapeableImageView
                 android:layout_width="@dimen/_20sdp"
                 android:layout_height="@dimen/_20sdp"
+                android:padding="@dimen/_2sdp"
                 android:src="@drawable/my_bank"
                 android:tint="@color/gold"
                 app:tint="@color/gold"
@@ -289,6 +296,7 @@
             <com.google.android.material.imageview.ShapeableImageView
                 android:layout_width="@dimen/_20sdp"
                 android:layout_height="@dimen/_20sdp"
+                android:padding="@dimen/_2sdp"
                 android:src="@drawable/location_pin_nav_icon"
                 android:layout_gravity="center_vertical"
                 android:layout_marginEnd="@dimen/_5sdp"/>
@@ -324,6 +332,7 @@
             <com.google.android.material.imageview.ShapeableImageView
                 android:layout_width="@dimen/_20sdp"
                 android:layout_height="@dimen/_20sdp"
+                android:padding="@dimen/_2sdp"
                 android:src="@drawable/language_nav_icon"
                 android:layout_gravity="center_vertical"
                 android:layout_marginEnd="@dimen/_5sdp"/>
@@ -359,6 +368,7 @@
             <com.google.android.material.imageview.ShapeableImageView
                 android:layout_width="@dimen/_20sdp"
                 android:layout_height="@dimen/_20sdp"
+                android:padding="@dimen/_2sdp"
                 android:src="@drawable/about_us_nav_icon"
                 android:layout_gravity="center_vertical"
                 android:layout_marginEnd="@dimen/_5sdp"/>
@@ -394,6 +404,7 @@
             <com.google.android.material.imageview.ShapeableImageView
                 android:layout_width="@dimen/_20sdp"
                 android:layout_height="@dimen/_20sdp"
+                android:padding="@dimen/_2sdp"
                 android:src="@drawable/phone_call_nav_icon"
                 android:layout_gravity="center_vertical"
                 android:layout_marginEnd="@dimen/_5sdp"/>
@@ -428,6 +439,7 @@
             <com.google.android.material.imageview.ShapeableImageView
                 android:layout_width="@dimen/_20sdp"
                 android:layout_height="@dimen/_20sdp"
+                android:padding="@dimen/_2sdp"
                 android:src="@drawable/tnc_nav_icon"
                 android:layout_gravity="center_vertical"
                 android:layout_marginEnd="@dimen/_5sdp"/>
@@ -464,6 +476,7 @@
             <com.google.android.material.imageview.ShapeableImageView
                 android:layout_width="@dimen/_20sdp"
                 android:layout_height="@dimen/_20sdp"
+                android:padding="@dimen/_2sdp"
                 android:src="@drawable/privacy_nav_icon"
                 android:layout_gravity="center_vertical"
                 android:layout_marginEnd="@dimen/_5sdp"/>
@@ -498,6 +511,7 @@
             <com.google.android.material.imageview.ShapeableImageView
                 android:layout_width="@dimen/_20sdp"
                 android:layout_height="@dimen/_20sdp"
+                android:padding="@dimen/_2sdp"
                 android:src="@drawable/faq_nav_icon"
                 android:layout_gravity="center_vertical"
                 android:layout_marginEnd="@dimen/_5sdp"/>
@@ -532,6 +546,7 @@
             <com.google.android.material.imageview.ShapeableImageView
                 android:layout_width="@dimen/_20sdp"
                 android:layout_height="@dimen/_20sdp"
+                android:padding="@dimen/_2sdp"
                 android:src="@drawable/customer_support_nav_icon"
                 android:layout_gravity="center_vertical"
                 android:layout_marginEnd="@dimen/_5sdp"/>
@@ -566,15 +581,11 @@
             <com.google.android.material.imageview.ShapeableImageView
                 android:layout_width="@dimen/_20sdp"
                 android:layout_height="@dimen/_20sdp"
+                android:padding="@dimen/_2sdp"
                 android:src="@drawable/exit_nav_icon"
                 android:layout_gravity="center_vertical"
                 android:layout_marginEnd="@dimen/_5sdp"/>
         </LinearLayout>
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/_1sdp"
-            android:layout_marginTop="@dimen/_5sdp"
-            android:background="@color/gray"/>
     </LinearLayout>
 
 </ScrollView>

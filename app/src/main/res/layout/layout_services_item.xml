@@ -28,11 +28,11 @@
                 android:layout_height="match_parent"
                 android:background="@color/white"
                 android:backgroundTint="@color/white"
-                app:riv_corner_radius="@dimen/_10sdp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/def_henna" />
+                android:src="@drawable/def_henna"
+                app:riv_corner_radius="@dimen/_10sdp" />
 
-            <ProgressBar
+            <androidx.core.widget.ContentLoadingProgressBar
                 android:id="@+id/img_loader"
                 android:layout_width="@dimen/_15sdp"
                 android:layout_height="@dimen/_15sdp"

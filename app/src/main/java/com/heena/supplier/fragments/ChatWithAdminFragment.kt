@@ -34,8 +34,8 @@ import com.heena.supplier.rest.APIClient
 import com.heena.supplier.utils.LogUtils
 import com.heena.supplier.utils.SharedPreferenceUtility
 import com.heena.supplier.utils.Utility
-import com.heena.supplier.utils.Utility.Companion.apiInterface
-import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
+import com.heena.supplier.utils.Utility.apiInterface
+import com.heena.supplier.utils.Utility.setSafeOnClickListener
 import io.socket.client.IO
 import io.socket.client.Socket.*
 import io.socket.emitter.Emitter
@@ -289,7 +289,7 @@ class ChatWithAdminFragment : Fragment() {
                 } catch (e: JSONException) {
                     e.printStackTrace()
                 }
-                mSocket!!.emit("chatMessage", messageObject)
+                mSocket.emit("chatMessage", messageObject)
                 Log.e("emitMessage", messageObject.toString())
                 mView!!.et_enter_message.setText("")
                 if (type == "direct" && directMessageStatus == 0){
@@ -320,9 +320,9 @@ class ChatWithAdminFragment : Fragment() {
 
     private fun getOldMessageList() {
         mView!!.frag_chat_progressBar.visibility = View.VISIBLE
-        val builder = APIClient.createBuilder(arrayOf("user_id","room"),
-            arrayOf(SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.UserId, 0].toString(), room.toString()))
-        val call = apiInterface.getOldMessageList(builder!!.build())
+        val builder = APIClient.createBuilder(arrayOf("user_id","room", "lang"),
+            arrayOf(SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.UserId, 0].toString(), room.toString(), SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""]))
+        val call = apiInterface.getOldMessageList(builder.build())
         call?.enqueue(object : Callback<OldMessagesResponse?> {
             override fun onResponse(
                 call: Call<OldMessagesResponse?>,
@@ -538,8 +538,9 @@ class ChatWithAdminFragment : Fragment() {
     }
 
     private fun postImage(imagePath: String, room: String?) {
-        val builder = APIClient.createMultipartBodyBuilder(arrayOf("room"),
-            arrayOf(room.toString()))
+        val builder = APIClient.createMultipartBodyBuilder(arrayOf("room", "lang"),
+            arrayOf(room.toString(),
+            SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""]))
         val file = File(imagePath)
         val requestBody = RequestBody.create(MediaType.parse("image/*"), file)
         builder!!.addFormDataPart("chat_file", file.name, requestBody)
@@ -571,7 +572,7 @@ class ChatWithAdminFragment : Fragment() {
                         } catch (e: JSONException) {
                             e.printStackTrace()
                         }
-                        mSocket!!.emit("chatMessage", messageObject)
+                        mSocket.emit("chatMessage", messageObject)
                         Log.e("emitMessage", messageObject.toString())
                         mView!!.et_enter_message.setText("")
                         if (type == "direct" && directMessageStatus == 0){
@@ -609,13 +610,13 @@ class ChatWithAdminFragment : Fragment() {
 
     private fun disconnectSocket(){
         if(Utility.hasConnection(requireContext()) && mSocket!=null) {
-            mSocket!!.disconnect()
-            mSocket!!.off(EVENT_CONNECT, onConnect)
-            mSocket!!.off(EVENT_DISCONNECT, onDisconnect)
-            mSocket!!.off(EVENT_CONNECT_ERROR, onConnectError)
-            mSocket!!.off(EVENT_CONNECT_TIMEOUT, onConnectError)
-            mSocket!!.off("getMessage", GetChatMessage)
-            mSocket!!.off("newChatMessage", NewChatMessage)
+            mSocket.disconnect()
+            mSocket.off(EVENT_CONNECT, onConnect)
+            mSocket.off(EVENT_DISCONNECT, onDisconnect)
+            mSocket.off(EVENT_CONNECT_ERROR, onConnectError)
+            mSocket.off(EVENT_CONNECT_TIMEOUT, onConnectError)
+            mSocket.off("getMessage", GetChatMessage)
+            mSocket.off("newChatMessage", NewChatMessage)
             //mSocket!!.off("messages", NewChatMessage)
             //mSocket!!.off("blocked", BlockedUserListener)
         }

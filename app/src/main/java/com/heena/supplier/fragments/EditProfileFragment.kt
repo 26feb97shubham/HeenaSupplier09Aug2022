@@ -36,14 +36,14 @@ import com.heena.supplier.rest.APIClient
 import com.heena.supplier.utils.LogUtils
 import com.heena.supplier.utils.SharedPreferenceUtility
 import com.heena.supplier.utils.Utility
-import com.heena.supplier.utils.Utility.Companion.IMAGE_DIRECTORY_NAME
-import com.heena.supplier.utils.Utility.Companion.apiInterface
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.model.AddressComponent
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
-import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
+import com.heena.supplier.utils.Utility.IMAGE_DIRECTORY_NAME
+import com.heena.supplier.utils.Utility.apiInterface
+import com.heena.supplier.utils.Utility.setSafeOnClickListener
 import kotlinx.android.synthetic.main.activity_home2.*
 import kotlinx.android.synthetic.main.activity_sign_up2.view.*
 import kotlinx.android.synthetic.main.fragment_edit_profile.view.*
@@ -166,7 +166,7 @@ class EditProfileFragment : Fragment() {
                         add = addressComponent.name
                     }
 
-                    var flag: Boolean = false
+                    var flag = false
                     val types: MutableList<String> = addressComponent.types
                     for (type in types) {
                         if (type.equals(
@@ -321,20 +321,20 @@ class EditProfileFragment : Fragment() {
         var call : Call<UpdateProfileResponse?>?=null
 
         if(imagePath.equals("")){
-            val builder = APIClient.createBuilder(arrayOf("user_id", "name", "address", "image"),
+            val builder = APIClient.createBuilder(arrayOf("user_id", "name", "address", "image", "lang"),
                 arrayOf(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId,0).toString(),
                     fullname,
                     location.toString(),
-                    ""))
-            call = apiInterface.updateProfile(builder!!.build())
+                    "",
+                SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""]))
+            call = apiInterface.updateProfile(builder.build())
 
         }else{
-            val builder = APIClient.createMultipartBodyBuilder(arrayOf("user_id", "name", "address"),
+            val builder = APIClient.createMultipartBodyBuilder(arrayOf("user_id", "name", "address", "lang"),
                 arrayOf(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId,0).toString(),
                     fullname,
                     location.toString(),
-                    mLatitude.toString(),
-                    mLongitude.toString()))
+                SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""]))
 
             Log.e("image_path", imagePath)
             if (imagePath != "") {
@@ -343,7 +343,6 @@ class EditProfileFragment : Fragment() {
                     val file = File(imagePath)
                     Log.e("file name ", file.name)
                     SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.ProfilePic,imagePath)
-                    SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.Fullname,fullname)
                     val requestBody = RequestBody.create(MediaType.parse("image/*"), file)
                     builder!!.addFormDataPart("image", file.name, requestBody)
                 }else{
@@ -363,6 +362,9 @@ class EditProfileFragment : Fragment() {
                     if (response.body() != null) {
                         if(response.body()!!.status==1){
                             LogUtils.shortToast(requireContext(), response.body()!!.message)
+                            SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.Fullname,fullname)
+                            SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.Username,username)
+                            SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.Address,location)
                             findNavController().navigate(R.id.homeFragment)
                         }
                     }
@@ -494,7 +496,7 @@ class EditProfileFragment : Fragment() {
     private fun showProfile() {
         requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         mView!!.progressBar_update.visibility= View.VISIBLE
-        val call = Utility.apiInterface.showProfile(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId,0))
+        val call = Utility.apiInterface.showProfile(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId,0), SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""])
         call?.enqueue(object : Callback<ProfileShowResponse?> {
             override fun onResponse(
                     call: Call<ProfileShowResponse?>,
@@ -525,15 +527,15 @@ class EditProfileFragment : Fragment() {
                                     dataSource: DataSource?,
                                     isFirstResource: Boolean
                                 ): Boolean {
-                                    mView!!.edit_image_progress_bar.visibility = View.GONE
                                     return false
                                 }
 
-                            }).into(mView!!.civ_profile_update)
+                            }).placeholder(R.drawable.user)
+                                .into(mView!!.civ_profile_update)
                             mView!!.edtUsername_update.setText(response.body()!!.profile!!.username)
                             mView!!.edtFullName_update.setText(response.body()!!.profile!!.name)
                             mView!!.edtemailaddress_update.setText(response.body()!!.profile!!.email)
-                            mView!!.edtmobilenumber_update.setText(response.body()!!.profile!!.phone)
+                            mView!!.edtmobilenumber_update.setText(response.body()!!.profile!!.country_code + response.body()!!.profile!!.phone)
                             mView!!.edtlocation_update.setText(response.body()!!.profile!!.address)
                         }
                     }

@@ -24,7 +24,7 @@ import com.heena.supplier.rest.APIInterface
 import com.heena.supplier.utils.LogUtils
 import com.heena.supplier.utils.SharedPreferenceUtility
 import com.heena.supplier.utils.Utility
-import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
+import com.heena.supplier.utils.Utility.setSafeOnClickListener
 import kotlinx.android.synthetic.main.activity_home2.*
 import kotlinx.android.synthetic.main.activity_notifications_fragment.view.*
 import org.json.JSONException
@@ -41,7 +41,6 @@ class NotificationsFragment : Fragment() {
     lateinit var mView:View
     private var param1: String? = null
     private var param2: String? = null
-    lateinit var notificationsAdapter: NotificationsAdapter
     val apiInterface = APIClient.getClient()!!.create(APIInterface::class.java)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,7 +72,7 @@ class NotificationsFragment : Fragment() {
             mView.notifications_frag_progressBar.visibility = View.VISIBLE
         }
 
-        val call = apiInterface.getNotifications(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId, 0))
+        val call = apiInterface.getNotifications(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId, 0), SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""])
         call!!.enqueue(object : Callback<NotificationResponse?>{
             override fun onResponse(call: Call<NotificationResponse?>, response: Response<NotificationResponse?>) {
                 mView.notifications_frag_progressBar.visibility = View.GONE
@@ -85,27 +84,17 @@ class NotificationsFragment : Fragment() {
                     if (response.isSuccessful){
                         if (response.body()!=null){
                             if (response.body()!!.status==1){
-                                mView.noNotificationView.visibility=View.GONE
-                                mView.rvNotificationsList.visibility=View.VISIBLE
                                 notificationList.clear()
-                                for(i in 0 until notificationList.size){
-                                    val n = Notification(notificationList[i].comment_id,
-                                            notificationList[i].create_at,
-                                            notificationList[i].description,
-                                            notificationList[i].is_new,
-                                            notificationList[i].notification_id,
-                                            notificationList[i].title,
-                                            notificationList[i].user)
-                                    notificationList.add(n)
+                                notificationList = response.body()!!.notification
+                                if (notificationList.size==0){
+                                    mView.noNotificationView.visibility = View.VISIBLE
+                                    mView.rvNotificationsList.visibility = View.GONE
+                                }else{
+                                    mView.noNotificationView.visibility = View.GONE
+                                    mView.rvNotificationsList.visibility = View.VISIBLE
+                                    setNotificationAdapter(notificationList)
                                 }
-                            }else if (notificationList.size==0){
-                                mView.noNotificationView.visibility=View.VISIBLE
-                                mView.rvNotificationsList.visibility=View.GONE
-                            }else{
-                                mView.noNotificationView.visibility=View.VISIBLE
-                                mView.rvNotificationsList.visibility=View.GONE
                             }
-                            notificationsAdapter.notifyDataSetChanged()
                         }
                     }else{
                         LogUtils.shortToast(requireContext(), getString(R.string.response_isnt_successful))
@@ -133,6 +122,14 @@ class NotificationsFragment : Fragment() {
         })
     }
 
+    private fun setNotificationAdapter(notificationList: ArrayList<Notification>) {
+        mView.rvNotificationsList.apply {
+            this.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+            this.adapter = NotificationsAdapter(requireContext(), notificationList)
+        }
+    }
+
+
     private fun setUpViews() {
 
         if(!Utility.hasConnection(requireContext())){
@@ -141,11 +138,13 @@ class NotificationsFragment : Fragment() {
             noInternetDialog.setRetryCallback(object : NoInternetDialog.RetryInterface{
                 override fun retry() {
                     noInternetDialog.dismiss()
-                    getNotifications(false)
+                    getNotifications(true)
                 }
 
             })
             noInternetDialog.show(requireActivity().supportFragmentManager, "Notification Fragment")
+        }else{
+            getNotifications(true)
         }
 
         requireActivity().iv_back.setSafeOnClickListener {
@@ -158,14 +157,10 @@ class NotificationsFragment : Fragment() {
             getNotifications(true)
         }
 
-        mView.rvNotificationsList.layoutManager= LinearLayoutManager(requireContext())
-        notificationsAdapter = NotificationsAdapter(requireContext(), notificationList)
-        mView.rvNotificationsList.adapter=notificationsAdapter
-
-        swipeLeftToDeleteItem()
+       // swipeLeftToDeleteItem()
     }
 
-    private fun swipeLeftToDeleteItem() {
+   /* private fun swipeLeftToDeleteItem() {
         val swipeToDeleteCallback = object : SwipeToDeleteCallback(requireContext()) {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val position = viewHolder.adapterPosition //get position which is swipe
@@ -176,9 +171,9 @@ class NotificationsFragment : Fragment() {
                     builder.setPositiveButton(getString(R.string.delete), DialogInterface.OnClickListener { dialog, which ->
                         notificationDelete(position)
                         //when click on DELETE
-                        /*notificationsAdapter.notifyItemRemoved(position) //item removed from recylcerview
-                        *//* sqldatabase.execSQL("delete from " + TABLE_NAME.toString() + " where _id='" + (position + 1).toString() + "'") //query for delete*//*
-                        notificationList.removeAt(position) //then remove item*/
+                        *//*notificationsAdapter.notifyItemRemoved(position) //item removed from recylcerview
+                        *//**//* sqldatabase.execSQL("delete from " + TABLE_NAME.toString() + " where _id='" + (position + 1).toString() + "'") //query for delete*//**//*
+                        notificationList.removeAt(position) //then remove item*//*
                         return@OnClickListener
                     }).setNegativeButton(getString(R.string.cancel), DialogInterface.OnClickListener { dialog, which ->
 
@@ -194,7 +189,7 @@ class NotificationsFragment : Fragment() {
         itemTouchhelper.attachToRecyclerView(mView.rvNotificationsList)
     }
     private fun notificationDelete(pos: Int) {
-     /*   requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+     *//*   requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         mView.progressBar.visibility= View.VISIBLE
 
         val apiInterface = ApiClient.getClient()!!.create(ApiInterface::class.java)
@@ -238,8 +233,8 @@ class NotificationsFragment : Fragment() {
                 mView.progressBar.visibility = View.GONE
                 requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             }
-        })*/
-    }
+        })*//*
+    }*/
 
     override fun onResume() {
         super.onResume()

@@ -10,7 +10,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.heena.supplier.R
 import com.heena.supplier.`interface`.ClickInterface
 import com.heena.supplier.models.Membership
+import com.heena.supplier.utils.Utility
+import com.heena.supplier.utils.Utility.setSafeOnClickListener
 import kotlinx.android.synthetic.main.registration_membership_plan_items.view.*
+import java.text.NumberFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 class RegistrationMembershipPlansListAdapter(private val context: Context,
                                              private val membershipList: ArrayList<Membership>,
@@ -29,16 +34,18 @@ class RegistrationMembershipPlansListAdapter(private val context: Context,
             ItemDetailsLookup.ItemDetails<Long>() {
             override fun getPosition(): Int = adapterPosition
 
-            override fun getSelectionKey(): Long?  = itemId
+            override fun getSelectionKey(): Long  = itemId
 
         }
 
         fun onBindData() {
             itemView.tv_registration_plan_title.text = membershipList[position].name
-            itemView.tv_registration_plan_price.text = "AED " + membershipList[position].price.toString()
+            itemView.tv_registration_plan_price.text = "AED " + Utility.convertDoubleValueWithCommaSeparator(
+                membershipList[position].price!!.toDouble()
+            )
             itemView.tv_registration_plan_description.text = membershipList[position].description
 
-            itemView.setOnClickListener {
+            itemView.setSafeOnClickListener {
                 itemView.iv_selected_unselected_registration.visibility = View.VISIBLE
                 if (checkedPosition!=adapterPosition){
                     notifyItemChanged(checkedPosition)

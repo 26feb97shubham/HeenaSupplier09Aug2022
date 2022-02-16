@@ -18,16 +18,9 @@ class NotificationsAdapter(private val context: Context, private val data:ArrayL
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.itemView.txtTitle.text = data[position].title
-        holder.itemView.txtDetails.text = data[position].description
-        holder.itemView.txtTime.text = data[position].create_at
-        /*if(data[position].seen==0){
-            holder.itemView.imgNotWell.setImageResource(R.drawable.not_well_01)
-        }
-        else{
-            holder.itemView.imgNotWell.setImageResource(R.drawable.not05)
-        }*/
-
+        holder.itemView.notificationTitle.text = data[position].title
+        holder.itemView.notificationsDetails.text = data[position].message
+        holder.itemView.notificationCreatedTime.text = data[position].createAt
     }
 
     override fun getItemCount(): Int {

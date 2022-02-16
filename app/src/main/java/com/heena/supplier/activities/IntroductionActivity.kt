@@ -24,7 +24,7 @@ class IntroductionActivity : AppCompatActivity() {
         val pagerAdapter = ScreenSlidePagerAdapter(this)
         intro_view_pager.adapter = pagerAdapter
 
-        TabLayoutMediator(tabLayout,   intro_view_pager){ _, _ ->
+        TabLayoutMediator(tabLayout, intro_view_pager){ _, _ ->
         }.attach()
     }
     companion object{

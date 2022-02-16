@@ -2,6 +2,7 @@ package com.heena.supplier.fragments
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -28,6 +29,8 @@ class CardSliderFragment(private var cards : Cards) : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    var interval = 4
+    var separator = ' '
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,18 +66,20 @@ class CardSliderFragment(private var cards : Cards) : Fragment() {
 
     private fun addDetails(cards: Cards) {
         mView!!.tv_expiry_date_card.text = cards.expiry_date
-        if(SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""].equals("ar")){
-            val card_number = cards.number+"******"+cards.first_six
-            mView!!.tv_card_number_card.text = card_number
-        }else{
-            val card_number = cards.first_six+"******"+cards.number
-            mView!!.tv_card_number_card.text = card_number
+        val card_number = cards.first_six+"******"+cards.number
+        val sb: StringBuilder = StringBuilder(card_number)
+
+        for (i in 0 until card_number.length / interval) {
+            sb.insert((i + 1) * interval + i, separator)
         }
+
+        val withDashes = sb.toString()
+        Log.e("cardNumber", withDashes)
+        mView!!.tv_card_number_card.text = withDashes
         mView!!.tv_account_holdee_name_card.text = cards.name
     }
 
     companion object {
-
         @JvmStatic
         fun newInstance(param1: String, param2: String, cards: Cards) =
             CardSliderFragment(cards).apply {

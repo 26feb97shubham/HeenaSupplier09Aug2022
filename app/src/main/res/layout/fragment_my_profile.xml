@@ -31,6 +31,16 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.core.widget.ContentLoadingProgressBar
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toTopOf="@id/civ_profile"
+                    app:layout_constraintBottom_toBottomOf="@id/civ_profile"
+                    app:layout_constraintStart_toStartOf="@id/civ_profile"
+                    app:layout_constraintEnd_toEndOf="@id/civ_profile"
+                    android:id="@+id/civProfilecontentProgressbar"
+                    android:visibility="visible"/>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <com.google.android.material.textview.MaterialTextView
@@ -78,8 +88,11 @@
                 android:layout_marginTop="@dimen/_6sdp"
                 android:fontFamily="@font/avenir_medium"
                 android:text="5 years wedding experience"
+                android:maxWidth="@dimen/_100sdp"
                 android:textAllCaps="false"
                 android:textColor="@color/gold"
+                android:ellipsize="end"
+                android:maxLines="2"
                 android:textSize="@dimen/_9ssp"
                 android:textStyle="normal"
                 android:visibility="visible"
@@ -131,7 +144,7 @@
                 android:background="@color/gold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/ratingView" />
+                app:layout_constraintTop_toBottomOf="@id/tv_naqashat_experience" />
 
             <LinearLayout
                 android:id="@+id/naqashat_categories_layout"

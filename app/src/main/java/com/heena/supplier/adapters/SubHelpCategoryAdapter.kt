@@ -8,9 +8,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.heena.supplier.R
 import com.heena.supplier.`interface`.ClickInterface
 import com.heena.supplier.models.HelpSubCategory
+import com.heena.supplier.utils.SharedPreferenceUtility
 import com.heena.supplier.utils.Utility
-import com.heena.supplier.utils.Utility.Companion.content
-import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
+import com.heena.supplier.utils.Utility.content
+import com.heena.supplier.utils.Utility.setSafeOnClickListener
 import kotlinx.android.synthetic.main.sub_category_items.view.*
 
 
@@ -19,7 +20,12 @@ class SubHelpCategoryAdapter(private val context : Context, private val subCateg
     private var sub_help_category : HelpSubCategory?=null
     inner class SubHelpCategoryAdapterVH(private val itemView : View) : RecyclerView.ViewHolder(itemView){
         fun bind(helpSubCategory: HelpSubCategory, position: Int) {
-            itemView.text_sub_category.text = helpSubCategory.title
+            val subTitle = if (SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""].equals("ar")){
+                helpSubCategory.title_ar
+            }else{
+                helpSubCategory.title
+            }
+            itemView.text_sub_category.text = subTitle
             itemView.card_sub_category.setSafeOnClickListener {
                 sub_help_category = subCategoryList[position]
                 content = sub_help_category!!.content

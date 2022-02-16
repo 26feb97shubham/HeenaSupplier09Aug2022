@@ -12,7 +12,7 @@ import com.heena.supplier.R
 import com.heena.supplier.adapters.ImageViewAdapter
 import com.heena.supplier.utils.SharedPreferenceUtility
 import com.heena.supplier.utils.Utility
-import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
+import com.heena.supplier.utils.Utility.setSafeOnClickListener
 import kotlinx.android.synthetic.main.activity_home2.*
 import kotlinx.android.synthetic.main.fragment_view_image.view.*
 
@@ -71,7 +71,7 @@ class ViewImageFragment : Fragment() {
         LinearLayoutManager.HORIZONTAL,
         false)
 
-        imageViewAdapter = ImageViewAdapter(requireContext(), gallery)
+        imageViewAdapter = ImageViewAdapter(requireActivity(), gallery)
         mView!!.rv_images.adapter = imageViewAdapter
         imageViewAdapter!!.notifyDataSetChanged()
     }

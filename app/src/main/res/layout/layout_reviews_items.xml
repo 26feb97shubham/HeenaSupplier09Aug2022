@@ -23,6 +23,16 @@
             app:civ_border_color="@color/gold"
             android:src="@drawable/user"/>
 
+        <androidx.core.widget.ContentLoadingProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="@id/civ_profile"
+            app:layout_constraintBottom_toBottomOf="@id/civ_profile"
+            app:layout_constraintStart_toStartOf="@id/civ_profile"
+            app:layout_constraintEnd_toEndOf="@id/civ_profile"
+            android:visibility="visible"
+            android:id="@+id/reviewCIVprofileprogressbar"/>
+
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_naqasha_name"
             android:layout_width="wrap_content"

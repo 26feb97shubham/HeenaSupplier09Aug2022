@@ -175,11 +175,13 @@
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/card_creditcard_activity"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_100sdp"
+                android:layout_height="wrap_content"
+                android:maxHeight="@dimen/_100sdp"
                 app:layout_constraintTop_toBottomOf="@id/tv_payment_txt2"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:strokeColor="@color/gold"
+                android:visibility="visible"
                 app:strokeWidth="@dimen/_1sdp"
                 app:cardCornerRadius="@dimen/_6sdp"
                 android:layout_marginTop="@dimen/_12sdp">
@@ -187,16 +189,33 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_cards_listing_activity"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:padding="@dimen/_8sdp"/>
+                    android:layout_height="match_parent" />
             </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_no_cards_found_service_payment_activity"
+                android:layout_width="@dimen/_200sdp"
+                android:layout_height="@dimen/_100sdp"
+                app:layout_constraintTop_toBottomOf="@+id/card_creditcard_activity"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:text="@string/no_cards_found"
+                android:textColor="@color/gold"
+                android:layout_marginHorizontal="@dimen/_10sdp"
+                android:padding="@dimen/_10sdp"
+                android:gravity="center"
+                android:visibility="gone"
+                android:layout_marginTop="@dimen/_28sdp"
+                android:fontFamily="@font/avenir_medium"
+                android:textSize="@dimen/_15ssp"
+                android:textStyle="normal"/>
 
             <View
                 android:id="@+id/view3"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@color/gold"
-                app:layout_constraintTop_toBottomOf="@id/card_creditcard_activity"
+                app:layout_constraintTop_toBottomOf="@id/tv_no_cards_found_service_payment_activity"
                 android:layout_marginTop="@dimen/_14sdp"/>
 
             <com.google.android.material.textview.MaterialTextView

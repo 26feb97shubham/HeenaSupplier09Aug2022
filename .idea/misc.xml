@@ -16,7 +16,8 @@
         <entry key="..\:/Shubham_Jain/HeenaSupplier/app/src/main/res/drawable/row_chat_admin_image_border.xml" value="0.3828125" />
         <entry key="..\:/Shubham_Jain/HeenaSupplier/app/src/main/res/drawable/row_chat_user_image_border.xml" value="0.3828125" />
         <entry key="..\:/Shubham_Jain/HeenaSupplier/app/src/main/res/drawable/strike_through_text_drawable.xml" value="0.3828125" />
-        <entry key="..\:/Shubham_Jain/HeenaSupplier/app/src/main/res/layout/activity_add_new_card.xml" value="0.36666666666666664" />
+        <entry key="..\:/Shubham_Jain/HeenaSupplier/app/src/main/res/drawable/white_card_top_radius.xml" value="0.215" />
+        <entry key="..\:/Shubham_Jain/HeenaSupplier/app/src/main/res/layout/activity_add_new_card.xml" value="0.3546875" />
         <entry key="..\:/Shubham_Jain/HeenaSupplier/app/src/main/res/layout/activity_choose_lang2.xml" value="0.36666666666666664" />
         <entry key="..\:/Shubham_Jain/HeenaSupplier/app/src/main/res/layout/activity_choose_login_sign_up2.xml" value="0.2259963768115942" />
         <entry key="..\:/Shubham_Jain/HeenaSupplier/app/src/main/res/layout/activity_forgot_password2.xml" value="0.17314814814814813" />
@@ -28,16 +29,18 @@
         <entry key="..\:/Shubham_Jain/HeenaSupplier/app/src/main/res/layout/activity_membership_registration2.xml" value="0.36666666666666664" />
         <entry key="..\:/Shubham_Jain/HeenaSupplier/app/src/main/res/layout/activity_notifications_fragment.xml" value="0.2259963768115942" />
         <entry key="..\:/Shubham_Jain/HeenaSupplier/app/src/main/res/layout/activity_otp_verification2.xml" value="0.17314814814814813" />
-        <entry key="..\:/Shubham_Jain/HeenaSupplier/app/src/main/res/layout/activity_payment_fragment.xml" value="0.17831813576494426" />
+        <entry key="..\:/Shubham_Jain/HeenaSupplier/app/src/main/res/layout/activity_payment_fragment.xml" value="0.3546875" />
         <entry key="..\:/Shubham_Jain/HeenaSupplier/app/src/main/res/layout/activity_reset_password.xml" value="0.17314814814814813" />
         <entry key="..\:/Shubham_Jain/HeenaSupplier/app/src/main/res/layout/activity_sign_up2.xml" value="0.36666666666666664" />
         <entry key="..\:/Shubham_Jain/HeenaSupplier/app/src/main/res/layout/activity_splash.xml" value="0.17314814814814813" />
+        <entry key="..\:/Shubham_Jain/HeenaSupplier/app/src/main/res/layout/activity_tap_payment.xml" value="0.3546875" />
         <entry key="..\:/Shubham_Jain/HeenaSupplier/app/src/main/res/layout/activity_terms_and_conditions.xml" value="0.2477355072463768" />
         <entry key="..\:/Shubham_Jain/HeenaSupplier/app/src/main/res/layout/booking_history_recycler_items_listing.xml" value="0.17314814814814813" />
         <entry key="..\:/Shubham_Jain/HeenaSupplier/app/src/main/res/layout/bookings_shimmer_layout.xml" value="0.16018518518518518" />
         <entry key="..\:/Shubham_Jain/HeenaSupplier/app/src/main/res/layout/cards_listing.xml" value="0.17314814814814813" />
         <entry key="..\:/Shubham_Jain/HeenaSupplier/app/src/main/res/layout/country_list_items.xml" value="0.17314814814814813" />
         <entry key="..\:/Shubham_Jain/HeenaSupplier/app/src/main/res/layout/current_booking_recycler_items_listing.xml" value="0.36666666666666664" />
+        <entry key="..\:/Shubham_Jain/HeenaSupplier/app/src/main/res/layout/custom_toast_layout.xml" value="0.3546875" />
         <entry key="..\:/Shubham_Jain/HeenaSupplier/app/src/main/res/layout/dialog_progress.xml" value="0.16018518518518518" />
         <entry key="..\:/Shubham_Jain/HeenaSupplier/app/src/main/res/layout/dropdown_hint_item.xml" value="0.16018518518518518" />
         <entry key="..\:/Shubham_Jain/HeenaSupplier/app/src/main/res/layout/filtered_offers_n_disc_recycler_item_listing.xml" value="0.17314814814814813" />
@@ -50,7 +53,7 @@
         <entry key="..\:/Shubham_Jain/HeenaSupplier/app/src/main/res/layout/fragment_all_services_listing.xml" value="0.16018518518518518" />
         <entry key="..\:/Shubham_Jain/HeenaSupplier/app/src/main/res/layout/fragment_bank_details.xml" value="0.16018518518518518" />
         <entry key="..\:/Shubham_Jain/HeenaSupplier/app/src/main/res/layout/fragment_book_service_bottom_sheet.xml" value="0.16018518518518518" />
-        <entry key="..\:/Shubham_Jain/HeenaSupplier/app/src/main/res/layout/fragment_bookingdetails.xml" value="0.2259963768115942" />
+        <entry key="..\:/Shubham_Jain/HeenaSupplier/app/src/main/res/layout/fragment_bookingdetails.xml" value="0.3546875" />
         <entry key="..\:/Shubham_Jain/HeenaSupplier/app/src/main/res/layout/fragment_c_m_s.xml" value="0.36666666666666664" />
         <entry key="..\:/Shubham_Jain/HeenaSupplier/app/src/main/res/layout/fragment_cancel_service_bottom_sheet.xml" value="0.16018518518518518" />
         <entry key="..\:/Shubham_Jain/HeenaSupplier/app/src/main/res/layout/fragment_cancelled_service_bottom_sheet_dialog.xml" value="0.16018518518518518" />
@@ -80,7 +83,7 @@
         <entry key="..\:/Shubham_Jain/HeenaSupplier/app/src/main/res/layout/fragment_nointernet_dialog.xml" value="0.16666666666666666" />
         <entry key="..\:/Shubham_Jain/HeenaSupplier/app/src/main/res/layout/fragment_offers_and_discounts.xml" value="0.16018518518518518" />
         <entry key="..\:/Shubham_Jain/HeenaSupplier/app/src/main/res/layout/fragment_payment.xml" value="0.16018518518518518" />
-        <entry key="..\:/Shubham_Jain/HeenaSupplier/app/src/main/res/layout/fragment_revenues.xml" value="0.16018518518518518" />
+        <entry key="..\:/Shubham_Jain/HeenaSupplier/app/src/main/res/layout/fragment_revenues.xml" value="0.3546875" />
         <entry key="..\:/Shubham_Jain/HeenaSupplier/app/src/main/res/layout/fragment_select_lang.xml" value="0.17831813576494426" />
         <entry key="..\:/Shubham_Jain/HeenaSupplier/app/src/main/res/layout/fragment_settings.xml" value="0.1" />
         <entry key="..\:/Shubham_Jain/HeenaSupplier/app/src/main/res/layout/fragment_subscription.xml" value="0.2259963768115942" />
@@ -113,11 +116,13 @@
         <entry key="..\:/Shubham_Jain/HeenaSupplier/app/src/main/res/layout/saved_address_listing.xml" value="0.17831813576494426" />
         <entry key="..\:/Shubham_Jain/HeenaSupplier/app/src/main/res/layout/services_categories_items.xml" value="0.17314814814814813" />
         <entry key="..\:/Shubham_Jain/HeenaSupplier/app/src/main/res/layout/side_menu_layout.xml" value="0.36666666666666664" />
-        <entry key="..\:/Shubham_Jain/HeenaSupplier/app/src/main/res/layout/side_top_view.xml" value="0.17831813576494426" />
+        <entry key="..\:/Shubham_Jain/HeenaSupplier/app/src/main/res/layout/side_top_view.xml" value="0.3546875" />
         <entry key="..\:/Shubham_Jain/HeenaSupplier/app/src/main/res/layout/solutions_items.xml" value="0.36666666666666664" />
         <entry key="..\:/Shubham_Jain/HeenaSupplier/app/src/main/res/layout/spinner_layout.xml" value="0.17314814814814813" />
         <entry key="..\:/Shubham_Jain/HeenaSupplier/app/src/main/res/layout/sub_category_items.xml" value="0.2477355072463768" />
         <entry key="..\:/Shubham_Jain/HeenaSupplier/app/src/main/res/menu/bottom_navigation_icon.xml" value="0.35555555555555557" />
+        <entry key="..\:/Shubham_Jain/HeenaSupplier/app/src/main/res/mipmap-anydpi-v26/heena_supplier.xml" value="0.215" />
+        <entry key="..\:/Shubham_Jain/HeenaSupplier/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.1" />
       </map>
     </option>
   </component>

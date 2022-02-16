@@ -91,10 +91,12 @@
                     android:textSize="@dimen/_11ssp"
                     android:textAllCaps="false"
                     android:elevation="@dimen/_5sdp"
-                    android:inputType="text"
+                    android:inputType="text|textEmailAddress"
+                    android:maxLines="1"
+                    android:maxLength="55"
                     android:textCursorDrawable="@drawable/cursor_color"
                     android:imeOptions="actionNext"
-                    android:hint="@string/username"/>
+                    android:hint="@string/username_or_email"/>
 
 
                 <LinearLayout
@@ -128,6 +130,8 @@
                         android:fontFamily="@font/avenir_medium"
                         android:textSize="@dimen/_11ssp"
                         android:textAllCaps="false"
+                        android:maxLines="1"
+                        android:maxLength="55"
                         android:textCursorDrawable="@drawable/cursor_color"
                         android:inputType="textPassword"
                         android:imeOptions="actionDone"

@@ -1,5 +1,6 @@
 package com.heena.supplier.fragments
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
@@ -37,9 +38,17 @@ import kotlin.collections.ArrayList
 import com.heena.supplier.extras.InputFilterMinMax
 
 import android.text.InputFilter
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.RequestOptions
 import com.heena.supplier.extras.DecimalDigitsInputFilter
 import com.heena.supplier.utils.Utility
-import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
+import com.heena.supplier.utils.Utility.setSafeOnClickListener
+import kotlinx.android.synthetic.main.fragment_add_offers.view.rv_services_listing
+import kotlinx.android.synthetic.main.fragment_add_offers.view.tv_services
+import kotlinx.android.synthetic.main.fragment_my_profile.view.*
+import java.text.NumberFormat
 
 
 class AddOffers : Fragment() {
@@ -109,14 +118,23 @@ class AddOffers : Fragment() {
             findNavController().navigate(R.id.notificationsFragment)
         }
 
-        if (offer_status.equals("edit")){
-            mView!!.tv_add_new_offers_txt.text = getString(R.string.update_offers)
-            mView!!.tv_save_service.text = getString(R.string.update)
+        if (offer_status.equals("view")){
             showOffer(offer_id)
+            setNonEnabledFields()
+            mView!!.tv_add_new_offers_txt.text = getString(R.string.view_offer_details)
+            mView!!.tv_save_service.visibility = View.GONE
         }else{
-            mView!!.tv_add_new_offers_txt.text = getString(R.string.add_new_offers)
-            mView!!.tv_save_service.text = getString(R.string.save)
+            mView!!.tv_save_service.visibility = View.VISIBLE
+            if (offer_status.equals("edit")){
+                mView!!.tv_add_new_offers_txt.text = getString(R.string.update_offers)
+                mView!!.tv_save_service.text = getString(R.string.update)
+                showOffer(offer_id)
+            }else{
+                mView!!.tv_add_new_offers_txt.text = getString(R.string.add_new_offers)
+                mView!!.tv_save_service.text = getString(R.string.save)
+            }
         }
+
 
         mView!!.card_choose_services.setSafeOnClickListener {
             if (!services_clicked){
@@ -173,7 +191,6 @@ class AddOffers : Fragment() {
                     LogUtils.shortToast(requireContext(), "Date cannot be selected")
                 }
             }
-
         })
 
         mView!!.tv_save_service.setSafeOnClickListener {
@@ -248,7 +265,7 @@ class AddOffers : Fragment() {
             WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
         )
         mView!!.frag_add_offer_progressBar.visibility= View.VISIBLE
-        val call = apiInterface.showOffer(offerId)
+        val call = apiInterface.showOffer(offerId, SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""])
         call?.enqueue(object : Callback<ShowOfferResponse?> {
             override fun onResponse(
                 call: Call<ShowOfferResponse?>,
@@ -260,7 +277,6 @@ class AddOffers : Fragment() {
                     if (response.isSuccessful) {
                         if (response.body() != null) {
                             if (response.body()!!.status == 1) {
-                                LogUtils.shortToast(requireContext(), response.body()!!.message)
                                 val offerItem = response.body()!!.offer
                                 mView!!.tv_choose_service.text = offerItem!!.service!!.name
                                 mView!!.et_discount.setText(offerItem.percentage)
@@ -341,14 +357,39 @@ class AddOffers : Fragment() {
                                         if(serviceList[position].gallery!!.size==0){
                                             mView!!.img.setImageResource(R.drawable.user)
                                         }else{
-                                            Glide.with(requireContext())
-                                                    .load(serviceList[position].gallery!![0]).into(
-                                                            mView!!.img
-                                                    )
+                                            val requestOption = RequestOptions().centerCrop()
+                                            Glide.with(requireContext()).load(
+                                                serviceList[position].gallery!![0]
+                                            )
+                                                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                                .listener(object : RequestListener<Drawable> {
+                                                    override fun onLoadFailed(
+                                                        p0: GlideException?,
+                                                        p1: Any?,
+                                                        p2: com.bumptech.glide.request.target.Target<Drawable>?,
+                                                        p3: Boolean
+                                                    ): Boolean {
+                                                        Log.e("err", p0?.message.toString())
+                                                        mView!!.cpImg.visibility = View.GONE
+                                                        return false
+                                                    }
+
+                                                    override fun onResourceReady(
+                                                        p0: Drawable?,
+                                                        p1: Any?,
+                                                        target: com.bumptech.glide.request.target.Target<Drawable>?,
+                                                        dataSource: com.bumptech.glide.load.DataSource?,
+                                                        p4: Boolean
+                                                    ): Boolean {
+                                                        mView!!.cpImg.visibility = View.GONE
+                                                        return false
+                                                    }
+                                                }).placeholder(R.drawable.default_background)
+                                                .apply(requestOption).into(mView!!.img)
                                         }
 
                                         mView!!.tv_services.text = serviceList[position].name
-                                        mView!!.tv_price.text = "AED "+serviceList[position].price!!.total
+                                        mView!!.tv_price.text = "AED "+ NumberFormat.getNumberInstance(Locale.US).format(serviceList[position].price!!.total!!.toDouble())
                                         mView!!.tv_category_name.text =
                                             serviceList[position].category!!.name
                                     }
@@ -443,7 +484,8 @@ class AddOffers : Fragment() {
                 "price",
                 "offer_price",
                 "percentage",
-                "offer_id"
+                "offer_id",
+                "lang"
             ),
             arrayOf(
                 SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId, 0)
@@ -454,7 +496,8 @@ class AddOffers : Fragment() {
                 offerPrice,
                 offerChildPrice,
                 offer_discount,
-                offer_id.toString()
+                offer_id.toString(),
+                SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""]
             )
         )
         val call = apiInterface.updateOffers(builder.build())
@@ -513,7 +556,8 @@ class AddOffers : Fragment() {
                 "ended_at",
                 "price",
                 "offer_price",
-                "percentage"
+                "percentage",
+                "lang"
             ),
             arrayOf(
                 SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId, 0)
@@ -523,7 +567,8 @@ class AddOffers : Fragment() {
                 myEndDate,
                 offerPrice,
                 offerChildPrice,
-                offer_discount
+                offer_discount,
+                SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""]
             )
         )
         val call = apiInterface.addOffers(builder.build())
@@ -586,4 +631,11 @@ class AddOffers : Fragment() {
         mView!!.cards_service_categories_listing.visibility = View.GONE
     }
 
+    private fun setNonEnabledFields(){
+        mView!!.tv_choose_service.isEnabled = false
+        mView!!.et_discount.isEnabled = false
+        mView!!.et_offers_price.isEnabled = false
+        mView!!.et_offers_child_price.isEnabled = false
+        mView!!.et_card_duration.isEnabled = false
+    }
 }

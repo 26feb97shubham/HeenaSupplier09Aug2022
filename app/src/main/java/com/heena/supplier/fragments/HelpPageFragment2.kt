@@ -12,9 +12,9 @@ import com.heena.supplier.R
 import com.heena.supplier.adapters.ContentSolutionsAdapter
 import com.heena.supplier.utils.SharedPreferenceUtility
 import com.heena.supplier.utils.Utility
-import com.heena.supplier.utils.Utility.Companion.content
-import com.heena.supplier.utils.Utility.Companion.helpCategory
-import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
+import com.heena.supplier.utils.Utility.content
+import com.heena.supplier.utils.Utility.helpCategory
+import com.heena.supplier.utils.Utility.setSafeOnClickListener
 import kotlinx.android.synthetic.main.activity_home2.*
 import kotlinx.android.synthetic.main.fragment_help_page2.view.*
 

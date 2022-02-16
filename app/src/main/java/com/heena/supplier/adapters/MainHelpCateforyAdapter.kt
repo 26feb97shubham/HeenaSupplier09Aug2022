@@ -30,7 +30,12 @@ class MainHelpCateforyAdapter(
     inner class MainHelpCateforyAdapterVH(private val itemView : View) : RecyclerView.ViewHolder(itemView){
         var isOpen=false
         fun bind(helpCategory: HelpCategory, position: Int) {
-            itemView.text_main_category.text = helpCategory.title
+            val title = if (SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""].equals("ar")){
+                helpCategory.title_ar
+            }else{
+                helpCategory.title
+            }
+            itemView.text_main_category.text = title
             itemView.text_main_category.setOnClickListener {
                 mainhelpCategoryClicked.mainHelpCategory(position)
                 if(isOpen){

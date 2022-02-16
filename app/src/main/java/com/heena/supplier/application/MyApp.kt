@@ -110,7 +110,4 @@ class MyApp : Application() {
              throw RuntimeException(e)
          }
     }
-     fun getSocket(): Socket? {
-         return socket
-     }
 }

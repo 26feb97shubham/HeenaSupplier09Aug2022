@@ -15,44 +15,54 @@ import com.bumptech.glide.request.target.Target
 import com.heena.supplier.R
 import com.heena.supplier.`interface`.ClickInterface
 import com.heena.supplier.models.BookingItem
-import com.heena.supplier.utils.Utility.Companion.booking_item_type
-import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
+import com.heena.supplier.utils.Utility.booking_item_type
+import com.heena.supplier.utils.Utility.convertDoubleValueWithCommaSeparator
+import com.heena.supplier.utils.Utility.setSafeOnClickListener
 import kotlinx.android.synthetic.main.booking_history_recycler_items_listing.view.*
 import kotlinx.android.synthetic.main.current_booking_recycler_items_listing.view.*
 import kotlinx.android.synthetic.main.current_booking_recycler_items_listing.view.tv_bookingId
 import kotlinx.android.synthetic.main.current_booking_recycler_items_listing.view.tv_pending
 import kotlinx.android.synthetic.main.current_booking_recycler_items_listing.view.tv_price
+import kotlin.collections.ArrayList
 
 class BookingsAdapter(private val context: Context,
                       private val bookingList: ArrayList<BookingItem>,
                       private val onRecyclerItemClick: ClickInterface.OnRecyclerItemClick) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        if (booking_item_type==1){
-            val view  =
+        return when (booking_item_type) {
+            1 -> {
+                val view  =
                     LayoutInflater.from(context).inflate(R.layout.current_booking_recycler_items_listing, parent, false)
-            return CurrentBookingVH(view)
-        }else if (booking_item_type == 2){
-            val view  =
+                CurrentBookingVH(view)
+            }
+            2 -> {
+                val view  =
                     LayoutInflater.from(context).inflate(R.layout.booking_history_recycler_items_listing, parent, false)
-            return HistoryBookingVH(view)
-        }else{
-            val view  =
+                HistoryBookingVH(view)
+            }
+            else -> {
+                val view  =
                     LayoutInflater.from(context).inflate(R.layout.current_booking_recycler_items_listing, parent, false)
-            return CurrentBookingVH(view)
+                CurrentBookingVH(view)
+            }
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val bookingItem = bookingList[position]
-        if (booking_item_type==1){
-            val currentBookingHolder = holder as CurrentBookingVH
-            currentBookingHolder.bind(bookingItem, position, context)
-        }else if (booking_item_type==2){
-            val historyBookingHolder = holder as HistoryBookingVH
-            historyBookingHolder.bind(bookingItem, position)
-        }else{
-            val currentBookingHolder = holder as CurrentBookingVH
-            currentBookingHolder.bind(bookingItem, position, context)
+        when (booking_item_type) {
+            1 -> {
+                val currentBookingHolder = holder as CurrentBookingVH
+                currentBookingHolder.bind(bookingItem, position, context)
+            }
+            2 -> {
+                val historyBookingHolder = holder as HistoryBookingVH
+                historyBookingHolder.bind(bookingItem, position)
+            }
+            else -> {
+                val currentBookingHolder = holder as CurrentBookingVH
+                currentBookingHolder.bind(bookingItem, position, context)
+            }
         }
     }
 
@@ -65,7 +75,7 @@ class BookingsAdapter(private val context: Context,
             val bookingId = "BOOK#" + bookingItem.booking_id
             current_booking_item_View.tv_bookingId.text = bookingId
             current_booking_item_View.tv_booking_service.text = bookingItem.service!!.name
-            current_booking_item_View.tv_price.text = "AED "+bookingItem.price.toString()
+            current_booking_item_View.tv_price.text = "AED "+ convertDoubleValueWithCommaSeparator(bookingItem.price!!.toDouble())
             current_booking_item_View.tv_service_date.text = bookingItem.booking_date.toString()
             Glide.with(context).load(bookingItem.user!!.image)
                 .listener(object : RequestListener<Drawable>{

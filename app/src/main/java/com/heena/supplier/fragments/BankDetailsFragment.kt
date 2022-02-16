@@ -14,7 +14,7 @@ import com.heena.supplier.models.BankDetailsResponse
 import com.heena.supplier.utils.LogUtils
 import com.heena.supplier.utils.SharedPreferenceUtility
 import com.heena.supplier.utils.Utility
-import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
+import com.heena.supplier.utils.Utility.setSafeOnClickListener
 import kotlinx.android.synthetic.main.activity_home2.*
 import kotlinx.android.synthetic.main.fragment_bank_details.view.*
 import org.json.JSONException
@@ -84,7 +84,7 @@ class BankDetailsFragment : Fragment() {
         mView!!.no_banks_found.visibility = View.GONE
         requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
 
-        val call  = Utility.apiInterface.showBanks(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId, 0))
+        val call  = Utility.apiInterface.showBanks(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId, 0), SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""])
         call?.enqueue(object : Callback<BankDetailsResponse?> {
             override fun onResponse(
                 call: Call<BankDetailsResponse?>,
@@ -107,7 +107,6 @@ class BankDetailsFragment : Fragment() {
                             mView!!.add_new_bank.visibility = View.VISIBLE
                             mView!!.sv_bank_details.visibility = View.GONE
                             isBankAdded = false
-                            LogUtils.longToast(requireContext(), response.body()!!.message)
                         }
                     }else{
                         mView!!.no_banks_found.visibility = View.VISIBLE

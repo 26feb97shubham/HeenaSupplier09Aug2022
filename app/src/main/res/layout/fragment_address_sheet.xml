@@ -108,6 +108,8 @@
                         android:layout_marginTop="@dimen/_6sdp"
                         app:backgroundTint="@color/gold"
                         android:inputType="text"
+                        android:maxLines="1"
+                        android:maxLength="55"
                         android:textCursorDrawable="@drawable/cursor_color"
                         android:textColor="@color/gold"
                         android:textAllCaps="false"

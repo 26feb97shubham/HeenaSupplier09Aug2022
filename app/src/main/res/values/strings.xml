@@ -7,6 +7,7 @@
     <string name="logo">Logo</string>
     <string name="sign_up">Sign Up</string>
     <string name="username">Username</string>
+    <string name="username_or_email">Username/Email Address</string>
     <string name="password">Password</string>
     <string name="remember_me">Remember me</string>
     <string name="forgot_password">Forgot Password?</string>
@@ -53,6 +54,7 @@
     <string name="bookings_history">Bookings History</string>
     <string name="pending">Pending</string>
     <string name="completed">Completed</string>
+    <string name="complete_booking">Complete Booking</string>
     <string name="accepted">Accepted</string>
     <string name="cancelled">Cancelled</string>
     <string name="book_service">Book Service</string>
@@ -180,7 +182,7 @@
     <string name="response_isnt_successful">Response Unsuccessful</string>
     <string name="title_activity_payment_fragment" translatable="false">PaymentFragmentActivity</string>
 
- <!--   <string name="google_map_api_key" translatable="false">AIzaSyD_Tu3xoBItqwRaaZmICV90yq-PO_Xpjc0</string>
+    <!--   <string name="google_map_api_key" translatable="false">AIzaSyD_Tu3xoBItqwRaaZmICV90yq-PO_Xpjc0</string>
     &lt;!&ndash;<string name="places_api_key">AIzaSyBeTKFFtBtiUm41-Ykp1Nxs12e5ERHVLu0</string>&ndash;&gt;
     <string name="places_api_key" translatable="false">AIzaSyCh5hBReaLSROrja5l_F4k8a30c18lM9sE</string>-->
     <!--
@@ -333,4 +335,10 @@
     <string name="would_you_like_to_update_your_offer_details">Would you like to update your offer details?</string>
     <string name="update_service">Update Service</string>
     <string name="would_you_like_to_update_your_service_details">Would you like to update your service details?</string>
+    <string name="ending_in">"Ending in"</string>
+    <string name="would_you_like_to_complete_this_booking">Would you like to complete this booking?</string>
+    <string name="view_service_details">View Service Details</string>
+    <string name="view_offer_details">View Offer Details</string>
+    <string name="card_is_not_valid">Card is not present or Invalid Card</string>
+    <string name="please_select_a_card_to_continue">Please select a card to continue</string>
 </resources>

@@ -4,11 +4,8 @@ import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.WindowManager
 import android.view.animation.AlphaAnimation
 import androidx.annotation.RequiresApi
 import androidx.core.widget.doAfterTextChanged
@@ -20,9 +17,9 @@ import com.heena.supplier.models.AddDeleteCardResponse
 import com.heena.supplier.rest.APIClient
 import com.heena.supplier.utils.LogUtils
 import com.heena.supplier.utils.SharedPreferenceUtility
-import com.heena.supplier.utils.Utility.Companion.apiInterface
-import com.heena.supplier.utils.Utility.Companion.changeLanguage
-import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
+import com.heena.supplier.utils.Utility.apiInterface
+import com.heena.supplier.utils.Utility.changeLanguage
+import com.heena.supplier.utils.Utility.setSafeOnClickListener
 import kotlinx.android.synthetic.main.activity_home2.*
 import kotlinx.android.synthetic.main.fragment_add_new_card.*
 import kotlinx.android.synthetic.main.fragment_add_new_card.view.*
@@ -43,6 +40,8 @@ class AddNewCardFragment : Fragment() {
     val sdf = SimpleDateFormat("MM/yyyy", Locale.US)
     var expiry_date : Date?=null
     var expired = false
+    private var keyDel = 0
+    private var a =""
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -95,7 +94,7 @@ class AddNewCardFragment : Fragment() {
 
     private fun validateAndSave() {
         card_title = mView!!.et_card_title.text.toString().trim()
-        card_number = mView!!.et_card_number.text.toString().trim()
+        card_number = mView!!.et_card_number.text.toString().replace(" ", "").trim()
         card_cvv = mView!!.et_cvv.text.toString().trim()
         card_expiry = mView!!.et_expiry.text.toString().trim()
 
@@ -105,7 +104,7 @@ class AddNewCardFragment : Fragment() {
         }else if (TextUtils.isEmpty(card_number)){
             mView!!.et_card_number.requestFocus()
             mView!!.et_card_number.error = getString(R.string.please_enter_valid_card_number)
-        }else if (card_number.length<15){
+        }else if (card_number.length<16){
             mView!!.et_card_number.requestFocus()
             mView!!.et_card_number.error = getString(R.string.please_enter_valid_card_number)
         }else if (TextUtils.isEmpty(card_cvv)){
@@ -124,12 +123,12 @@ class AddNewCardFragment : Fragment() {
     private fun save() {
         requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         progressBar_add_card.visibility= View.VISIBLE
-        val builder = APIClient.createBuilder(arrayOf("user_id", "name", "number","cvv", "expiry_date", "type", "card_id"),
+        val builder = APIClient.createBuilder(arrayOf("user_id", "name", "number","cvv", "expiry_date", "type", "card_id", "lang"),
         arrayOf(SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.UserId, 0].toString(),
         card_title,
         card_number,
         card_cvv,
-        card_expiry, "0", ""))
+        card_expiry, "0", "", SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""]))
         val call = apiInterface.addDeleteCard(builder.build())
         call!!.enqueue(object : Callback<AddDeleteCardResponse?>{
             override fun onResponse(
@@ -171,11 +170,39 @@ class AddNewCardFragment : Fragment() {
             mView!!.tv_account_holdee_name_1.text = text
         }
 
-        mView!!.et_card_number.doOnTextChanged { text, start, before, count ->
-            mView!!.tv_card_number_1.text = text
+        mView!!.et_card_number.doOnTextChanged { _, _, _, _ ->
+            val text = mView!!.et_card_number
+            var flag = true
+            val eachBlock: List<String> = text.text.toString().split(" ")
+            for (i in eachBlock.indices) {
+                if (eachBlock[i].length > 4) {
+                    flag = false
+                }
+            }
+            if (flag) {
+                text.setOnKeyListener { _, keyCode, _ ->
+                    if (keyCode == KeyEvent.KEYCODE_DEL) keyDel = 1
+                    false
+                }
+                if (keyDel == 0) {
+                    if ((text.text!!.length + 1) % 5 == 0) {
+                        if (text.text.toString().split(" ").size <= 3) {
+                            text.setText(text.text.toString() + " ")
+                            text.setSelection(text?.text!!.length)
+                        }
+                    }
+                    a = text?.text.toString()
+                } else {
+                    a = text?.text.toString()
+                    keyDel = 0
+                }
+            } else {
+                text.setText(a)
+            }
+            mView!!.tv_card_number_1.text = a
         }
 
-        mView!!.et_expiry.doOnTextChanged { text, start, before, count ->
+        mView!!.et_expiry.doOnTextChanged { text, _, _, _ ->
             mView!!.tv_expiry_date_1.text = text
         }
 

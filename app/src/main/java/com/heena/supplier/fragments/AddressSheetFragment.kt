@@ -38,7 +38,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
-import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
+import com.heena.supplier.utils.Utility.setSafeOnClickListener
 import kotlinx.android.synthetic.main.activity_home2.*
 import kotlinx.android.synthetic.main.fragment_address_sheet.*
 import kotlinx.android.synthetic.main.fragment_address_sheet.view.*
@@ -69,6 +69,7 @@ class AddressSheetFragment : Fragment(),
     private var countryList = ArrayList<CountryItem>()
     private var countryId : Int?=null
     private var countryName : String?=null
+    private var stateName : String?=null
     private var is_set_default = false
     var mLatitude: Double = 0.0
     var mLongitude: Double = 0.0
@@ -360,10 +361,12 @@ class AddressSheetFragment : Fragment(),
                     val abc = addressList[0].adminArea + addressList[0].subAdminArea
                     val def = addressList[0].premises
                     val ghi = addressList[0].thoroughfare + addressList[0].subThoroughfare
+                    val jkl = addressList[0].adminArea
                     street_area = addressList[0].subLocality +  " " + addressList[0].locality
                     countryName = addressList[0].countryName
+                    stateName = addressList[0].adminArea
                     for (i in 0 until countryList.size){
-                        if (countryName!!.equals(countryList[i].name)||countryName!!.equals(countryList[i].name_ar)){
+                        if (stateName!!.equals(countryList[i].name)||stateName!!.equals(countryList[i].name_ar)){
                             countryId = countryList[i].country_id
                             break
                         }
@@ -375,6 +378,7 @@ class AddressSheetFragment : Fragment(),
                     Log.e("abc", "" + abc)
                     Log.e("def", "" + def)
                     Log.e("ghi", "" + ghi)
+                    Log.e("jkl", "" + jkl)
                     strCity = addressList[0].locality + addressList[0].countryCode + addressList[0].countryName
                     val addList = strAddress.split(",".toRegex()).toTypedArray()
                     Log.e("addList", "" + addList.toString())

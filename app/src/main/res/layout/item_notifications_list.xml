@@ -8,22 +8,21 @@
     android:layout_marginBottom="@dimen/_5sdp"
     android:layout_marginEnd="@dimen/_5sdp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    
+
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/imgNotWell"
         android:layout_width="@dimen/_25sdp"
         android:layout_height="@dimen/_25sdp"
-        android:src="@drawable/not05"
-        android:layout_marginTop="@dimen/_5sdp"
+        android:src="@drawable/golden_logo"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/txtTitle"
+        android:id="@+id/notificationTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:fontFamily="@font/avenir_medium"
-        android:textColor="@color/black"
+        android:textColor="@color/gold"
+        android:textDirection="locale"
         android:textSize="@dimen/_12ssp"
         android:textStyle="bold"
         android:maxLines="2"
@@ -31,11 +30,11 @@
         android:layout_marginEnd="@dimen/_5sdp"
         android:layout_marginStart="@dimen/_10sdp"
         app:layout_constraintStart_toEndOf="@+id/imgNotWell"
-        app:layout_constraintEnd_toStartOf="@+id/txtTime"
+        app:layout_constraintEnd_toStartOf="@+id/notificationCreatedTime"
         android:text="Notification Title"
         app:layout_constraintTop_toTopOf="parent"/>
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/txtDetails"
+        android:id="@+id/notificationsDetails"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:fontFamily="@font/avenir_medium"
@@ -47,13 +46,13 @@
         app:layout_constraintStart_toEndOf="@+id/imgNotWell"
         app:layout_constraintEnd_toEndOf="parent"
         android:text="Notification Details"
-        app:layout_constraintTop_toBottomOf="@+id/txtTitle"/>
+        app:layout_constraintTop_toBottomOf="@+id/notificationTitle"/>
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/txtTime"
+        android:id="@+id/notificationCreatedTime"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:fontFamily="@font/avenir_medium"
-        android:textColor="@color/black"
+        android:textColor="@color/gold"
         android:textSize="@dimen/_9ssp"
         android:textStyle="normal"
         android:layout_marginTop="@dimen/_2sdp"
@@ -65,7 +64,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        app:layout_constraintTop_toBottomOf="@+id/txtDetails"
+        app:layout_constraintTop_toBottomOf="@+id/notificationsDetails"
         android:background="@color/gray"
         android:layout_marginTop="@dimen/_10sdp"/>
 

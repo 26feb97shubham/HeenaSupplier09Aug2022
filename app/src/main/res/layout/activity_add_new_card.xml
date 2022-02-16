@@ -176,7 +176,7 @@
                         android:textDirection="locale"
                         android:textAlignment="viewStart"
                         android:paddingStart="@dimen/_4sdp"
-                        android:maxLength="17"
+                        android:maxLength="20"
                         android:singleLine="true"
                         android:inputType="number"
                         android:textColor="@color/gold"

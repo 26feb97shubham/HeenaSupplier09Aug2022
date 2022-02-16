@@ -12,10 +12,9 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.heena.supplier.Dialogs.NoInternetDialog
 import com.heena.supplier.R
-import com.heena.supplier.extras.MyWebViewClient
 import com.heena.supplier.utils.SharedPreferenceUtility
 import com.heena.supplier.utils.Utility
-import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
+import com.heena.supplier.utils.Utility.setSafeOnClickListener
 import kotlinx.android.synthetic.main.activity_terms_and_conditions.*
 
 class TermsAndConditionsActivity : AppCompatActivity() {
@@ -33,11 +32,12 @@ class TermsAndConditionsActivity : AppCompatActivity() {
             onBackPressed()
         }
 
-        if (SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, "").equals("en")){
-            tnc_url = "https://henna.devtechnosys.info/terms-and-conditions/en"
-        }else{
-            tnc_url = "https://henna.devtechnosys.info/terms-and-conditions/ar"
-        }
+        tnc_url =
+            if (SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""] != "en") {
+                "https://alniqasha.ae/terms-and-conditions/ar"
+            } else {
+                "https://alniqasha.ae/terms-and-conditions/en"
+            }
 
         tnc_webview.webViewClient = object : WebViewClient() {
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
@@ -62,9 +62,9 @@ class TermsAndConditionsActivity : AppCompatActivity() {
         }
         tnc_webview.settings.javaScriptEnabled = true
         tnc_webview.settings.setSupportZoom(true)
-        tnc_webview.getSettings().setBuiltInZoomControls(true)
-        tnc_webview.getSettings().setUseWideViewPort(true)
-        tnc_webview.getSettings().setLoadWithOverviewMode(false)
+        tnc_webview.settings.builtInZoomControls = true
+        tnc_webview.settings.useWideViewPort = true
+        tnc_webview.settings.loadWithOverviewMode = false
         tnc_webview.setBackgroundColor(Color.TRANSPARENT)
         tnc_webview.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null)
 

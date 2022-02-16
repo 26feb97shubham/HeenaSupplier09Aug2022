@@ -18,6 +18,7 @@ import com.heena.supplier.utils.LogUtils
 import com.heena.supplier.utils.SharedPreferenceUtility
 import com.heena.supplier.utils.Utility
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.heena.supplier.utils.Utility.setSafeOnClickListener
 import kotlinx.android.synthetic.main.fragment_membership_bottom_sheet_dialog.view.*
 import org.json.JSONException
 import retrofit2.Call
@@ -48,7 +49,7 @@ class MembershipBottomSheetDialogFragment : BottomSheetDialogFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        mView!!.tv_subscribe!!.setOnClickListener { // dismiss dialog
+        mView!!.tv_subscribe!!.setSafeOnClickListener { // dismiss dialog
             if (membershipPlansListAdapter.getSelected()!=null){
                 membershipId = membershipPlansListAdapter.getSelected()!!.membership_id
                 if (dashboardMembershipId==membershipId){
@@ -68,7 +69,7 @@ class MembershipBottomSheetDialogFragment : BottomSheetDialogFragment() {
             requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             mView!!.membership_bottom_sheet_progressBar.visibility= View.VISIBLE
             val apiInterface = APIClient.getClient()!!.create(APIInterface::class.java)
-            val call = apiInterface.membershipList(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId, 0))
+            val call = apiInterface.membershipList(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId, 0), SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""])
             call!!.enqueue(object : Callback<MembershipListResponse?> {
                 override fun onResponse(call: Call<MembershipListResponse?>, response: Response<MembershipListResponse?>) {
                     mView!!.membership_bottom_sheet_progressBar.visibility = View.GONE

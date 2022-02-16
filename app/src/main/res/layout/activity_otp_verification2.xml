@@ -92,6 +92,8 @@
                         android:itemBackground="@drawable/outer_gold_white_rect_filled_box"
                         android:textColor="@color/gold"
                         app:itemCount="4"
+                        android:maxLines="1"
+                        android:maxLength="55"
                         android:cursorVisible="true"
                         app:cursorColor="@color/gold"
                         android:textColorHint="@color/gray"

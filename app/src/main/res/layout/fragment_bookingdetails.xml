@@ -329,11 +329,13 @@
                     android:layout_alignParentEnd="true"
                     android:ellipsize="end"
                     android:fontFamily="@font/avenir_medium"
-                    android:gravity="center_vertical"
+                    android:gravity="center_vertical|end"
                     android:maxLines="2"
                     android:text="Jumeirah Lakes Towers, Dubai"
                     android:textAllCaps="false"
                     android:textColor="@color/gold"
+                    android:textDirection="locale"
+
                     android:textSize="@dimen/_10ssp"
                     android:textStyle="normal" />
             </RelativeLayout>
@@ -423,7 +425,6 @@
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
                     android:text="@string/payment"
-                    app:layout_constraintStart_toStartOf="parent"
                     android:textAllCaps="false"
                     android:textSize="@dimen/_15ssp"
                     android:textColor="@color/gold"
@@ -434,10 +435,9 @@
                     android:id="@+id/tv_payment_name"
                     android:layout_width="0dp"
                     android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:gravity="end"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
                     android:text="@string/payment"
-                    app:layout_constraintStart_toStartOf="parent"
                     android:layout_marginStart="@dimen/_8sdp"
                     android:textAllCaps="false"
                     android:textSize="@dimen/_12ssp"
@@ -449,13 +449,12 @@
                     android:id="@+id/tv_payment_desc"
                     android:layout_width="0dp"
                     android:layout_weight="1"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:gravity="end"
                     android:text="@string/payment"
-                    app:layout_constraintStart_toStartOf="parent"
                     android:layout_marginStart="@dimen/_8sdp"
                     android:textAllCaps="false"
-                    android:textSize="@dimen/_9ssp"
+                    android:textSize="@dimen/_12ssp"
                     android:textColor="@color/gold"
                     android:textStyle="normal"
                     android:fontFamily="@font/avenir_medium"/>
@@ -630,22 +629,48 @@
                     android:gravity="center"/>
             </LinearLayout>
 
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/tv_completed_booking"
+            <LinearLayout
+                android:id="@+id/ll_complete_completed"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_40sdp"
-                android:layout_weight="1"
-                android:background="@drawable/curved_gold_filled_rect_box"
-                android:text="@string/completed"
-                android:textSize="@dimen/_15ssp"
-                android:textColor="@color/white"
+                android:orientation="horizontal"
                 android:layout_marginTop="@dimen/_30sdp"
-                android:layout_marginHorizontal="@dimen/_20sdp"
-                app:layout_constraintTop_toBottomOf="@id/rl_total_layout"
-                android:textAllCaps="true"
-                android:fontFamily="@font/avenir_medium"
                 android:visibility="gone"
-                android:gravity="center"/>
+                app:layout_constraintTop_toBottomOf="@id/rl_total_layout"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tv_completed_booking"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_marginHorizontal="@dimen/_6sdp"
+                    android:background="@drawable/curved_gold_filled_rect_box"
+                    android:text="@string/completed"
+                    android:textSize="@dimen/_12ssp"
+                    android:textColor="@color/white"
+                    android:textAllCaps="true"
+                    android:fontFamily="@font/avenir_medium"
+                    android:visibility="visible"
+                    android:gravity="center"/>
+
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tv_complete_booking"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_marginHorizontal="@dimen/_6sdp"
+                    android:background="@drawable/curved_gray87_filled_rect_box"
+                    android:fontFamily="@font/avenir_medium"
+                    android:gravity="center"
+                    android:text="@string/complete_booking"
+                    android:textAllCaps="true"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_12ssp" />
+            </LinearLayout>
+
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

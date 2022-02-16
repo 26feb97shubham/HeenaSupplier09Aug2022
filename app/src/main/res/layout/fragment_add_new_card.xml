@@ -142,7 +142,7 @@
                         android:layout_height="@dimen/_60sdp"
                         android:backgroundTint="@color/gray"
                         android:hint=" - - "
-                        android:maxLength="17"
+                        android:maxLength="20"
                         android:singleLine="true"
                         android:inputType="number"
                         android:textColor="@color/gold"

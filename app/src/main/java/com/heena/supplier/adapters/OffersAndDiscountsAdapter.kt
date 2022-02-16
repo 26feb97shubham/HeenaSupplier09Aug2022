@@ -14,8 +14,12 @@ import com.bumptech.glide.request.target.Target
 import com.heena.supplier.R
 import com.heena.supplier.`interface`.ClickInterface
 import com.heena.supplier.models.OfferItem
-import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
+import com.heena.supplier.utils.Utility
+import com.heena.supplier.utils.Utility.setSafeOnClickListener
 import kotlinx.android.synthetic.main.naqashat_offers_recycler_item.view.*
+import java.text.NumberFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 class OffersAndDiscountsAdapter(
     private val context: Context,
@@ -49,11 +53,19 @@ class OffersAndDiscountsAdapter(
                         return false
                     }
 
-                })
+                }).placeholder(R.drawable.def_henna)
                 .into(offeritemView.img)
             offeritemView.tv_services.text = offerItem.name
-            offeritemView.tv_original_price.text = "AED ${offerItem.price}"
-            offeritemView.tv_discounted_price.text = "AED ${offerItem.offer_price}"
+            offeritemView.tv_original_price.text = "AED ${
+                Utility.convertDoubleValueWithCommaSeparator(
+                    offerItem.price!!.toDouble()
+                )
+            }"
+            offeritemView.tv_discounted_price.text = "AED ${
+                Utility.convertDoubleValueWithCommaSeparator(
+                    offerItem.offer_price!!.toDouble()
+                )
+            }"
             offeritemView.iv_add_to_fav.setOnClickListener {
                 if (favAdded){
                     favAdded = false
@@ -70,6 +82,10 @@ class OffersAndDiscountsAdapter(
 
             offeritemView.iv_delete.setSafeOnClickListener {
                 onOffersItemClick.onOfferDelete(position)
+            }
+
+            offeritemView.setSafeOnClickListener {
+                onOffersItemClick.onOfferView(position)
             }
         }
 

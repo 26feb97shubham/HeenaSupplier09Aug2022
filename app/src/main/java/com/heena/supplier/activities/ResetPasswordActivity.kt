@@ -12,8 +12,8 @@ import com.heena.supplier.rest.APIClient
 import com.heena.supplier.utils.ConstClass
 import com.heena.supplier.utils.LogUtils
 import com.heena.supplier.utils.SharedPreferenceUtility
-import com.heena.supplier.utils.Utility.Companion.apiInterface
-import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
+import com.heena.supplier.utils.Utility.apiInterface
+import com.heena.supplier.utils.Utility.setSafeOnClickListener
 import kotlinx.android.synthetic.main.activity_login2.*
 import kotlinx.android.synthetic.main.activity_reset_password.*
 import kotlinx.android.synthetic.main.activity_sign_up2.*
@@ -49,28 +49,22 @@ class ResetPasswordActivity : AppCompatActivity() {
         if (TextUtils.isEmpty(password.toString())) {
             edtPassword.requestFocus()
             edtPassword.error=getString(R.string.please_enter_your_password)
-            LogUtils.shortToast(this, getString(R.string.please_enter_your_password))
         }
         else if (password.toString().length < 6) {
             edtPassword.requestFocus()
             edtPassword.error=getString(R.string.verify_password_length_valid)
-            LogUtils.shortToast(this, getString(R.string.verify_password_length_valid))
-
         }
         else if (!SharedPreferenceUtility.getInstance().isPasswordValid(password.toString())) {
             edtPassword.requestFocus()
             edtPassword.error=getString(R.string.password_length_valid)
-            LogUtils.shortToast(this, getString(R.string.password_length_valid))
         }
         else if (TextUtils.isEmpty(cnfrmpass.toString())) {
             edtConfirmPassword.requestFocus()
             edtConfirmPassword.error=getString(R.string.please_verify_your_password)
-            LogUtils.shortToast(this, getString(R.string.please_verify_your_password))
         }
         else if (cnfrmpass.toString() != password.toString()) {
             edtConfirmPassword.requestFocus()
             edtConfirmPassword.error=getString(R.string.password_doesnt_match_with_verify_password)
-            LogUtils.shortToast(this, getString(R.string.password_doesnt_match_with_verify_password))
         }else{
             getResetPass()
         }

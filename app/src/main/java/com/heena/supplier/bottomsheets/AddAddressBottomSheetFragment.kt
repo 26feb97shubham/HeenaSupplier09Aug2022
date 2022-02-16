@@ -16,9 +16,9 @@ import com.heena.supplier.models.*
 import com.heena.supplier.rest.APIClient
 import com.heena.supplier.utils.LogUtils
 import com.heena.supplier.utils.SharedPreferenceUtility
-import com.heena.supplier.utils.Utility.Companion.apiInterface
-import com.heena.supplier.utils.Utility.Companion.isNetworkAvailable
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.heena.supplier.utils.Utility.apiInterface
+import com.heena.supplier.utils.Utility.isNetworkAvailable
 import kotlinx.android.synthetic.main.activity_sign_up2.*
 import kotlinx.android.synthetic.main.activity_sign_up2.cards_countries_listing
 import kotlinx.android.synthetic.main.activity_sign_up2.rv_countries_listing
@@ -31,21 +31,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.io.IOException
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [AddAddressBottomSheetFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class AddAddressBottomSheetFragment : BottomSheetDialogFragment(){
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
     private var mView: View?=null
     private var flat_villa: String ?=null
     private var building_name : String?=null
@@ -57,14 +43,6 @@ class AddAddressBottomSheetFragment : BottomSheetDialogFragment(){
     private var selectedCountry : String?=null
     private var countryId : Int?=null
     private var is_set_default = false
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -235,14 +213,15 @@ class AddAddressBottomSheetFragment : BottomSheetDialogFragment(){
     }
 
     private fun editAddress(address_id: String) {
-        val edit_address_builder = APIClient.createBuilder(arrayOf("flat", "title", "street", "is_default", "country_id", "building_name", "address_id"),
+        val edit_address_builder = APIClient.createBuilder(arrayOf("flat", "title", "street", "is_default", "country_id", "building_name", "address_id", "lang"),
             arrayOf(flat_villa.toString(),
                 title.toString(),
                 street_area.toString(),
                 is_default.toString(),
                 countryId.toString(),
                 building_name.toString(),
-                address_id.toString()))
+                address_id.toString(),
+            SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""]))
         val call = apiInterface.editAddress(edit_address_builder.build())
         call!!.enqueue(object : Callback<AddEditDeleteAddressResponse?> {
             override fun onResponse(call: Call<AddEditDeleteAddressResponse?>, response: Response<AddEditDeleteAddressResponse?>) {
@@ -269,15 +248,16 @@ class AddAddressBottomSheetFragment : BottomSheetDialogFragment(){
     }
 
     private fun saveAddress(country_Id: Int?) {
-        val add_address_builder = APIClient.createBuilder(arrayOf("flat", "title", "street", "is_default", "country_id", "building_name", "user_id"),
+        val add_address_builder = APIClient.createBuilder(arrayOf("flat", "title", "street", "is_default", "country_id", "building_name", "user_id", "lang"),
             arrayOf(flat_villa.toString(),
                 title.toString(),
                 street_area.toString(),
                 is_default.toString(),
                 country_Id.toString(),
                 building_name.toString(),
-                SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId, 0).toString()))
-        val call = apiInterface.addAddress(add_address_builder!!.build())
+                SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId, 0).toString(),
+            SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""]))
+        val call = apiInterface.addAddress(add_address_builder.build())
         call!!.enqueue(object : Callback<AddEditDeleteAddressResponse?> {
             override fun onResponse(call: Call<AddEditDeleteAddressResponse?>, response: Response<AddEditDeleteAddressResponse?>) {
                 if (response.isSuccessful){

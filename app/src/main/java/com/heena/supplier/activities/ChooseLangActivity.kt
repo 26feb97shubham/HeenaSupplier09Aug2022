@@ -4,16 +4,13 @@ import android.content.Intent
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.text.TextUtils
 import android.view.animation.AlphaAnimation
-import android.widget.Toast
 import com.heena.supplier.R
 import com.heena.supplier.utils.LogUtils
 import com.heena.supplier.utils.SharedPreferenceUtility
 import com.heena.supplier.utils.Utility
-import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
+import com.heena.supplier.utils.Utility.setSafeOnClickListener
 import kotlinx.android.synthetic.main.activity_choose_lang2.*
 
 class ChooseLangActivity : AppCompatActivity() {
@@ -35,13 +32,13 @@ class ChooseLangActivity : AppCompatActivity() {
             selectArabic()
         }
 
-        arabicView.setOnClickListener {
+        arabicView.setSafeOnClickListener {
             if(selectLang != "ar") {
                 arabicView.startAnimation(AlphaAnimation(1f, 0.5f))
                 selectArabic()
             }
         }
-        englishView.setOnClickListener {
+        englishView.setSafeOnClickListener {
             if(selectLang != "en") {
                 englishView.startAnimation(AlphaAnimation(1f, 0.5f))
                 selectEnglish()

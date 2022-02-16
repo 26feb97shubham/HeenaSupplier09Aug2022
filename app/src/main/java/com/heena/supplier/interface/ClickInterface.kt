@@ -28,11 +28,13 @@ interface ClickInterface {
         fun onServicClick(position: Int)
         fun onServiceDele(position: Int)
         fun onServiceEdit(position: Int)
+        fun onServiceView(position: Int)
     }
 
     interface onOffersItemClick{
         fun onOfferDelete(position: Int)
         fun onOfferEdit(position: Int)
+        fun onOfferView(position: Int)
     }
 
 

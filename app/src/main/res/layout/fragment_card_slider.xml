@@ -47,6 +47,7 @@
                 android:textColor="#F7F7F7"
                 android:textSize="@dimen/_10ssp"
                 android:textStyle="normal"
+                android:textDirection="ltr"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -54,6 +55,8 @@
                 android:id="@+id/tv_card_number_card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textDirection="ltr"
+                android:gravity="center"
                 android:layout_marginHorizontal="@dimen/_30sdp"
                 android:fontFamily="@font/avenir_medium"
                 android:text="1234 5783 1231 9123"
@@ -72,6 +75,7 @@
                 android:layout_marginBottom="@dimen/_22sdp"
                 android:fontFamily="@font/avenir_medium"
                 android:text="HIBA KASHKARA"
+                android:textDirection="ltr"
                 android:textAllCaps="true"
                 android:textColor="#F7F7F7"
                 android:textSize="@dimen/_10ssp"

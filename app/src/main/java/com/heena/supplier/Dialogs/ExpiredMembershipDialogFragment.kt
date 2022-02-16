@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import com.heena.supplier.R
 import com.heena.supplier.utils.SharedPreferenceUtility
+import com.heena.supplier.utils.Utility.setSafeOnClickListener
 import kotlinx.android.synthetic.main.fragment_expired_membership_dialog.view.*
 
 class ExpiredMembershipDialogFragment : DialogFragment() {
@@ -28,7 +29,7 @@ class ExpiredMembershipDialogFragment : DialogFragment() {
         return view
     }
     private fun setUpViews(view: View) {
-        view.subscribe_membership.setOnClickListener {
+        view.subscribe_membership.setSafeOnClickListener {
             subscribeMembershipCallback!!.subscribe_membership()
         }
     }
@@ -44,8 +45,6 @@ class ExpiredMembershipDialogFragment : DialogFragment() {
     fun subscribeCallback(subscribeMembershipCallback : SubscribeMembershipInterface){
         this.subscribeMembershipCallback = subscribeMembershipCallback
     }
-
-
 
     companion object{
         private var instance: SharedPreferenceUtility? = null

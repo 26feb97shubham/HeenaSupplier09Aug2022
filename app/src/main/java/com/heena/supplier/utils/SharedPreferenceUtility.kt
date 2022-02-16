@@ -57,8 +57,8 @@ class SharedPreferenceUtility {
 
     fun isCharacterAllowed(validateString: String): Boolean {
         var containsInvalidChar = false
-        for (i in 0 until validateString.length) {
-            val type = Character.getType(validateString[i])
+        for (element in validateString) {
+            val type = Character.getType(element)
             containsInvalidChar = !(type == Character.SURROGATE.toInt() || type == Character.OTHER_SYMBOL.toInt())
         }
         return containsInvalidChar
@@ -71,14 +71,18 @@ class SharedPreferenceUtility {
         var lengthFlag = false
         if(str.length>=6) {
             lengthFlag=true
-            for (i in 0 until str.length) {
-                ch = str[i]
-                if (Character.isDigit(ch)) {
-                    numberFlag = true
-                } else if (Character.isUpperCase(ch)) {
-                    capitalFlag = true
-                } else if (Character.isLowerCase(ch)) {
-                    lowerCaseFlag = true
+            for (element in str) {
+                ch = element
+                when {
+                    Character.isDigit(ch) -> {
+                        numberFlag = true
+                    }
+                    Character.isUpperCase(ch) -> {
+                        capitalFlag = true
+                    }
+                    Character.isLowerCase(ch) -> {
+                        lowerCaseFlag = true
+                    }
                 }
                 if (numberFlag && capitalFlag && lowerCaseFlag) return true
             }
@@ -95,24 +99,32 @@ class SharedPreferenceUtility {
 
     fun save(key: String, value: Any?) {
         val editor = editor
-        if (value is Boolean) {
-            editor.putBoolean(key, (value as Boolean?)!!)
-        } else if (value is Int) {
-            editor.putInt(key, (value as Int?)!!)
-        } else if (value is Float) {
-            editor.putFloat(key, (value as Float?)!!)
-        } else if (value is Long) {
-            editor.putLong(key, (value as Long?)!!)
-        } else if (value is String) {
-            editor.putString(key, value as String?)
-        } else if (value is Enum<*>) {
-            editor.putString(key, value.toString())
-        } else if (value is HashSet<*>) {
-            editor.putStringSet(key, value as Set<String>?)
-        } else if (value != null) {
-            throw RuntimeException("Attempting to save non-supported preference")
+        when {
+            value is Boolean -> {
+                editor.putBoolean(key, (value as Boolean?)!!)
+            }
+            value is Int -> {
+                editor.putInt(key, (value as Int?)!!)
+            }
+            value is Float -> {
+                editor.putFloat(key, (value as Float?)!!)
+            }
+            value is Long -> {
+                editor.putLong(key, (value as Long?)!!)
+            }
+            value is String -> {
+                editor.putString(key, value as String?)
+            }
+            value is Enum<*> -> {
+                editor.putString(key, value.toString())
+            }
+            value is HashSet<*> -> {
+                editor.putStringSet(key, value as Set<String>?)
+            }
+            value != null -> {
+                throw RuntimeException("Attempting to save non-supported preference")
+            }
         }
-
         editor.commit()
     }
 
@@ -143,7 +155,7 @@ class SharedPreferenceUtility {
         editor.putString(MembershipInfo, json).apply()
     }
 
-    fun isIbanValid(iban: String): Boolean {
+    fun isIbanValid(iban: String, accountNumber: String): Boolean {
         val IBAN_MIN_SIZE = 15
         val IBAN_MAX_SIZE = 34
         val IBAN_MAX: Long = 999999999
@@ -152,30 +164,39 @@ class SharedPreferenceUtility {
         if (trimmed.length < IBAN_MIN_SIZE || trimmed.length > IBAN_MAX_SIZE) {
             return false
         }
-        val reformat = trimmed.substring(4) + trimmed.substring(0, 4)
+        val countryCode = trimmed.substring(0, 2)
+        return if (countryCode.equals("AE", false)){
+            val checkDigits = trimmed.substring(2, 4)
+            if (checkDigits.equals("26", false)){
+                val myAccountNumber = trimmed.substring(4)
+                myAccountNumber.matches(accountNumber.toRegex())
+            }else{
+                false
+            }
+        }else{
+            false
+        }
+
+       /* val reformat = trimmed.substring(4) + trimmed.substring(0, 4)
         var total: Long = 0
-        for (i in 0 until reformat.length) {
-            val charValue = Character.getNumericValue(reformat[i])
+        for (element in reformat) {
+            val charValue = Character.getNumericValue(element)
             if (charValue < 0 || charValue > 35) {
                 return false
             }
             total = (if (charValue > 9) total * 100 else total * 10) + charValue
             if (total > IBAN_MAX) {
-                total = total % IBAN_MODULUS
+                total %= IBAN_MODULUS
             }
         }
-        return total % IBAN_MODULUS == 1L
+        return total % IBAN_MODULUS == 1L*/
     }
 
     fun isAccountNoValid(accountNo : String) : Boolean{
         val ACCOUNT_NO_MIN_SIZE = 15
-        val ACCOUNT_NO_MAX_SIZE = 20
+        val ACCOUNT_NO_MAX_SIZE = 30
         val trimmed = accountNo.trim { it <= ' ' }
-        if (trimmed.length < ACCOUNT_NO_MIN_SIZE || trimmed.length > ACCOUNT_NO_MAX_SIZE) {
-            return false
-        }else{
-            return true
-        }
+        return !(trimmed.length < ACCOUNT_NO_MIN_SIZE || trimmed.length > ACCOUNT_NO_MAX_SIZE)
     }
 
     companion object {

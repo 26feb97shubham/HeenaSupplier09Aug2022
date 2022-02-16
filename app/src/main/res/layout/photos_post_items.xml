@@ -32,10 +32,11 @@
             android:layout_margin="@dimen/_6sdp"
             android:scaleType="centerCrop"/>
 
-        <ProgressBar
+        <androidx.core.widget.ContentLoadingProgressBar
             android:layout_width="@dimen/_15sdp"
             android:layout_height="@dimen/_15sdp"
             android:id="@+id/img_loader_photos"
+            android:visibility="visible"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

@@ -18,14 +18,17 @@ import com.heena.supplier.models.*
 import com.heena.supplier.utils.LogUtils
 import com.heena.supplier.utils.SharedPreferenceUtility
 import com.heena.supplier.utils.Utility
-import com.heena.supplier.utils.Utility.Companion.apiInterface
-import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
+import com.heena.supplier.utils.Utility.apiInterface
+import com.heena.supplier.utils.Utility.setSafeOnClickListener
 import kotlinx.android.synthetic.main.activity_home2.*
 import kotlinx.android.synthetic.main.fragment_membership_details.*
 import kotlinx.android.synthetic.main.fragment_membership_details.view.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.text.NumberFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 class MembershipDetailsFragment : Fragment() {
     private var subscriptions : Subscriptions?=null
@@ -77,19 +80,19 @@ class MembershipDetailsFragment : Fragment() {
         }
 
         Log.e("membership", ""+subscriptions)
-        mView!!.tv_membership_plan_price_details.text = "AED " +subscriptions!!.amount.toString()
+        mView!!.tv_membership_plan_price_details.text = "AED " + Utility.convertDoubleValueWithCommaSeparator(
+            subscriptions!!.amount!!.toDouble()
+        )
         mView!!.linearprogressindicator_details.max = subscriptions!!.days
         mView!!.linearprogressindicator1_details.max = subscriptions!!.days
         mView!!.linearprogressindicator1_details.progress = subscriptions!!.ended_day
         mView!!.tv_expiration_date_details.text = subscriptions!!.end_date
 
         tv_add_new_featured!!.setSafeOnClickListener {
-            var service_id = 0
-            var status = "add"
             val bundle = Bundle()
-            bundle.putInt("service_id", service_id)
+            bundle.putInt("service_id", 0)
             bundle.putInt("subscription_id", subscription_id)
-            bundle.putString("status", status)
+            bundle.putString("status", "add")
             findNavController().navigate(R.id.action_membershipStatusFragment_to_addNewFeaturedFragment, bundle)
         }
     }
@@ -151,16 +154,24 @@ class MembershipDetailsFragment : Fragment() {
                                 updateServiceDialog.setPositiveButton(requireContext().getString(R.string.yes)
                                 ) { dialog, _ ->
                                     val service_id = serviceslisting.get(position).service_id
-                                    val status = "edit"
                                     val bundle = Bundle()
                                     bundle.putInt("service_id", service_id!!)
-                                    bundle.putString("status", status)
+                                    bundle.putString("status", "edit")
                                     findNavController().navigate(R.id.action_membershipStatusFragment_to_addNewFeaturedFragment, bundle)
                                     dialog!!.dismiss()
                                 }
                                 updateServiceDialog.setNegativeButton(requireContext().getString(R.string.no)
                                 ) { dialog, _ -> dialog!!.cancel() }
                                 updateServiceDialog.show()
+                            }
+
+                            override fun onServiceView(position: Int) {
+                                val service_id = serviceslisting[position].service_id
+                                val status = "show"
+                                val bundle = Bundle()
+                                bundle.putInt("service_id", service_id!!)
+                                bundle.putString("status", status)
+                                findNavController().navigate(R.id.action_membershipStatusFragment_to_addNewFeaturedFragment, bundle)
                             }
 
                         })
@@ -191,7 +202,7 @@ class MembershipDetailsFragment : Fragment() {
 
 
     private fun deleteServices(serviceId: Int, position: Int) {
-        val call = apiInterface.deleteservice(serviceId)
+        val call = apiInterface.deleteservice(serviceId,  SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""])
         call!!.enqueue(object : Callback<DeleteServiceResponse?>{
             override fun onResponse(
                     call: Call<DeleteServiceResponse?>,

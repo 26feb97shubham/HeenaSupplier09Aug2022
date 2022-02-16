@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.heena.supplier.R
 import com.heena.supplier.`interface`.ClickInterface
-import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
+import com.heena.supplier.utils.Utility.setSafeOnClickListener
 
 class OffersAdapter(private val context: Context, private val onCLickAction : ClickInterface.OnRecyclerItemClick) :
     RecyclerView.Adapter<OffersAdapter.OffersAdapterVH>() {

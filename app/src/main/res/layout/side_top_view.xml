@@ -6,84 +6,90 @@
     android:layout_height="@dimen/_120sdp"
     android:background="@color/gold">
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/userIcon"
-        android:layout_width="@dimen/_70sdp"
-        android:layout_height="@dimen/_70sdp"
-        android:layout_marginHorizontal="@dimen/_30sdp"
-        android:src="@drawable/user"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layoutDirection="ltr"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/clEnglishlayout"
+        android:visibility="visible">
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/userIcon"
+            android:layout_width="@dimen/_70sdp"
+            android:layout_height="@dimen/_70sdp"
+            android:layout_marginHorizontal="@dimen/_30sdp"
+            android:src="@drawable/user"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <ProgressBar
-        android:id="@+id/user_icon_progress_bar_side_top_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="@id/userIcon"
-        app:layout_constraintBottom_toBottomOf="@id/userIcon"
-        app:layout_constraintStart_toStartOf="@id/userIcon"
-        app:layout_constraintEnd_toEndOf="@id/userIcon"
-        android:visibility="gone"/>
+        <androidx.core.widget.ContentLoadingProgressBar
+            android:id="@+id/user_icon_progress_bar_side_top_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="@id/userIcon"
+            app:layout_constraintBottom_toBottomOf="@id/userIcon"
+            app:layout_constraintStart_toStartOf="@id/userIcon"
+            app:layout_constraintEnd_toEndOf="@id/userIcon"
+            android:visibility="visible"/>
 
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/tv_name"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/_20sdp"
-        android:layout_marginTop="@dimen/_15sdp"
-        android:ellipsize="end"
-        android:fontFamily="@font/avenir_medium"
-        android:gravity="end"
-        android:includeFontPadding="false"
-        android:maxLength="15"
-        android:maxLines="1"
-        android:text="@string/username"
-        android:textAllCaps="false"
-        android:textColor="@color/white"
-        android:textSize="@dimen/_14ssp"
-        android:textStyle="normal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/userIcon"
-        app:layout_constraintTop_toTopOf="@id/userIcon" />
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_20sdp"
+            android:layout_marginTop="@dimen/_15sdp"
+            android:ellipsize="end"
+            android:fontFamily="@font/avenir_medium"
+            android:gravity="end"
+            android:includeFontPadding="false"
+            android:maxLength="15"
+            android:maxLines="1"
+            android:text="@string/username"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_14ssp"
+            android:textStyle="normal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/userIcon"
+            app:layout_constraintTop_toTopOf="@id/userIcon" />
 
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/tv_location"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_8sdp"
-        android:ellipsize="end"
-        android:fontFamily="@font/avenir_medium"
-        android:gravity="end"
-        android:includeFontPadding="false"
-        android:maxLines="1"
-        android:text="@string/location"
-        android:textAllCaps="false"
-        android:textColor="#F1F1F1"
-        android:textSize="@dimen/_9ssp"
-        android:textStyle="normal"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="@id/tv_name"
-        app:layout_constraintTop_toBottomOf="@id/tv_name" />
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:ellipsize="end"
+            android:fontFamily="@font/avenir_medium"
+            android:gravity="end"
+            android:includeFontPadding="false"
+            android:maxLines="1"
+            android:text="@string/location"
+            android:textAllCaps="false"
+            android:textColor="#F1F1F1"
+            android:textSize="@dimen/_9ssp"
+            android:textStyle="normal"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="@id/tv_name"
+            app:layout_constraintTop_toBottomOf="@id/tv_name" />
 
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/tv_address"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_8sdp"
-        android:ellipsize="end"
-        android:fontFamily="@font/avenir_medium"
-        android:gravity="end"
-        android:includeFontPadding="false"
-        android:maxLines="1"
-        android:text="@string/saved_address"
-        android:textAllCaps="false"
-        android:textColor="@color/white"
-        android:textSize="@dimen/_9ssp"
-        android:textStyle="normal"
-        app:layout_constraintEnd_toEndOf="@id/tv_name"
-        app:layout_constraintStart_toStartOf="@+id/tv_name"
-        app:layout_constraintTop_toBottomOf="@id/tv_name" />
-
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_address"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:ellipsize="end"
+            android:fontFamily="@font/avenir_medium"
+            android:gravity="end"
+            android:includeFontPadding="false"
+            android:maxLines="1"
+            android:text="@string/saved_address"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_9ssp"
+            android:textStyle="normal"
+            app:layout_constraintEnd_toEndOf="@id/tv_name"
+            app:layout_constraintStart_toStartOf="@+id/tv_name"
+            app:layout_constraintTop_toBottomOf="@id/tv_name" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

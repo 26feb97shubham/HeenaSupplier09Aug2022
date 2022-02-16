@@ -20,8 +20,8 @@ import com.heena.supplier.rest.APIClient
 import com.heena.supplier.utils.LogUtils
 import com.heena.supplier.utils.SharedPreferenceUtility
 import com.heena.supplier.utils.Utility
-import com.heena.supplier.utils.Utility.Companion.apiInterface
-import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
+import com.heena.supplier.utils.Utility.apiInterface
+import com.heena.supplier.utils.Utility.setSafeOnClickListener
 import kotlinx.android.synthetic.main.activity_home2.*
 import kotlinx.android.synthetic.main.fragment_my_cards.view.*
 import org.json.JSONException
@@ -82,22 +82,15 @@ class MyCards : Fragment() {
             findNavController().navigate(R.id.mycardsFragment_to_addNewCardFragment)
         }
 
-        if(total_no_of_cards<=0){
-            mView!!.tv_delete_card.isEnabled = false
-            mView!!.tv_delete_card.isClickable = false
-        }else{
-            mView!!.tv_delete_card.isEnabled = true
-            mView!!.tv_delete_card.isClickable = true
-        }
 
         mView!!.tv_delete_card.setSafeOnClickListener {
-            val pos = mView!!.vpCards.currentItem
             val deleteCardDialog = AlertDialog.Builder(requireContext())
             deleteCardDialog.setCancelable(false)
             deleteCardDialog.setTitle(requireContext().getString(R.string.delete_card))
             deleteCardDialog.setMessage(requireContext().getString(R.string.are_you_sure_you_want_to_delete_the_card))
             deleteCardDialog.setPositiveButton(requireContext().getString(R.string.delete), object : DialogInterface.OnClickListener{
                 override fun onClick(dialog: DialogInterface?, which: Int) {
+                    val pos = mView!!.vpCards.currentItem
                     deleteCard(pos)
                     dialog!!.dismiss()
                 }
@@ -114,12 +107,12 @@ class MyCards : Fragment() {
     private fun deleteCard(pos: Int) {
         requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         mView!!.progressBar_view_cards.visibility= View.VISIBLE
-        val builder = APIClient.createBuilder(arrayOf("user_id", "name", "number","cvv", "expiry_date", "type", "card_id"),
+        val builder = APIClient.createBuilder(arrayOf("user_id", "name", "number","cvv", "expiry_date", "type", "card_id", "lang"),
             arrayOf(SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.UserId, 0].toString(),
-                cardsList!![pos].name,
-                cardsList!![pos].number,
-                cardsList!![pos].cvv,
-                cardsList!![pos].expiry_date, "1", cardsList!![pos].id.toString()))
+                cardsList[pos].name,
+                cardsList[pos].number,
+                cardsList[pos].cvv,
+                cardsList[pos].expiry_date, "1", cardsList[pos].id.toString(), SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""]))
         val call = apiInterface.addDeleteCard(builder.build())
         call!!.enqueue(object : Callback<AddDeleteCardResponse?>{
             override fun onResponse(
@@ -168,7 +161,7 @@ class MyCards : Fragment() {
     private fun viewCards() {
         requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         mView!!.progressBar_view_cards.visibility= View.VISIBLE
-        val call = apiInterface.showCards(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId, 0))
+        val call = apiInterface.showCards(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId, 0), SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""])
         call!!.enqueue(object : Callback<ViewCardResponse?>{
             override fun onResponse(
                 call: Call<ViewCardResponse?>,
@@ -192,10 +185,10 @@ class MyCards : Fragment() {
                                 mView!!.tv_no_cards_found.visibility = View.GONE
                             }
 
-                            for (i in 0 until cardsList!!.size){
-                                fragmentsList.add(CardSliderFragment(cardsList!![i]))
+                            for (i in 0 until cardsList.size){
+                                fragmentsList.add(CardSliderFragment(cardsList[i]))
                             }
-                            total_no_of_cards = cardsList!!.size
+                            total_no_of_cards = cardsList.size
                             CardSliderAdapter = CardSliderAdapter(requireActivity(), fragmentsList)
                             mView!!.vpCards.adapter =  CardSliderAdapter
                             // Disable clip to padding

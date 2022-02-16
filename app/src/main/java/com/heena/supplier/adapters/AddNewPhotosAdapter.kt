@@ -10,11 +10,12 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.heena.supplier.R
 import com.heena.supplier.`interface`.ClickInterface
 import com.heena.supplier.models.PhotoData
-import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
+import com.heena.supplier.utils.Utility.setSafeOnClickListener
 import kotlinx.android.synthetic.main.photos_post_items.view.*
 
 class AddNewPhotosAdapter(private val context: Context, private val photosList : ArrayList<PhotoData>, private val onCLickAction : ClickInterface.OnRecyclerItemClick) :
@@ -27,6 +28,7 @@ class AddNewPhotosAdapter(private val context: Context, private val photosList :
     }
 
     override fun onBindViewHolder(holder: AddNewPhotosAdapterVH, position: Int) {
+        val requestOptions = RequestOptions().error(R.drawable.def_henna).centerCrop()
         Glide.with(context).load(photosList[position].path)
             .listener(object : RequestListener<Drawable>{
                 override fun onLoadFailed(
@@ -50,7 +52,7 @@ class AddNewPhotosAdapter(private val context: Context, private val photosList :
                     return false
                 }
 
-            }).placeholder(R.drawable.user).into(holder.itemView.aciv_photos)
+            }).apply(requestOptions).into(holder.itemView.aciv_photos)
         holder.itemView.aciv_delete_photos.setSafeOnClickListener {
             onCLickAction.OnClickAction(position)
         }

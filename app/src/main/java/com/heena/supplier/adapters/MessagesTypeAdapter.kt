@@ -9,10 +9,7 @@ import com.bumptech.glide.Glide
 import com.heena.supplier.R
 import com.heena.supplier.models.Message
 import com.heena.supplier.utils.SharedPreferenceUtility
-import com.heena.supplier.utils.Utility
-import com.heena.supplier.utils.Utility.Companion.booking_item_type
-import com.heena.supplier.utils.Utility.Companion.message_type
-import com.heena.supplier.utils.Utility.Companion.sender_admin
+import com.heena.supplier.utils.Utility.sender_admin
 import kotlinx.android.synthetic.main.row_chat_partner.view.*
 import kotlinx.android.synthetic.main.row_chat_user.view.*
 
@@ -84,11 +81,15 @@ class MessagesTypeAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val message = messageList[position]
-        if (messageList[position].sender_id==SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.UserId, 0]){
-            booking_item_type=1
-        }else{
-            booking_item_type=2
-        }
+        val booking_item_type =
+            when (messageList[position].sender_id) {
+                SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.UserId, 0] -> {
+                    1
+                }
+                else -> {
+                    2
+                }
+            }
         when (booking_item_type) {
             1 -> {
                 val userchatholder = holder as UserChatAdapterVH

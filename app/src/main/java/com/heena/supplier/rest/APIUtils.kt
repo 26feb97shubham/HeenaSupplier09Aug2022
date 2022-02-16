@@ -1,8 +1,8 @@
 package com.heena.supplier.rest
 
-class APIUtils {
-    companion object{
-        const val BASE_URL:String = "https://henna.devtechnosys.info/api/manager/"
+object APIUtils {
+        //const val BASE_URL:String = "https://henna.devtechnosys.info/api/manager/"
+        const val BASE_URL:String = "https://alniqasha.ae/api/manager/"
         const val LOGIN:String = "access/login"
         const val REGISTER:String = "access/register"
         const val FORGOTPASSWORD:String = "access/forget-password"
@@ -56,5 +56,8 @@ class APIUtils {
         const val GET_OLD_MESSAGE_LIST : String = "get_old_messages_list"
         const val CHAT_FILE_UPLOAD : String = "chat_file_upload"
         const val SUBSCRIPTION_PLANS : String = "subscription_plans/{user_id}"
-    }
+        const val NOTIFICATION : String = "notification/{user_id}"
+        const val createCharge = "create_charge"
+        const val createChargeSubscriptions = "create_charge_subscriptions"
+        const val transaction_excel = "transaction_excel/{user_id}"
 }

@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import com.heena.supplier.R
 import com.heena.supplier.utils.SharedPreferenceUtility
+import com.heena.supplier.utils.Utility.setSafeOnClickListener
 import kotlinx.android.synthetic.main.fragment_logout_dialog.view.*
 
 class LogoutDialog : DialogFragment() {
@@ -48,11 +49,11 @@ class LogoutDialog : DialogFragment() {
 
     private fun setUpViews(view: View) {
 
-        view.cancel.setOnClickListener {
+        view.cancel.setSafeOnClickListener {
             dismiss()
         }
 
-        view.ok.setOnClickListener {
+        view.ok.setSafeOnClickListener {
             completionCallback?.complete()
             dismiss()
         }

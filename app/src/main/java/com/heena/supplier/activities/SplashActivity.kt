@@ -1,5 +1,6 @@
 package com.heena.supplier.activities
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -11,6 +12,7 @@ import com.heena.supplier.utils.SharedPreferenceUtility.Companion.FIRSTTIME
 import com.heena.supplier.utils.Utility
 import com.google.firebase.FirebaseApp
 
+@SuppressLint("CustomSplashScreen")
 class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -1,14 +1,16 @@
 package com.heena.supplier.fragments
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.animation.AlphaAnimation
+import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.heena.supplier.R
@@ -20,20 +22,21 @@ import com.heena.supplier.rest.APIClient
 import com.heena.supplier.utils.LogUtils
 import com.heena.supplier.utils.SharedPreferenceUtility
 import com.heena.supplier.utils.Utility
-import com.heena.supplier.utils.Utility.Companion.apiInterface
-import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
+import com.heena.supplier.utils.Utility.apiInterface
+import com.heena.supplier.utils.Utility.setSafeOnClickListener
 import kotlinx.android.synthetic.main.activity_home2.*
 import kotlinx.android.synthetic.main.fragment_bookingdetails.*
 import kotlinx.android.synthetic.main.fragment_bookingdetails.view.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.text.NumberFormat
+import java.util.*
 
 class BookingdetailsFragment : Fragment() {
     var mView : View?= null
     private var booking_id : Int?=null
     private var booking_status : Int ?= null
-   // private var booking : BookingItem?=null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -82,15 +85,14 @@ class BookingdetailsFragment : Fragment() {
             cancelServiceBottomSheetFragment.isCancelable = false
             cancelServiceBottomSheetFragment.setCancelServiceClickListenerCallback(object : ClickInterface.OnCancelServiceClick{
                 override fun OnCancelService(rsn_for_cancellation: String?) {
-                    val builder = APIClient.createBuilder(arrayOf("booking_id", "message"), arrayOf(booking_id.toString(), rsn_for_cancellation.toString()))
+                    val builder = APIClient.createBuilder(arrayOf("booking_id", "message", "lang"), arrayOf(booking_id.toString(), rsn_for_cancellation.toString(), SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""]))
                     val call = apiInterface.rejectBooking(builder.build())
                     call?.enqueue(object : Callback<AcceptRejectBookingResponse?> {
                         override fun onResponse(call: Call<AcceptRejectBookingResponse?>, response: Response<AcceptRejectBookingResponse?>) {
                             if (response.isSuccessful){
                                 if (response.body()!!.status==1){
                                     LogUtils.shortToast(requireContext(), response.body()!!.message)
-                                    findNavController().popBackStack()
-                                    LogUtils.shortToast(requireContext(), response.body()!!.message)
+                                    showBookingDetails()
                                 }else{
                                     LogUtils.shortToast(requireContext(), response.body()!!.message)
                                 }
@@ -108,13 +110,30 @@ class BookingdetailsFragment : Fragment() {
 
             })
         }
+
+        tv_complete_booking.setSafeOnClickListener {
+            val completeBookingDialog = AlertDialog.Builder(requireContext())
+            completeBookingDialog.setCancelable(false)
+            completeBookingDialog.setTitle(requireContext().getString(R.string.complete_booking))
+            completeBookingDialog.setMessage(requireContext().getString(R.string.would_you_like_to_complete_this_booking))
+            completeBookingDialog.setPositiveButton(requireContext().getString(R.string.yes)
+            ) { dialog, _ ->
+                acceptBooking()
+                dialog!!.dismiss()
+            }
+            completeBookingDialog.setNegativeButton(requireContext().getString(R.string.no)
+            ) { dialog, _ -> dialog!!.cancel() }
+            completeBookingDialog.show()
+
+        }
     }
 
     private fun showBookingDetails() {
         mView!!.frag_booking_details_progressBar.visibility = View.VISIBLE
         requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-        val call = apiInterface.showBooking(booking_id.toString())
+        val call = apiInterface.showBooking(booking_id.toString(), SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""])
         call?.enqueue(object : Callback<BookingDetailsResponse?>{
+            @SuppressLint("SetTextI18n")
             override fun onResponse(call: Call<BookingDetailsResponse?>, response: Response<BookingDetailsResponse?>) {
                 mView!!.frag_booking_details_progressBar.visibility= View.GONE
                 requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
@@ -130,9 +149,10 @@ class BookingdetailsFragment : Fragment() {
                                     this.isAllCaps = true
                                     this.setTextColor(Color.parseColor("#37CC37"))
                                     mView!!.ll_accept_reject.visibility = View.GONE
+                                    mView!!.ll_complete_completed.visibility = View.VISIBLE
                                     mView!!.tv_completed_booking.visibility = View.VISIBLE
                                     mView!!.tv_completed_booking.text = getString(R.string.approved)
-                                    mView!!.tv_completed_booking.setBackgroundResource(R.drawable.curved_green_filled_rect_box)
+//                                    mView!!.tv_completed_booking.setBackgroundResource(R.drawable.curved_green_filled_rect_box)
                                 }
                             }
                             2 -> {
@@ -141,7 +161,9 @@ class BookingdetailsFragment : Fragment() {
                                     this.isAllCaps = true
                                     this.setTextColor(Color.parseColor("#FF0909"))
                                     mView!!.ll_accept_reject.visibility = View.GONE
+                                    mView!!.ll_complete_completed.visibility = View.VISIBLE
                                     mView!!.tv_completed_booking.visibility = View.VISIBLE
+                                    mView!!.tv_complete_booking.visibility = View.GONE
                                     mView!!.tv_completed_booking.text = getString(R.string.cancelled)
                                     mView!!.tv_completed_booking.setBackgroundResource(R.drawable.curved_red_filled_rect_box)
                                 }
@@ -152,7 +174,9 @@ class BookingdetailsFragment : Fragment() {
                                     this.isAllCaps = true
                                     this.setTextColor(Color.parseColor("#37CC37"))
                                     mView!!.ll_accept_reject.visibility = View.GONE
+                                    mView!!.ll_complete_completed.visibility = View.VISIBLE
                                     mView!!.tv_completed_booking.visibility = View.VISIBLE
+                                    mView!!.tv_complete_booking.visibility = View.GONE
                                     mView!!.tv_completed_booking.text = getString(R.string.completed)
                                     mView!!.tv_completed_booking.setBackgroundResource(R.drawable.curved_green_filled_rect_box)
                                 }
@@ -163,20 +187,19 @@ class BookingdetailsFragment : Fragment() {
                                     this.isAllCaps = true
                                     this.setTextColor(Color.parseColor("#FF9F54"))
                                     mView!!.ll_accept_reject.visibility = View.VISIBLE
-                                    mView!!.tv_completed_booking.visibility = View.GONE
+                                    mView!!.ll_complete_completed.visibility = View.GONE
+                                    mView!!.tv_completed_booking.visibility = View.VISIBLE
+                                    mView!!.tv_complete_booking.visibility = View.VISIBLE
                                 }
                             }
                         }
 
                         mView!!.tv_service.text = booking.service!!.name
                         mView!!.tv_service_desc.text = booking.service.description
-                       /* val street = booking.address!!.street
-                        val country = booking.address.country
-                        mView!!.tv_address.text = booking.location?.name*/
                         if(booking.address==null){
                             mView!!.tv_address.text = booking.location!!.name
                         }else{
-                            val street = booking.address!!.street
+                            val street = booking.address.street
                             val country = booking.address.country
                             mView!!.tv_address.text = street+ " ," + country
                         }
@@ -185,15 +208,32 @@ class BookingdetailsFragment : Fragment() {
                         val booking_date_time = booking.booking_date + " - " + booking.booking_from
                         mView!!.tv_booking_date_time.text = booking_date_time
                         mView!!.tv_special_request_desc.text = booking.message
-                        mView!!.tv_service_charge.text = "AED " + booking.commission
-                        mView!!.tv_sub_total.text = "AED " + booking.price!!.total
-                        val total = booking.commission!!.toDouble() + booking.price.total!!.toDouble()
-                        mView!!.tv_total.text = "AED " + total
+                        mView!!.tv_service_charge.text = "AED ${
+                            Utility.convertDoubleValueWithCommaSeparator(
+                                booking.commission!!.toDouble()
+                            )
+                        }"
+                        mView!!.tv_sub_total.text = "AED ${
+                            Utility.convertDoubleValueWithCommaSeparator(
+                                booking.price!!.total!!.toDouble()
+                            )
+                        }"
+                        val total = booking.commission.toDouble() + booking.price.total!!.toDouble()
+                        mView!!.tv_total.text = "AED ${
+                            Utility.convertDoubleValueWithCommaSeparator(
+                                total
+                            )
+                        }"
                         Glide.with(requireContext()).load(booking.user!!.image).into(mView!!.supplierImg)
                         if (booking.gallery?.size==0){
                             mView!!.iv_heena_design.setImageResource(R.drawable.hennatattoos)
                         }else{
                             Glide.with(requireContext()).load((booking.gallery?.get(0))).into(mView!!.iv_heena_design)
+                        }
+
+                        if(booking.card!=null){
+                            mView!!.tv_payment_name.text = booking.card.CardY!!.name
+                            mView!!.tv_payment_desc.text = requireContext().getString(R.string.ending_in)+ " "+booking.card.CardY!!.lastFour
                         }
                     }else{
                         LogUtils.shortToast(requireContext(), getString(R.string.response_isnt_successful))
@@ -215,7 +255,7 @@ class BookingdetailsFragment : Fragment() {
     private fun acceptBooking() {
         mView!!.frag_booking_details_progressBar.visibility = View.VISIBLE
         requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-        val builder = APIClient.createBuilder(arrayOf("booking_id"), arrayOf(booking_id.toString()))
+        val builder = APIClient.createBuilder(arrayOf("booking_id", "lang"), arrayOf(booking_id.toString(), SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""]))
         val call = apiInterface.acceptBooking(builder.build())
         call?.enqueue(object : Callback<AcceptRejectBookingResponse?>{
             override fun onResponse(call: Call<AcceptRejectBookingResponse?>, response: Response<AcceptRejectBookingResponse?>) {
@@ -224,7 +264,7 @@ class BookingdetailsFragment : Fragment() {
                 if (response.isSuccessful){
                     if (response.body()!!.status==1){
                         LogUtils.shortToast(requireContext(), response.body()!!.message)
-                        findNavController().popBackStack()
+                        showBookingDetails()
                     }else{
                         LogUtils.shortToast(requireContext(), response.body()!!.message)
                     }

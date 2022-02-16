@@ -16,7 +16,8 @@ import com.bumptech.glide.request.target.Target
 import com.heena.supplier.R
 import com.heena.supplier.`interface`.ClickInterface
 import com.heena.supplier.models.Service
-import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
+import com.heena.supplier.utils.Utility.convertDoubleValueWithCommaSeparator
+import com.heena.supplier.utils.Utility.setSafeOnClickListener
 import kotlinx.android.synthetic.main.layout_services_item.view.*
 
 class ServicesAdapter(private val context: Context,
@@ -28,6 +29,7 @@ class ServicesAdapter(private val context: Context,
         fun onBind(service: Service, position: Int) {
             if (service.gallery?.size==0){
                 itemView.img.setImageResource(R.drawable.user)
+                itemView.img_loader.visibility = View.GONE
             }else{
                 Glide.with(context)
                     .load(service.gallery!![0])
@@ -58,7 +60,7 @@ class ServicesAdapter(private val context: Context,
             }
 
             itemView.tv_services.text = service.name
-            val price =  "AED ${service.price!!.total}"
+            val price =  "AED ${convertDoubleValueWithCommaSeparator(service.price!!.total!!.toDouble())}"
             itemView.tv_price.text = price
             itemView.tv_category_name.text = service.category!!.name
 
@@ -78,6 +80,10 @@ class ServicesAdapter(private val context: Context,
 
             itemView.cv_image.setSafeOnClickListener {
                 onServicesItemClick.onServicClick(position)
+            }
+
+            itemView.setSafeOnClickListener {
+                onServicesItemClick.onServiceView(position)
             }
         }
 

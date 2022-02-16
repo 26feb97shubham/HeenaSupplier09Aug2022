@@ -10,7 +10,7 @@ import com.heena.supplier.R
 import com.heena.supplier.`interface`.ClickInterface
 import com.heena.supplier.models.AddressItem
 import com.heena.supplier.utils.SharedPreferenceUtility
-import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
+import com.heena.supplier.utils.Utility.setSafeOnClickListener
 import kotlinx.android.synthetic.main.saved_address_listing.view.*
 
 class AddressListAdapter(
@@ -19,7 +19,7 @@ class AddressListAdapter(
 ): RecyclerView.Adapter<AddressListAdapter.AddressListAdapterVH>() {
     inner class AddressListAdapterVH(val itemView : View) : RecyclerView.ViewHolder(itemView){
         fun bind(addressItem: AddressItem, position: Int) {
-            if(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, "en").toString().equals("ar")){
+            if(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, "").toString().equals("ar")){
                 itemView.tv_address_title.gravity = Gravity.END
                 itemView.tv_address.gravity = Gravity.END
             }

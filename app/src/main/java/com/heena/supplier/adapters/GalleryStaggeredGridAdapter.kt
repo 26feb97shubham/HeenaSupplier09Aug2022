@@ -16,7 +16,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.heena.supplier.R
 import com.heena.supplier.`interface`.ClickInterface
 import com.heena.supplier.models.Gallery
-import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
+import com.heena.supplier.utils.Utility.setSafeOnClickListener
 import kotlinx.android.synthetic.main.gallery_posts.view.*
 
 
@@ -26,10 +26,9 @@ class GalleryStaggeredGridAdapter(
     private val onRecyclerItemClick: ClickInterface.OnGalleryItemClick
 ) :
     RecyclerView.Adapter<GalleryStaggeredGridAdapter.PostViewHolder>() {
-    private val set = ConstraintSet()
     inner class PostViewHolder(private val v: View) : RecyclerView.ViewHolder(v) {
         fun bind(imagePath: String, position: Int) {
-            val requestOption = RequestOptions().centerCrop()
+            val requestOption = RequestOptions().error(R.drawable.def_henna).centerCrop()
             Glide.with(context).load(imagePath)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .listener(object : RequestListener<Drawable> {

@@ -17,8 +17,8 @@ import com.heena.supplier.rest.APIClient
 import com.heena.supplier.utils.LogUtils
 import com.heena.supplier.utils.SharedPreferenceUtility
 import com.heena.supplier.utils.Utility
-import com.heena.supplier.utils.Utility.Companion.apiInterface
-import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
+import com.heena.supplier.utils.Utility.apiInterface
+import com.heena.supplier.utils.Utility.setSafeOnClickListener
 import kotlinx.android.synthetic.main.activity_home2.*
 import kotlinx.android.synthetic.main.fragment_edit_bank_details.view.*
 import org.json.JSONException
@@ -118,6 +118,7 @@ class EditBankDetailsFragment : Fragment() {
         fullName = mView!!.et_fullname.text.toString().trim()
         acc_no = mView!!.et_acc_number.text.toString().trim()
         iban_no = mView!!.et_iban.text.toString().trim()
+        val accountNumber = acc_no!!.replace(" ", "")
 
         if (TextUtils.isEmpty(bankName)){
             mView!!.et_bank_name.requestFocus()
@@ -128,13 +129,13 @@ class EditBankDetailsFragment : Fragment() {
         }else if(TextUtils.isEmpty(acc_no)){
             mView!!.et_acc_number.requestFocus()
             mView!!.et_acc_number.error = getString(R.string.please_enter_valid_account_number)
-        }else if(!SharedPreferenceUtility.getInstance().isAccountNoValid(acc_no!!)){
+        }else if(!SharedPreferenceUtility.getInstance().isAccountNoValid(accountNumber)){
             mView!!.et_acc_number.requestFocus()
             mView!!.et_acc_number.error = getString(R.string.please_enter_valid_account_number)
         }else if(TextUtils.isEmpty(iban_no)){
             mView!!.et_iban.requestFocus()
             mView!!.et_iban.error = getString(R.string.please_enter_valid_iban)
-        }else if(!SharedPreferenceUtility.getInstance().isIbanValid(iban_no!!)){
+        }else if(!SharedPreferenceUtility.getInstance().isIbanValid(iban_no!!, accountNumber)){
             mView!!.et_iban.requestFocus()
             mView!!.et_iban.error = getString(R.string.please_enter_valid_iban)
         }else{
@@ -145,12 +146,13 @@ class EditBankDetailsFragment : Fragment() {
     private fun save() {
         mView!!.frag_edit_bank_progressBar.visibility = View.VISIBLE
         requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-        val builder = APIClient.createBuilder(arrayOf("user_id","full_name", "bank_name", "account_num", "iban"),
+        val builder = APIClient.createBuilder(arrayOf("user_id","full_name", "bank_name", "account_num", "iban", "lang"),
         arrayOf(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId, 0).toString(),
         fullName.toString(),
         bankName.toString(),
         acc_no.toString(),
-        iban_no.toString()))
+        iban_no.toString(),
+        SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""]))
 
         val call = apiInterface.addEditBanks(builder.build())
         call?.enqueue(object : Callback<AddEditBankResponse?>{
@@ -165,7 +167,7 @@ class EditBankDetailsFragment : Fragment() {
                     if (response.isSuccessful){
                         if (response.body()!!.status==1){
                             LogUtils.longToast(requireContext(), response.body()!!.message)
-                            findNavController().navigate(R.id.action_editBankDetailsFragment_to_bankDetailsFragment)
+                            findNavController().navigate(R.id.homeFragment)
                         }else{
                             LogUtils.longToast(requireContext(), response.body()!!.message)
                         }

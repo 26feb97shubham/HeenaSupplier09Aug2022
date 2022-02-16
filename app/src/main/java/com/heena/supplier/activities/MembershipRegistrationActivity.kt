@@ -5,11 +5,8 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.View
 import android.view.WindowManager
-import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.heena.supplier.R
 import com.heena.supplier.`interface`.ClickInterface
@@ -21,9 +18,9 @@ import com.heena.supplier.utils.ConstClass
 import com.heena.supplier.utils.LogUtils
 import com.heena.supplier.utils.SharedPreferenceUtility
 import com.heena.supplier.utils.Utility
-import com.heena.supplier.utils.Utility.Companion.apiInterface
-import com.heena.supplier.utils.Utility.Companion.isNetworkAvailable
-import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
+import com.heena.supplier.utils.Utility.apiInterface
+import com.heena.supplier.utils.Utility.isNetworkAvailable
+import com.heena.supplier.utils.Utility.setSafeOnClickListener
 import kotlinx.android.synthetic.main.activity_membership_registration2.*
 import kotlinx.android.synthetic.main.activity_membership_registration2.btnSignUp
 import kotlinx.android.synthetic.main.activity_membership_registration2.rv_membership_plans
@@ -35,7 +32,6 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.IOException
-import javax.inject.Inject
 
 class MembershipRegistrationActivity : AppCompatActivity() {
     var emailaddress : String?= null
@@ -44,7 +40,6 @@ class MembershipRegistrationActivity : AppCompatActivity() {
     private var membershipList = ArrayList<Membership>()
     private var membership : Membership?=null
     private var mContext : Context?=null
-    var doubleClick:Boolean=false
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -81,16 +76,16 @@ class MembershipRegistrationActivity : AppCompatActivity() {
                 ) {
                     LogUtils.shortToast(this, getString(R.string.plan_already_purchased))
                 } else {
-                    /*startActivity(
+                    startActivity(
                         Intent(this, PaymentFragmentActivity::class.java).putExtra(
                             ConstClass.EMAILADDRESS,
                             emailaddress
                         ).putExtra("membership", membership)
                     )
-                    finish()*/
+                    finish()
 
 
-                    purchaseMembership()
+                    //purchaseMembership()
                 }
             } else {
                 LogUtils.shortToast(
@@ -105,7 +100,7 @@ class MembershipRegistrationActivity : AppCompatActivity() {
         if(isNetworkAvailable()){
             window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             membership_registration_progressBar.visibility= View.VISIBLE
-            val call = apiInterface.membershipList(SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.UserId, 0])
+            val call = apiInterface.membershipList(SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.UserId, 0], SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""])
             call!!.enqueue(object : Callback<MembershipListResponse?>{
                 @SuppressLint("NotifyDataSetChanged")
                 override fun onResponse(call: Call<MembershipListResponse?>, response: Response<MembershipListResponse?>) {
@@ -158,49 +153,6 @@ class MembershipRegistrationActivity : AppCompatActivity() {
             })
         }
     }
-
-    private fun purchaseMembership() {
-        if (isNetworkAvailable()){
-            window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-            membership_registration_progressBar.visibility= View.VISIBLE
-            val call = apiInterface.buyMembership(user_id = SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.UserId, 0].toString(), membership_id = membershipId.toString())
-            call!!.enqueue(object : Callback<BuyMembership?> {
-                override fun onResponse(
-                    call: Call<BuyMembership?>,
-                    response: Response<BuyMembership?>
-                ) {
-                    membership_registration_progressBar.visibility = View.GONE
-                    window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                    if (response.isSuccessful){
-                        if (response.body()!!.status==1){
-                            LogUtils.shortToast(this@MembershipRegistrationActivity, response.body()!!.message)
-                            SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.IsLogin, true)
-                            SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.MembershipId,response.body()!!.membership.membership_id)
-                            SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.MembershipTimeLimit,response.body()!!.membership.day)
-                            SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.MembershipName,response.body()!!.membership.name)
-                            SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.MembershipPrice,response.body()!!.membership.price)
-                            SharedPreferenceUtility.getInstance().saveMembershipInfo(this@MembershipRegistrationActivity,response.body()!!.membership)
-                            startActivity(Intent(this@MembershipRegistrationActivity, LoginActivity::class.java))
-                            finishAffinity()
-                        }else{
-                            LogUtils.longToast(this@MembershipRegistrationActivity, response.body()!!.message)
-                        }
-                    }else{
-                        LogUtils.longToast(this@MembershipRegistrationActivity,getString(R.string.response_isnt_successful))
-                    }
-                }
-
-                override fun onFailure(call: Call<BuyMembership?>, throwable: Throwable) {
-                    LogUtils.e("msg", throwable.message)
-                    LogUtils.shortToast(this@MembershipRegistrationActivity,throwable.localizedMessage)
-                    membership_registration_progressBar.visibility = View.GONE
-                    window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                }
-
-            })
-        }
-    }
-
 
     override fun onBackPressed() {
         Utility.exitApp(this, this)

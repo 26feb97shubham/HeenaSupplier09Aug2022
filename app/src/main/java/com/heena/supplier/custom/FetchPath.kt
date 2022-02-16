@@ -10,8 +10,7 @@ import android.os.Environment
 import android.provider.DocumentsContract
 import android.provider.MediaStore
 
-class FetchPath {
-    companion object {
+object FetchPath {
         @TargetApi(Build.VERSION_CODES.KITKAT)
         fun getPath(context: Context, uri: Uri): String? {
             val isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
@@ -119,5 +118,4 @@ class FetchPath {
         fun isGooglePhotosUri(uri: Uri): Boolean {
             return "com.google.android.apps.photos.content" == uri.authority
         }
-    }
 }

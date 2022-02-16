@@ -13,7 +13,7 @@ import com.heena.supplier.`interface`.ClickInterface
 import com.heena.supplier.adapters.OffersAndDiscountsListingAdapter
 import com.heena.supplier.utils.SharedPreferenceUtility
 import com.heena.supplier.utils.Utility
-import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
+import com.heena.supplier.utils.Utility.setSafeOnClickListener
 import kotlinx.android.synthetic.main.activity_home2.*
 import kotlinx.android.synthetic.main.fragment_filtered_offers_and_discounts.view.*
 

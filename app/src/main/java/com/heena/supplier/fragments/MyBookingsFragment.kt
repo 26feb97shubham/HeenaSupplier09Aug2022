@@ -22,9 +22,9 @@ import com.heena.supplier.models.BookingsListingResponse
 import com.heena.supplier.utils.LogUtils
 import com.heena.supplier.utils.SharedPreferenceUtility
 import com.heena.supplier.utils.Utility
-import com.heena.supplier.utils.Utility.Companion.apiInterface
-import com.heena.supplier.utils.Utility.Companion.booking_item_type
-import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
+import com.heena.supplier.utils.Utility.apiInterface
+import com.heena.supplier.utils.Utility.booking_item_type
+import com.heena.supplier.utils.Utility.setSafeOnClickListener
 import kotlinx.android.synthetic.main.activity_home2.*
 import kotlinx.android.synthetic.main.fragment_my_bookings.*
 import kotlinx.android.synthetic.main.fragment_my_bookings.view.*
@@ -125,9 +125,9 @@ class MyBookingsFragment : Fragment() {
         mView!!.tv_no_bookings_found.visibility = View.GONE
         requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         val hashMap = HashMap<String, String>()
-//        hashMap.put("lang", SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, ""))
         hashMap.put("type", bookingItemType.toString())
         hashMap.put("user_id", SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId, 0).toString())
+        hashMap.put("lang", SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, "").toString())
         val call = apiInterface.getBookingsList(hashMap)
         call?.enqueue(object : Callback<BookingsListingResponse?> {
             override fun onResponse(

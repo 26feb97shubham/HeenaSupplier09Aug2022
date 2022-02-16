@@ -6,14 +6,11 @@ import android.content.IntentFilter
 import android.net.ConnectivityManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.text.TextUtils
 import android.text.method.PasswordTransformationMethod
 import android.view.View
 import android.view.WindowManager
 import android.view.animation.AlphaAnimation
-import android.widget.Toast
 import com.heena.supplier.Dialogs.NoInternetDialog
 import com.heena.supplier.R
 import com.heena.supplier.broadcastreceiver.ConnectivityReceiver
@@ -24,9 +21,8 @@ import com.heena.supplier.rest.APIInterface
 import com.heena.supplier.utils.LogUtils
 import com.heena.supplier.utils.SharedPreferenceUtility
 import com.heena.supplier.utils.Utility
-import com.heena.supplier.utils.Utility.Companion.getFCMToken
-import com.heena.supplier.utils.Utility.Companion.networkChangeReceiver
-import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
+import com.heena.supplier.utils.Utility.getFCMToken
+import com.heena.supplier.utils.Utility.setSafeOnClickListener
 import kotlinx.android.synthetic.main.activity_login2.*
 import kotlinx.android.synthetic.main.activity_login2.progressBar
 import kotlinx.android.synthetic.main.activity_login2.tv_login
@@ -45,12 +41,17 @@ class LoginActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRece
     private var emailaddress = ""
     private var myuserId = 0
     private var showPass = false
+    private lateinit var networkChangeReceiver : ConnectivityReceiver
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login2)
         tv_signup.text = getString(R.string.sign_up)
-        networkChangeReceiver = ConnectivityReceiver()
-        networkChangeReceiver!!.NetworkChangeReceiver(this)
+        if(!this::networkChangeReceiver.isInitialized){
+            networkChangeReceiver = ConnectivityReceiver()
+            networkChangeReceiver.NetworkChangeReceiver(this)
+        }else{
+            networkChangeReceiver.NetworkChangeReceiver(this)
+        }
         setUpViews()
     }
 
@@ -190,11 +191,12 @@ class LoginActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRece
         progressBar.visibility= View.VISIBLE
 
         val apiInterface = APIClient.getClient()!!.create(APIInterface::class.java)
-        val builder = APIClient.createBuilder(arrayOf("username", "password", "device_token","lang"),
+        val builder = APIClient.createBuilder(arrayOf("username", "password", "device_token","device_type","lang"),
                 arrayOf(username.trim { it <= ' ' },
                         password.trim { it <= ' ' },
                         SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.FCMTOKEN, ""]
                             .toString(),
+                        "1",
                         SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""]
                             .toString()))
 
@@ -275,8 +277,8 @@ class LoginActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRece
 
 
         val apiInterface = APIClient.getClient()!!.create(APIInterface::class.java)
-        val builder = APIClient.createBuilder(arrayOf("email"),
-            arrayOf(emailaddress))
+        val builder = APIClient.createBuilder(arrayOf("email", "lang"),
+            arrayOf(emailaddress, SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""]))
         val call = apiInterface.registerverivyresend(builder.build())
 
         call!!.enqueue(object : Callback<RegisterVerifyResendResponse?>{

@@ -12,6 +12,7 @@ import com.heena.supplier.R
 import com.heena.supplier.utils.LogUtils
 import com.heena.supplier.utils.SharedPreferenceUtility
 import com.heena.supplier.utils.Utility
+import com.heena.supplier.utils.Utility.setSafeOnClickListener
 import kotlinx.android.synthetic.main.fragment_nointernet_dialog.view.*
 
 class NoInternetDialog : DialogFragment() {
@@ -28,7 +29,7 @@ class NoInternetDialog : DialogFragment() {
     }
 
     private fun setUpViews(view: View) {
-        view.retry.setOnClickListener {
+        view.retry.setSafeOnClickListener {
             if (Utility.hasConnection(requireContext())){
                 retryCallback!!.retry()
             }else{

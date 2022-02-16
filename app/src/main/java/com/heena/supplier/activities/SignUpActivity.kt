@@ -9,11 +9,8 @@ import android.location.Address
 import android.location.Geocoder
 import android.net.ConnectivityManager
 import android.net.Uri
+import android.os.*
 import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
-import android.os.Environment
-import android.os.Handler
-import android.os.Looper
 import android.provider.MediaStore
 import android.text.TextUtils
 import android.text.method.PasswordTransformationMethod
@@ -25,6 +22,7 @@ import android.view.animation.AlphaAnimation
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.FileProvider
 import androidx.core.widget.doOnTextChanged
@@ -46,16 +44,16 @@ import com.heena.supplier.utils.ConstClass.EMAILADDRESS
 import com.heena.supplier.utils.LogUtils
 import com.heena.supplier.utils.SharedPreferenceUtility
 import com.heena.supplier.utils.Utility
-import com.heena.supplier.utils.Utility.Companion.IMAGE_DIRECTORY_NAME
-import com.heena.supplier.utils.Utility.Companion.apiInterface
-import com.heena.supplier.utils.Utility.Companion.isCharacterAllowed
-import com.heena.supplier.utils.Utility.Companion.isNetworkAvailable
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.model.AddressComponent
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
-import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
+import com.heena.supplier.utils.Utility.IMAGE_DIRECTORY_NAME
+import com.heena.supplier.utils.Utility.apiInterface
+import com.heena.supplier.utils.Utility.isCharacterAllowed
+import com.heena.supplier.utils.Utility.isNetworkAvailable
+import com.heena.supplier.utils.Utility.setSafeOnClickListener
 import kotlinx.android.synthetic.main.activity_sign_up2.*
 import okhttp3.MediaType
 import okhttp3.RequestBody
@@ -99,7 +97,6 @@ class SignUpActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRec
     var my_click = ""
     var emiratesClick = false
     var isChecked: Boolean=false
-    var doubleClick:Boolean=false
     private var networkChangeReceiver: ConnectivityReceiver? = null
 
     private var activityResultLauncher: ActivityResultLauncher<Array<String>> =
@@ -220,6 +217,7 @@ class SignUpActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRec
     }
 
 
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_up2)
@@ -285,6 +283,7 @@ class SignUpActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRec
     }
 
 
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     private fun setUpViews() {
         btnSignUp.setSafeOnClickListener {
             btnSignUp.startAnimation(AlphaAnimation(1f, 0.5f))
@@ -499,6 +498,7 @@ class SignUpActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRec
     }
 
 
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     private fun validateAndSignUp() {
         username = edtUsername_signup.text.toString().trim()
         mobilenumber = edtmobilenumber_signup.text.toString().trim()
@@ -570,13 +570,15 @@ class SignUpActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRec
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     private fun getSignUp() {
         window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         progressBar.visibility= View.VISIBLE
 
         if (isNetworkAvailable()){
-                val builder = APIClient.createMultipartBodyBuilder(arrayOf("username", "phone", "email", "password", "country_id", "lat", "long", "device_token", "lang", "address"),
+                val builder = APIClient.createMultipartBodyBuilder(arrayOf("username","country_code", "phone", "email", "password", "country_id", "lat", "long", "device_token","device_type", "lang", "address"),
                 arrayOf(username.trim({ it <= ' ' }),
+                        "+971",
                         mobilenumber.trim({ it <= ' ' }),
                         emailaddress.trim({it <= ' '}),
                         password.trim({it <= ' '}),
@@ -586,6 +588,7 @@ class SignUpActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRec
                         SharedPreferenceUtility.getInstance()
                             .get(SharedPreferenceUtility.FCMTOKEN, "")
                             .toString(),
+                        "1",
                         SharedPreferenceUtility.getInstance()
                             .get(SharedPreferenceUtility.SelectedLang, "")
                             .toString(),
@@ -596,6 +599,8 @@ class SignUpActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRec
                 Log.e("file name ", file.name)
                 val requestBody = RequestBody.create(MediaType.parse("image/*"), file)
                 builder!!.addFormDataPart("image", file.name, requestBody)
+            }else{
+                imagePath = this.getDrawable(R.drawable.dark_logo).toString()
             }
 
             val call = apiInterface.signUp(builder!!.build())
@@ -612,9 +617,11 @@ class SignUpActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRec
                                 SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.UserId, myuserId)
                                 SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.UserEmail, emailaddress)
                                 SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.Address, location)
+                                SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.Username, username)
                                 LogUtils.longToast(this@SignUpActivity, response.body()!!.message)
-                                startActivity(Intent(applicationContext,OtpVerificationActivity::class.java).putExtra("ref", "1").putExtra(EMAILADDRESS, emailaddress))
-//
+                                startActivity(Intent(applicationContext,OtpVerificationActivity::class.java).
+                                putExtra("ref", "1").
+                                putExtra(EMAILADDRESS, emailaddress))
                             }else{
                                 LogUtils.longToast(this@SignUpActivity, response.body()!!.message)
                             }
@@ -673,5 +680,4 @@ class SignUpActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRec
     override fun onNetworkConnectionChanged(isConnected: Boolean) {
         Utility.getFCMToken()
     }
-
 }

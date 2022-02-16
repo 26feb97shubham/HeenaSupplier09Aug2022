@@ -41,14 +41,14 @@ import com.heena.supplier.rest.APIInterface
 import com.heena.supplier.utils.LogUtils
 import com.heena.supplier.utils.SharedPreferenceUtility
 import com.heena.supplier.utils.Utility
-import com.heena.supplier.utils.Utility.Companion.IMAGE_DIRECTORY_NAME
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.model.AddressComponent
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.heena.supplier.custom.FetchPath
-import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
+import com.heena.supplier.utils.Utility.IMAGE_DIRECTORY_NAME
+import com.heena.supplier.utils.Utility.setSafeOnClickListener
 import kotlinx.android.synthetic.main.activity_home2.*
 import kotlinx.android.synthetic.main.fragment_add_new_service.view.*
 import kotlinx.android.synthetic.main.fragment_add_new_service.view.tv_save_service
@@ -192,8 +192,6 @@ class AddNewServiceFragment : Fragment() {
                                 } else {
                                     imagePath = selectedImage.getPath()!!
                                 }*/
-
-
 
                                 imagePath = FetchPath.getPath(requireActivity(), selectedImage!!)!!
                                 val photoData = PhotoData()
@@ -467,14 +465,22 @@ class AddNewServiceFragment : Fragment() {
             findNavController().navigate(R.id.notificationsFragment)
         }
 
-        if (service_status.equals("edit")){
-            mView!!.tv_add_new_service_txt.text = getString(R.string.edit_service)
-            mView!!.tv_save_service.text = getString(R.string.update)
+        if (service_status.equals("show")){
             showService(service_id)
+            setNonEditableAndNonClickableFields()
+            mView!!.tv_add_new_service_txt.text = getString(R.string.view_service_details)
+            mView!!.tv_save_service.visibility = View.GONE
         }else{
-            pathList.clear()
-            mView!!.tv_add_new_service_txt.text = getString(R.string.add_new_service)
-            mView!!.tv_save_service.text = getString(R.string.save)
+            mView!!.tv_save_service.visibility = View.VISIBLE
+            if (service_status.equals("edit")){
+                showService(service_id)
+                mView!!.tv_add_new_service_txt.text = getString(R.string.edit_service)
+                mView!!.tv_save_service.text = getString(R.string.update)
+            }else{
+                pathList.clear()
+                mView!!.tv_add_new_service_txt.text = getString(R.string.add_new_service)
+                mView!!.tv_save_service.text = getString(R.string.save)
+            }
         }
 
         mView!!.tv_location.setSafeOnClickListener {
@@ -525,7 +531,7 @@ class AddNewServiceFragment : Fragment() {
     private fun showService(serviceId: Int) {
         mView!!.add_service_progressBar.visibility = View.VISIBLE
         requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-        val call = apiInterface.showService(serviceId)
+        val call = apiInterface.showService(serviceId, SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""])
         call?.enqueue(object : Callback<ShowServiceResponse?>{
             override fun onResponse(call: Call<ShowServiceResponse?>, response: Response<ShowServiceResponse?>) {
                 mView!!.add_service_progressBar.visibility = View.GONE
@@ -545,7 +551,6 @@ class AddNewServiceFragment : Fragment() {
                         setUploadPhotos(pathList)
                         mView!!.et_service_title.setText(response.body()!!.service!!.name)
                         mView!!.et_price.setText(response.body()!!.service!!.price!!.main)
-                        mView!!.et_child_price.setText(response.body()!!.service!!.price!!.child_price)
                         mView!!.et_service_desc.setText(response.body()!!.service!!.description)
                         mView!!.tv_location.text = response.body()!!.service!!.address
                         mView!!.spinner_category.text = service!!.category!!.name.toString()
@@ -626,7 +631,7 @@ class AddNewServiceFragment : Fragment() {
         requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         mView!!.add_service_progressBar.visibility= View.VISIBLE
         val builder = APIClient.createMultipartBodyBuilder(arrayOf("service_id", "category_id", "name", "price",
-        "address", "lat", "long", "description"),
+        "address", "lat", "long", "description", "lang"),
         arrayOf(service!!.service_id.toString(),
         category_id.toString(),
         service_title,
@@ -634,7 +639,8 @@ class AddNewServiceFragment : Fragment() {
         address,
         mLatitude.toString(),
         mLongitude.toString(),
-        service_description))
+        service_description,
+        SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""]))
         Log.e("path_list_size", ""+pathList)
         for(i in 0 until pathList.size){
             val file = File(pathList[i].path)
@@ -684,7 +690,7 @@ class AddNewServiceFragment : Fragment() {
     private fun save() {
         requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         mView!!.add_service_progressBar.visibility= View.VISIBLE
-        val builder = APIClient.createMultipartBodyBuilder(arrayOf("user_id", "category_id", "name", "price", "address", "lat", "long", "description", "subscription_id"),
+        val builder = APIClient.createMultipartBodyBuilder(arrayOf("user_id", "category_id", "name", "price", "address", "lat", "long", "description", "subscription_id", "lang"),
                 arrayOf(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId, 0).toString(),
                         category_id.toString(),
                         service_title,
@@ -693,7 +699,8 @@ class AddNewServiceFragment : Fragment() {
                         mLatitude.toString(),
                         mLongitude.toString(),
                         service_description,
-                    subscription_id.toString()))
+                    subscription_id.toString(),
+                SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""]))
 
         for(i in 0 until pathList.size){
             val file = File(pathList[i].path)
@@ -821,7 +828,7 @@ class AddNewServiceFragment : Fragment() {
     }
 
     private fun getCategories() {
-        val call = apiInterface.categoryList()
+        val call = apiInterface.categoryList(SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""])
         call!!.enqueue(object : Callback<CategoryListResponse?> {
             override fun onResponse(
                     call: Call<CategoryListResponse?>,
@@ -873,7 +880,7 @@ class AddNewServiceFragment : Fragment() {
     }
 
     private fun deleteServerimage(postion: Int) {
-        val call=apiInterface.deleteServiceImage(galleryItemList?.get(postion)?.gallery_id.toString())
+        val call=apiInterface.deleteServiceImage(galleryItemList?.get(postion)?.gallery_id.toString(), SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""])
         call?.enqueue(object : Callback<ServiceImageDeleteResponse?> {
             override fun onResponse(
                     call: Call<ServiceImageDeleteResponse?>,
@@ -901,30 +908,31 @@ class AddNewServiceFragment : Fragment() {
         mView!!.rv_uploaded_photos.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         addNewPhotosAdapter = AddNewPhotosAdapter(requireContext(), galleryPhotos, object : ClickInterface.OnRecyclerItemClick {
             override fun OnClickAction(position: Int) {
-                if(galleryPhotos[position].status.equals("old")) {
-                    val alert = android.app.AlertDialog.Builder(requireContext())
-                    alert.setMessage(requireContext().getString(R.string.delete_message))
-                    alert.setCancelable(false)
-                    alert.setPositiveButton(getString(R.string.yes)) { dialog, i ->
-                        dialog.cancel()
-                        deleteServerimage(position)
+                if (!service_status.equals("show")){
+                    if(galleryPhotos[position].status.equals("old")) {
+                        val alert = android.app.AlertDialog.Builder(requireContext())
+                        alert.setMessage(requireContext().getString(R.string.delete_message))
+                        alert.setCancelable(false)
+                        alert.setPositiveButton(getString(R.string.yes)) { dialog, i ->
+                            dialog.cancel()
+                            deleteServerimage(position)
+                        }
+                        alert.setNegativeButton(getString(R.string.no)) { dialog, i ->
+                            dialog.cancel()
+                        }
+                        alert.show()
                     }
-                    alert.setNegativeButton(getString(R.string.no)) { dialog, i ->
-                        dialog.cancel()
+                    else {
+                        Log.e("check", "" + position)
+                        pathList.removeAt(position)
+                        Log.e("check size", "" + pathList.size)
+                        mView!!.rv_uploaded_photos.adapter=addNewPhotosAdapter
+                        addNewPhotosAdapter.notifyDataSetChanged()
                     }
-                    alert.show()
+                    mView!!.iv_upload_photo.alpha = 1f
+                    mView!!.iv_upload_photo.isEnabled = true
                 }
-                else {
-                    Log.e("check", "" + position)
-                    pathList.removeAt(position)
-                    Log.e("check size", "" + pathList.size)
-                    mView!!.rv_uploaded_photos.adapter=addNewPhotosAdapter
-                    addNewPhotosAdapter.notifyDataSetChanged()
-                }
-                mView!!.iv_upload_photo.alpha = 1f
-                mView!!.iv_upload_photo.isEnabled = true
             }
-
         })
         mView!!.rv_uploaded_photos.adapter = addNewPhotosAdapter
         addNewPhotosAdapter.notifyDataSetChanged()
@@ -977,5 +985,14 @@ class AddNewServiceFragment : Fragment() {
             }
             return instance as SharedPreferenceUtility
         }
+    }
+
+    private fun setNonEditableAndNonClickableFields(){
+        mView!!.iv_upload_photo.isEnabled = false
+        mView!!.et_service_title.isEnabled = false
+        mView!!.tv_location.isEnabled = false
+        mView!!.spinner_category_card.isEnabled = false
+        mView!!.spinner_category.isEnabled = false
+        mView!!.et_service_desc.isEnabled = false
     }
 }

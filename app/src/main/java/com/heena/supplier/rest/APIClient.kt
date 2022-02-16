@@ -2,15 +2,14 @@ package com.heena.supplier.rest
 
 import android.text.TextUtils
 import android.util.Log
-import com.heena.supplier.rest.APIUtils.Companion.BASE_URL
+import com.heena.supplier.rest.APIUtils.BASE_URL
 import okhttp3.*
 import okio.Buffer
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
-class APIClient {
-    companion object {
+object APIClient {
         private var retrofit: Retrofit? = null
         private val baseUrl: String = BASE_URL
         var baseClient : OkHttpClient?=OkHttpClient().newBuilder().connectTimeout(80, TimeUnit.SECONDS)
@@ -73,5 +72,4 @@ class APIClient {
                 return response.newBuilder().body(wrappedBody).build()
             }
         }
-    }
 }

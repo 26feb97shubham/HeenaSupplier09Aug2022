@@ -17,8 +17,7 @@ import android.view.MotionEvent
 import android.view.View.OnTouchListener
 
 import com.heena.supplier.*
-
-
+import com.heena.supplier.utils.Utility.setSafeOnClickListener
 
 
 class CancelServiceBottomSheetFragment : BottomSheetDialogFragment() {
@@ -37,7 +36,7 @@ class CancelServiceBottomSheetFragment : BottomSheetDialogFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        tv_proceed!!.setOnClickListener { // dismiss dialog
+        tv_proceed!!.setSafeOnClickListener { // dismiss dialog
             /*findNavController().navigate(R.id.action_filterbottomsheetdialogfragment_to_filteredproductsfragment)*/
 
             mView!!.et_rsn_for_cancellation.setOnTouchListener { view, event ->

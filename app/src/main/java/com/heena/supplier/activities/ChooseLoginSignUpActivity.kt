@@ -3,14 +3,11 @@ package com.heena.supplier.activities
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.animation.AlphaAnimation
-import android.widget.Toast
 import com.heena.supplier.R
 import com.heena.supplier.utils.SharedPreferenceUtility
 import com.heena.supplier.utils.Utility
-import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
+import com.heena.supplier.utils.Utility.setSafeOnClickListener
 import kotlinx.android.synthetic.main.activity_choose_login_sign_up2.*
 
 class ChooseLoginSignUpActivity : AppCompatActivity() {

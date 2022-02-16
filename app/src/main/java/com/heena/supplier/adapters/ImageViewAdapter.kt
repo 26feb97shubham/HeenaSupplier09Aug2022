@@ -1,5 +1,6 @@
 package com.heena.supplier.adapters
 
+import android.app.Activity
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
@@ -11,6 +12,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.heena.supplier.R
 import com.squareup.picasso.Callback
@@ -20,7 +22,7 @@ import java.lang.Exception
 
 
 class ImageViewAdapter(
-    private val context: Context,
+    private val context: Activity,
     private val galleryList: ArrayList<String>
 ) :
     RecyclerView.Adapter<ImageViewAdapter.ImageViewAdapterVH>() {
@@ -28,7 +30,8 @@ class ImageViewAdapter(
         imageViewItemView
     ){
         fun bind(images: String) {
-            Glide.with(context).load(images).listener(object : RequestListener<Drawable>{
+            Glide.with(context).load(images)
+                .listener(object : RequestListener<Drawable>{
                 override fun onLoadFailed(
                     e: GlideException?,
                     model: Any?,
@@ -49,8 +52,9 @@ class ImageViewAdapter(
                     imageViewItemView.loadMapimage.visibility = View.GONE
                     return false
                 }
-
-            }).into(imageViewItemView.viewMap)
+            })
+                .apply(RequestOptions().error(R.drawable.def_henna))
+                .into(imageViewItemView.viewMap)
         }
     }
 

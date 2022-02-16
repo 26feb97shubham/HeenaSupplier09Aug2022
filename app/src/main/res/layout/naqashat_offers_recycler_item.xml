@@ -35,11 +35,11 @@
                         android:src="@drawable/def_henna"/>
 
                     <ProgressBar
+                        android:id="@+id/offers_loader"
                         android:layout_width="@dimen/_15sdp"
                         android:layout_height="@dimen/_15sdp"
                         android:layout_centerInParent="true"
-                        android:id="@+id/offers_loader"
-                        android:visibility="visible"/>
+                        android:visibility="visible" />
                 </RelativeLayout>
 
 

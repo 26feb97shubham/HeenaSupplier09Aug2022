@@ -2,6 +2,7 @@ package com.heena.supplier.activities
 
 import android.os.Bundle
 import android.text.TextUtils
+import android.view.KeyEvent
 import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
@@ -14,7 +15,7 @@ import com.heena.supplier.rest.APIClient
 import com.heena.supplier.utils.LogUtils
 import com.heena.supplier.utils.SharedPreferenceUtility
 import com.heena.supplier.utils.Utility
-import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
+import com.heena.supplier.utils.Utility.setSafeOnClickListener
 import kotlinx.android.synthetic.main.activity_add_new_card.*
 import kotlinx.android.synthetic.main.fragment_add_new_card.et_card_number
 import kotlinx.android.synthetic.main.fragment_add_new_card.et_card_title
@@ -25,6 +26,7 @@ import kotlinx.android.synthetic.main.fragment_add_new_card.tv_account_holdee_na
 import kotlinx.android.synthetic.main.fragment_add_new_card.tv_card_number_1
 import kotlinx.android.synthetic.main.fragment_add_new_card.tv_expiry_date_1
 import kotlinx.android.synthetic.main.fragment_add_new_card.tv_save_card
+import kotlinx.android.synthetic.main.fragment_add_new_card.view.*
 import org.json.JSONException
 import retrofit2.Call
 import retrofit2.Callback
@@ -34,23 +36,25 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class AddNewCardActivity : AppCompatActivity() {
-    var card_title = ""
-    var card_number = ""
-    var card_cvv = ""
-    var card_expiry = ""
-    val sdf = SimpleDateFormat("MM/yyyy", Locale.US)
-    var expiry_date : Date?=null
-    var expired = false
+    private var card_title = ""
+    private var card_number = ""
+    private var card_cvv = ""
+    private var card_expiry = ""
+    private val sdf = SimpleDateFormat("MM/yyyy", Locale.US)
+    private var expiry_date : Date?=null
+    private var expired = false
+    private var keyDel = 0
+    private var a =""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Utility.changeLanguage(
             this,
-            SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, "")
+            SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""]
         )
         setContentView(R.layout.activity_add_new_card)
         tv_save_card.setSafeOnClickListener {
             card_expiry = et_expiry.text.toString().trim()
-            if (card_expiry.equals("")){
+            if (card_expiry == ""){
                 LogUtils.shortToast(this, getString(R.string.please_enter_valid_expiry_date))
             }else{
                 expiry_date=sdf.parse(card_expiry)
@@ -60,7 +64,7 @@ class AddNewCardActivity : AppCompatActivity() {
         }
         addTextWatcher()
 
-        if (SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, "").equals("en")){
+        if (SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""] == "en"){
             val drawable = this.resources.getDrawable(R.drawable.card_bg)
             ll_card.background = drawable
         }else{
@@ -75,37 +79,45 @@ class AddNewCardActivity : AppCompatActivity() {
         card_cvv = et_cvv.text.toString().trim()
         card_expiry = et_expiry.text.toString().trim()
 
-        if (TextUtils.isEmpty(card_title)){
-            et_card_title.requestFocus()
-            et_card_title.error = getString(R.string.please_enter_valid_card_title)
-        }else if (TextUtils.isEmpty(card_number)){
-            et_card_number.requestFocus()
-            et_card_number.error = getString(R.string.please_enter_valid_card_number)
-        }else if (card_number.length<15){
-            et_card_number.requestFocus()
-            et_card_number.error = getString(R.string.please_enter_valid_card_number)
-        }else if (TextUtils.isEmpty(card_cvv)){
-            et_cvv.requestFocus()
-            et_cvv.error = getString(R.string.please_enter_valid_cvv)
-        }else if (card_cvv.length<3){
-            et_cvv.requestFocus()
-            et_cvv.error = getString(R.string.please_enter_valid_cvv)
-        }else if (expired){
-            LogUtils.shortToast(this, getString(R.string.card_is_expired))
-        }else{
-            save()
+        when {
+            TextUtils.isEmpty(card_title) -> {
+                et_card_title.requestFocus()
+                et_card_title.error = getString(R.string.please_enter_valid_card_title)
+            }
+            TextUtils.isEmpty(card_number) -> {
+                et_card_number.requestFocus()
+                et_card_number.error = getString(R.string.please_enter_valid_card_number)
+            }
+            card_number.length<16 -> {
+                et_card_number.requestFocus()
+                et_card_number.error = getString(R.string.please_enter_valid_card_number)
+            }
+            TextUtils.isEmpty(card_cvv) -> {
+                et_cvv.requestFocus()
+                et_cvv.error = getString(R.string.please_enter_valid_cvv)
+            }
+            card_cvv.length<3 -> {
+                et_cvv.requestFocus()
+                et_cvv.error = getString(R.string.please_enter_valid_cvv)
+            }
+            expired -> {
+                LogUtils.shortToast(this, getString(R.string.card_is_expired))
+            }
+            else -> {
+                save()
+            }
         }
     }
 
     private fun save() {
         window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         progressBar_add_card_activity.visibility= View.VISIBLE
-        val builder = APIClient.createBuilder(arrayOf("user_id", "name", "number","cvv", "expiry_date", "type", "card_id"),
+        val builder = APIClient.createBuilder(arrayOf("user_id", "name", "number","cvv", "expiry_date", "type", "card_id", "lang"),
             arrayOf(SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.UserId, 0].toString(),
                 card_title,
                 card_number,
                 card_cvv,
-                card_expiry, "0", ""))
+                card_expiry, "0", "", SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""]))
         val call = Utility.apiInterface.addDeleteCard(builder.build())
         call!!.enqueue(object : Callback<AddDeleteCardResponse?> {
             override fun onResponse(
@@ -162,6 +174,38 @@ class AddNewCardActivity : AppCompatActivity() {
 
         et_card_number.doOnTextChanged { text, _, _, _ ->
             tv_card_number_1.text = text
+        }
+
+        et_card_number.doOnTextChanged { _, _, _, _ ->
+            val text = et_card_number
+            var flag = true
+            val eachBlock: List<String> = text.text.toString().split(" ")
+            for (i in eachBlock.indices) {
+                if (eachBlock[i].length > 4) {
+                    flag = false
+                }
+            }
+            if (flag) {
+                text.setOnKeyListener { _, keyCode, _ ->
+                    if (keyCode == KeyEvent.KEYCODE_DEL) keyDel = 1
+                    false
+                }
+                if (keyDel == 0) {
+                    if ((text.text!!.length + 1) % 5 == 0) {
+                        if (text.text.toString().split(" ").size <= 3) {
+                            text.setText(text.text.toString() + " ")
+                            text.setSelection(text?.text!!.length)
+                        }
+                    }
+                    a = text?.text.toString()
+                } else {
+                    a = text?.text.toString()
+                    keyDel = 0
+                }
+            } else {
+                text.setText(a)
+            }
+            tv_card_number_1.text = a
         }
 
         et_expiry.doOnTextChanged { text, _, _, _ ->

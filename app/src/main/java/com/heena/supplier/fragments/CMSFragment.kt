@@ -15,7 +15,7 @@ import com.heena.supplier.R
 import com.heena.supplier.extras.MyWebViewClient
 import com.heena.supplier.utils.SharedPreferenceUtility
 import com.heena.supplier.utils.Utility
-import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
+import com.heena.supplier.utils.Utility.setSafeOnClickListener
 import kotlinx.android.synthetic.main.activity_home2.*
 import kotlinx.android.synthetic.main.fragment_c_m_s.view.*
 private const val ARG_PARAM1 = "param1"
@@ -64,16 +64,19 @@ class CMSFragment : Fragment() {
             findNavController().navigate(R.id.notificationsFragment)
         }
 
-        if (SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, "").equals("en")){
-            about_us_url = "https://henna.devtechnosys.info/about-us/en"
-            privacy_policy_url = "https://henna.devtechnosys.info/privacy-policy/en"
-            tnc_url = "https://henna.devtechnosys.info/terms-and-conditions/en"
-            faq_url = "https://henna.devtechnosys.info/faq/en"
-        }else{
-            about_us_url = "https://henna.devtechnosys.info/about-us/ar"
-            privacy_policy_url = "https://henna.devtechnosys.info/privacy-policy/ar"
-            tnc_url = "https://henna.devtechnosys.info/terms-and-conditions/ar"
-            faq_url = "https://henna.devtechnosys.info/faq/ar"
+        when {
+            SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""] == "en" -> {
+                about_us_url = "https://alniqasha.ae/about-us/en"
+                privacy_policy_url = "https://alniqasha.ae/privacy-policy/en"
+                tnc_url = "https://alniqasha.ae/terms-and-conditions/en"
+                faq_url = "https://alniqasha.ae/faq/en"
+            }
+            else -> {
+                about_us_url = "https://alniqasha.ae/about-us/ar"
+                privacy_policy_url = "https://alniqasha.ae/privacy-policy/ar"
+                tnc_url = "https://alniqasha.ae/terms-and-conditions/ar"
+                faq_url = "https://alniqasha.ae/faq/ar"
+            }
         }
 
         instance = SharedPreferenceUtility.getInstance()

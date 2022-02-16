@@ -27,6 +27,7 @@ import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.OrientationHelper
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -45,12 +46,13 @@ import com.heena.supplier.rest.APIInterface
 import com.heena.supplier.utils.LogUtils
 import com.heena.supplier.utils.SharedPreferenceUtility
 import com.heena.supplier.utils.Utility
-import com.heena.supplier.utils.Utility.Companion.IMAGE_DIRECTORY_NAME
-import com.heena.supplier.utils.Utility.Companion.apiInterface
-import com.heena.supplier.utils.Utility.Companion.setSafeOnClickListener
+import com.heena.supplier.utils.Utility.IMAGE_DIRECTORY_NAME
+import com.heena.supplier.utils.Utility.apiInterface
+import com.heena.supplier.utils.Utility.setSafeOnClickListener
 import kotlinx.android.synthetic.main.activity_home2.*
 import kotlinx.android.synthetic.main.fragment_my_profile.*
 import kotlinx.android.synthetic.main.fragment_my_profile.view.*
+import kotlinx.android.synthetic.main.side_top_view.view.*
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import org.json.JSONException
@@ -173,7 +175,7 @@ class MyProfileFragment : Fragment() {
                         }
                     } else if (data?.data!=null) {
                         val imageURI = data.data!!
-                        imagePath = FetchPath.getPath(requireActivity(), imageURI!!)!!
+                        imagePath = FetchPath.getPath(requireActivity(), imageURI)!!
                         galleryPhotos.add(imagePath)
                         setUploadPhotos(galleryPhotos)
                     }
@@ -269,21 +271,17 @@ class MyProfileFragment : Fragment() {
 
 
         tv_add_new_offers.setSafeOnClickListener {
-            val offer_id = 0
-            val status = "add"
             val bundle = Bundle()
-            bundle.putInt("offer_id", offer_id)
-            bundle.putString("status", status)
+            bundle.putInt("offer_id", 0)
+            bundle.putString("status", "add")
             findNavController().navigate(R.id.action_myProfileFragment_to_addNewOffersFragment, bundle)
         }
 
         tv_add_new_service.setSafeOnClickListener {
-            val service_id = 0
-            val status = "add"
             val bundle = Bundle()
-            bundle.putInt("service_id", service_id)
+            bundle.putInt("service_id", 0)
             bundle.putInt("subscription_id", 0)
-            bundle.putString("status", status)
+            bundle.putString("status", "add")
             findNavController().navigate(R.id.action_myProfileFragment_to_addNewFeaturedFragment, bundle)
         }
 
@@ -338,7 +336,7 @@ class MyProfileFragment : Fragment() {
     private fun showProfile() {
         mView!!.fragment_profile_progressBar.visibility = View.VISIBLE
         requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-        val call = Utility.apiInterface.showProfile(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId,0))
+        val call = apiInterface.showProfile(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId,0), SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""])
         call?.enqueue(object : Callback<ProfileShowResponse?>{
             override fun onResponse(
                     call: Call<ProfileShowResponse?>,
@@ -349,7 +347,23 @@ class MyProfileFragment : Fragment() {
                 try {
                     if (response.body() != null) {
                         if(response.body()!!.status==1){
-                            Glide.with(requireContext()).load(response.body()!!.profile!!.image).into(mView!!.civ_profile)
+                            Glide.with(requireContext()).load(response.body()!!.profile!!.image)
+                                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                .listener(object : RequestListener<Drawable> {
+                                    override fun onLoadFailed(p0: GlideException?, p1: Any?, p2: com.bumptech.glide.request.target.Target<Drawable>?, p3: Boolean): Boolean {
+                                        Log.e("err", p0?.message.toString())
+                                        mView!!.civProfilecontentProgressbar.visibility =
+                                            View.GONE
+                                        return false
+                                    }
+
+                                    override fun onResourceReady(p0: Drawable?, p1: Any?, target: com.bumptech.glide.request.target.Target<Drawable>?, dataSource: com.bumptech.glide.load.DataSource?, p4: Boolean): Boolean {
+                                        mView!!.civProfilecontentProgressbar.visibility =
+                                            View.GONE
+                                        return false
+                                    }
+                                }).placeholder(R.drawable.user)
+                                .apply(requestOption).into(mView!!.civ_profile)
                             if(response.body()!!.profile!!.name.equals("")){
                                 user_profile_name = response.body()!!.profile!!.username!!
                             }else{
@@ -387,7 +401,7 @@ class MyProfileFragment : Fragment() {
     private fun getReviews() {
         mView!!.fragment_profile_progressBar.visibility = View.VISIBLE
         requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-        val call = apiInterface.showComments(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId,0))
+        val call = apiInterface.showComments(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId,0), SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""])
         call?.enqueue(object : Callback<ShowCommentsResponse?>{
             override fun onResponse(call: Call<ShowCommentsResponse?>, response: Response<ShowCommentsResponse?>) {
                 mView!!.fragment_profile_progressBar.visibility = View.GONE
@@ -431,7 +445,7 @@ class MyProfileFragment : Fragment() {
     }
 
     private fun getOffers() {
-        val call = apiInterface.getOffersListing(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId,0))
+        val call = apiInterface.getOffersListing(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId,0), SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""])
         call?.enqueue(object : Callback<OffersListingResponse?>{
             override fun onResponse(
                 call: Call<OffersListingResponse?>,
@@ -482,16 +496,23 @@ class MyProfileFragment : Fragment() {
                                     updateOfferDialog.setPositiveButton(requireContext().getString(R.string.yes))
                                     { dialog, _ ->
                                         val offer_id = offersListing[position].offer_id
-                                        val status = "edit"
                                         val bundle = Bundle()
                                         bundle.putInt("offer_id", offer_id!!)
-                                        bundle.putString("status", status)
+                                        bundle.putString("status", "edit")
                                         findNavController().navigate(R.id.action_myProfileFragment_to_addNewOffersFragment, bundle)
                                         dialog!!.dismiss()
                                     }
                                     updateOfferDialog.setNegativeButton(requireContext().getString(R.string.no))
                                     { dialog, _ -> dialog!!.cancel() }
                                     updateOfferDialog.show()
+                                }
+
+                                override fun onOfferView(position: Int) {
+                                    val offer_id = offersListing[position].offer_id
+                                    val bundle = Bundle()
+                                    bundle.putInt("offer_id", offer_id!!)
+                                    bundle.putString("status", "view")
+                                    findNavController().navigate(R.id.action_myProfileFragment_to_addNewOffersFragment, bundle)
                                 }
                             })
                         mView!!.rv_offers_n_discs.adapter = offersAndDiscountsAdapter
@@ -515,7 +536,7 @@ class MyProfileFragment : Fragment() {
     }
 
     private fun deleteOffer(offerId: Int, position: Int) {
-        val call = apiInterface.deleteoffer(offerId)
+        val call = apiInterface.deleteoffer(offerId, SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""])
         call?.enqueue(object : Callback<OfferDeleteResponse?>{
             override fun onResponse(call: Call<OfferDeleteResponse?>, response: Response<OfferDeleteResponse?>) {
                 if (response.isSuccessful){
@@ -604,16 +625,24 @@ class MyProfileFragment : Fragment() {
                                 updateServiceDialog.setPositiveButton(requireContext().getString(R.string.yes)
                                 ) { dialog, _ ->
                                     val service_id = serviceslisting.get(position).service_id
-                                    val status = "edit"
                                     val bundle = Bundle()
                                     bundle.putInt("service_id", service_id!!)
-                                    bundle.putString("status", status)
+                                    bundle.putString("status", "edit")
                                     findNavController().navigate(R.id.action_myProfileFragment_to_addNewFeaturedFragment, bundle)
                                     dialog!!.dismiss()
                                 }
                                 updateServiceDialog.setNegativeButton(requireContext().getString(R.string.no)
                                 ) { dialog, _ -> dialog!!.cancel() }
                                 updateServiceDialog.show()
+                            }
+
+                            override fun onServiceView(position: Int) {
+                                val service_id = serviceslisting[position].service_id
+                                val status = "show"
+                                val bundle = Bundle()
+                                bundle.putInt("service_id", service_id!!)
+                                bundle.putString("status", status)
+                                findNavController().navigate(R.id.action_myProfileFragment_to_addNewFeaturedFragment, bundle)
                             }
                         })
                         mView!!.rv_services_listing.adapter = servicesAdapter
@@ -641,7 +670,7 @@ class MyProfileFragment : Fragment() {
     private fun deleteServices(serviceId: Int, position: Int) {
         mView!!.fragment_profile_progressBar.visibility = View.GONE
         requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-        val call = apiInterface.deleteservice(serviceId)
+        val call = apiInterface.deleteservice(serviceId,SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""])
         call!!.enqueue(object : Callback<DeleteServiceResponse?>{
             override fun onResponse(
                 call: Call<DeleteServiceResponse?>,
@@ -684,6 +713,7 @@ class MyProfileFragment : Fragment() {
         )
         fragment_profile_progressBar.visibility = View.VISIBLE
         val call = apiInterface.galleryListing(
+            SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""],
                 SharedPreferenceUtility.getInstance().get(
                         SharedPreferenceUtility.UserId,
                         0
@@ -696,14 +726,13 @@ class MyProfileFragment : Fragment() {
             ) {
                 fragment_profile_progressBar.visibility = View.GONE
                 requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                val staggeredGridLayoutManager = StaggeredGridLayoutManager(2, OrientationHelper.VERTICAL)
+                staggeredGridLayoutManager.gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS
                 if (response.isSuccessful) {
                     if (response.body()!!.status == 1) {
                         mView!!.rv_naqashat_gallery.visibility = View.VISIBLE
                         mView!!.ll_no_gallery_found.visibility = View.GONE
-                        mView!!.rv_naqashat_gallery.layoutManager = StaggeredGridLayoutManager(
-                            2,
-                            StaggeredGridLayoutManager.VERTICAL
-                        )
+                        mView!!.rv_naqashat_gallery.layoutManager = staggeredGridLayoutManager
                         ImageUriList.clear()
                         ImageUriList = response.body()!!.gallery as ArrayList<Gallery>
                         galleryStaggeredGridAdapter = GalleryStaggeredGridAdapter(
@@ -762,7 +791,7 @@ class MyProfileFragment : Fragment() {
     }
 
     private fun deleteImage(galleryId: Int, position: Int) {
-        val call = apiInterface.deletegalleryimage(galleryId)
+        val call = apiInterface.deletegalleryimage(galleryId, SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""])
         call!!.enqueue(object : Callback<DeleteGalleryImage?> {
             override fun onResponse(
                 call: Call<DeleteGalleryImage?>,
@@ -920,10 +949,11 @@ class MyProfileFragment : Fragment() {
     private fun setUploadPhotos(galleryPhotos: ArrayList<String>) {
         val apiInterface = APIClient.getClient()!!.create(APIInterface::class.java)
         val builder = APIClient.createMultipartBodyBuilder(
-                arrayOf("user_id"),
+                arrayOf("user_id", "lang"),
                 arrayOf(
                         SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId, 0)
-                                .toString()
+                                .toString(),
+                    SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""]
                 )
         )
         for (i in 0 until galleryPhotos.size) {

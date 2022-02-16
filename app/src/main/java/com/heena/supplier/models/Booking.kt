@@ -22,6 +22,7 @@ data class Booking(
         val location: Location? = null,
         val user: User? = null,
         val gallery: List<String?>? = null,
-        val status: Int? = null
+        val status: Int? = null,
+        val card: CardsX
 )
 
