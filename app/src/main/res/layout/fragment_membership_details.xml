@@ -4,140 +4,151 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/membershipDetailsFragmentConstraintLayout"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@android:color/transparent"
     tools:context=".fragments.MembershipDetailsFragment">
 
     <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="@dimen/_15ssp">
+
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_membership_status_txt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                android:fontFamily="@font/avenir_medium"
                 android:text="@string/featured_membership_status"
                 android:textAllCaps="false"
-                android:fontFamily="@font/avenir_medium"
                 android:textColor="@color/gold"
-                android:textSize="@dimen/_12ssp"/>
+                android:textSize="@dimen/_12ssp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_viewall_txt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="@id/tv_membership_status_txt"
-                app:layout_constraintBottom_toBottomOf="@id/tv_membership_status_txt"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:fontFamily="@font/avenir_medium"
                 android:text="@string/view_all"
                 android:textAllCaps="true"
-                android:visibility="gone"
-                android:fontFamily="@font/avenir_medium"
                 android:textColor="@color/gold"
-                android:textSize="@dimen/_10ssp"/>
+                android:textSize="@dimen/_10ssp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@id/tv_membership_status_txt"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/tv_membership_status_txt" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_membership_txt"
                 android:layout_width="@dimen/_80sdp"
                 android:layout_height="@dimen/_20sdp"
-                app:layout_constraintTop_toTopOf="@id/tv_membership_status_txt"
-                app:layout_constraintBottom_toBottomOf="@id/tv_membership_status_txt"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:text="@string/membership"
-                android:textAllCaps="true"
-                android:gravity="center"
                 android:background="@drawable/curved_gold_filled_rect_box"
                 android:fontFamily="@font/avenir_medium"
+                android:gravity="center"
+                android:text="@string/membership"
+                android:textAllCaps="true"
                 android:textColor="@color/black"
-                android:textSize="@dimen/_7ssp"/>
+                android:textSize="@dimen/_7ssp"
+                app:layout_constraintBottom_toBottomOf="@id/tv_membership_status_txt"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/tv_membership_status_txt" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_do_u_wnt_to_featured_txt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/tv_membership_status_txt"
-                app:layout_constraintStart_toStartOf="parent"
+                android:fontFamily="@font/avenir_medium"
                 android:text="@string/do_you_want_to_become_a_featured_henna"
                 android:textAllCaps="false"
-                android:visibility="gone"
-                android:fontFamily="@font/avenir_medium"
                 android:textColor="@color/gold"
-                android:textSize="@dimen/_9ssp"/>
+                android:textSize="@dimen/_9ssp"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_membership_status_txt" />
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/membership_card_details"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/tv_do_u_wnt_to_featured_txt"
-                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginTop="@dimen/_10sdp"
                 app:cardBackgroundColor="@color/white"
                 app:cardCornerRadius="@dimen/_6sdp"
-                android:layout_marginTop="@dimen/_10sdp">
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_do_u_wnt_to_featured_txt">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:padding="@dimen/_10sdp">
+
                     <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/tv_membership_title_txt_details"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
+                        android:fontFamily="@font/avenir_medium"
                         android:text="@string/featured_membership"
                         android:textAllCaps="false"
-                        android:fontFamily="@font/avenir_medium"
                         android:textColor="@color/gold"
-                        android:textSize="@dimen/_11ssp"/>
+                        android:textSize="@dimen/_11ssp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
                     <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/tv_membership_plan_price_details"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:layout_constraintTop_toTopOf="@id/tv_membership_title_txt_details"
-                        app:layout_constraintBottom_toBottomOf="@id/tv_membership_title_txt_details"
-                        app:layout_constraintEnd_toEndOf="parent"
+                        android:fontFamily="@font/avenir_medium"
                         android:text="AED 250"
                         android:textAllCaps="false"
-                        android:fontFamily="@font/avenir_medium"
                         android:textColor="@color/gold"
-                        android:textSize="@dimen/_10ssp"/>
+                        android:textSize="@dimen/_10ssp"
+                        app:layout_constraintBottom_toBottomOf="@id/tv_membership_title_txt_details"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/tv_membership_title_txt_details" />
 
                     <View
                         android:id="@+id/view1"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
+                        android:layout_marginTop="@dimen/_8sdp"
                         android:background="@color/gold"
-                        app:layout_constraintTop_toBottomOf="@id/tv_membership_title_txt_details"
-                        android:layout_marginTop="@dimen/_8sdp"/>
+                        app:layout_constraintTop_toBottomOf="@id/tv_membership_title_txt_details" />
 
                     <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/tv_expiration_date_txt_details"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:layout_constraintTop_toBottomOf="@id/view1"
-                        app:layout_constraintStart_toStartOf="parent"
-                        android:text="@string/expiration_date"
                         android:layout_marginTop="@dimen/_8sdp"
-                        android:textAllCaps="false"
                         android:fontFamily="@font/avenir_medium"
+                        android:text="@string/expiration_date"
+                        android:textAllCaps="false"
                         android:textColor="@color/gold"
-                        android:textSize="@dimen/_8ssp"/>
+                        android:textSize="@dimen/_8ssp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/view1" />
+
                     <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/tv_expiration_date_details"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:layout_constraintTop_toTopOf="@id/tv_expiration_date_txt_details"
-                        app:layout_constraintBottom_toBottomOf="@id/tv_expiration_date_txt_details"
-                        app:layout_constraintEnd_toEndOf="parent"
+                        android:fontFamily="@font/avenir_medium"
                         android:text="AED 250"
                         android:textAllCaps="false"
-                        android:fontFamily="@font/avenir_medium"
                         android:textColor="@color/gold"
-                        android:textSize="@dimen/_8ssp"/>
+                        android:textSize="@dimen/_8ssp"
+                        app:layout_constraintBottom_toBottomOf="@id/tv_expiration_date_txt_details"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/tv_expiration_date_txt_details" />
 
                     <ProgressBar
                         android:id="@+id/linearprogressindicator_details"
@@ -145,12 +156,12 @@
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/_3sdp"
                         android:layout_marginTop="@dimen/_8sdp"
-                        app:layout_constraintTop_toBottomOf="@+id/tv_expiration_date_details"
-                        app:layout_constraintStart_toStartOf="@+id/tv_expiration_date_details"
                         android:indeterminate="false"
                         android:max="100"
                         android:progress="100"
-                        android:progressTint="@color/gray"/>
+                        android:progressTint="@color/gray"
+                        app:layout_constraintStart_toStartOf="@+id/tv_expiration_date_details"
+                        app:layout_constraintTop_toBottomOf="@+id/tv_expiration_date_details" />
 
                     <ProgressBar
                         android:id="@+id/linearprogressindicator1_details"
@@ -158,12 +169,12 @@
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/_3sdp"
                         android:layout_marginTop="@dimen/_8sdp"
-                        app:layout_constraintTop_toBottomOf="@+id/tv_expiration_date_details"
-                        app:layout_constraintStart_toStartOf="@+id/tv_expiration_date_details"
                         android:indeterminate="false"
                         android:max="100"
                         android:progress="60"
-                        android:progressTint="@color/gold"/>
+                        android:progressTint="@color/gold"
+                        app:layout_constraintStart_toStartOf="@+id/tv_expiration_date_details"
+                        app:layout_constraintTop_toBottomOf="@+id/tv_expiration_date_details" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -173,41 +184,42 @@
                 android:id="@+id/card_add_new_featured"
                 android:layout_width="@dimen/_150sdp"
                 android:layout_height="@dimen/_30sdp"
-                app:layout_constraintTop_toBottomOf="@id/membership_card_details"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="@dimen/_15sdp"
                 app:cardCornerRadius="@dimen/_6sdp"
-                app:strokeWidth="1dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/membership_card_details"
                 app:strokeColor="@color/gold"
-                android:layout_marginTop="@dimen/_15sdp">
+                app:strokeWidth="1dp">
+
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_add_new_featured"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:drawablePadding="@dimen/_8sdp"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/avenir_medium"
                     android:gravity="center"
+                    android:maxLines="1"
+                    android:paddingHorizontal="@dimen/_8sdp"
                     android:text="@string/add_new_service"
-                    android:textDirection="locale"
+                    android:textAllCaps="false"
                     android:textColor="@color/text_gold_color_dark"
+                    android:textDirection="locale"
                     android:textSize="@dimen/_10ssp"
                     android:textStyle="normal"
-                    android:maxLines="1"
-                    android:ellipsize="end"
-                    android:paddingHorizontal="@dimen/_8sdp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="@id/tv_payment_txt2"
-                    android:textAllCaps="false"
-                    android:fontFamily="@font/avenir_medium"
                     app:drawableStartCompat="@drawable/plus_layer_list"
-                    android:drawablePadding="@dimen/_8sdp"/>
+                    app:layout_constraintBottom_toBottomOf="@id/tv_payment_txt2"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
             </com.google.android.material.card.MaterialCardView>
 
             <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_add_new_featured_listing"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/card_add_new_featured"
                 android:layout_marginTop="@dimen/_15sdp"
-                android:id="@+id/rv_add_new_featured_listing"/>
+                app:layout_constraintTop_toBottomOf="@id/card_add_new_featured" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 

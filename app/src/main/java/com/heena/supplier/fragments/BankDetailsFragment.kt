@@ -9,6 +9,7 @@ import android.view.WindowManager
 import android.view.animation.AlphaAnimation
 import androidx.navigation.fragment.findNavController
 import com.heena.supplier.R
+import com.heena.supplier.application.MyApp.Companion.sharedPreferenceInstance
 import com.heena.supplier.models.Bank
 import com.heena.supplier.models.BankDetailsResponse
 import com.heena.supplier.utils.LogUtils
@@ -35,7 +36,7 @@ class BankDetailsFragment : Fragment() {
         mView = inflater.inflate(R.layout.fragment_bank_details, container, false)
         Utility.changeLanguage(
             requireContext(),
-            SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, "")
+            sharedPreferenceInstance!!.get(SharedPreferenceUtility.SelectedLang, "")
         )
         showBankDetails()
         setUpViews()
@@ -45,13 +46,13 @@ class BankDetailsFragment : Fragment() {
     private fun setUpViews() {
         requireActivity().iv_back.setSafeOnClickListener {
             requireActivity().iv_back.startAnimation(AlphaAnimation(1F,0.5F))
-            SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_back)
+            sharedPreferenceInstance!!.hideSoftKeyBoard(requireContext(), requireActivity().iv_back)
             findNavController().popBackStack()
         }
 
         requireActivity().iv_notification.setSafeOnClickListener {
             requireActivity().iv_notification.startAnimation(AlphaAnimation(1F,0.5F))
-            SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_notification)
+            sharedPreferenceInstance!!.hideSoftKeyBoard(requireContext(), requireActivity().iv_notification)
             findNavController().navigate(R.id.notificationsFragment)
         }
 
@@ -84,7 +85,7 @@ class BankDetailsFragment : Fragment() {
         mView!!.no_banks_found.visibility = View.GONE
         requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
 
-        val call  = Utility.apiInterface.showBanks(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId, 0), SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""])
+        val call  = Utility.apiInterface.showBanks(sharedPreferenceInstance!!.get(SharedPreferenceUtility.UserId, 0), sharedPreferenceInstance!![SharedPreferenceUtility.SelectedLang, ""])
         call?.enqueue(object : Callback<BankDetailsResponse?> {
             override fun onResponse(
                 call: Call<BankDetailsResponse?>,
@@ -107,13 +108,18 @@ class BankDetailsFragment : Fragment() {
                             mView!!.add_new_bank.visibility = View.VISIBLE
                             mView!!.sv_bank_details.visibility = View.GONE
                             isBankAdded = false
+                            Utility.showSnackBarOnResponseError(mView!!.bankDetailsFragmentConstraintLayout,
+                                response.body()!!.message.toString(),
+                                requireContext())
                         }
                     }else{
                         mView!!.no_banks_found.visibility = View.VISIBLE
                         mView!!.add_new_bank.visibility = View.VISIBLE
                         mView!!.sv_bank_details.visibility = View.GONE
                         isBankAdded = false
-                        LogUtils.shortToast(requireContext(), getString(R.string.response_isnt_successful))
+                        Utility.showSnackBarOnResponseError(mView!!.bankDetailsFragmentConstraintLayout,
+                            requireContext().getString(R.string.response_isnt_successful),
+                            requireContext())
                     }
                 }catch (e: IOException) {
                     e.printStackTrace()
@@ -130,7 +136,9 @@ class BankDetailsFragment : Fragment() {
                 mView!!.sv_bank_details.visibility = View.GONE
                 LogUtils.e("msg", throwable.message)
                 isBankAdded = false
-                LogUtils.shortToast(requireContext(), getString(R.string.check_internet))
+                Utility.showSnackBarOnResponseError(mView!!.bankDetailsFragmentConstraintLayout,
+                    throwable.message!!,
+                    requireContext())
                 mView!!.frag_bank_details_progressBar.visibility= View.GONE
                 requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             }
@@ -148,16 +156,5 @@ class BankDetailsFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         showBankDetails()
-    }
-
-    companion object{
-        private var instance: SharedPreferenceUtility? = null
-        @Synchronized
-        fun getInstance(): SharedPreferenceUtility {
-            if (instance == null) {
-                instance = SharedPreferenceUtility()
-            }
-            return instance as SharedPreferenceUtility
-        }
     }
 }

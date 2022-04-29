@@ -1,4 +1,5 @@
 package com.heena.supplier.models
+import java.io.Serializable
 
 data class Booking(
         val address: Address? = null,
@@ -22,7 +23,7 @@ data class Booking(
         val location: Location? = null,
         val user: User? = null,
         val gallery: List<String?>? = null,
-        val status: Int? = null,
-        val card: CardsX
-)
+        var status: Int? = null,
+        val card: CardsX?=null
+):Serializable
 

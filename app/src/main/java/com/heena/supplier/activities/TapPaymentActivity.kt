@@ -1,5 +1,6 @@
 package com.heena.supplier.activities
 
+import android.content.DialogInterface
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -10,11 +11,14 @@ import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import com.heena.supplier.R
+import com.heena.supplier.application.MyApp.Companion.sharedPreferenceInstance
 import com.heena.supplier.models.BuyMembership
 import com.heena.supplier.models.BuySubscriptionResponse
 import com.heena.supplier.models.Membership
 import com.heena.supplier.rest.APIClient
+import com.heena.supplier.utils.LogUtils
 import com.heena.supplier.utils.SharedPreferenceUtility
 import com.heena.supplier.utils.Utility
 import com.heena.supplier.utils.Utility.apiInterface
@@ -33,12 +37,13 @@ class TapPaymentActivity : AppCompatActivity() {
     private var isRegister : Boolean = false
     private var isPurchaseMembership : Boolean = false
     private var isPurchaseSubscriptions : Boolean = false
+    lateinit var cancelPaymentDialog: AlertDialog.Builder
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_tap_payment)
         Utility.changeLanguage(
             this,
-            SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""]
+            sharedPreferenceInstance!![SharedPreferenceUtility.SelectedLang, ""]
         )
 
         if (intent.extras!=null){
@@ -71,7 +76,6 @@ class TapPaymentActivity : AppCompatActivity() {
                     }else{
                         this@TapPaymentActivity.redirect(tap_id!!)
                     }
-
                     true
                 }else{
                     true
@@ -84,7 +88,6 @@ class TapPaymentActivity : AppCompatActivity() {
         }
         tapWebView.settings.javaScriptEnabled=true
         tapWebView.settings.allowContentAccess=true
-//        webView.settings.builtInZoomControls=true
         tapWebView.settings.loadWithOverviewMode=true
         tapWebView.settings.useWideViewPort=true
         tapWebView.settings.loadsImagesAutomatically=true
@@ -95,7 +98,7 @@ class TapPaymentActivity : AppCompatActivity() {
         paymentgatewayProgressbar.visibility = View.VISIBLE
         window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         val builder = APIClient.createBuilder(arrayOf("lang","tap_id"),
-            arrayOf(SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""].toString(),
+            arrayOf(sharedPreferenceInstance!![SharedPreferenceUtility.SelectedLang, ""].toString(),
                 tapId))
         val call = apiInterface.buyMembershipPlan(builder.build())
         call!!.enqueue(object : Callback<BuyMembership?>{
@@ -110,7 +113,7 @@ class TapPaymentActivity : AppCompatActivity() {
                         if (response.body()!!.status==1){
                             if (isRegister && !isPurchaseMembership && !isPurchaseSubscriptions){
                               /*  membership = response.body()!!.membership
-                                SharedPreferenceUtility.getInstance().saveMembershipInfo(this@TapPaymentActivity,response.body()!!.membership)*/
+                                sharedPreferenceInstance!!.saveMembershipInfo(this@TapPaymentActivity,response.body()!!.membership)*/
                                 showMembershipConfirmationDialog(response.body()!!.message)
                                 startActivity(Intent(this@TapPaymentActivity, LoginActivity::class.java))
                                 finish()
@@ -120,7 +123,7 @@ class TapPaymentActivity : AppCompatActivity() {
                                 finish()
                             }else{
                                 showMembershipConfirmationDialog(response.body()!!.message)
-                                SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.ISFEATURED, true)
+                                sharedPreferenceInstance!!.save(SharedPreferenceUtility.ISFEATURED, true)
                                 startActivity(Intent(this@TapPaymentActivity, HomeActivity::class.java))
                                 finish()
                             }
@@ -146,7 +149,7 @@ class TapPaymentActivity : AppCompatActivity() {
         paymentgatewayProgressbar.visibility = View.VISIBLE
         window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         val builder = APIClient.createBuilder(arrayOf("lang","tap_id"),
-            arrayOf(SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""].toString(),
+            arrayOf(sharedPreferenceInstance!![SharedPreferenceUtility.SelectedLang, ""].toString(),
                 tapId))
 
         val call = apiInterface.buySubscription(builder.build())
@@ -160,7 +163,7 @@ class TapPaymentActivity : AppCompatActivity() {
                 if (response.isSuccessful){
                     if (response.body()!=null){
                         if (response.body()!!.status==1){
-                            SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.ISFEATURED, true)
+                            sharedPreferenceInstance!!.save(SharedPreferenceUtility.ISFEATURED, true)
                             startActivity(Intent(this@TapPaymentActivity, HomeActivity::class.java))
                             finish()
                         }else{
@@ -192,5 +195,9 @@ class TapPaymentActivity : AppCompatActivity() {
             customToastLayout.tv_booking_confirmed_message.text = message
         }
         customToast.show()
+    }
+
+    override fun onBackPressed() {
+        LogUtils.shortToast(this, R.string.payment.toString())
     }
 }

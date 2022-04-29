@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Hena_Supplier</string>
+    <string name="app_name">AlNiqasha Supplier</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="mobile_number">Mobile number</string>
     <string name="email_address">Email address</string>
@@ -16,8 +16,10 @@
     <string name="after_completing_your_registration_enjoy_browsing_our_services_and_features">After completing your registration, enjoy browsing our services and features.</string>
     <string name="already_have_an_account">Do you already have an account?</string>
     <string name="please_enter_your_username">Please enter your username</string>
+    <string name="please_enter_your_username_or_emailaddress">Please enter your username/email</string>
     <string name="please_enter_your_password">Please enter your password</string>
-    <string name="invalid_password">"Invalid Password "</string>
+    <string name="please_enter_your_confirm_password">Please enter your confirm password</string>
+    <string name="invalid_password">"Invalid Password"</string>
     <string name="enter_your_email_address_and_we_will_be_sending_you_instructions_on_how_to_reset_your_password">Enter your email address and we will be sending you instructions on how to reset your password.</string>
     <string name="submit">Submit</string>
     <string name="password_doesnt_match_with_verify_password">Password doesn\'t match with verify password</string>
@@ -167,7 +169,7 @@
     <string name="title_activity_maps" translatable="false">Map</string>
     <string name="please_verify_your_password">Please verify your password</string>
     <string name="continue_btn">Continue</string>
-    <string name="please_login_signup_to_access_this_functionality" translatable="false">Please Login/Sign Up to access this functionality</string>
+    <string name="please_login_signup_to_access_this_functionality">Please Login/Sign Up to access this functionality</string>
     <string name="reset_password">Reset Password</string>
     <string name="please_enter_your_new_password_and_confirm_password_for_reset_password">Please enter your new password and confirm password for reset password</string>
     <string name="enter_new_password">Enter new password</string>
@@ -227,6 +229,7 @@
     <string name="please_enter_your_old_password">Please enter your old password</string>
     <string name="please_enter_your_new_password">Please enter your new password</string>
     <string name="password_doesnt_match_with_confirm_password">Password doesn\'t match with confirm password</string>
+    <string name="password_doesnt_match_with_old_password">Password doesn\'t match with old password</string>
     <string name="please_enter_valid_message">Please enter a valid message</string>
     <string name="duration">Duration</string>
     <string name="update">Update</string>
@@ -264,7 +267,7 @@
     <string name="purchased">Purchased</string>
     <string name="category1">Category</string>
     <string name="delete_message">Are you sure you want to delete image?</string>
-    <string name="buy_subscription_plan">Want to get featured? \n Buy Subscription Plan, details are below:</string>
+    <string name="buy_subscription_plan">Do you want to become a distinguished discussion? \nYou can purchase a membership by looking at the following details</string>
     <string name="subscription_title">Subscription title</string>
     <string name="buy">Buy</string>
     <string name="try_again">Try Again</string>
@@ -341,4 +344,32 @@
     <string name="view_offer_details">View Offer Details</string>
     <string name="card_is_not_valid">Card is not present or Invalid Card</string>
     <string name="please_select_a_card_to_continue">Please select a card to continue</string>
+    <string name="upload_trade_license">Upload Trade License</string>
+    <string name="document">Document</string>
+    <string name="add_documents">Add document</string>
+    <string name="document_uploaded">Document Uploaded.</string>
+    <string name="document_updated">Document Updated.</string>
+    <string name="update_trade_license">Update Trade License</string>
+    <string name="please_upload_your_trade_license">Please uplopad your trade license</string>
+    <string name="cancel_payment">Cancel Payment</string>
+    <string name="cancel_payment_message">Are you sure you want to cancel payment?</string>
+    <string name="cancel_message">Payment process has been cancelled by you!</string>
+    <string name="country">Country</string>
+    <string name="please_enter_valid_emirate">Please enter valid emirate</string>
+    <string name="please_enter_valid_country">Please enter valid country</string>
+    <string name="default_address">Default</string>
+    <string name="select_emirates">Choose the emirate</string>
+    <string name="something_went_wrong">Something went wrong</string>
+    <string name="please_upload_your_profile">Please upload your profile image</string>
+    <string name="payment_failed">Payment failed</string>
+    <string name="please_enter_your_email_address">Please enter your email address</string>
+    <string name="please_select_emirates">Please select emirates</string>
+    <string name="no_messages_found">No Messages found</string>
+    <string name="please_enter_your_account_number">Please enter your account number</string>
+    <string name="please_enter_your_iban_number">Please enter your IBAN number</string>
+    <string name="total_revenue">Total Revenue</string>
+    <string name="trade_license">Trade License</string>
+    <string name="thank_you_for_registration">Thank You for registering with us. Your account has been sent for admin approval</string>
+    <string name="please_do_not_press_back_button_until_the_payment_is_is_process">Please do not press back button until the payment is in process</string>
+    <string name="excel_sheet_downloaded_successfully">Revenue document has been downloaded successfully. Kindly check your phone storage or internal memory card or download section.</string>
 </resources>

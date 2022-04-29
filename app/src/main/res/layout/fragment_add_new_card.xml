@@ -1,259 +1,287 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@android:color/transparent"
+    android:id="@+id/addNewCardFragmentConstraintLayout"
     tools:context=".fragments.AddNewCardFragment">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-        <LinearLayout
-            android:id="@+id/ll_card"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/_150sdp"
-            android:layout_marginTop="@dimen/_12sdp"
-            android:layout_marginHorizontal="@dimen/_30sdp"
-            android:background="@drawable/card_bg"
-            app:layout_constraintVertical_weight="0.3"
-            app:layout_constraintTop_toTopOf="parent">
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/tv_expiry_date_1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_marginEnd="@dimen/_24sdp"
-                    android:text="01 / 2025"
-                    android:textColor="#F7F7F7"
-                    android:textStyle="normal"
-                    android:fontFamily="@font/avenir_medium"
-                    android:textSize="@dimen/_10ssp"
-                    android:layout_marginTop="@dimen/_20sdp"/>
-
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/tv_card_number_1"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    android:layout_marginHorizontal="@dimen/_30sdp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    android:text="1234 5783 1231 9123"
-                    android:singleLine="true"
-                    android:textColor="#F7F7F7"
-                    android:textStyle="normal"
-                    android:fontFamily="@font/avenir_medium"
-                    android:textSize="@dimen/_18ssp" />
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/tv_account_holdee_name_1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_marginEnd="@dimen/_24sdp"
-                    android:text="HIBA KASHKARA"
-                    android:textAllCaps="true"
-                    android:textColor="#F7F7F7"
-                    android:textStyle="normal"
-                    android:fontFamily="@font/avenir_medium"
-                    android:textSize="@dimen/_10ssp"
-                    android:layout_marginBottom="@dimen/_22sdp" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </LinearLayout>
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/_20sdp"
-            android:paddingHorizontal="@dimen/_8sdp"
-            app:layout_constraintVertical_weight="0.7"
-            app:layout_constraintTop_toBottomOf="@+id/ll_card"
-            android:background="@drawable/left_right_white_filled_background">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/ll_card"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_150sdp"
+                android:layout_marginHorizontal="@dimen/_30sdp"
+                android:layout_marginTop="@dimen/_12sdp"
+                android:background="@drawable/card_bg"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_weight="0.3">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/tv_expiry_date_1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_20sdp"
+                        android:layout_marginEnd="@dimen/_24sdp"
+                        android:fontFamily="@font/avenir_medium"
+                        android:text="01 / 2025"
+                        android:textColor="#F7F7F7"
+                        android:textSize="@dimen/_10ssp"
+                        android:textStyle="normal"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/tv_card_number_1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="@dimen/_30sdp"
+                        android:fontFamily="@font/avenir_medium"
+                        android:singleLine="true"
+                        android:text="1234 5783 1231 9123"
+                        android:textColor="#F7F7F7"
+                        android:textDirection="ltr"
+                        android:textSize="@dimen/_18ssp"
+                        android:textStyle="normal"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/tv_account_holdee_name_1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/_24sdp"
+                        android:layout_marginBottom="@dimen/_22sdp"
+                        android:fontFamily="@font/avenir_medium"
+                        android:text="HIBA KASHKARA"
+                        android:textAllCaps="true"
+                        android:textColor="#F7F7F7"
+                        android:textSize="@dimen/_10ssp"
+                        android:textStyle="normal"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </LinearLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingVertical="@dimen/_10sdp"
-                app:layout_constraintTop_toTopOf="parent">
-                <LinearLayout
-                    android:id="@+id/ll_card_title"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:background="@drawable/left_right_white_filled_background"
+                android:paddingHorizontal="@dimen/_8sdp"
+                app:layout_constraintTop_toBottomOf="@+id/ll_card"
+                app:layout_constraintVertical_weight="0.7">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:orientation="vertical"
-                    android:layout_marginTop="@dimen/_30sdp">
-                    <com.google.android.material.textview.MaterialTextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/card_title"
-                        android:textAllCaps="false"
-                        android:textSize="@dimen/_11ssp"
-                        android:textStyle="normal"
-                        android:fontFamily="@font/avenir_medium"
-                        android:textColor="@color/text_gold_color_dark"/>
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:textDirection="locale"
-                        android:textAlignment="viewStart"
-                        android:paddingStart="@dimen/_4sdp"
-                        android:id="@+id/et_card_title"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/_60sdp"
-                        android:backgroundTint="@color/gray"
-                        android:hint=" - - "
-                        android:maxLines="1"
-                        android:inputType="text"
-                        android:imeOptions="actionNext"
-                        android:maxLength="15"
-                        android:textColor="@color/gold"
-                        android:textStyle="normal"
-                        android:fontFamily="@font/avenir_medium"
-                        android:textSize="@dimen/_11ssp"/>
-                </LinearLayout>
+                    android:paddingVertical="@dimen/_10sdp"
+                    app:layout_constraintTop_toTopOf="parent">
 
-                <LinearLayout
-                    android:id="@+id/ll_card_number"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintTop_toBottomOf="@id/ll_card_title"
-                    android:orientation="vertical"
-                    android:layout_marginTop="@dimen/_10sdp">
-                    <com.google.android.material.textview.MaterialTextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/card_number"
-                        android:textAllCaps="false"
-                        android:textSize="@dimen/_11ssp"
-                        android:textStyle="normal"
-                        android:fontFamily="@font/avenir_medium"
-                        android:textColor="@color/text_gold_color_dark"/>
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:textDirection="locale"
-                        android:textAlignment="viewStart"
-                        android:paddingStart="@dimen/_4sdp"
-                        android:id="@+id/et_card_number"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/_60sdp"
-                        android:backgroundTint="@color/gray"
-                        android:hint=" - - "
-                        android:maxLength="20"
-                        android:singleLine="true"
-                        android:inputType="number"
-                        android:textColor="@color/gold"
-                        android:textStyle="normal"
-                        android:fontFamily="@font/avenir_medium"
-                        android:textSize="@dimen/_11ssp"/>
-                </LinearLayout>
-
-
-                <LinearLayout
-                    android:id="@+id/ll_cvv_expiry"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintTop_toBottomOf="@id/ll_card_number"
-                    android:layout_marginTop="@dimen/_10sdp"
-                    android:orientation="horizontal">
                     <LinearLayout
-                        android:id="@+id/ll_cvv"
-                        android:layout_width="0dp"
+                        android:id="@+id/ll_card_title"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
+                        android:layout_marginTop="@dimen/_30sdp"
+                        android:orientation="vertical"
+                        app:layout_constraintTop_toTopOf="parent">
+
                         <com.google.android.material.textview.MaterialTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/cvv"
-                            android:textAllCaps="false"
-                            android:textSize="@dimen/_11ssp"
-                            android:textStyle="normal"
                             android:fontFamily="@font/avenir_medium"
-                            android:textColor="@color/text_gold_color_dark"/>
+                            android:text="@string/card_title"
+                            android:textAllCaps="false"
+                            android:textColor="@color/text_gold_color_dark"
+                            android:textSize="@dimen/_11ssp"
+                            android:textStyle="normal" />
+
                         <com.google.android.material.textfield.TextInputEditText
-                            android:textDirection="locale"
-                            android:textAlignment="viewStart"
-                            android:paddingStart="@dimen/_4sdp"
-                            android:id="@+id/et_cvv"
+                            android:id="@+id/et_card_title"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/_60sdp"
                             android:backgroundTint="@color/gray"
-                            android:hint=" - - "
-                            android:inputType="numberPassword"
-                            android:maxLines="1"
-                            android:maxLength="3"
-                            android:textColor="@color/gold"
-                            android:textStyle="normal"
                             android:fontFamily="@font/avenir_medium"
-                            android:textSize="@dimen/_11ssp"/>
+                            android:hint=" - - "
+                            android:imeOptions="actionNext"
+                            android:inputType="text"
+                            android:maxLength="15"
+                            android:maxLines="1"
+                            android:paddingStart="@dimen/_4sdp"
+                            android:textAlignment="viewStart"
+                            android:textColor="@color/gold"
+                            android:textDirection="ltr"
+                            android:textSize="@dimen/_11ssp"
+                            android:textStyle="normal" />
                     </LinearLayout>
+
                     <LinearLayout
-                        android:id="@+id/ll_expiry"
-                        android:layout_width="0dp"
+                        android:id="@+id/ll_card_number"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:orientation="vertical"
+                        app:layout_constraintTop_toBottomOf="@id/ll_card_title">
+
                         <com.google.android.material.textview.MaterialTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/expiry_date"
-                            android:textAllCaps="false"
-                            android:textSize="@dimen/_11ssp"
-                            android:textStyle="normal"
                             android:fontFamily="@font/avenir_medium"
-                            android:textColor="@color/text_gold_color_dark"/>
+                            android:text="@string/card_number"
+                            android:textAllCaps="false"
+                            android:textColor="@color/text_gold_color_dark"
+                            android:textSize="@dimen/_11ssp"
+                            android:textStyle="normal" />
+
                         <com.google.android.material.textfield.TextInputEditText
-                            android:textDirection="locale"
-                            android:textAlignment="viewStart"
-                            android:paddingStart="@dimen/_4sdp"
-                            android:id="@+id/et_expiry"
+                            android:id="@+id/et_card_number"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/_60sdp"
                             android:backgroundTint="@color/gray"
-                            android:hint=" - - "
-                            android:inputType="phone"
-                            android:maxLines="1"
-                            android:maxLength="7"
-                            android:textColor="@color/gold"
-                            android:textStyle="normal"
                             android:fontFamily="@font/avenir_medium"
-                            android:textSize="@dimen/_11ssp"/>
+                            android:hint=" - - "
+                            android:inputType="number"
+                            android:maxLength="20"
+                            android:paddingStart="@dimen/_4sdp"
+                            android:singleLine="true"
+                            android:textAlignment="viewStart"
+                            android:textColor="@color/gold"
+                            android:textDirection="ltr"
+                            android:textSize="@dimen/_11ssp"
+                            android:textStyle="normal" />
                     </LinearLayout>
 
-                </LinearLayout>
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/tv_save_card"
-                    android:layout_width="@dimen/_200sdp"
-                    android:layout_height="@dimen/_40sdp"
-                    app:layout_constraintTop_toBottomOf="@id/ll_cvv_expiry"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    android:text="@string/save_card"
-                    android:textColor="@color/black"
-                    android:gravity="center"
-                    android:background="@drawable/curved_gold_filled_rect_box"
-                    android:layout_marginTop="@dimen/_40sdp"
-                    android:fontFamily="@font/avenir_medium"
-                    android:textSize="@dimen/_15ssp"
-                    android:textStyle="normal"/>
+
+                    <LinearLayout
+                        android:id="@+id/ll_cvv_expiry"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:orientation="horizontal"
+                        app:layout_constraintTop_toBottomOf="@id/ll_card_number">
+
+                        <LinearLayout
+                            android:id="@+id/ll_cvv"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/avenir_medium"
+                                android:text="@string/cvv"
+                                android:textAllCaps="false"
+                                android:textColor="@color/text_gold_color_dark"
+                                android:textSize="@dimen/_11ssp"
+                                android:textStyle="normal" />
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/et_cvv"
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/_60sdp"
+                                android:backgroundTint="@color/gray"
+                                android:fontFamily="@font/avenir_medium"
+                                android:hint=" - - "
+                                android:inputType="numberPassword"
+                                android:maxLength="3"
+                                android:maxLines="1"
+                                android:paddingStart="@dimen/_4sdp"
+                                android:textAlignment="viewStart"
+                                android:textColor="@color/gold"
+                                android:textDirection="ltr"
+                                android:textSize="@dimen/_11ssp"
+                                android:textStyle="normal" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/ll_expiry"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/avenir_medium"
+                                android:text="@string/expiry_date"
+                                android:textAllCaps="false"
+                                android:textColor="@color/text_gold_color_dark"
+                                android:textSize="@dimen/_11ssp"
+                                android:textStyle="normal" />
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/et_expiry"
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/_60sdp"
+                                android:backgroundTint="@color/gray"
+                                android:fontFamily="@font/avenir_medium"
+                                android:hint=" - - "
+                                android:inputType="phone"
+                                android:maxLength="7"
+                                android:maxLines="1"
+                                android:paddingStart="@dimen/_4sdp"
+                                android:textAlignment="viewStart"
+                                android:textColor="@color/gold"
+                                android:textDirection="ltr"
+                                android:textSize="@dimen/_11ssp"
+                                android:textStyle="normal" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/tv_save_card"
+                        android:layout_width="@dimen/_200sdp"
+                        android:layout_height="@dimen/_40sdp"
+                        android:layout_marginTop="@dimen/_40sdp"
+                        android:background="@drawable/curved_gold_filled_rect_box"
+                        android:fontFamily="@font/avenir_medium"
+                        android:gravity="center"
+                        android:text="@string/save_card"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_15ssp"
+                        android:textStyle="normal"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/ll_cvv_expiry" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
-        </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <ProgressBar
-            android:id="@+id/progressBar_add_card"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            android:elevation="@dimen/_5sdp"
-            android:visibility="gone"
-            style="@style/Theme.Progressbar"
-            android:indeterminateTint="@color/gold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</ScrollView>
+            <ProgressBar
+                android:id="@+id/progressBar_add_card"
+                style="@style/Theme.Progressbar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:elevation="@dimen/_5sdp"
+                android:indeterminateTint="@color/gold"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,5 +1,7 @@
 package com.heena.supplier.models
 
+import java.io.Serializable
+
 data class Message(
     val big_room: Int,
     val created_at: String,
@@ -19,4 +21,4 @@ data class Message(
     val small_room: Int,
     val sub_help_id: Int,
     val updated_at: String
-)
+): Serializable

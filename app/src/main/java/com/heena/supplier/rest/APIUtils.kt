@@ -1,7 +1,6 @@
 package com.heena.supplier.rest
 
 object APIUtils {
-        //const val BASE_URL:String = "https://henna.devtechnosys.info/api/manager/"
         const val BASE_URL:String = "https://alniqasha.ae/api/manager/"
         const val LOGIN:String = "access/login"
         const val REGISTER:String = "access/register"
@@ -11,6 +10,7 @@ object APIUtils {
         const val RESETPASSWORD:String = "access/reset-password"
         const val REGISTERVERIFYRESEND:String = "access/register-verify-resend"
         const val COUNTRIES:String = "option/country/{lang}"
+        const val EMIRATES: String = "option/emirates/{lang}"
         const val CATEGORYLIST : String = "option/category"
         const val MEMBERSHIPLIST : String = "membership/{user_id}"
         const val BUYMEMBERSHIP : String = "membership"

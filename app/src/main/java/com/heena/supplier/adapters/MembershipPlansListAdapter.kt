@@ -9,12 +9,11 @@ import androidx.recyclerview.selection.ItemDetailsLookup
 import androidx.recyclerview.widget.RecyclerView
 import com.heena.supplier.R
 import com.heena.supplier.`interface`.ClickInterface
+import com.heena.supplier.bottomsheets.MembershipBottomSheetDialogFragment
 import com.heena.supplier.models.Membership
 import com.heena.supplier.utils.Utility
 import com.heena.supplier.utils.Utility.setSafeOnClickListener
 import kotlinx.android.synthetic.main.membership_plan_items.view.*
-import java.text.NumberFormat
-import java.util.*
 import kotlin.collections.ArrayList
 
 class MembershipPlansListAdapter(private val context: Context,
@@ -38,7 +37,7 @@ class MembershipPlansListAdapter(private val context: Context,
 
         }
 
-        fun onBindData() {
+        fun onBindData(position: Int) {
             itemView.tv_membership_title.text = membershipList[position].name
             itemView.tv_membership_plan_price.text = "AED "+ Utility.convertDoubleValueWithCommaSeparator(
                 membershipList[position].price!!.toDouble()
@@ -54,6 +53,9 @@ class MembershipPlansListAdapter(private val context: Context,
                 click.OnClickAction(position)
             }
 
+            if(MembershipBottomSheetDialogFragment.dashboardMembershipId==membershipList[position].membership_id){
+                checkedPosition = position
+            }
 
             if(checkedPosition==-1){
                 itemView.iv_selected_unselected.visibility = View.GONE
@@ -73,7 +75,7 @@ class MembershipPlansListAdapter(private val context: Context,
     }
 
     override fun onBindViewHolder(holder: MembershipPlansListAdapterVH, position: Int) {
-       holder.onBindData()
+       holder.onBindData(position)
     }
 
     override fun getItemCount(): Int {

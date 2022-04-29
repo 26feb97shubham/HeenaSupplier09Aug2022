@@ -13,6 +13,7 @@ import com.google.gson.Gson
 import com.heena.supplier.R
 import com.heena.supplier.`interface`.ClickInterface
 import com.heena.supplier.adapters.PaymentsCardAdapter
+import com.heena.supplier.application.MyApp.Companion.sharedPreferenceInstance
 import com.heena.supplier.models.Cards
 import com.heena.supplier.models.Membership
 import com.heena.supplier.models.SourceModel
@@ -54,14 +55,14 @@ class PaymentFragmentActivity : AppCompatActivity() {
         setContentView(R.layout.activity_payment_fragment)
         Utility.changeLanguage(
             this,
-            SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""]
+            sharedPreferenceInstance!![SharedPreferenceUtility.SelectedLang, ""]
         )
         if (intent.extras!==null){
             emailaddress = intent.getStringExtra(ConstClass.EMAILADDRESS).toString()
             membership = intent.getSerializableExtra("membership") as Membership?
         }
 
-        myuserId = SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.UserId, 0]
+        myuserId = sharedPreferenceInstance!![SharedPreferenceUtility.UserId, 0]
         membershipId = membership!!.membership_id
         Log.e("userId", myuserId.toString())
         Log.e("membershipId", membershipId.toString())
@@ -74,12 +75,17 @@ class PaymentFragmentActivity : AppCompatActivity() {
         if (Utility.hasConnection(this)){
             showCardsListing()
         }else{
-            LogUtils.shortToast(this, getString(R.string.no_internet))
+            Utility.showSnackBarValidationError(paymentFragmentActivityConstraintLayout,
+                getString(R.string.check_internet),
+                this)
         }
 
         tv_subscribe_activity!!.setSafeOnClickListener { // dismiss dialog
             if (TextUtils.isEmpty(card_id)){
-                LogUtils.shortToast(this,getString(R.string.please_select_a_card_to_continue))
+                Utility.showSnackBarValidationError(paymentFragmentActivityConstraintLayout,
+                    getString(R.string.please_select_a_card_to_continue),
+                    this)
+
             }else{
                 purchaseMembership()
             }
@@ -93,7 +99,7 @@ class PaymentFragmentActivity : AppCompatActivity() {
     private fun showCardsListing() {
         window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         membership_payment_progressBar.visibility= View.VISIBLE
-        val call = apiInterface.showCards(SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.UserId, 0], SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""])
+        val call = apiInterface.showCards(sharedPreferenceInstance!![SharedPreferenceUtility.UserId, 0], sharedPreferenceInstance!![SharedPreferenceUtility.SelectedLang, ""])
         call!!.enqueue(object : Callback<ViewCardResponse?> {
             override fun onResponse(
                 call: Call<ViewCardResponse?>,
@@ -112,7 +118,7 @@ class PaymentFragmentActivity : AppCompatActivity() {
                             paymentCardsAdapter = PaymentsCardAdapter(this@PaymentFragmentActivity, cardsList,object : ClickInterface.OnRecyclerItemClick{
                                 override fun OnClickAction(position: Int) {
 //                                    mSelectedItem = pos
-                                    card_id = cardsList[Utility.mSelectedItem].id.toString()
+                                    card_id = cardsList[position].id.toString()
                                     paymentCardsAdapter.notifyDataSetChanged()
                                 }
 
@@ -121,9 +127,14 @@ class PaymentFragmentActivity : AppCompatActivity() {
                         }else{
                             tv_no_cards_found_service_payment_activity.visibility = View.VISIBLE
                             card_creditcard_activity.visibility = View.GONE
+                            Utility.showSnackBarOnResponseError(paymentFragmentActivityConstraintLayout,
+                                response.message(),
+                                this@PaymentFragmentActivity)
                         }
                     }else{
-                        LogUtils.longToast(this@PaymentFragmentActivity, getString(R.string.response_isnt_successful))
+                        Utility.showSnackBarOnResponseError(paymentFragmentActivityConstraintLayout,
+                            getString(R.string.response_isnt_successful),
+                            this@PaymentFragmentActivity)
                     }
                 }catch (e: IOException) {
                     e.printStackTrace()
@@ -136,7 +147,9 @@ class PaymentFragmentActivity : AppCompatActivity() {
 
             override fun onFailure(call: Call<ViewCardResponse?>, throwable: Throwable) {
                 LogUtils.e("msg", throwable.message)
-                LogUtils.shortToast(this@PaymentFragmentActivity, getString(R.string.check_internet))
+                Utility.showSnackBarOnResponseError(paymentFragmentActivityConstraintLayout,
+                    getString(R.string.check_internet),
+                    this@PaymentFragmentActivity)
                 tv_no_cards_found_service_payment_activity.visibility = View.VISIBLE
                 card_creditcard_activity.visibility = View.GONE
                 window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
@@ -149,9 +162,9 @@ class PaymentFragmentActivity : AppCompatActivity() {
             window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             membership_payment_progressBar.visibility= View.VISIBLE
             val builder = APIClient.createBuilder(arrayOf("user_id","membership_id", "card_id"),
-                arrayOf(SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.UserId, 0].toString(),
+                arrayOf(sharedPreferenceInstance!![SharedPreferenceUtility.UserId, 0].toString(),
                     membershipId.toString(), card_id))
-            val call = apiInterface.createCharge(SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""], builder.build())
+            val call = apiInterface.createCharge(sharedPreferenceInstance!![SharedPreferenceUtility.SelectedLang, ""], builder.build())
             call!!.enqueue(object : Callback<ResponseBody?> {
                 override fun onResponse(
                     call: Call<ResponseBody?>,
@@ -171,7 +184,9 @@ class PaymentFragmentActivity : AppCompatActivity() {
                                         source.type
                                     }
                                     if (type.equals("CARD_NOT_PRESENT")){
-                                        LogUtils.shortToast(this@PaymentFragmentActivity, getString(R.string.card_is_not_valid))
+                                        Utility.showSnackBarOnResponseError(paymentFragmentActivityConstraintLayout,
+                                            getString(R.string.card_is_not_valid),
+                                            this@PaymentFragmentActivity)
                                     }else{
                                         url = data.getJSONObject("transaction").getString("url")
                                         tapID = data.getString("id")
@@ -187,19 +202,27 @@ class PaymentFragmentActivity : AppCompatActivity() {
                                     }
                                 }
                             }else{
-                                Log.e("error", "Payment Failed")
+                                Utility.showSnackBarOnResponseError(paymentFragmentActivityConstraintLayout,
+                                    getString(R.string.payment_failed),
+                                    this@PaymentFragmentActivity)
                             }
                         }else{
-                            Log.e("error", "Payment Failed")
+                            Utility.showSnackBarOnResponseError(paymentFragmentActivityConstraintLayout,
+                                getString(R.string.payment_failed),
+                                this@PaymentFragmentActivity)
                         }
                     }else{
-                        LogUtils.longToast(this@PaymentFragmentActivity,getString(R.string.response_isnt_successful))
+                        Utility.showSnackBarOnResponseError(paymentFragmentActivityConstraintLayout,
+                            getString(R.string.response_isnt_successful),
+                            this@PaymentFragmentActivity)
                     }
                 }
 
                 override fun onFailure(call: Call<ResponseBody?>, throwable: Throwable) {
                     LogUtils.e("msg", throwable.message)
-                    LogUtils.shortToast(this@PaymentFragmentActivity,throwable.localizedMessage)
+                    Utility.showSnackBarOnResponseError(paymentFragmentActivityConstraintLayout,
+                        getString(R.string.check_internet),
+                        this@PaymentFragmentActivity)
                     membership_payment_progressBar.visibility = View.GONE
                     window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 }
@@ -207,14 +230,15 @@ class PaymentFragmentActivity : AppCompatActivity() {
             })
         }
     }
-    companion object{
-        private var instance: SharedPreferenceUtility? = null
-        @Synchronized
-        fun getInstance(): SharedPreferenceUtility {
-            if (instance == null) {
-                instance = SharedPreferenceUtility()
-            }
-            return instance as SharedPreferenceUtility
+
+    override fun onResume() {
+        super.onResume()
+        if (Utility.hasConnection(this)){
+            showCardsListing()
+        }else{
+            Utility.showSnackBarValidationError(paymentFragmentActivityConstraintLayout,
+                getString(R.string.check_internet),
+                this@PaymentFragmentActivity)
         }
     }
 }

@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doAfterTextChanged
 import androidx.core.widget.doOnTextChanged
 import com.heena.supplier.R
+import com.heena.supplier.application.MyApp.Companion.sharedPreferenceInstance
 import com.heena.supplier.extras.AsteriskPasswordTransformationMethod
 import com.heena.supplier.models.AddDeleteCardResponse
 import com.heena.supplier.rest.APIClient
@@ -36,12 +37,12 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class AddNewCardActivity : AppCompatActivity() {
-    private var card_title = ""
-    private var card_number = ""
-    private var card_cvv = ""
-    private var card_expiry = ""
+    private var cardTitle = ""
+    private var cardNumber = ""
+    private var cardCvv = ""
+    private var cardExpiry = ""
     private val sdf = SimpleDateFormat("MM/yyyy", Locale.US)
-    private var expiry_date : Date?=null
+    private var expiryDate : Date?=null
     private var expired = false
     private var keyDel = 0
     private var a =""
@@ -49,59 +50,73 @@ class AddNewCardActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         Utility.changeLanguage(
             this,
-            SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""]
+            sharedPreferenceInstance!![SharedPreferenceUtility.SelectedLang, ""]
         )
         setContentView(R.layout.activity_add_new_card)
         tv_save_card.setSafeOnClickListener {
-            card_expiry = et_expiry.text.toString().trim()
-            if (card_expiry == ""){
-                LogUtils.shortToast(this, getString(R.string.please_enter_valid_expiry_date))
+            cardExpiry = et_expiry.text.toString().trim()
+            if (cardExpiry == ""){
+                Utility.showSnackBarValidationError(addNewCardActivityConstraintLayout,
+                    getString(R.string.please_enter_valid_expiry_date),
+                    this)
+
             }else{
-                expiry_date=sdf.parse(card_expiry)
-                expired= expiry_date!!.before(Date())
+                expiryDate=sdf.parse(cardExpiry)
+                expired= expiryDate!!.before(Date())
                 validateAndSave()
             }
         }
         addTextWatcher()
 
-        if (SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""] == "en"){
+        if (sharedPreferenceInstance!![SharedPreferenceUtility.SelectedLang, ""] == "en"){
             val drawable = this.resources.getDrawable(R.drawable.card_bg)
             ll_card.background = drawable
         }else{
             val drawable = this.resources.getDrawable(R.drawable.arabic_card)
             ll_card.background = drawable
         }
+
+        iv_back_add_card_activity.setOnClickListener {
+            onBackPressed()
+        }
     }
 
     private fun validateAndSave() {
-        card_title = et_card_title.text.toString().trim()
-        card_number = et_card_number.text.toString().trim()
-        card_cvv = et_cvv.text.toString().trim()
-        card_expiry = et_expiry.text.toString().trim()
+        cardTitle = et_card_title.text.toString().trim()
+        cardNumber = et_card_number.text.toString().replace(" ", "").trim()
+        cardCvv = et_cvv.text.toString().trim()
+        cardExpiry = et_expiry.text.toString().trim()
 
         when {
-            TextUtils.isEmpty(card_title) -> {
-                et_card_title.requestFocus()
-                et_card_title.error = getString(R.string.please_enter_valid_card_title)
+            TextUtils.isEmpty(cardTitle) -> {
+                Utility.showSnackBarValidationError(addNewCardActivityConstraintLayout,
+                    getString(R.string.please_enter_valid_card_title),
+                    this)
             }
-            TextUtils.isEmpty(card_number) -> {
-                et_card_number.requestFocus()
-                et_card_number.error = getString(R.string.please_enter_valid_card_number)
+            TextUtils.isEmpty(cardNumber) -> {
+                Utility.showSnackBarValidationError(addNewCardActivityConstraintLayout,
+                    getString(R.string.please_enter_valid_card_number),
+                    this)
             }
-            card_number.length<16 -> {
-                et_card_number.requestFocus()
-                et_card_number.error = getString(R.string.please_enter_valid_card_number)
+            cardNumber.length<16 -> {
+                Utility.showSnackBarValidationError(addNewCardActivityConstraintLayout,
+                    getString(R.string.please_enter_valid_card_number),
+                    this)
             }
-            TextUtils.isEmpty(card_cvv) -> {
-                et_cvv.requestFocus()
-                et_cvv.error = getString(R.string.please_enter_valid_cvv)
+            TextUtils.isEmpty(cardCvv) -> {
+                Utility.showSnackBarValidationError(addNewCardActivityConstraintLayout,
+                    getString(R.string.please_enter_valid_cvv),
+                    this)
             }
-            card_cvv.length<3 -> {
-                et_cvv.requestFocus()
-                et_cvv.error = getString(R.string.please_enter_valid_cvv)
+            cardCvv.length<3 -> {
+                Utility.showSnackBarValidationError(addNewCardActivityConstraintLayout,
+                    getString(R.string.please_enter_valid_cvv),
+                    this)
             }
             expired -> {
-                LogUtils.shortToast(this, getString(R.string.card_is_expired))
+                Utility.showSnackBarValidationError(addNewCardActivityConstraintLayout,
+                    getString(R.string.card_is_expired),
+                    this)
             }
             else -> {
                 save()
@@ -113,11 +128,11 @@ class AddNewCardActivity : AppCompatActivity() {
         window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         progressBar_add_card_activity.visibility= View.VISIBLE
         val builder = APIClient.createBuilder(arrayOf("user_id", "name", "number","cvv", "expiry_date", "type", "card_id", "lang"),
-            arrayOf(SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.UserId, 0].toString(),
-                card_title,
-                card_number,
-                card_cvv,
-                card_expiry, "0", "", SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""]))
+            arrayOf(sharedPreferenceInstance!![SharedPreferenceUtility.UserId, 0].toString(),
+                cardTitle,
+                cardNumber,
+                cardCvv,
+                cardExpiry, "0", "", sharedPreferenceInstance!![SharedPreferenceUtility.SelectedLang, ""]))
         val call = Utility.apiInterface.addDeleteCard(builder.build())
         call!!.enqueue(object : Callback<AddDeleteCardResponse?> {
             override fun onResponse(
@@ -129,11 +144,19 @@ class AddNewCardActivity : AppCompatActivity() {
                 try {
                     if (response.isSuccessful){
                         if (response.body()!!.status==1){
-                            LogUtils.longToast(this@AddNewCardActivity, response.body()!!.message)
+                            Utility.showSnackBarOnResponseSuccess(addNewCardActivityConstraintLayout,
+                                response.body()!!.message.toString(),
+                                this@AddNewCardActivity)
                             finish()
+                        }else{
+                            Utility.showSnackBarOnResponseError(addNewCardActivityConstraintLayout,
+                                response.message(),
+                                this@AddNewCardActivity)
                         }
                     }else{
-                        LogUtils.longToast(this@AddNewCardActivity, getString(R.string.response_isnt_successful))
+                        Utility.showSnackBarOnResponseError(addNewCardActivityConstraintLayout,
+                            getString(R.string.response_isnt_successful),
+                            this@AddNewCardActivity)
                     }
                 }catch (e: IOException) {
                     e.printStackTrace()
@@ -146,26 +169,15 @@ class AddNewCardActivity : AppCompatActivity() {
 
             override fun onFailure(call: Call<AddDeleteCardResponse?>, throwable: Throwable) {
                 LogUtils.e("msg", throwable.message)
-                LogUtils.shortToast(this@AddNewCardActivity, getString(R.string.check_internet))
+                Utility.showSnackBarOnResponseError(addNewCardActivityConstraintLayout,
+                    getString(R.string.check_internet),
+                    this@AddNewCardActivity)
                 progressBar_add_card_activity.visibility= View.GONE
                 window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             }
 
         })
     }
-
-    companion object {
-        private var instance: SharedPreferenceUtility? = null
-
-        @Synchronized
-        fun getInstance(): SharedPreferenceUtility {
-            if (instance == null) {
-                instance = SharedPreferenceUtility()
-            }
-            return instance as SharedPreferenceUtility
-        }
-    }
-
 
     private fun addTextWatcher() {
         et_card_title.doOnTextChanged { text, _, _, _ ->

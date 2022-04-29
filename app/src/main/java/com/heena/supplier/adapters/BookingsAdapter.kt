@@ -138,7 +138,7 @@ class BookingsAdapter(private val context: Context,
             val bookingId = "BOOK#" + bookingItem.booking_id
             history_booking_item_view.tv_bookingId.text = bookingId
             history_booking_item_view.tv_service.text = bookingItem.service!!.name
-            history_booking_item_view.tv_price.text = bookingItem.price
+            history_booking_item_view.tv_price.text = "AED "+ convertDoubleValueWithCommaSeparator(bookingItem.price!!.toDouble())
             history_booking_item_view.tv_date.text = bookingItem.booking_date
 
             when(bookingItem.status){

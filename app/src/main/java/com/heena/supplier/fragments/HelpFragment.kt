@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.heena.supplier.R
 import com.heena.supplier.`interface`.ClickInterface
 import com.heena.supplier.adapters.MainHelpCateforyAdapter
+import com.heena.supplier.application.MyApp.Companion.sharedPreferenceInstance
 import com.heena.supplier.models.DashHelpCategoryResponse
 import com.heena.supplier.models.HelpCategory
 import com.heena.supplier.rest.APIClient
@@ -41,7 +42,7 @@ class HelpFragment : Fragment() {
         mView =inflater.inflate(R.layout.fragment_help, container, false)
         Utility.changeLanguage(
             requireContext(),
-            SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, "")
+            sharedPreferenceInstance!!.get(SharedPreferenceUtility.SelectedLang, "")
         )
         mView!!.rv_help_text.visibility = View.VISIBLE
         mView!!.mtv_help_desc.text=requireContext().getString(R.string.good_day_nhow_can_we_help_you_today)
@@ -53,13 +54,13 @@ class HelpFragment : Fragment() {
 
         requireActivity().iv_back.setSafeOnClickListener {
             requireActivity().iv_back.startAnimation(AlphaAnimation(1F,0.5F))
-            SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_back)
+            sharedPreferenceInstance!!.hideSoftKeyBoard(requireContext(), requireActivity().iv_back)
             findNavController().popBackStack()
         }
 
         requireActivity().iv_notification.setSafeOnClickListener {
             requireActivity().iv_notification.startAnimation(AlphaAnimation(1F,0.5F))
-            SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_notification)
+            sharedPreferenceInstance!!.hideSoftKeyBoard(requireContext(), requireActivity().iv_notification)
             findNavController().navigate(R.id.notificationsFragment)
         }
 
@@ -69,8 +70,8 @@ class HelpFragment : Fragment() {
     private fun showHelp() {
         mView!!.frag_help_progressBar.visibility = View.VISIBLE
         val builder = APIClient.createBuilder(arrayOf("user_id","lang"),
-            arrayOf(SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.UserId, 0].toString(),
-                SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""]))
+            arrayOf(sharedPreferenceInstance!![SharedPreferenceUtility.UserId, 0].toString(),
+                sharedPreferenceInstance!![SharedPreferenceUtility.SelectedLang, ""]))
         val call = apiInterface.dashHelpCategory(builder.build())
         call!!.enqueue(object : Callback<DashHelpCategoryResponse?>{
             override fun onResponse(
@@ -84,15 +85,23 @@ class HelpFragment : Fragment() {
                         main_help_category_list.clear()
                         main_help_category_list = response.body()!!.help_category as ArrayList<HelpCategory>
                         setMainHelpCategoryAdapter(main_help_category_list, admin_id)
+                    }else{
+                        Utility.showSnackBarOnResponseError(mView!!.helpFragmentConstraintLayout,
+                            response.body()!!.message,
+                            requireContext())
                     }
                 }else{
-                    LogUtils.shortToast(requireContext(), requireContext().getString(R.string.response_isnt_successful))
+                    Utility.showSnackBarOnResponseError(mView!!.helpFragmentConstraintLayout,
+                        requireContext().getString(R.string.response_isnt_successful),
+                        requireContext())
                 }
             }
 
             override fun onFailure(call: Call<DashHelpCategoryResponse?>, throwable: Throwable) {
                 LogUtils.e("msg", throwable.message)
-                LogUtils.shortToast(requireContext(), getString(R.string.check_internet))
+                Utility.showSnackBarOnResponseError(mView!!.helpFragmentConstraintLayout,
+                    throwable.message!!,
+                    requireContext())
                 mView!!.frag_help_progressBar.visibility = View.GONE
             }
 
@@ -112,18 +121,5 @@ class HelpFragment : Fragment() {
 
         }, findNavController())
         mView!!.rv_help_text.adapter = mainHelpCategoryAdapter
-        mainHelpCategoryAdapter!!.notifyDataSetChanged()
-
-    }
-
-    companion object{
-        private var instance: SharedPreferenceUtility? = null
-        @Synchronized
-        fun getInstance(): SharedPreferenceUtility {
-            if (instance == null) {
-                instance = SharedPreferenceUtility()
-            }
-            return instance as SharedPreferenceUtility
-        }
     }
 }

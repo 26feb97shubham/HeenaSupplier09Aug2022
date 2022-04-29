@@ -16,6 +16,9 @@ interface APIInterface {
     @GET(APIUtils.COUNTRIES)
     fun getCountries(@Query("lang") lang: String): Call<CountryResponse?>?
 
+    @GET(APIUtils.EMIRATES)
+    fun getEmirates(@Path("lang") lang: String): Call<EmiratesListResponse?>?
+
     @POST(APIUtils.FORGOTPASSWORD)
     fun forgotPassword(@Body body: RequestBody?): Call<ForgotPasswordResponse?>?
 
@@ -31,8 +34,8 @@ interface APIInterface {
     @POST(APIUtils.REGISTERVERIFYRESEND)
     fun registerverivyresend(@Body body: RequestBody?) : Call<RegisterVerifyResendResponse?>?
 
-   @GET(APIUtils.CATEGORYLIST)
-   fun categoryList(@Query("lang") lang: String) : Call<CategoryListResponse?>?
+    @GET(APIUtils.CATEGORYLIST)
+    fun categoryList(@Query("lang") lang: String) : Call<CategoryListResponse?>? //Category Name are only in english
 
    @GET(APIUtils.MEMBERSHIPLIST)
    fun membershipList(@Path("user_id") user_id: Int, @Query("lang") lang: String) : Call<MembershipListResponse?>?
@@ -53,7 +56,7 @@ interface APIInterface {
     fun addService(@Body body: RequestBody?) : Call<AddServiceResponse?>?
 
     @GET(APIUtils.SERVICESLISTING)
-    fun serviceslisting(@Path("user_id") user_id: Int, @Query("lang") lang : String) : Call<ServiceListingResponse?>?
+    fun serviceslisting(@Path("user_id") user_id: Int, @Query("lang") lang : String) : Call<ServiceListingResponse?>? //service name and category name are in english only
 
     @GET(APIUtils.FEATUREDSERVICESLISTING)
     fun featuredserviceslisting(@Path("user_id") user_id: Int, @Query("lang") lang : String) : Call<FeaturedServicesListingResponse?>?
@@ -66,7 +69,7 @@ interface APIInterface {
     fun editService(@Body body: RequestBody?) : Call<EditServiceResponse?>?
 
     @GET(APIUtils.SHOWSERVICE)
-    fun showService(@Path("sevice_id") service_id : Int, @Query("lang") lang : String) : Call<ShowServiceResponse?>?
+    fun showService(@Path("sevice_id") service_id : Int, @Query("lang") lang : String) : Call<ShowServiceResponse?>? //service name and category name are in english only
 
     @GET(APIUtils.GETNOTIFICATIONS)
     fun getNotifications(@Path("user_id") user_id: Int, @Query("lang") lang : String) : Call<NotificationResponse?>?
@@ -163,9 +166,6 @@ interface APIInterface {
 
     @GET(APIUtils.SUBSCRIPTION_PLANS)
     fun subscription_plans(@Path("user_id") user_id: Int, @Query("lang") lang : String) : Call<SubscriptionPlansResponse?>
-
-    @GET(APIUtils.NOTIFICATION)
-    fun getNotification(@Path("user_id") user_id  :Int,  @Query("lang") lang : String) : Call<NotificationResponse?>?
 
     @POST(APIUtils.createCharge)
     fun createCharge(@Query("lang") lang : String, @Body body: RequestBody?) : Call<ResponseBody?>?

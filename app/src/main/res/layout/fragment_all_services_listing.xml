@@ -1,28 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@android:color/transparent"
+    android:id="@+id/allServicesListingFragmentConstraintLayout"
     tools:context=".fragments.AllServicesListing">
 
-    <!-- TODO: Update blank fragment layout -->
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/header"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="@dimen/_40sdp"
         android:fontFamily="@font/avenir_medium"
+        android:gravity="center_vertical"
+        android:includeFontPadding="false"
         android:src="@drawable/ic_launcher_foreground"
         android:text="@string/services"
-        android:includeFontPadding="false"
-        android:textStyle="bold"
-        android:gravity="center_vertical"
+        android:textAllCaps="true"
         android:textColor="@color/gold"
         android:textSize="@dimen/_15ssp"
-        android:layout_marginStart="@dimen/_10sdp"
-        android:textAllCaps="true"
-        app:layout_constraintTop_toTopOf="parent"/>
+        android:paddingHorizontal="10dp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/noServicesView"
@@ -54,20 +57,21 @@
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/all_servieces_swipeRefresh"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="@dimen/_10sdp"
-        android:layout_marginEnd="@dimen/_10sdp"
         android:layout_marginTop="@dimen/_10sdp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/header">
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvServicesList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
-            android:visibility="visible"
-            android:layoutAnimation="@anim/layout_animation"/>
+            android:layoutAnimation="@anim/layout_animation"
+            android:visibility="visible" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     <ProgressBar
         android:id="@+id/all_services_frag_progressBar"

@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.heena.supplier.Dialogs.NoInternetDialog
 import com.heena.supplier.R
 import com.heena.supplier.adapters.NotificationsAdapter
+import com.heena.supplier.application.MyApp.Companion.sharedPreferenceInstance
 import com.heena.supplier.custom.SwipeToDeleteCallback
 import com.heena.supplier.models.Notification
 import com.heena.supplier.models.NotificationResponse
@@ -33,23 +34,12 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.io.IOException
 
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
 class NotificationsFragment : Fragment() {
     var notificationList=ArrayList<Notification>()
     lateinit var mView:View
     private var param1: String? = null
     private var param2: String? = null
     val apiInterface = APIClient.getClient()!!.create(APIInterface::class.java)
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -59,7 +49,7 @@ class NotificationsFragment : Fragment() {
         mView = inflater.inflate(R.layout.activity_notifications_fragment, container, false)
         Utility.changeLanguage(
             requireContext(),
-            SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, "")
+            sharedPreferenceInstance!!.get(SharedPreferenceUtility.SelectedLang, "")
         )
         setUpViews()
         getNotifications(false)
@@ -72,7 +62,7 @@ class NotificationsFragment : Fragment() {
             mView.notifications_frag_progressBar.visibility = View.VISIBLE
         }
 
-        val call = apiInterface.getNotifications(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId, 0), SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""])
+        val call = apiInterface.getNotifications(sharedPreferenceInstance!!.get(SharedPreferenceUtility.UserId, 0), sharedPreferenceInstance!![SharedPreferenceUtility.SelectedLang, ""])
         call!!.enqueue(object : Callback<NotificationResponse?>{
             override fun onResponse(call: Call<NotificationResponse?>, response: Response<NotificationResponse?>) {
                 mView.notifications_frag_progressBar.visibility = View.GONE
@@ -94,10 +84,19 @@ class NotificationsFragment : Fragment() {
                                     mView.rvNotificationsList.visibility = View.VISIBLE
                                     setNotificationAdapter(notificationList)
                                 }
+                            }else{
+                                mView.noNotificationView.visibility = View.VISIBLE
+                                mView.rvNotificationsList.visibility = View.GONE
                             }
+                        }else{
+                            Utility.showSnackBarOnResponseError(mView!!.notificationsFragmentConstraintLayout,
+                                response.message(),
+                                requireContext())
                         }
                     }else{
-                        LogUtils.shortToast(requireContext(), getString(R.string.response_isnt_successful))
+                        Utility.showSnackBarOnResponseError(mView!!.notificationsFragmentConstraintLayout,
+                            requireContext().getString(R.string.response_isnt_successful),
+                            requireContext())
                     }
                 }catch (e: IOException) {
                     e.printStackTrace()
@@ -111,7 +110,9 @@ class NotificationsFragment : Fragment() {
 
             override fun onFailure(call: Call<NotificationResponse?>, throwable: Throwable) {
                 LogUtils.e("msg", throwable.message)
-                LogUtils.shortToast(requireContext(), getString(R.string.check_internet))
+                Utility.showSnackBarOnResponseError(mView!!.notificationsFragmentConstraintLayout,
+                    throwable.message.toString(),
+                    requireContext())
                 mView.notifications_frag_progressBar.visibility = View.GONE
                 requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 if(mView.swipeRefresh.isRefreshing){
@@ -149,7 +150,7 @@ class NotificationsFragment : Fragment() {
 
         requireActivity().iv_back.setSafeOnClickListener {
             requireActivity().iv_back.startAnimation(AlphaAnimation(1F,0.5F))
-            SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_back)
+            sharedPreferenceInstance!!.hideSoftKeyBoard(requireContext(), requireActivity().iv_back)
             findNavController().popBackStack()
         }
 
@@ -195,7 +196,7 @@ class NotificationsFragment : Fragment() {
         val apiInterface = ApiClient.getClient()!!.create(ApiInterface::class.java)
 
         val builder = ApiClient.createBuilder(arrayOf("notification_id", "user_id", "lang"),
-                arrayOf(notificationList[pos].id.toString(), SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.UserId, 0].toString(), SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""]))
+                arrayOf(notificationList[pos].id.toString(), sharedPreferenceInstance!![SharedPreferenceUtility.UserId, 0].toString(), sharedPreferenceInstance!![SharedPreferenceUtility.SelectedLang, ""]))
 
 
         val call = apiInterface.notificationDelete(builder.build())
@@ -249,16 +250,5 @@ class NotificationsFragment : Fragment() {
     override fun onStop() {
         super.onStop()
         requireActivity().iv_notification.visibility = View.VISIBLE
-    }
-
-    companion object{
-        private var instance: SharedPreferenceUtility? = null
-        @Synchronized
-        fun getInstance(): SharedPreferenceUtility {
-            if (instance == null) {
-                instance = SharedPreferenceUtility()
-            }
-            return instance as SharedPreferenceUtility
-        }
     }
 }

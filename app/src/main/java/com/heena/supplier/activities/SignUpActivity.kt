@@ -36,9 +36,6 @@ import com.heena.supplier.`interface`.ClickInterface
 import com.heena.supplier.adapters.CountryListingAdapter
 import com.heena.supplier.broadcastreceiver.ConnectivityReceiver
 import com.heena.supplier.custom.FetchPath
-import com.heena.supplier.models.CountryItem
-import com.heena.supplier.models.CountryResponse
-import com.heena.supplier.models.SignUpResponse
 import com.heena.supplier.rest.APIClient
 import com.heena.supplier.utils.ConstClass.EMAILADDRESS
 import com.heena.supplier.utils.LogUtils
@@ -49,12 +46,18 @@ import com.google.android.libraries.places.api.model.AddressComponent
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
+import com.heena.supplier.application.MyApp.Companion.sharedPreferenceInstance
+import com.heena.supplier.models.*
 import com.heena.supplier.utils.Utility.IMAGE_DIRECTORY_NAME
 import com.heena.supplier.utils.Utility.apiInterface
 import com.heena.supplier.utils.Utility.isCharacterAllowed
 import com.heena.supplier.utils.Utility.isNetworkAvailable
 import com.heena.supplier.utils.Utility.setSafeOnClickListener
+import com.jaiselrahman.filepicker.config.Configurations
+import com.jaiselrahman.filepicker.model.MediaFile
+import droidninja.filepicker.FilePickerActivity
 import kotlinx.android.synthetic.main.activity_sign_up2.*
+import kotlinx.android.synthetic.main.fragment_edit_profile.view.*
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import org.json.JSONException
@@ -79,9 +82,11 @@ class SignUpActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRec
     private var uri: Uri? = null
     private val MEDIA_TYPE_IMAGE = 1
     val PICK_IMAGE_FROM_GALLERY = 10
+    val PICK_DOC = 11
     private val CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 100
     private var imagePath = ""
     private var countryList = ArrayList<CountryItem>()
+    private var emiratesList = ArrayList<Emirates>()
     var AUTOCOMPLETE_REQUEST_CODE: Int = 500
     var mLatitude: Double = 0.0
     var mLongitude: Double = 0.0
@@ -90,6 +95,7 @@ class SignUpActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRec
     private val mContext: SignUpActivity = this
     lateinit var countryListingAdapter: CountryListingAdapter
     private var selectedCountry : String?=null
+    private var selectedEmirates : String?=null
     private var countryId : Int?=null
     var show_cnfrm_pass = false
     var show_pass = false
@@ -97,6 +103,7 @@ class SignUpActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRec
     var my_click = ""
     var emiratesClick = false
     var isChecked: Boolean=false
+    private var docpath = ""
     private var networkChangeReceiver: ConnectivityReceiver? = null
 
     private var activityResultLauncher: ActivityResultLauncher<Array<String>> =
@@ -108,25 +115,32 @@ class SignUpActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRec
                 }
                 if(allAreGranted) {
                     Log.e("Granted", "Permissions")
-                    if (my_click.equals("profile")){
-                        openCameraDialog()
-                    }else{
-                        val fields: MutableList<Place.Field> = ArrayList()
-                        fields.add(Place.Field.NAME)
-                        fields.add(Place.Field.ID)
-                        fields.add(Place.Field.LAT_LNG)
-                        fields.add(Place.Field.ADDRESS)
-                        fields.add(Place.Field.ADDRESS_COMPONENTS)
-                        status = AUTOCOMPLETE_REQUEST_CODE
-                        // Start the autocomplete intent.
-                        val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields).build(
+                    when {
+                        my_click.equals("profile") -> {
+                            openCameraDialog()
+                        }
+                        my_click.equals("document") -> {
+                            openCameraDialog2()
+                        }
+                        else -> {
+                            val fields: MutableList<Place.Field> = ArrayList()
+                            fields.add(Place.Field.NAME)
+                            fields.add(Place.Field.ID)
+                            fields.add(Place.Field.LAT_LNG)
+                            fields.add(Place.Field.ADDRESS)
+                            fields.add(Place.Field.ADDRESS_COMPONENTS)
+                            status = AUTOCOMPLETE_REQUEST_CODE
+                            // Start the autocomplete intent.
+                            val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields).build(
                                 this
-                        )
-                        resultLauncher.launch(intent)
+                            )
+                            resultLauncher.launch(intent)
+                        }
                     }
                 }else{
-                    LogUtils.shortToast(this, getString(R.string.please_allow_permissions))
-                    Log.e("Denied", "Permissions")
+                    Utility.showSnackBarValidationError(signUpActivityConstraintLayout,
+                        getString(R.string.please_allow_permissions),
+                        this)
                 }
             }
 
@@ -134,28 +148,56 @@ class SignUpActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRec
         if (status.equals(CAMERA_CAPTURE_IMAGE_REQUEST_CODE)){
             if (it.resultCode == Activity.RESULT_OK){
                 if (uri != null) {
-                    imagePath = ""
-                    Log.e("uri", uri.toString())
-                    imagePath = uri!!.path!!
-                    Log.e("image_path", imagePath)
-                    Glide.with(this).load("file:///$imagePath").placeholder(R.drawable.user).into(civ_profile)
+                    if (my_click.equals("document")){
+                        docpath = ""
+                        docpath = uri!!.path!!
+                        Utility.showSnackBarOnValidationSuccess(signUpActivityConstraintLayout,
+                            getString(R.string.document_uploaded),
+                            this)
+
+                        txt2.text = getString(R.string.document_updated)
+                        Glide.with(this).load("file:///$docpath").placeholder(R.drawable.attach).into(imgAttach)
+                    }else{
+                        imagePath = ""
+                        Log.e("uri", uri.toString())
+                        imagePath = uri!!.path!!
+                        Log.e("image_path", imagePath)
+                        Glide.with(this).load("file:///$imagePath").placeholder(R.drawable.user).into(civ_profile)
+                    }
                 } else {
-                    LogUtils.shortToast(this, "something went wrong! please try again")
+                    Utility.showSnackBarValidationError(signUpActivityConstraintLayout,
+                        getString(R.string.something_went_wrong),
+                        this)
                 }
             }
         }else if (status.equals(PICK_IMAGE_FROM_GALLERY)){
             if (it.resultCode==Activity.RESULT_OK){
                 val data: Intent? = it.data
                 if (data!!.data != null) {
-                    imagePath = ""
-                    val uri = data.data
-                    imagePath = if (uri.toString().startsWith("content")) {
-                        FetchPath.getPath(this, uri!!)!!
-                    } else {
-                        uri!!.path!!
+                    if(my_click.equals("document")){
+                        docpath = ""
+                        val uri = data.data
+                        docpath = if (uri.toString().startsWith("content")) {
+                            FetchPath.getPath(this, uri!!)!!
+                        } else {
+                            uri!!.path!!
+                        }
+                        Utility.showSnackBarOnValidationSuccess(signUpActivityConstraintLayout,
+                            getString(R.string.document_uploaded),
+                            this)
+                        txt2.text = getString(R.string.document_updated)
+                        Glide.with(this).load("file:///$docpath").placeholder(R.drawable.attach).into(imgAttach)
+                    }else{
+                        imagePath = ""
+                        val uri = data.data
+                        imagePath = if (uri.toString().startsWith("content")) {
+                            FetchPath.getPath(this, uri!!)!!
+                        } else {
+                            uri!!.path!!
+                        }
+                        Log.e("image_path", imagePath)
+                        Glide.with(this).applyDefaultRequestOptions(RequestOptions().placeholder(R.drawable.user)).load("file:///$imagePath").into(civ_profile)
                     }
-                    Log.e("image_path", imagePath)
-                    Glide.with(this).applyDefaultRequestOptions(RequestOptions().placeholder(R.drawable.user)).load("file:///$imagePath").into(civ_profile)
                 }
             }
         }else if (status.equals(AUTOCOMPLETE_REQUEST_CODE)){
@@ -206,11 +248,53 @@ class SignUpActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRec
                         }
                         if (!countryName.isEmpty() && !address.isEmpty()) {
                             address = address + ", " + countryName
+                           /* for (i in 0 until countryList.size){
+                                if (countryName!!.equals(countryList[i].name)||countryName!!.equals(countryList[i].name_ar)){
+                                    countryId = countryList[i].country_id
+                                    break
+                                }
+                            }
+                            Log.e("countryId", countryId.toString())*/
                         }
                         edtlocation_signup.text = address
                         break
                     }
                     ard++
+                }
+            }
+        }else if (status.equals(PICK_DOC)){
+            if (it.resultCode==Activity.RESULT_OK){
+                val files: java.util.ArrayList<MediaFile> = it.data!!.getParcelableArrayListExtra(com.jaiselrahman.filepicker.activity.FilePickerActivity.MEDIA_FILES)!!
+//            getPath(files)
+                if (files.size != 0) {
+                    docpath=""
+                    for (i in 0 until files.size) {
+                        /* val uri = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID, File(files[i].toString()))
+                         Log.e("uri", uri.toString())*/
+                        val filePath = FetchPath.getPath(this, files[i].uri)
+                        if (filePath!!.contains(".doc")
+                            || filePath.contains(".docx") || filePath.contains(".pdf") || filePath.contains(".txt")) {
+                            docpath=filePath
+                            Utility.showSnackBarOnValidationSuccess(signUpActivityConstraintLayout,
+                                getString(R.string.document_uploaded),
+                                this)
+                            txt2.text = getString(R.string.document_uploaded)
+                            when {
+                                docpath.contains(".pdf") -> {
+                                    Glide.with(this).load(docpath).placeholder(R.drawable.pdfbox).into(imgAttach)
+                                }
+                                docpath.contains(".doc") || docpath.contains(".docx") -> {
+                                    Glide.with(this).load(docpath).placeholder(R.drawable.docbox).into(imgAttach)
+                                }
+                                docpath.contains(".txt") -> {
+                                    Glide.with(this).load(docpath).placeholder(R.drawable.txt).into(imgAttach)
+                                }
+                                else -> {
+                                    Glide.with(this).load(docpath).placeholder(R.drawable.txt).into(imgAttach)
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -221,7 +305,11 @@ class SignUpActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRec
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_up2)
-        tv_login.setText(getString(R.string.log_in))
+        Utility.changeLanguage(
+            this,
+            sharedPreferenceInstance!![SharedPreferenceUtility.SelectedLang, ""]
+        )
+        tv_login.text = getString(R.string.log_in)
         networkChangeReceiver = ConnectivityReceiver()
         networkChangeReceiver!!.NetworkChangeReceiver(this)
         val intentFilter = IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
@@ -229,25 +317,26 @@ class SignUpActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRec
         setUpViews()
     }
 
-    private fun getCountires() {
+    private fun getEmirates(){
         if (isNetworkAvailable()){
-            val call = apiInterface.getCountries(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, ""))
-            call!!.enqueue(object : Callback<CountryResponse?> {
-                override fun onResponse(call: Call<CountryResponse?>, response: Response<CountryResponse?>) {
+            val call = apiInterface.getEmirates(sharedPreferenceInstance!!.get(SharedPreferenceUtility.SelectedLang, ""))
+            call!!.enqueue(object : Callback<EmiratesListResponse?> {
+                override fun onResponse(call: Call<EmiratesListResponse?>, response: Response<EmiratesListResponse?>) {
                     try {
                         if (response.body() != null) {
                             if (response.body()!!.status==1){
                                 cards_countries_listing.visibility = View.VISIBLE
                                 rv_countries_listing.layoutManager = LinearLayoutManager(this@SignUpActivity, LinearLayoutManager.VERTICAL, false)
-                                countryList = response.body()!!.country as ArrayList<CountryItem>
-                                countryListingAdapter = CountryListingAdapter(this@SignUpActivity, countryList, object :  ClickInterface.OnRecyclerItemClick{
+                                emiratesList.clear()
+                                emiratesList = response.body()!!.emirates
+                                countryListingAdapter = CountryListingAdapter(this@SignUpActivity, null,emiratesList, object :  ClickInterface.OnRecyclerItemClick{
                                     override fun OnClickAction(position: Int) {
-                                        if (SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, "").equals("ar")){
-                                            tv_emirate.text = countryList[position].name_ar
+                                        if (sharedPreferenceInstance!!.get(SharedPreferenceUtility.SelectedLang, "").equals("ar")){
+                                            tv_emirate.text = emiratesList[position].nameAr
                                         }else{
-                                            tv_emirate.text = countryList[position].name
+                                            tv_emirate.text = emiratesList[position].name
                                         }
-                                        selectedCountry = tv_emirate.text.toString().trim()
+                                        selectedEmirates = tv_emirate.text.toString().trim()
                                         countryId = countryList[position].country_id
                                         Log.e("countryId", countryId.toString())
                                         cards_countries_listing.visibility = View.GONE
@@ -256,11 +345,61 @@ class SignUpActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRec
                                 rv_countries_listing.adapter = countryListingAdapter
                             }else{
                                 cards_countries_listing.visibility = View.GONE
-                                LogUtils.shortToast(this@SignUpActivity, getString(R.string.response_isnt_successful))
+                                Utility.showSnackBarOnResponseError(signUpActivityConstraintLayout,
+                                    response.body()!!.message.toString(),
+                                    this@SignUpActivity)
+
                             }
                         }else {
                             cards_countries_listing.visibility = View.GONE
-                            LogUtils.shortToast(this@SignUpActivity, getString(R.string.response_isnt_successful))
+                            Utility.showSnackBarOnResponseError(signUpActivityConstraintLayout,
+                                response.message(),
+                                this@SignUpActivity)
+                        }
+                    } catch (e: IOException) {
+                        e.printStackTrace()
+                    } catch (e: JSONException) {
+                        e.printStackTrace()
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
+
+                override fun onFailure(call: Call<EmiratesListResponse?>, throwable: Throwable) {
+                    LogUtils.e("msg", throwable.message)
+                    Utility.showSnackBarOnResponseError(signUpActivityConstraintLayout,
+                        throwable.message.toString(),
+                        this@SignUpActivity)
+                }
+            })
+        }else{
+            Utility.showSnackBarValidationError(signUpActivityConstraintLayout,
+                getString(R.string.check_internet),
+                this@SignUpActivity)
+        }
+    }
+
+    private fun getCountires() {
+        if (isNetworkAvailable()){
+            val call = apiInterface.getCountries(sharedPreferenceInstance!!.get(SharedPreferenceUtility.SelectedLang, ""))
+            call!!.enqueue(object : Callback<CountryResponse?> {
+                override fun onResponse(call: Call<CountryResponse?>, response: Response<CountryResponse?>) {
+                    try {
+                        if (response.body() != null) {
+                            if (response.body()!!.status==1){
+                                countryList.clear()
+                                countryList = response.body()!!.country as ArrayList<CountryItem>
+                            }else{
+                                cards_countries_listing.visibility = View.GONE
+                                Utility.showSnackBarOnResponseError(signUpActivityConstraintLayout,
+                                    response.body()!!.message.toString(),
+                                    this@SignUpActivity)
+                            }
+                        }else {
+                            cards_countries_listing.visibility = View.GONE
+                            Utility.showSnackBarOnResponseError(signUpActivityConstraintLayout,
+                                response.message(),
+                                this@SignUpActivity)
                         }
                     } catch (e: IOException) {
                         e.printStackTrace()
@@ -273,21 +412,38 @@ class SignUpActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRec
 
                 override fun onFailure(call: Call<CountryResponse?>, throwable: Throwable) {
                     LogUtils.e("msg", throwable.message)
-                    LogUtils.shortToast(this@SignUpActivity,throwable.message)
+                    Utility.showSnackBarOnResponseError(signUpActivityConstraintLayout,
+                        throwable.message.toString(),
+                        this@SignUpActivity)
                 }
             })
         }else{
-            LogUtils.shortToast(this, getString(R.string.check_internet))
+            Utility.showSnackBarValidationError(signUpActivityConstraintLayout,
+                getString(R.string.check_internet),
+                this@SignUpActivity)
         }
-
     }
 
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     private fun setUpViews() {
+        if(!Utility.hasConnection(this)){
+            val noInternetDialog = NoInternetDialog()
+            noInternetDialog.isCancelable = false
+            noInternetDialog.setRetryCallback(object : NoInternetDialog.RetryInterface{
+                override fun retry() {
+                    noInternetDialog.dismiss()
+                   getCountires()
+                }
+
+            })
+            noInternetDialog.show(supportFragmentManager, "Login Activity")
+        }else{
+            getCountires()
+        }
         btnSignUp.setSafeOnClickListener {
             btnSignUp.startAnimation(AlphaAnimation(1f, 0.5f))
-            SharedPreferenceUtility.getInstance().hideSoftKeyBoard(this, btnSignUp)
+            sharedPreferenceInstance!!.hideSoftKeyBoard(this, btnSignUp)
             if(!Utility.hasConnection(this)){
                 val noInternetDialog = NoInternetDialog()
                 noInternetDialog.isCancelable = false
@@ -299,8 +455,9 @@ class SignUpActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRec
 
                 })
                 noInternetDialog.show(supportFragmentManager, "Login Activity")
+            }else{
+                validateAndSignUp()
             }
-            validateAndSignUp()
         }
 
         tv_login.setSafeOnClickListener {
@@ -341,7 +498,7 @@ class SignUpActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRec
                 iv_cnfrm_pass_show_hide.setImageResource(R.drawable.visible)
             }else{
                 show_cnfrm_pass = true
-                edtpassword_signup.transformationMethod = PasswordTransformationMethod()
+                edtcnfrmpassword_signup.transformationMethod = PasswordTransformationMethod()
                 iv_cnfrm_pass_show_hide.setImageResource(R.drawable.invisible)
             }
         }
@@ -370,13 +527,16 @@ class SignUpActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRec
             activityResultLauncher.launch(PERMISSIONS_2)
         }
 
+        imgAttach.setSafeOnClickListener {
+            edtlocation_signup.startAnimation(AlphaAnimation(1f, 0.5f))
+            my_click = "document"
+            activityResultLauncher.launch(PERMISSIONS_1)
+        }
+
         tv_emirate.setSafeOnClickListener {
             if (!emiratesClick){
                 emiratesClick = true
-
-                getCountires()
-
-
+                getEmirates()
             }else{
                 emiratesClick = false
                 cards_countries_listing.visibility = View.GONE
@@ -414,6 +574,41 @@ class SignUpActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRec
             }
         }
         builder.show()
+    }
+
+    private fun openCameraDialog2() {
+        val items = arrayOf<CharSequence>(getString(R.string.camera), getString(R.string.gallery), getString(R.string.document), getString(R.string.cancel))
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle(getString(R.string.add_documents))
+        builder.setItems(items) { dialogInterface, i ->
+            if (items[i] == getString(R.string.camera)) {
+                captureImage()
+            } else if (items[i] == getString(R.string.gallery)) {
+                chooseImage()
+            }
+            else if (items[i] == getString(R.string.document)) {
+                chooseDoc()
+            }else if (items[i] == getString(R.string.cancel)) {
+                dialogInterface.dismiss()
+            }
+        }
+        builder.show()
+    }
+
+    private fun chooseDoc() {
+        val intent=Intent(this, com.jaiselrahman.filepicker.activity.FilePickerActivity::class.java)
+        intent.putExtra(com.jaiselrahman.filepicker.activity.FilePickerActivity.CONFIGS, Configurations.Builder()
+            .setCheckPermission(true)
+            .setShowFiles(true)
+            .setShowImages(false)
+            .setShowAudios(false)
+            .setShowVideos(false)
+            .setMaxSelection(1)
+            .setSuffixes("txt","pdf","doc","docx")
+            .setSkipZeroSizeFiles(true)
+            .build())
+        status = PICK_DOC
+        resultLauncher.launch(intent)
     }
 
     private fun captureImage() {
@@ -508,63 +703,74 @@ class SignUpActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRec
         password= edtpassword_signup.text.toString().trim()
         confirmPassword= edtcnfrmpassword_signup.text.toString().trim()
 
-        if (TextUtils.isEmpty(username)) {
-            scrollView.scrollTo(0, 150)
-            edtUsername_signup.requestFocus()
-            edtUsername_signup.error=getString(R.string.please_enter_your_username)
+        if(imagePath.isEmpty()){
+            Utility.showSnackBarValidationError(signUpActivityConstraintLayout,
+            getString(R.string.please_upload_your_profile),
+            this)
+        } else if (TextUtils.isEmpty(username)) {
+            Utility.showSnackBarValidationError(signUpActivityConstraintLayout,
+                getString(R.string.please_enter_your_username),
+                this)
         }else if (!isCharacterAllowed(username)) {
-            scrollView.scrollTo(0, 150)
-            edtUsername_signup.requestFocus()
-            edtUsername_signup.error=getString(R.string.emojis_are_not_allowed)
-        }/*else if(!SharedPreferenceUtility.getInstance().isUserNameValid(username)) {
+            Utility.showSnackBarValidationError(signUpActivityConstraintLayout,
+                getString(R.string.emojis_are_not_allowed),
+                this)
+        }/*else if(!sharedPreferenceInstance!!.isUserNameValid(username)) {
             scrollView.scrollTo(0, 150)
             edtUsername_signup.requestFocus()
             edtUsername_signup.error=getString(R.string.username_invalid)
         }*/else if (TextUtils.isEmpty(mobilenumber)) {
-            scrollView.scrollTo(0, 180)
-            edtmobilenumber_signup.requestFocus()
-            edtmobilenumber_signup.error=getString(R.string.please_enter_your_phone_number)
+            Utility.showSnackBarValidationError(signUpActivityConstraintLayout,
+                getString(R.string.please_enter_your_phone_number),
+                this)
         }else if ((mobilenumber.length < 7 || mobilenumber.length > 15)) {
-            scrollView.scrollTo(0, 180)
-            edtmobilenumber_signup.requestFocus()
-            edtmobilenumber_signup.error=getString(R.string.mob_num_length_valid)
+            Utility.showSnackBarValidationError(signUpActivityConstraintLayout,
+                getString(R.string.mob_num_length_valid),
+                this)
         }else if (TextUtils.isEmpty(emailaddress)) {
-            scrollView.scrollTo(0, 210)
-            edtemailaddress_signup.requestFocus()
-            edtemailaddress_signup.error=getString(R.string.please_enter_valid_email)
-        }else if (!SharedPreferenceUtility.getInstance().isEmailValid(emailaddress)) {
-            scrollView.scrollTo(0, 210)
-            edtemailaddress_signup.requestFocus()
-            edtemailaddress_signup.error=getString(R.string.please_enter_valid_email)
+            Utility.showSnackBarValidationError(signUpActivityConstraintLayout,
+                getString(R.string.please_enter_your_email_address),
+                this)
+        }else if (!sharedPreferenceInstance!!.isEmailValid(emailaddress)) {
+            Utility.showSnackBarValidationError(signUpActivityConstraintLayout,
+                getString(R.string.please_enter_valid_email),
+                this)
         }else if (TextUtils.isEmpty(emirates)) {
-            scrollView.scrollTo(0, 210)
-            tv_emirate.requestFocus()
-            tv_emirate.error=getString(R.string.please_enter_valid_emirates)
+            Utility.showSnackBarValidationError(signUpActivityConstraintLayout,
+                getString(R.string.please_select_emirates),
+                this)
         }else if (TextUtils.isEmpty(location)) {
-            scrollView.scrollTo(0, 210)
-            edtlocation_signup.requestFocus()
-            edtlocation_signup.error=getString(R.string.please_enter_valid_loc)
+            Utility.showSnackBarValidationError(signUpActivityConstraintLayout,
+                getString(R.string.please_enter_valid_loc),
+                this)
         }else if (TextUtils.isEmpty(password)) {
-            edtpassword_signup.requestFocus()
-            scrollView.scrollTo(0, 240)
-            edtpassword_signup.error=getString(R.string.please_enter_your_password)
+            Utility.showSnackBarValidationError(signUpActivityConstraintLayout,
+                getString(R.string.please_enter_your_password),
+                this)
         }else if (password.length < 6) {
-            edtpassword_signup.requestFocus()
-            edtpassword_signup.error=getString(R.string.verify_password_length_valid)
-        }else if (!SharedPreferenceUtility.getInstance().isPasswordValid(password)) {
-            edtpassword_signup.requestFocus()
-            scrollView.scrollTo(0, 240)
-            edtpassword_signup.error=getString(R.string.password_length_valid)
+            Utility.showSnackBarValidationError(signUpActivityConstraintLayout,
+                getString(R.string.password_length_valid),
+                this)
+        }else if (!sharedPreferenceInstance!!.isPasswordValid(password)) {
+            Utility.showSnackBarValidationError(signUpActivityConstraintLayout,
+                getString(R.string.password_length_valid),
+                this)
         }else if (TextUtils.isEmpty(confirmPassword)) {
-            scrollView.scrollTo(0, 270)
-            edtcnfrmpassword_signup.requestFocus()
-            edtcnfrmpassword_signup.error=getString(R.string.please_verify_your_password)
+            Utility.showSnackBarValidationError(signUpActivityConstraintLayout,
+                getString(R.string.please_enter_your_confirm_password),
+                this)
         }else if (!confirmPassword.equals(password)) {
-            scrollView.scrollTo(0, 270)
-            edtcnfrmpassword_signup.requestFocus()
-            edtcnfrmpassword_signup.error=getString(R.string.password_doesnt_match_with_verify_password)
+            Utility.showSnackBarValidationError(signUpActivityConstraintLayout,
+                getString(R.string.password_doesnt_match_with_verify_password),
+                this)
+        }else if(TextUtils.isEmpty(docpath)){
+              Utility.showSnackBarValidationError(signUpActivityConstraintLayout,
+            getString(R.string.please_upload_your_trade_license),
+            this)
         }else if(!isChecked){
-            LogUtils.shortToast(this, getString(R.string.please_accept_terms_conditions))
+            Utility.showSnackBarValidationError(signUpActivityConstraintLayout,
+                getString(R.string.please_accept_terms_conditions),
+                this)
         }else{
             getSignUp()
         }
@@ -575,35 +781,62 @@ class SignUpActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRec
         window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         progressBar.visibility= View.VISIBLE
 
-        if (isNetworkAvailable()){
-                val builder = APIClient.createMultipartBodyBuilder(arrayOf("username","country_code", "phone", "email", "password", "country_id", "lat", "long", "device_token","device_type", "lang", "address"),
+        var call : Call<SignUpResponse?>?=null
+
+        if (imagePath != "" && docpath != "") {
+            val builder = APIClient.createMultipartBodyBuilder(arrayOf("username","country_code", "phone",
+                "email", "password", "country_id", "lat",
+                "long", "device_token","device_type", "lang", "address"),
                 arrayOf(username.trim({ it <= ' ' }),
-                        "+971",
-                        mobilenumber.trim({ it <= ' ' }),
-                        emailaddress.trim({it <= ' '}),
-                        password.trim({it <= ' '}),
-                        countryId.toString(),
-                        mLatitude.toString(),
-                        mLongitude.toString(),
-                        SharedPreferenceUtility.getInstance()
-                            .get(SharedPreferenceUtility.FCMTOKEN, "")
-                            .toString(),
-                        "1",
-                        SharedPreferenceUtility.getInstance()
-                            .get(SharedPreferenceUtility.SelectedLang, "")
-                            .toString(),
-                        location!!.trim({it <= ' '})))
+                    "+971",
+                    mobilenumber.trim({ it <= ' ' }),
+                    emailaddress.trim({it <= ' '}),
+                    password.trim({it <= ' '}),
+                    countryId.toString(),
+                    mLatitude.toString(),
+                    mLongitude.toString(),
+                    sharedPreferenceInstance!!
+                        .get(SharedPreferenceUtility.FCMTOKEN, "")
+                        .toString(),
+                    "1",
+                    sharedPreferenceInstance!!
+                        .get(SharedPreferenceUtility.SelectedLang, "")
+                        .toString(),
+                    location!!.trim({it <= ' '})))
+            val file = File(imagePath)
+            Log.e("file name ", file.name)
+            val requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file)
+            builder!!.addFormDataPart("image", file.name, requestBody)
+            val file1 = File(docpath)
+            val requestBody1 = RequestBody.create(MediaType.parse("multipart/form-data"), file1)
+            builder.addFormDataPart("trade_license", file1.name, requestBody1)
+            call = apiInterface.signUp(builder.build())
+        }else{
+            val builder = APIClient.createMultipartBodyBuilder(arrayOf("username","country_code",
+                "phone", "email", "password", "country_id", "lat", "long", "device_token","device_type",
+                "lang", "address", "image", "trade_license"),
+                arrayOf(username.trim({ it <= ' ' }),
+                    "+971",
+                    mobilenumber.trim({ it <= ' ' }),
+                    emailaddress.trim({it <= ' '}),
+                    password.trim({it <= ' '}),
+                    countryId.toString(),
+                    mLatitude.toString(),
+                    mLongitude.toString(),
+                    sharedPreferenceInstance!!
+                        .get(SharedPreferenceUtility.FCMTOKEN, "")
+                        .toString(),
+                    "1",
+                    sharedPreferenceInstance!!
+                        .get(SharedPreferenceUtility.SelectedLang, "")
+                        .toString(),
+                    location!!.trim({it <= ' '}),
+                "", ""))
+            call = apiInterface.signUp(builder!!.build())
 
-            if (imagePath != "") {
-                val file = File(imagePath)
-                Log.e("file name ", file.name)
-                val requestBody = RequestBody.create(MediaType.parse("image/*"), file)
-                builder!!.addFormDataPart("image", file.name, requestBody)
-            }else{
-                imagePath = this.getDrawable(R.drawable.dark_logo).toString()
-            }
+        }
 
-            val call = apiInterface.signUp(builder!!.build())
+        if (isNetworkAvailable()){
             call!!.enqueue(object : Callback<SignUpResponse?> {
                 override fun onResponse(call: Call<SignUpResponse?>, response: Response<SignUpResponse?>) {
                     progressBar.visibility = View.GONE
@@ -611,22 +844,31 @@ class SignUpActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRec
                     try {
                         if(response.isSuccessful){
                             if (response.body()!!.status==1){
-                                SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.ProfilePic, response.body()!!.user!!.image)
-                                SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.TOKEN, response.body()!!.token)
+                                sharedPreferenceInstance!!.save(SharedPreferenceUtility.ProfilePic, response.body()!!.user!!.image)
+                                sharedPreferenceInstance!!.save(SharedPreferenceUtility.TOKEN, response.body()!!.token)
                                 myuserId = response.body()!!.user!!.user_id!!
-                                SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.UserId, myuserId)
-                                SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.UserEmail, emailaddress)
-                                SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.Address, location)
-                                SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.Username, username)
-                                LogUtils.longToast(this@SignUpActivity, response.body()!!.message)
+                                sharedPreferenceInstance!!.save(SharedPreferenceUtility.UserId, myuserId)
+                                sharedPreferenceInstance!!.save(SharedPreferenceUtility.PhoneNumber, mobilenumber)
+                                sharedPreferenceInstance!!.save(SharedPreferenceUtility.UserEmail, emailaddress)
+                                sharedPreferenceInstance!!.save(SharedPreferenceUtility.Address, location)
+                                sharedPreferenceInstance!!.save(SharedPreferenceUtility.Username, username)
+                                sharedPreferenceInstance!!.save(SharedPreferenceUtility.DocPath, docpath)
+                                Utility.showSnackBarOnResponseSuccess(signUpActivityConstraintLayout,
+                                    response.body()!!.message.toString(),
+                                    this@SignUpActivity)
                                 startActivity(Intent(applicationContext,OtpVerificationActivity::class.java).
                                 putExtra("ref", "1").
-                                putExtra(EMAILADDRESS, emailaddress))
+                                putExtra(EMAILADDRESS, emailaddress).
+                                putExtra("mobile_no", "971"+mobilenumber))
                             }else{
-                                LogUtils.longToast(this@SignUpActivity, response.body()!!.message)
+                                Utility.showSnackBarOnResponseError(signUpActivityConstraintLayout,
+                                    response.body()!!.message.toString(),
+                                    this@SignUpActivity)
                             }
                         }else{
-                            LogUtils.longToast(this@SignUpActivity,getString(R.string.response_isnt_successful))
+                            Utility.showSnackBarOnResponseError(signUpActivityConstraintLayout,
+                                getString(R.string.response_isnt_successful),
+                                this@SignUpActivity)
                         }
                     } catch (e: IOException) {
                         e.printStackTrace()
@@ -639,13 +881,17 @@ class SignUpActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRec
 
                 override fun onFailure(call: Call<SignUpResponse?>, throwable: Throwable) {
                     LogUtils.e("msg", throwable.message)
-                    LogUtils.shortToast(this@SignUpActivity,throwable.localizedMessage)
+                    Utility.showSnackBarOnResponseError(signUpActivityConstraintLayout,
+                        throwable.message.toString(),
+                        this@SignUpActivity)
                     progressBar.visibility = View.GONE
                     window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 }
             })
         }else{
-            LogUtils.shortToast(this@SignUpActivity, getString(R.string.check_internet))
+            Utility.showSnackBarValidationError(signUpActivityConstraintLayout,
+                getString(R.string.check_internet),
+                this@SignUpActivity)
         }
     }
 
@@ -664,17 +910,6 @@ class SignUpActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRec
 
     override fun onBackPressed() {
         Utility.exitApp(this, this)
-    }
-
-    companion object{
-        private var instance: SharedPreferenceUtility? = null
-        @Synchronized
-        fun getInstance(): SharedPreferenceUtility {
-            if (instance == null) {
-                instance = SharedPreferenceUtility()
-            }
-            return instance as SharedPreferenceUtility
-        }
     }
 
     override fun onNetworkConnectionChanged(isConnected: Boolean) {

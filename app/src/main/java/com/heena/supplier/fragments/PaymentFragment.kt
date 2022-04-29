@@ -18,6 +18,7 @@ import com.heena.supplier.R
 import com.heena.supplier.`interface`.ClickInterface
 import com.heena.supplier.activities.TapPaymentActivity
 import com.heena.supplier.adapters.PaymentsCardAdapter
+import com.heena.supplier.application.MyApp.Companion.sharedPreferenceInstance
 import com.heena.supplier.models.*
 import com.heena.supplier.rest.APIClient
 import com.heena.supplier.rest.APIInterface
@@ -70,7 +71,7 @@ class PaymentFragment : Fragment() {
         mView = inflater.inflate(R.layout.fragment_payment, container, false)
         Utility.changeLanguage(
             requireContext(),
-            SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""]
+            sharedPreferenceInstance!![SharedPreferenceUtility.SelectedLang, ""]
         )
         return mView
     }
@@ -79,13 +80,13 @@ class PaymentFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         requireActivity().iv_back.setSafeOnClickListener {
             requireActivity().iv_back.startAnimation(AlphaAnimation(1F,0.5F))
-            SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_back)
+            sharedPreferenceInstance!!.hideSoftKeyBoard(requireContext(), requireActivity().iv_back)
             findNavController().popBackStack()
         }
 
         requireActivity().iv_notification.setSafeOnClickListener {
             requireActivity().iv_notification.startAnimation(AlphaAnimation(1F,0.5F))
-            SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_notification)
+            sharedPreferenceInstance!!.hideSoftKeyBoard(requireContext(), requireActivity().iv_notification)
             findNavController().navigate(R.id.notificationsFragment)
         }
 
@@ -118,7 +119,10 @@ class PaymentFragment : Fragment() {
 
         mView!!.tv_subscribe!!.setSafeOnClickListener { // dismiss dialog
             if (TextUtils.isEmpty(card_id)){
-                LogUtils.shortToast(requireContext(), requireContext().getString(R.string.please_select_a_card_to_continue))
+                Utility.showSnackBarValidationError(mView!!.paymentFragmentConstraintLayout,
+                    requireContext().getString(R.string.please_select_a_card_to_continue),
+                    requireContext())
+
             }else{
                 if (direction==1){
                     purchaseMembership()
@@ -141,9 +145,9 @@ class PaymentFragment : Fragment() {
             frag_payment_progressBar.visibility= View.VISIBLE
             val apiInterface = APIClient.getClient()!!.create(APIInterface::class.java)
             val builder = APIClient.createBuilder(arrayOf("user_id","subscription_id", "card_id"),
-                arrayOf(SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.UserId, 0].toString(),
+                arrayOf(sharedPreferenceInstance!![SharedPreferenceUtility.UserId, 0].toString(),
                     subscription!!.subscription_plans_id.toString(), card_id))
-            val call = apiInterface.createChargeSubscriptions(SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""], builder.build())
+            val call = apiInterface.createChargeSubscriptions(sharedPreferenceInstance!![SharedPreferenceUtility.SelectedLang, ""], builder.build())
             call!!.enqueue(object : Callback<ResponseBody?> {
                 override fun onResponse(
                     call: Call<ResponseBody?>,
@@ -164,7 +168,9 @@ class PaymentFragment : Fragment() {
                                         source.type
                                     }
                                     if (type.equals("CARD_NOT_PRESENT")){
-                                        LogUtils.shortToast(requireContext(), requireContext().getString(R.string.card_is_not_valid))
+                                        Utility.showSnackBarOnResponseError(mView!!.paymentFragmentConstraintLayout,
+                                            requireContext().getString(R.string.card_is_not_valid),
+                                            requireContext())
                                     }else{
                                         url = data.getJSONObject("transaction").getString("url")
                                         tapID = data.getString("id")
@@ -180,13 +186,19 @@ class PaymentFragment : Fragment() {
                                     }
                                 }
                             }else{
-                                Log.e("error", "Payment Failed")
+                                Utility.showSnackBarOnResponseError(mView!!.paymentFragmentConstraintLayout,
+                                    requireContext().getString(R.string.payment_failed),
+                                    requireContext())
                             }
                         }else{
-                            Log.e("error", "Payment Failed")
+                            Utility.showSnackBarOnResponseError(mView!!.paymentFragmentConstraintLayout,
+                                requireContext().getString(R.string.payment_failed),
+                                requireContext())
                         }
                     }else{
-                        LogUtils.longToast(requireContext(),getString(R.string.response_isnt_successful))
+                        Utility.showSnackBarOnResponseError(mView!!.paymentFragmentConstraintLayout,
+                            requireContext().getString(R.string.response_isnt_successful),
+                            requireContext())
                     }
                 }
 
@@ -194,7 +206,9 @@ class PaymentFragment : Fragment() {
                     frag_payment_progressBar.visibility = View.GONE
                     requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                     LogUtils.e("msg", throwable.message)
-                    LogUtils.shortToast(requireContext(),throwable.localizedMessage)
+                    Utility.showSnackBarOnResponseError(mView!!.paymentFragmentConstraintLayout,
+                        throwable.message.toString(),
+                        requireContext())
                 }
 
             })
@@ -207,9 +221,9 @@ class PaymentFragment : Fragment() {
             frag_payment_progressBar.visibility= View.VISIBLE
             val apiInterface = APIClient.getClient()!!.create(APIInterface::class.java)
             val builder = APIClient.createBuilder(arrayOf("user_id","membership_id", "card_id"),
-                arrayOf(SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.UserId, 0].toString(),
+                arrayOf(sharedPreferenceInstance!![SharedPreferenceUtility.UserId, 0].toString(),
                     membership!!.membership_id.toString(), card_id))
-            val call = apiInterface.createCharge(SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""], builder.build())
+            val call = apiInterface.createCharge(sharedPreferenceInstance!![SharedPreferenceUtility.SelectedLang, ""], builder.build())
             call!!.enqueue(object : Callback<ResponseBody?> {
                 override fun onResponse(
                     call: Call<ResponseBody?>,
@@ -223,7 +237,6 @@ class PaymentFragment : Fragment() {
                             if (jsonObject.getInt("status")==1){
                                 val data = jsonObject.getJSONObject("data")
                                 if(data!=null){
-
                                     val source = Gson().fromJson(data.getJSONObject("source").toString(), SourceModel::class.java)
                                     val type = if (source.type==null){
                                         ""
@@ -231,7 +244,9 @@ class PaymentFragment : Fragment() {
                                         source.type
                                     }
                                     if (type.equals("CARD_NOT_PRESENT")){
-                                        LogUtils.shortToast(requireContext(), requireContext().getString(R.string.card_is_not_valid))
+                                        Utility.showSnackBarOnResponseError(mView!!.paymentFragmentConstraintLayout,
+                                            requireContext().getString(R.string.card_is_not_valid),
+                                            requireContext())
                                     }else{
                                         url = data.getJSONObject("transaction").getString("url")
                                         tapID = data.getString("id")
@@ -247,13 +262,20 @@ class PaymentFragment : Fragment() {
                                     }
                                 }
                             }else{
-                                Log.e("error", "Payment Failed")
+                                Utility.showSnackBarOnResponseError(mView!!.paymentFragmentConstraintLayout,
+                                    requireContext().getString(R.string.payment_failed),
+                                    requireContext())
                             }
                         }else{
-                            Log.e("error", "Payment Failed")
+                            Utility.showSnackBarOnResponseError(mView!!.paymentFragmentConstraintLayout,
+                                requireContext().getString(R.string.payment_failed),
+                                requireContext())
                         }
                     }else{
-                        LogUtils.longToast(requireContext(),getString(R.string.response_isnt_successful))
+                        Utility.showSnackBarOnResponseError(mView!!.paymentFragmentConstraintLayout,
+                            requireContext().getString(R.string.response_isnt_successful),
+                            requireContext())
+
                     }
                 }
 
@@ -261,7 +283,9 @@ class PaymentFragment : Fragment() {
                     frag_payment_progressBar.visibility = View.GONE
                     requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                     LogUtils.e("msg", throwable.message)
-                    LogUtils.shortToast(requireContext(),throwable.localizedMessage)
+                    Utility.showSnackBarOnResponseError(mView!!.paymentFragmentConstraintLayout,
+                        throwable.message.toString(),
+                        requireContext())
                 }
 
             })
@@ -271,7 +295,7 @@ class PaymentFragment : Fragment() {
     private fun showCardsListing() {
         requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         mView!!.frag_payment_progressBar.visibility= View.VISIBLE
-        val call = apiInterface.showCards(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId, 0), SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""])
+        val call = apiInterface.showCards(sharedPreferenceInstance!!.get(SharedPreferenceUtility.UserId, 0), sharedPreferenceInstance!![SharedPreferenceUtility.SelectedLang, ""])
         call!!.enqueue(object : Callback<ViewCardResponse?> {
             override fun onResponse(
                 call: Call<ViewCardResponse?>,
@@ -289,8 +313,7 @@ class PaymentFragment : Fragment() {
                             mView!!.rv_cards_listing.layoutManager= LinearLayoutManager(requireContext())
                             paymentCardsAdapter = PaymentsCardAdapter(requireContext(), cardsList,object : ClickInterface.OnRecyclerItemClick{
                                 override fun OnClickAction(pos: Int) {
-//                                    mSelectedItem = pos
-                                    card_id = cardsList[mSelectedItem].id.toString()
+                                    card_id = cardsList[pos].id.toString()
                                     paymentCardsAdapter.notifyDataSetChanged()
                                 }
 
@@ -301,9 +324,11 @@ class PaymentFragment : Fragment() {
                             mView!!.card_creditcard.visibility = View.GONE
                         }
                     }else{
-                        LogUtils.longToast(requireContext(), getString(R.string.response_isnt_successful))
                         mView!!.frag_payment_progressBar.visibility= View.GONE
                         requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                        Utility.showSnackBarOnResponseError(mView!!.paymentFragmentConstraintLayout,
+                            requireContext().getString(R.string.response_isnt_successful),
+                            requireContext())
                     }
                 }catch (e: IOException) {
                     e.printStackTrace()
@@ -316,25 +341,15 @@ class PaymentFragment : Fragment() {
 
             override fun onFailure(call: Call<ViewCardResponse?>, throwable: Throwable) {
                 LogUtils.e("msg", throwable.message)
-                LogUtils.shortToast(requireContext(), getString(R.string.check_internet))
                 mView!!.tv_no_cards_found_service_payment.visibility = View.VISIBLE
+                mView!!.frag_payment_progressBar.visibility = View.GONE
+                Utility.showSnackBarOnResponseError(mView!!.paymentFragmentConstraintLayout,
+                    throwable.message.toString(),
+                    requireContext())
                 mView!!.card_creditcard.visibility = View.GONE
                 requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             }
 
         })
-    }
-
-
-
-    companion object{
-        private var instance: SharedPreferenceUtility? = null
-        @Synchronized
-        fun getInstance(): SharedPreferenceUtility {
-            if (instance == null) {
-                instance = SharedPreferenceUtility()
-            }
-            return instance as SharedPreferenceUtility
-        }
     }
 }

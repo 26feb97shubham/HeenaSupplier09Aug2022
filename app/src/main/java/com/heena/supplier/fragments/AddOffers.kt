@@ -38,10 +38,12 @@ import kotlin.collections.ArrayList
 import com.heena.supplier.extras.InputFilterMinMax
 
 import android.text.InputFilter
+import androidx.core.widget.doAfterTextChanged
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
+import com.heena.supplier.application.MyApp.Companion.sharedPreferenceInstance
 import com.heena.supplier.extras.DecimalDigitsInputFilter
 import com.heena.supplier.utils.Utility
 import com.heena.supplier.utils.Utility.setSafeOnClickListener
@@ -70,6 +72,7 @@ class AddOffers : Fragment() {
     val myFormat = "yyyy-MM-dd"
     val sdf = SimpleDateFormat(myFormat, Locale.US)
     var service_price = ""
+    var servicePrice = 0.0
 
     val myCalendar: Calendar = Calendar.getInstance()
 
@@ -98,7 +101,7 @@ class AddOffers : Fragment() {
         mView = inflater.inflate(R.layout.fragment_add_offers, container, false)
         Utility.changeLanguage(
             requireContext(),
-            SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, "")
+            sharedPreferenceInstance!!.get(SharedPreferenceUtility.SelectedLang, "")
         )
         getServices()
         setUpViews()
@@ -108,13 +111,13 @@ class AddOffers : Fragment() {
     private fun setUpViews() {
         requireActivity().iv_back.setSafeOnClickListener {
             requireActivity().iv_back.startAnimation(AlphaAnimation(1F,0.5F))
-            SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_back)
+            sharedPreferenceInstance!!.hideSoftKeyBoard(requireContext(), requireActivity().iv_back)
             findNavController().popBackStack()
         }
 
         requireActivity().iv_notification.setSafeOnClickListener {
             requireActivity().iv_notification.startAnimation(AlphaAnimation(1F,0.5F))
-            SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_notification)
+            sharedPreferenceInstance!!.hideSoftKeyBoard(requireContext(), requireActivity().iv_notification)
             findNavController().navigate(R.id.notificationsFragment)
         }
 
@@ -206,49 +209,65 @@ class AddOffers : Fragment() {
         }
 
 
-        mView!!.et_offers_price.doOnTextChanged { text, start, before, count ->
-            if(mView!!.et_discount.text!!.toString().trim().equals("")){
-                LogUtils.shortToast(requireContext(), requireContext().getString(R.string.please_enter_valid_offer_total_price))
+       /* mView!!.et_discount.doAfterTextChanged {
+            val text = it.toString()
+            if(text.toString().length==1 && text.toString().contains("0")) {
+                val my_price = servicePrice.toString().substring(0, servicePrice.toString().length -1)
+                val myprice = my_price.toDouble()
+                if (service_price.equals("")) {
+                    mView!!.tv_choose_service.requestFocus()
+                    mView!!.tv_choose_service.error =
+                        getString(R.string.no_service_selected)
+                } else {
+                    val my_disc = (mView!!.et_discount.text.toString()).toDouble()
+                    val my_offer_price = offerPriceCalculator(myprice, my_disc)
+                    mView!!.et_offers_child_price.setText(my_offer_price.toString())
+                }
             }else{
-                if(count==0){
-                    mView!!.et_offers_price.requestFocus()
-                    mView!!.et_offers_price.error = requireContext().getString(R.string.please_enter_valid_offer_total_price)
+                val my_price = servicePrice.toString().substring(0, servicePrice.toString().length -1)
+                val myprice = my_price.toDouble()
+                if (service_price.equals("")) {
+                    mView!!.tv_choose_service.requestFocus()
+                    mView!!.tv_choose_service.error =
+                        getString(R.string.no_service_selected)
+                } else {
+                    val my_disc = (mView!!.et_discount.text.toString()).toDouble()
+                    val my_offer_price = offerPriceCalculator(myprice, my_disc)
+                    mView!!.et_offers_child_price.setText(my_offer_price.toString())
+                }
+            }
+        }*/
+
+        mView!!.et_discount.doOnTextChanged { text, start, before, count ->
+            if(count==0){
+                Utility.showSnackBarValidationError(mView!!.addOfferFragmentConstraintLayout,
+                    requireContext().getString(R.string.please_enter_valid_offer_discount),
+                    requireContext())
+            }else{
+                if(text.toString().length==1 && text.toString().contains("0")) {
+                    val my_price = servicePrice.toString().substring(0, servicePrice.toString().length -1)
+                    val myprice = my_price.toDouble()
+                    if (service_price.equals("")) {
+                        Utility.showSnackBarValidationError(mView!!.addOfferFragmentConstraintLayout,
+                            requireContext().getString(R.string.no_service_selected),
+                            requireContext())
+                    } else {
+                        val my_disc = (mView!!.et_discount.text.toString()).toDouble()
+                        val my_offer_price = offerPriceCalculator(myprice, my_disc)
+                        mView!!.et_offers_child_price.setText(my_offer_price.toString())
+                    }
                 }else{
-                    if(text.toString().length==1 && text.toString().contains("0")) {
-                        val my_price = text.toString().substring(0, text.toString().length -1)
-                        val myprice = my_price.toDouble()
-                        if (service_price.equals("")) {
-                            mView!!.tv_choose_service.requestFocus()
-                            mView!!.tv_choose_service.error =
-                                getString(R.string.no_service_selected)
-                        } else {
-                            if (service_price.toDouble() <= myprice) {
-                                mView!!.et_offers_price.requestFocus()
-                                mView!!.et_offers_price.error =
-                                    requireContext().getString(R.string.please_enter_valid_offer_total_price)
-                            } else {
-                                val my_disc = (mView!!.et_discount.text.toString()).toDouble()
-                                val my_offer_price = (myprice * my_disc) / 100
-                                mView!!.et_offers_child_price.setText(my_offer_price.toString())
-                            }
-                        }
-                    }else{
-                        val my_price = text.toString().toDouble()
-                        if (service_price.equals("")) {
-                            mView!!.tv_choose_service.requestFocus()
-                            mView!!.tv_choose_service.error =
-                                getString(R.string.no_service_selected)
-                        } else {
-                            if (service_price.toDouble() <= my_price) {
-                                mView!!.et_offers_price.requestFocus()
-                                mView!!.et_offers_price.error =
-                                    requireContext().getString(R.string.please_enter_valid_offer_total_price)
-                            } else {
-                                val my_disc = (mView!!.et_discount.text.toString()).toDouble()
-                                val my_offer_price = (my_price * my_disc) / 100
-                                mView!!.et_offers_child_price.setText(my_offer_price.toString())
-                            }
-                        }
+                    val my_price = servicePrice.toString().substring(0, servicePrice.toString().length -1)
+                    val myprice = my_price.toDouble()
+                    if (service_price.equals("")) {
+//                        mView!!.tv_choose_service.requestFocus()
+                        /*mView!!.tv_choose_service.error =
+                            getString(R.string.no_service_selected)*/
+                        selectedService = ""
+                    } else {
+                        val my_disc = (mView!!.et_discount.text.toString()).toDouble()
+                        val my_offer_price = offerPriceCalculator(myprice, my_disc)
+                        mView!!.et_offers_child_price.setText(my_offer_price.toString())
                     }
                 }
             }
@@ -265,7 +284,7 @@ class AddOffers : Fragment() {
             WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
         )
         mView!!.frag_add_offer_progressBar.visibility= View.VISIBLE
-        val call = apiInterface.showOffer(offerId, SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""])
+        val call = apiInterface.showOffer(offerId, sharedPreferenceInstance!![SharedPreferenceUtility.SelectedLang, ""])
         call?.enqueue(object : Callback<ShowOfferResponse?> {
             override fun onResponse(
                 call: Call<ShowOfferResponse?>,
@@ -285,14 +304,19 @@ class AddOffers : Fragment() {
                                 val offer_dur = offerItem.started_at + " - " + offerItem.ended_at
                                 mView!!.et_card_duration.text = offer_dur
                             } else {
-                                LogUtils.longToast(requireContext(), response.body()!!.message)
+                                Utility.showSnackBarOnResponseError(mView!!.addOfferFragmentConstraintLayout,
+                                    response.body()!!.message.toString(),
+                                    requireContext())
                             }
+                        }else{
+                            Utility.showSnackBarOnResponseError(mView!!.addOfferFragmentConstraintLayout,
+                                response.message(),
+                                requireContext())
                         }
                     } else {
-                        LogUtils.shortToast(
-                            requireContext(),
-                            getString(R.string.response_isnt_successful)
-                        )
+                        Utility.showSnackBarOnResponseError(mView!!.addOfferFragmentConstraintLayout,
+                            requireContext().getString(R.string.response_isnt_successful),
+                            requireContext())
                     }
                 } catch (e: IOException) {
                     e.printStackTrace()
@@ -306,6 +330,9 @@ class AddOffers : Fragment() {
             override fun onFailure(call: Call<ShowOfferResponse?>, t: Throwable) {
                 mView!!.frag_add_offer_progressBar.visibility = View.GONE
                 requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                Utility.showSnackBarOnResponseError(mView!!.addOfferFragmentConstraintLayout,
+                    t.message.toString(),
+                    requireContext())
             }
 
         })
@@ -313,11 +340,11 @@ class AddOffers : Fragment() {
 
     private fun getServices() {
         val call = apiInterface.serviceslisting(
-            SharedPreferenceUtility.getInstance().get(
+            sharedPreferenceInstance!!.get(
                 SharedPreferenceUtility.UserId,
                 0
             ),
-            SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, "")
+            sharedPreferenceInstance!!.get(SharedPreferenceUtility.SelectedLang, "")
         )
         call?.enqueue(object : Callback<ServiceListingResponse?> {
             override fun onResponse(
@@ -390,23 +417,28 @@ class AddOffers : Fragment() {
 
                                         mView!!.tv_services.text = serviceList[position].name
                                         mView!!.tv_price.text = "AED "+ NumberFormat.getNumberInstance(Locale.US).format(serviceList[position].price!!.total!!.toDouble())
+                                        var str =  "AED "+ NumberFormat.getNumberInstance(Locale.US).format(serviceList[position].price!!.total!!.toDouble())
+                                        mView!!.et_offers_child_price.setText(
+                                            str
+                                        )
+                                        servicePrice = serviceList[position].price!!.total!!.toDouble()
                                         mView!!.tv_category_name.text =
                                             serviceList[position].category!!.name
                                     }
                                 })
                             mView!!.rv_services_listing.adapter = serviceListingAdapter
-                            serviceListingAdapter.notifyDataSetChanged()
                         } else {
                             mView!!.cards_service_categories_listing.visibility = View.GONE
                             mView!!.card_choose_services.isClickable = false
-                            LogUtils.longToast(requireContext(), response.body()!!.message)
+                            Utility.showSnackBarOnResponseError(mView!!.addOfferFragmentConstraintLayout,
+                                response.body()!!.message.toString(),
+                                requireContext())
                         }
                     } else {
                         mView!!.cards_service_categories_listing.visibility = View.GONE
-                        LogUtils.shortToast(
-                            requireContext(),
-                            getString(R.string.response_isnt_successful)
-                        )
+                        Utility.showSnackBarOnResponseError(mView!!.addOfferFragmentConstraintLayout,
+                            requireContext().getString(R.string.response_isnt_successful),
+                            requireContext())
                     }
                 } catch (e: IOException) {
                     e.printStackTrace()
@@ -419,6 +451,9 @@ class AddOffers : Fragment() {
 
             override fun onFailure(call: Call<ServiceListingResponse?>, t: Throwable) {
                 mView!!.cards_service_categories_listing.visibility = View.GONE
+                Utility.showSnackBarOnResponseError(mView!!.addOfferFragmentConstraintLayout,
+                    t.message!!,
+                    requireContext())
             }
 
         })
@@ -436,32 +471,39 @@ class AddOffers : Fragment() {
 
     private fun validateAndSave() {
         selectedService = mView!!.tv_choose_service.text.toString().trim()
-        offerPrice = mView!!.et_offers_price.text.toString().trim()
         offerChildPrice = mView!!.et_offers_child_price.text.toString().trim()
         offer_discount = mView!!.et_discount.text.toString().trim()
+        offer_duration = mView!!.et_card_duration.text.toString().trim()
 
         if (TextUtils.isEmpty(selectedService)){
-            mView!!.tv_choose_service.requestFocus()
-            mView!!.tv_choose_service.error = getString(R.string.no_service_selected)
+            Utility.showSnackBarValidationError(mView!!.addOfferFragmentConstraintLayout,
+                requireContext().getString(R.string.no_service_selected),
+                requireContext())
         }else if(TextUtils.isEmpty(offer_discount)){
-            mView!!.et_discount.requestFocus()
-            mView!!.et_discount.error = getString(R.string.please_enter_valid_offer_discount)
-        } else if(TextUtils.isEmpty(offerPrice)){
-            mView!!.et_offers_price.requestFocus()
-            mView!!.et_offers_price.error = getString(R.string.please_enter_valid_offer_price)
-        } else if(TextUtils.isEmpty(offerChildPrice)){
-            mView!!.et_offers_child_price.requestFocus()
-            mView!!.et_offers_child_price.error = getString(R.string.please_enter_valid_offer_price)
+            Utility.showSnackBarValidationError(mView!!.addOfferFragmentConstraintLayout,
+                requireContext().getString(R.string.please_enter_valid_offer_discount),
+                requireContext())
+        }  else if(TextUtils.isEmpty(offerChildPrice)){
+            Utility.showSnackBarValidationError(mView!!.addOfferFragmentConstraintLayout,
+                requireContext().getString(R.string.please_enter_valid_offer_price),
+                requireContext())
         }else if(TextUtils.isEmpty(offer_duration)){
-            mView!!.et_card_duration.requestFocus()
-            mView!!.et_card_duration.error = getString(R.string.please_select_a_valid_duration)
+            Utility.showSnackBarValidationError(mView!!.addOfferFragmentConstraintLayout,
+                requireContext().getString(R.string.please_select_a_valid_duration),
+                requireContext())
         } else{
             if(offer_status.equals("edit")){
-                offer_Price = offerPrice.toDouble()
-                service_Price = service_price.toDouble()
-                update()
+                offer_Price = offerChildPrice.toDouble()
+                if (service_price.isEmpty()){
+                    Utility.showSnackBarValidationError(mView!!.addOfferFragmentConstraintLayout,
+                        requireContext().getString(R.string.no_service_selected),
+                        requireContext())
+                }else{
+                    service_Price = service_price.toDouble()
+                    update()
+                }
             }else{
-                offer_Price = offerPrice.toDouble()
+                offer_Price = offerChildPrice.toDouble()
                 service_Price = service_price.toDouble()
                 save()
             }
@@ -488,7 +530,7 @@ class AddOffers : Fragment() {
                 "lang"
             ),
             arrayOf(
-                SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId, 0)
+                sharedPreferenceInstance!!.get(SharedPreferenceUtility.UserId, 0)
                     .toString(),
                 service_id.toString(),
                 myStartDate,
@@ -497,7 +539,7 @@ class AddOffers : Fragment() {
                 offerChildPrice,
                 offer_discount,
                 offer_id.toString(),
-                SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""]
+                sharedPreferenceInstance!![SharedPreferenceUtility.SelectedLang, ""]
             )
         )
         val call = apiInterface.updateOffers(builder.build())
@@ -512,17 +554,24 @@ class AddOffers : Fragment() {
                     if (response.isSuccessful) {
                         if (response.body() != null) {
                             if (response.body()!!.status == 1) {
-                                LogUtils.shortToast(requireContext(), response.body()!!.message)
+                                Utility.showSnackBarOnResponseSuccess(mView!!.addOfferFragmentConstraintLayout,
+                                    response.body()!!.message.toString(),
+                                    requireContext())
                                 findNavController().popBackStack()
                             } else {
-                                LogUtils.longToast(requireContext(), response.body()!!.message)
+                                Utility.showSnackBarOnResponseError(mView!!.addOfferFragmentConstraintLayout,
+                                    response.body()!!.message,
+                                    requireContext())
                             }
+                        }else{
+                            Utility.showSnackBarOnResponseError(mView!!.addOfferFragmentConstraintLayout,
+                                response.message(),
+                                requireContext())
                         }
                     } else {
-                        LogUtils.shortToast(
-                            requireContext(),
-                            getString(R.string.response_isnt_successful)
-                        )
+                        Utility.showSnackBarValidationError(mView!!.addOfferFragmentConstraintLayout,
+                            requireContext().getString(R.string.response_isnt_successful),
+                            requireContext())
                     }
                 } catch (e: IOException) {
                     e.printStackTrace()
@@ -535,7 +584,9 @@ class AddOffers : Fragment() {
 
             override fun onFailure(call: Call<OfferUpdateResponse?>, throwable: Throwable) {
                 LogUtils.e("msg", throwable.message)
-                LogUtils.shortToast(requireContext(), throwable.localizedMessage)
+                Utility.showSnackBarValidationError(mView!!.addOfferFragmentConstraintLayout,
+                    throwable.message.toString(),
+                    requireContext())
                 mView!!.frag_add_offer_progressBar.visibility = View.GONE
                 requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             }
@@ -560,15 +611,15 @@ class AddOffers : Fragment() {
                 "lang"
             ),
             arrayOf(
-                SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId, 0)
+                sharedPreferenceInstance!!.get(SharedPreferenceUtility.UserId, 0)
                     .toString(),
                 service_id.toString(),
                 myStartDate,
                 myEndDate,
-                offerPrice,
+                offerChildPrice,
                 offerChildPrice,
                 offer_discount,
-                SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""]
+                sharedPreferenceInstance!![SharedPreferenceUtility.SelectedLang, ""]
             )
         )
         val call = apiInterface.addOffers(builder.build())
@@ -583,17 +634,24 @@ class AddOffers : Fragment() {
                     if (response.isSuccessful) {
                         if (response.body() != null) {
                             if (response.body()!!.status == 1) {
-                                LogUtils.shortToast(requireContext(), response.body()!!.message)
+                                Utility.showSnackBarOnResponseSuccess(mView!!.addOfferFragmentConstraintLayout,
+                                    response.body()!!.message,
+                                    requireContext())
                                 findNavController().popBackStack()
                             } else {
-                                LogUtils.longToast(requireContext(), response.body()!!.message)
+                                Utility.showSnackBarOnResponseError(mView!!.addOfferFragmentConstraintLayout,
+                                    response.body()!!.message,
+                                    requireContext())
                             }
+                        }else{
+                            Utility.showSnackBarOnResponseError(mView!!.addOfferFragmentConstraintLayout,
+                                response.message(),
+                                requireContext())
                         }
                     } else {
-                        LogUtils.shortToast(
-                            requireContext(),
-                            getString(R.string.response_isnt_successful)
-                        )
+                        Utility.showSnackBarOnResponseError(mView!!.addOfferFragmentConstraintLayout,
+                            requireContext().getString(R.string.response_isnt_successful),
+                            requireContext())
                     }
                 } catch (e: IOException) {
                     e.printStackTrace()
@@ -606,24 +664,14 @@ class AddOffers : Fragment() {
 
             override fun onFailure(call: Call<AddOfferResponse?>, throwable: Throwable) {
                 LogUtils.e("msg", throwable.message)
-                LogUtils.shortToast(requireContext(), throwable.localizedMessage)
+                Utility.showSnackBarOnResponseError(mView!!.addOfferFragmentConstraintLayout,
+                    throwable.message!!,
+                    requireContext())
                 mView!!.frag_add_offer_progressBar.visibility = View.GONE
                 requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             }
 
         })
-    }
-
-
-    companion object{
-        private var instance: SharedPreferenceUtility? = null
-        @Synchronized
-        fun getInstance(): SharedPreferenceUtility {
-            if (instance == null) {
-                instance = SharedPreferenceUtility()
-            }
-            return instance as SharedPreferenceUtility
-        }
     }
 
     override fun onResume() {
@@ -633,9 +681,16 @@ class AddOffers : Fragment() {
 
     private fun setNonEnabledFields(){
         mView!!.tv_choose_service.isEnabled = false
+        mView!!.card_choose_services.isEnabled = false
         mView!!.et_discount.isEnabled = false
         mView!!.et_offers_price.isEnabled = false
         mView!!.et_offers_child_price.isEnabled = false
         mView!!.et_card_duration.isEnabled = false
+        mView!!.ll_card_duration.isEnabled = false
+    }
+
+
+    private fun offerPriceCalculator(mainPrice:Double, discount:Double) : Double{
+        return mainPrice*(1-(discount/100))
     }
 }

@@ -18,7 +18,11 @@ import com.heena.supplier.models.PhotoData
 import com.heena.supplier.utils.Utility.setSafeOnClickListener
 import kotlinx.android.synthetic.main.photos_post_items.view.*
 
-class AddNewPhotosAdapter(private val context: Context, private val photosList : ArrayList<PhotoData>, private val onCLickAction : ClickInterface.OnRecyclerItemClick) :
+class AddNewPhotosAdapter(
+    private val context: Context, private val photosList: ArrayList<PhotoData>,
+    private val service_status: String,
+    private val onCLickAction: ClickInterface.OnRecyclerItemClick
+) :
     RecyclerView.Adapter<AddNewPhotosAdapter.AddNewPhotosAdapterVH>() {
     inner class AddNewPhotosAdapterVH(itemView : View) : RecyclerView.ViewHolder(itemView)
 
@@ -29,6 +33,17 @@ class AddNewPhotosAdapter(private val context: Context, private val photosList :
 
     override fun onBindViewHolder(holder: AddNewPhotosAdapterVH, position: Int) {
         val requestOptions = RequestOptions().error(R.drawable.def_henna).centerCrop()
+
+        if (service_status.equals("show")){
+            holder.itemView.aciv_delete_photos.visibility = View.GONE
+            holder.itemView.aciv_photos.setOnClickListener {
+                onCLickAction.OnClickAction(position)
+            }
+        }else{
+            holder.itemView.aciv_delete_photos.visibility = View.VISIBLE
+        }
+
+
         Glide.with(context).load(photosList[position].path)
             .listener(object : RequestListener<Drawable>{
                 override fun onLoadFailed(

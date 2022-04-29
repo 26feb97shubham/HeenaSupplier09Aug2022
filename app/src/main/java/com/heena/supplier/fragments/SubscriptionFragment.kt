@@ -13,6 +13,7 @@ import com.heena.supplier.Dialogs.NoInternetDialog
 import com.heena.supplier.R
 import com.heena.supplier.`interface`.ClickInterface
 import com.heena.supplier.adapters.SubscriptionPlansAdapter
+import com.heena.supplier.application.MyApp.Companion.sharedPreferenceInstance
 import com.heena.supplier.models.BuySubscriptionResponse
 import com.heena.supplier.models.SubscriptionPlan
 import com.heena.supplier.models.SubscriptionPlansResponse
@@ -30,9 +31,6 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class SubscriptionFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
     private var mView: View?=null
     private var subscription_plans = ArrayList<SubscriptionPlan>()
     private var subscriptionPlansAdapter : SubscriptionPlansAdapter?=null
@@ -45,7 +43,7 @@ class SubscriptionFragment : Fragment() {
         mView = inflater.inflate(R.layout.fragment_subscription, container, false)
         Utility.changeLanguage(
             requireContext(),
-            SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, "")
+            sharedPreferenceInstance!!.get(SharedPreferenceUtility.SelectedLang, "")
         )
         return mView
     }
@@ -70,13 +68,13 @@ class SubscriptionFragment : Fragment() {
 
         requireActivity().iv_back.setSafeOnClickListener {
             requireActivity().iv_back.startAnimation(AlphaAnimation(1F,0.5F))
-            SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_back)
+            sharedPreferenceInstance!!.hideSoftKeyBoard(requireContext(), requireActivity().iv_back)
             findNavController().popBackStack()
         }
 
         requireActivity().iv_notification.setSafeOnClickListener {
             requireActivity().iv_notification.startAnimation(AlphaAnimation(1F,0.5F))
-            SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_notification)
+            sharedPreferenceInstance!!.hideSoftKeyBoard(requireContext(), requireActivity().iv_notification)
             findNavController().navigate(R.id.notificationsFragment)
         }
         mView!!.tv_buy_subscription.setSafeOnClickListener {
@@ -88,23 +86,18 @@ class SubscriptionFragment : Fragment() {
                 bundle.putInt("direction", 2)
                 findNavController().navigate(R.id.myPaymentFragment, bundle)
             }else{
-                LogUtils.shortToast(requireContext(), getString(R.string.please_select_the_membership_plan_first_to_continue))
+                Utility.showSnackBarValidationError(mView!!.subscriptionFragmentConstraintLayout,
+                    requireContext().getString(R.string.please_select_the_membership_plan_first_to_continue),
+                    requireContext())
             }
-//            subscription_id = subscriptionPlansAdapter!!.getSelected()!!.subscription_plans_id
-/*          subscriptionPlan = subscription_plans[0]
-            val bundle = Bundle()
-            bundle.putSerializable("membership", null)
-            bundle.putSerializable("subscription", subscriptionPlan)
-            bundle.putInt("direction", 2)
-            findNavController().navigate(R.id.myPaymentFragment, bundle)*/
         }
     }
 
     private fun showSubscriptions() {
         mView!!.progressBar_subs.visibility = View.VISIBLE
         requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-        val call = apiInterface.subscription_plans(SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.UserId, 0],
-        SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""])
+        val call = apiInterface.subscription_plans(sharedPreferenceInstance!![SharedPreferenceUtility.UserId, 0],
+        sharedPreferenceInstance!![SharedPreferenceUtility.SelectedLang, ""])
         call.enqueue(object : Callback<SubscriptionPlansResponse?>{
             override fun onResponse(
                 call: Call<SubscriptionPlansResponse?>,
@@ -127,19 +120,24 @@ class SubscriptionFragment : Fragment() {
 
                         mView!!.rv_subscription_plans.adapter = subscriptionPlansAdapter
                         mView!!.pageIndicator_subscription_plans.attachTo(mView!!.rv_subscription_plans)
-                        subscriptionPlansAdapter!!.notifyDataSetChanged()
                     }else{
-                        LogUtils.shortToast(requireContext(), response.body()!!.message)
+                        Utility.showSnackBarOnResponseError(mView!!.subscriptionFragmentConstraintLayout,
+                            response.body()!!.message,
+                            requireContext())
                     }
                 }else{
-                    LogUtils.shortToast(requireContext(), getString(R.string.response_isnt_successful))
+                    Utility.showSnackBarOnResponseError(mView!!.subscriptionFragmentConstraintLayout,
+                        requireContext().getString(R.string.response_isnt_successful),
+                        requireContext())
                 }
             }
 
             override fun onFailure(call: Call<SubscriptionPlansResponse?>, t: Throwable) {
                 mView!!.progressBar_subs.visibility= View.GONE
                 requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                LogUtils.longToast(requireContext(),getString(R.string.response_isnt_successful))
+                Utility.showSnackBarOnResponseError(mView!!.subscriptionFragmentConstraintLayout,
+                    t.message.toString(),
+                    requireContext())
             }
 
         })

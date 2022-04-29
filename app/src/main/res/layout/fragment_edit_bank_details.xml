@@ -5,12 +5,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/editBankDetailsFragmentConstraintLayout"
     android:background="@android:color/transparent"
     tools:context=".fragments.EditBankDetailsFragment">
 
     <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -18,161 +24,188 @@
 
             <LinearLayout
                 android:id="@+id/ll_bank_name"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginTop="@dimen/_10sdp"
                 android:orientation="vertical"
-                android:layout_marginTop="@dimen/_30sdp">
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
                 <com.google.android.material.textview.MaterialTextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/bank_name"
-                    android:textAllCaps="false"
-                    android:textSize="@dimen/_11ssp"
-                    android:textStyle="normal"
-                    android:gravity="center_vertical"
-                    android:imeOptions="actionNext"
                     android:fontFamily="@font/avenir_medium"
-                    android:textColor="@color/text_gold_color_dark"/>
-                <com.google.android.material.textfield.TextInputEditText
-                    android:textDirection="locale"
+                    android:gravity="center_vertical|start"
                     android:textAlignment="viewStart"
-                    android:paddingStart="@dimen/_4sdp"
+                    android:imeOptions="actionNext"
+                    android:text="@string/bank_name"
+                    android:paddingHorizontal="10dp"
+                    android:textAllCaps="false"
+                    android:textColor="@color/text_gold_color_dark"
+                    android:textSize="@dimen/_11ssp"
+                    android:textStyle="normal" />
+
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/et_bank_name"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_60sdp"
-                    android:backgroundTint="@color/gray"
-                    android:textColorHint="@color/gold"
-                    android:textColor="@color/gold"
-                    android:hint="Emirates NBD"
-                    android:textCursorDrawable="@color/gold"
-                    android:inputType="text"
+                    app:backgroundTint="@color/gray"
+                    android:paddingHorizontal="10dp"
                     android:drawableStart="@drawable/edit_1"
                     android:drawablePadding="@dimen/_12sdp"
-                    android:gravity="center_vertical|start"
-                    android:textStyle="normal"
                     android:fontFamily="@font/avenir_medium"
-                    android:textSize="@dimen/_15ssp"/>
+                    android:gravity="center_vertical|start"
+                    android:hint="--"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/gold"
+                    android:textColorHint="@color/gold"
+                    android:textCursorDrawable="@color/gold"
+                    android:textDirection="locale"
+                    android:textSize="@dimen/_15ssp"
+                    android:textStyle="normal" />
             </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/ll_full_name"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/ll_bank_name"
+                android:layout_marginTop="@dimen/_14sdp"
                 android:orientation="vertical"
-                android:layout_marginTop="@dimen/_30sdp">
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ll_bank_name">
+
                 <com.google.android.material.textview.MaterialTextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/avenir_medium"
+                    android:gravity="center_vertical|start"
+                    android:textAlignment="viewStart"
+                    android:imeOptions="actionNext"
+                    android:paddingHorizontal="10dp"
                     android:text="@string/full_name"
                     android:textAllCaps="false"
+                    android:textColor="@color/text_gold_color_dark"
                     android:textSize="@dimen/_11ssp"
-                    android:textStyle="normal"
-                    android:gravity="center_vertical"
-                    android:imeOptions="actionNext"
-                    android:fontFamily="@font/avenir_medium"
-                    android:textColor="@color/text_gold_color_dark"/>
+                    android:textStyle="normal" />
+
                 <com.google.android.material.textfield.TextInputEditText
-                    android:textDirection="locale"
-                    android:textAlignment="viewStart"
                     android:id="@+id/et_fullname"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_60sdp"
                     android:backgroundTint="@color/gray"
-                    android:maxLines="1"
-                    android:maxLength="55"
-                    android:textColor="@color/gold"
-                    android:textColorHint="@color/gold"
-                    android:hint="Farah"
-                    android:textCursorDrawable="@color/gold"
                     android:drawableStart="@drawable/edit_1"
                     android:drawablePadding="@dimen/_12sdp"
-                    android:inputType="text"
-                    android:gravity="center_vertical|start"
-                    android:textStyle="normal"
                     android:fontFamily="@font/avenir_medium"
-                    android:textSize="@dimen/_15ssp"/>
+                    android:gravity="center_vertical|start"
+                    android:hint="--"
+                    android:inputType="text"
+                    android:maxLength="55"
+                    android:maxLines="1"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/gold"
+                    android:textColorHint="@color/gold"
+                    android:textCursorDrawable="@color/gold"
+                    android:textDirection="locale"
+                    android:textSize="@dimen/_15ssp"
+                    android:textStyle="normal" />
             </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/ll_acc_number"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/ll_full_name"
+                android:layout_marginTop="@dimen/_14sdp"
                 android:orientation="vertical"
-                android:layout_marginTop="@dimen/_30sdp">
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ll_full_name">
+
                 <com.google.android.material.textview.MaterialTextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/account_number"
-                    android:textAllCaps="false"
-                    android:textSize="@dimen/_11ssp"
-                    android:textStyle="normal"
-                    android:gravity="center_vertical"
                     android:fontFamily="@font/avenir_medium"
-                    android:textColor="@color/text_gold_color_dark"/>
-                <com.google.android.material.textfield.TextInputEditText
-                    android:textDirection="locale"
+                    android:gravity="center_vertical|start"
+                    android:paddingHorizontal="10dp"
+                    android:text="@string/account_number"
                     android:textAlignment="viewStart"
+                    android:textAllCaps="false"
+                    android:textColor="@color/text_gold_color_dark"
+                    android:textSize="@dimen/_11ssp"
+                    android:textStyle="normal" />
+
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/et_acc_number"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_60sdp"
                     android:backgroundTint="@color/gray"
-                    android:textColor="@color/gold"
-                    android:inputType="phone"
-                    android:maxLength="37"
-                    android:singleLine="true"
-                    android:hint="1234 5678 9101 1121"
-                    android:textColorHint="@color/gold"
-                    android:textCursorDrawable="@color/gold"
                     android:drawableStart="@drawable/edit_1"
                     android:drawablePadding="@dimen/_12sdp"
-                    android:gravity="center_vertical|start"
-                    android:textStyle="normal"
                     android:fontFamily="@font/avenir_medium"
-                    android:textSize="@dimen/_15ssp"/>
+                    android:gravity="center_vertical|start"
+                    android:hint="--"
+                    android:inputType="phone"
+                    android:maxLength="37"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/gold"
+                    android:textColorHint="@color/gold"
+                    android:textCursorDrawable="@color/gold"
+                    android:textDirection="locale"
+                    android:textSize="@dimen/_15ssp"
+                    android:textStyle="normal" />
             </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/ll_iban_number"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/ll_acc_number"
+                android:layout_marginTop="@dimen/_14sdp"
                 android:orientation="vertical"
-                android:layout_marginTop="@dimen/_30sdp">
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ll_acc_number">
+
                 <com.google.android.material.textview.MaterialTextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/iban"
-                    android:textAllCaps="false"
-                    android:textSize="@dimen/_11ssp"
-                    android:textStyle="normal"
-                    android:imeOptions="actionNext"
-                    android:gravity="center_vertical"
                     android:fontFamily="@font/avenir_medium"
-                    android:textColor="@color/text_gold_color_dark"/>
-                <com.google.android.material.textfield.TextInputEditText
-                    android:textDirection="locale"
+                    android:paddingHorizontal="10dp"
+                    android:gravity="center_vertical|start"
+                    android:imeOptions="actionNext"
+                    android:text="@string/iban"
                     android:textAlignment="viewStart"
+                    android:textAllCaps="false"
+                    android:textColor="@color/text_gold_color_dark"
+                    android:textSize="@dimen/_11ssp"
+                    android:textStyle="normal" />
+
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/et_iban"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_60sdp"
-                    android:backgroundTint="@color/gray"
-                    android:textColor="@color/gold"
-                    android:inputType="text"
-                    android:singleLine="true"
-                    android:hint="AEN1234567891011121"
-                    android:textColorHint="@color/gold"
-                    android:textCursorDrawable="@color/gold"
-                    android:maxLength="34"
-                    android:imeOptions="actionDone"
+                    app:backgroundTint="@color/gray"
                     android:drawableStart="@drawable/edit_1"
                     android:drawablePadding="@dimen/_12sdp"
-                    android:gravity="center_vertical|start"
-                    android:textStyle="normal"
                     android:fontFamily="@font/avenir_medium"
-                    android:textSize="@dimen/_15ssp"/>
+                    android:gravity="center_vertical|start"
+                    android:hint="--"
+                    android:imeOptions="actionDone"
+                    android:inputType="text"
+                    android:maxLength="34"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/gold"
+                    android:textColorHint="@color/gold"
+                    android:textCursorDrawable="@color/gold"
+                    android:textDirection="locale"
+                    android:textSize="@dimen/_15ssp"
+                    android:textStyle="normal" />
             </LinearLayout>
 
 
@@ -180,18 +213,18 @@
                 android:id="@+id/tv_save_bank_details"
                 android:layout_width="@dimen/_200sdp"
                 android:layout_height="@dimen/_40sdp"
+                android:layout_marginTop="@dimen/_30sdp"
                 android:layout_weight="1"
                 android:background="@drawable/curved_gold_filled_rect_box"
-                android:text="@string/save_changes"
-                android:textSize="@dimen/_15ssp"
-                android:textColor="@color/black"
-                android:layout_marginTop="@dimen/_30sdp"
                 android:fontFamily="@font/avenir_medium"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/ll_iban_number"
+                android:gravity="center"
+                android:text="@string/save_changes"
                 android:textAllCaps="true"
-                android:gravity="center"/>
+                android:textColor="@color/black"
+                android:textSize="@dimen/_15ssp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ll_iban_number" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 

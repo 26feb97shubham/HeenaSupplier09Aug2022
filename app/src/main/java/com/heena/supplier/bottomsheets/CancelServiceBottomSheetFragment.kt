@@ -15,8 +15,11 @@ import kotlinx.android.synthetic.main.fragment_cancel_service_bottom_sheet.view.
 import android.view.MotionEvent
 
 import android.view.View.OnTouchListener
+import androidx.fragment.app.DialogFragment
 
 import com.heena.supplier.*
+import com.heena.supplier.application.MyApp
+import com.heena.supplier.utils.Utility
 import com.heena.supplier.utils.Utility.setSafeOnClickListener
 
 
@@ -24,6 +27,12 @@ class CancelServiceBottomSheetFragment : BottomSheetDialogFragment() {
     private var mView : View?=null
     private var rsn_for_cancellation : String ?= null
     private var onServiceCancelClick : ClickInterface.OnCancelServiceClick?= null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.BottomSheetDialogTheme)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -31,11 +40,17 @@ class CancelServiceBottomSheetFragment : BottomSheetDialogFragment() {
         // Inflate the layout for this fragment
         mView  = inflater.inflate(
                 R.layout.fragment_cancel_service_bottom_sheet, container, false)
+        Utility.changeLanguage(
+            requireContext(),
+            MyApp.sharedPreferenceInstance!![SharedPreferenceUtility.SelectedLang, ""]
+        )
         return mView
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+
         tv_proceed!!.setSafeOnClickListener { // dismiss dialog
             /*findNavController().navigate(R.id.action_filterbottomsheetdialogfragment_to_filteredproductsfragment)*/
 
@@ -53,8 +68,9 @@ class CancelServiceBottomSheetFragment : BottomSheetDialogFragment() {
 
             rsn_for_cancellation = mView!!.et_rsn_for_cancellation.text.toString().trim()
             if (TextUtils.isEmpty(rsn_for_cancellation)){
-                mView!!.et_rsn_for_cancellation.requestFocus()
-                mView!!.et_rsn_for_cancellation.error = getString(R.string.please_enter_valid_message)
+                Utility.showSnackBarValidationError(mView!!.cancelServiceBottomSheetDialogCoordinatorLayout,
+                    requireContext().getString(R.string.please_enter_valid_message),
+                    requireContext())
             }else{
                 onServiceCancelClick!!.OnCancelService(rsn_for_cancellation)
                 dismiss()

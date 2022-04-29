@@ -25,7 +25,7 @@ class DashBoardBookingsAdapter(
         fun bind(bookingItem: BookingItem, position: Int, context: Context) {
             val bookingId = "BOOK#" + bookingItem.booking_id
             dashboarditemView.tv_booking_id.text = bookingId
-//            dashboarditemView.tv_service_name.text = bookingItem.service!!.name
+            dashboarditemView.tv_service_name.text = bookingItem.name
             val price = "AED " + Utility.convertDoubleValueWithCommaSeparator(bookingItem.bks_price!!.toDouble())
             dashboarditemView.tv_service_price.text = price
             dashboarditemView.tv_service_date_booking.text = bookingItem.date

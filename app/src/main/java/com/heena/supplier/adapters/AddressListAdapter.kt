@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.heena.supplier.R
 import com.heena.supplier.`interface`.ClickInterface
+import com.heena.supplier.application.MyApp.Companion.sharedPreferenceInstance
 import com.heena.supplier.models.AddressItem
 import com.heena.supplier.utils.SharedPreferenceUtility
 import com.heena.supplier.utils.Utility.setSafeOnClickListener
@@ -19,12 +20,19 @@ class AddressListAdapter(
 ): RecyclerView.Adapter<AddressListAdapter.AddressListAdapterVH>() {
     inner class AddressListAdapterVH(val itemView : View) : RecyclerView.ViewHolder(itemView){
         fun bind(addressItem: AddressItem, position: Int) {
-            if(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, "").toString().equals("ar")){
+            if(sharedPreferenceInstance!!.get(SharedPreferenceUtility.SelectedLang, "").toString().equals("ar")){
                 itemView.tv_address_title.gravity = Gravity.END
                 itemView.tv_address.gravity = Gravity.END
             }
             itemView.tv_address_title.text = addressItem.title
             itemView.tv_address.text = addressItem.flat + "," + addressItem.street
+
+            if (addressItem.is_default==0){
+                itemView.tv_is_default.visibility = View.GONE
+            }else{
+                itemView.tv_is_default.visibility = View.VISIBLE
+            }
+
 
             itemView.tv_address_edit.setSafeOnClickListener {
                 OnAddressItemClick.editAdddress(position)

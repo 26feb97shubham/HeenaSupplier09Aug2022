@@ -18,6 +18,7 @@ import com.heena.supplier.utils.LogUtils
 import com.heena.supplier.utils.SharedPreferenceUtility
 import com.heena.supplier.utils.Utility
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.heena.supplier.application.MyApp.Companion.sharedPreferenceInstance
 import com.heena.supplier.utils.Utility.setSafeOnClickListener
 import kotlinx.android.synthetic.main.fragment_membership_bottom_sheet_dialog.view.*
 import org.json.JSONException
@@ -42,6 +43,10 @@ class MembershipBottomSheetDialogFragment : BottomSheetDialogFragment() {
         // Inflate the layout for this fragment
         mView  = inflater.inflate(
                 R.layout.fragment_membership_bottom_sheet_dialog, container, false)
+        Utility.changeLanguage(
+            requireContext(),
+            sharedPreferenceInstance!![SharedPreferenceUtility.SelectedLang, ""]
+        )
         getMembershipList()
         return mView
     }
@@ -53,13 +58,17 @@ class MembershipBottomSheetDialogFragment : BottomSheetDialogFragment() {
             if (membershipPlansListAdapter.getSelected()!=null){
                 membershipId = membershipPlansListAdapter.getSelected()!!.membership_id
                 if (dashboardMembershipId==membershipId){
-                    LogUtils.shortToast(requireContext(), getString(R.string.plan_already_purchased))
+                    Utility.showSnackBarValidationError(mView!!.membershipBottomSheetDialogCoordinatorLayout,
+                        requireContext().getString(R.string.plan_already_purchased),
+                        requireContext())
                 }else{
                     membership?.let { it1 -> OnSubscribeCallback!!.OnSubscribe(it1) }
                     dismiss()
                 }
             }else{
-                LogUtils.shortToast(requireContext(), getString(R.string.please_select_the_membership_plan_first_to_continue))
+                Utility.showSnackBarValidationError(mView!!.membershipBottomSheetDialogCoordinatorLayout,
+                    requireContext().getString(R.string.please_select_the_membership_plan_first_to_continue),
+                    requireContext())
             }
         }
     }
@@ -69,7 +78,7 @@ class MembershipBottomSheetDialogFragment : BottomSheetDialogFragment() {
             requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             mView!!.membership_bottom_sheet_progressBar.visibility= View.VISIBLE
             val apiInterface = APIClient.getClient()!!.create(APIInterface::class.java)
-            val call = apiInterface.membershipList(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId, 0), SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""])
+            val call = apiInterface.membershipList(sharedPreferenceInstance!!.get(SharedPreferenceUtility.UserId, 0), sharedPreferenceInstance!![SharedPreferenceUtility.SelectedLang, ""])
             call!!.enqueue(object : Callback<MembershipListResponse?> {
                 override fun onResponse(call: Call<MembershipListResponse?>, response: Response<MembershipListResponse?>) {
                     mView!!.membership_bottom_sheet_progressBar.visibility = View.GONE
@@ -135,7 +144,7 @@ class MembershipBottomSheetDialogFragment : BottomSheetDialogFragment() {
     companion object {
         const val TAG = "MembershipBottomSheetDialogFragment"
         private var instance: SharedPreferenceUtility? = null
-        private var dashboardMembershipId = 0
+        var dashboardMembershipId = 0
         fun newInstance(context: Context?, membershipId: Int): MembershipBottomSheetDialogFragment {
             //this.context = context;\
             dashboardMembershipId = membershipId

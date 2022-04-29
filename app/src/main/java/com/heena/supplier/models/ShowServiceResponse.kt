@@ -1,5 +1,7 @@
 package com.heena.supplier.models
 
+import java.io.Serializable
+
 data class ShowServiceResponse(
 	val bank: Bank? = null,
 	val service: Service? = null,
@@ -7,5 +9,5 @@ data class ShowServiceResponse(
 	val category: List<CategoryItem?>? = null,
 	val gallery: List<GalleryItem?>? = null,
 	val status: Int? = null
-)
+): Serializable
 

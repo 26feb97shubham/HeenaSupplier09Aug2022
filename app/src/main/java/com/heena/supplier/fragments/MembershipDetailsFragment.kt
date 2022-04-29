@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.heena.supplier.R
 import com.heena.supplier.`interface`.ClickInterface
 import com.heena.supplier.adapters.ServicesAdapter
+import com.heena.supplier.application.MyApp.Companion.sharedPreferenceInstance
 import com.heena.supplier.models.*
 import com.heena.supplier.utils.LogUtils
 import com.heena.supplier.utils.SharedPreferenceUtility
@@ -51,10 +52,10 @@ class MembershipDetailsFragment : Fragment() {
         mView = inflater.inflate(R.layout.fragment_membership_details, container, false)
         Utility.changeLanguage(
             requireContext(),
-            SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, "")
+            sharedPreferenceInstance!!.get(SharedPreferenceUtility.SelectedLang, "")
         )
         if (subscriptions!=null){
-            subscription_id = subscriptions!!.id
+            subscription_id = subscriptions!!.id!!
         }else{
             subscription_id = 0
         }
@@ -69,13 +70,13 @@ class MembershipDetailsFragment : Fragment() {
 
         requireActivity().iv_back.setSafeOnClickListener {
             requireActivity().iv_back.startAnimation(AlphaAnimation(1F,0.5F))
-            SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_back)
+            sharedPreferenceInstance!!.hideSoftKeyBoard(requireContext(), requireActivity().iv_back)
             findNavController().popBackStack()
         }
 
         requireActivity().iv_notification.setSafeOnClickListener {
             requireActivity().iv_notification.startAnimation(AlphaAnimation(1F,0.5F))
-            SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_notification)
+            sharedPreferenceInstance!!.hideSoftKeyBoard(requireContext(), requireActivity().iv_notification)
             findNavController().navigate(R.id.notificationsFragment)
         }
 
@@ -83,9 +84,9 @@ class MembershipDetailsFragment : Fragment() {
         mView!!.tv_membership_plan_price_details.text = "AED " + Utility.convertDoubleValueWithCommaSeparator(
             subscriptions!!.amount!!.toDouble()
         )
-        mView!!.linearprogressindicator_details.max = subscriptions!!.days
-        mView!!.linearprogressindicator1_details.max = subscriptions!!.days
-        mView!!.linearprogressindicator1_details.progress = subscriptions!!.ended_day
+        mView!!.linearprogressindicator_details.max = subscriptions!!.days!!
+        mView!!.linearprogressindicator1_details.max = subscriptions!!.days!!
+        mView!!.linearprogressindicator1_details.progress = subscriptions!!.ended_day!!
         mView!!.tv_expiration_date_details.text = subscriptions!!.end_date
 
         tv_add_new_featured!!.setSafeOnClickListener {
@@ -100,8 +101,8 @@ class MembershipDetailsFragment : Fragment() {
     private fun getServices() {
         frag_membership_details_progressBar.visibility = View.VISIBLE
         requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-        val call = apiInterface.featuredserviceslisting(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId,0),
-                SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, ""))
+        val call = apiInterface.featuredserviceslisting(sharedPreferenceInstance!!.get(SharedPreferenceUtility.UserId,0),
+                sharedPreferenceInstance!!.get(SharedPreferenceUtility.SelectedLang, ""))
         call!!.enqueue(object : Callback<FeaturedServicesListingResponse?> {
             override fun onResponse(
                     call: Call<FeaturedServicesListingResponse?>,
@@ -110,81 +111,91 @@ class MembershipDetailsFragment : Fragment() {
                 mView!!.frag_membership_details_progressBar.visibility= View.GONE
                 requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 if (response.isSuccessful){
-                    if (response.body()!!.status==1){
-                        serviceslisting.clear()
-                        serviceslisting = response.body()!!.service as ArrayList<Service>
-                        mView!!.rv_add_new_featured_listing.visibility = View.VISIBLE
-                        mView!!.ll_no_services_found_membership_details.visibility = View.GONE
-                        mView!!.rv_add_new_featured_listing.layoutManager = LinearLayoutManager(
+                    if (response.body()!=null){
+                        if (response.body()!!.status==1){
+                            serviceslisting.clear()
+                            serviceslisting = response.body()!!.service as ArrayList<Service>
+                            mView!!.rv_add_new_featured_listing.visibility = View.VISIBLE
+                            mView!!.ll_no_services_found_membership_details.visibility = View.GONE
+                            mView!!.rv_add_new_featured_listing.layoutManager = LinearLayoutManager(
                                 requireContext(),
                                 LinearLayoutManager.VERTICAL,
                                 false
-                        )
+                            )
 
-                        servicesAdapter = ServicesAdapter(requireContext(), serviceslisting,subscription_id, object : ClickInterface.onServicesItemClick{
-                            override fun onServicClick(position: Int) {
-                                val bundle = Bundle()
-                                bundle.putStringArrayList("gallery",
-                                    serviceslisting[position].gallery as ArrayList<String>?
-                                )
-                                findNavController().navigate(R.id.viewImageFragment, bundle)
-                            }
-
-                            override fun onServiceDele(position: Int) {
-                                val serviceid = serviceslisting.get(position).service_id
-                                val deleteServiceDialog = AlertDialog.Builder(requireContext())
-                                deleteServiceDialog.setCancelable(false)
-                                deleteServiceDialog.setTitle(requireContext().getString(R.string.delete_service))
-                                deleteServiceDialog.setMessage(requireContext().getString(R.string.are_you_sure_you_want_to_delete_the_service))
-                                deleteServiceDialog.setPositiveButton(requireContext().getString(R.string.delete)
-                                ) { dialog, _ ->
-                                    deleteServices(serviceid!!, position)
-                                    dialog!!.dismiss()
+                            servicesAdapter = ServicesAdapter(requireContext(), serviceslisting,subscription_id, object : ClickInterface.onServicesItemClick{
+                                override fun onServicClick(position: Int) {
+                                    val bundle = Bundle()
+                                    bundle.putStringArrayList("gallery",
+                                        serviceslisting[position].gallery as ArrayList<String>?
+                                    )
+                                    findNavController().navigate(R.id.viewImageFragment, bundle)
                                 }
-                                deleteServiceDialog.setNegativeButton(requireContext().getString(R.string.cancel)
-                                ) { dialog, _ -> dialog!!.cancel() }
-                                deleteServiceDialog.show()
-                            }
 
-                            override fun onServiceEdit(position: Int) {
-                                val updateServiceDialog = AlertDialog.Builder(requireContext())
-                                updateServiceDialog.setCancelable(false)
-                                updateServiceDialog.setTitle(requireContext().getString(R.string.update_service))
-                                updateServiceDialog.setMessage(requireContext().getString(R.string.would_you_like_to_update_your_service_details))
-                                updateServiceDialog.setPositiveButton(requireContext().getString(R.string.yes)
-                                ) { dialog, _ ->
-                                    val service_id = serviceslisting.get(position).service_id
+                                override fun onServiceDele(position: Int) {
+                                    val serviceid = serviceslisting.get(position).service_id
+                                    val deleteServiceDialog = AlertDialog.Builder(requireContext())
+                                    deleteServiceDialog.setCancelable(false)
+                                    deleteServiceDialog.setTitle(requireContext().getString(R.string.delete_service))
+                                    deleteServiceDialog.setMessage(requireContext().getString(R.string.are_you_sure_you_want_to_delete_the_service))
+                                    deleteServiceDialog.setPositiveButton(requireContext().getString(R.string.delete)
+                                    ) { dialog, _ ->
+                                        deleteServices(serviceid!!, position)
+                                        dialog!!.dismiss()
+                                    }
+                                    deleteServiceDialog.setNegativeButton(requireContext().getString(R.string.cancel)
+                                    ) { dialog, _ -> dialog!!.cancel() }
+                                    deleteServiceDialog.show()
+                                }
+
+                                override fun onServiceEdit(position: Int) {
+                                    val updateServiceDialog = AlertDialog.Builder(requireContext())
+                                    updateServiceDialog.setCancelable(false)
+                                    updateServiceDialog.setTitle(requireContext().getString(R.string.update_service))
+                                    updateServiceDialog.setMessage(requireContext().getString(R.string.would_you_like_to_update_your_service_details))
+                                    updateServiceDialog.setPositiveButton(requireContext().getString(R.string.yes)
+                                    ) { dialog, _ ->
+                                        val service_id = serviceslisting.get(position).service_id
+                                        val bundle = Bundle()
+                                        bundle.putInt("service_id", service_id!!)
+                                        bundle.putString("status", "edit")
+                                        findNavController().navigate(R.id.action_membershipStatusFragment_to_addNewFeaturedFragment, bundle)
+                                        dialog!!.dismiss()
+                                    }
+                                    updateServiceDialog.setNegativeButton(requireContext().getString(R.string.no)
+                                    ) { dialog, _ -> dialog!!.cancel() }
+                                    updateServiceDialog.show()
+                                }
+
+                                override fun onServiceView(position: Int) {
+                                    val service_id = serviceslisting[position].service_id
+                                    val status = "show"
                                     val bundle = Bundle()
                                     bundle.putInt("service_id", service_id!!)
-                                    bundle.putString("status", "edit")
+                                    bundle.putString("status", status)
                                     findNavController().navigate(R.id.action_membershipStatusFragment_to_addNewFeaturedFragment, bundle)
-                                    dialog!!.dismiss()
                                 }
-                                updateServiceDialog.setNegativeButton(requireContext().getString(R.string.no)
-                                ) { dialog, _ -> dialog!!.cancel() }
-                                updateServiceDialog.show()
-                            }
 
-                            override fun onServiceView(position: Int) {
-                                val service_id = serviceslisting[position].service_id
-                                val status = "show"
-                                val bundle = Bundle()
-                                bundle.putInt("service_id", service_id!!)
-                                bundle.putString("status", status)
-                                findNavController().navigate(R.id.action_membershipStatusFragment_to_addNewFeaturedFragment, bundle)
-                            }
-
-                        })
-                        mView!!.rv_add_new_featured_listing.adapter = servicesAdapter
-                        servicesAdapter.notifyDataSetChanged()
+                            })
+                            mView!!.rv_add_new_featured_listing.adapter = servicesAdapter
+                        }else{
+                            mView!!.rv_add_new_featured_listing.visibility = View.GONE
+                            mView!!.ll_no_services_found_membership_details.visibility = View.VISIBLE
+                            Utility.showSnackBarOnResponseError(mView!!.membershipDetailsFragmentConstraintLayout,
+                                response.body()!!.message.toString(),
+                                requireContext())
+                        }
                     }else{
-                        mView!!.rv_add_new_featured_listing.visibility = View.GONE
-                        mView!!.ll_no_services_found_membership_details.visibility = View.VISIBLE
+                        Utility.showSnackBarOnResponseError(mView!!.membershipDetailsFragmentConstraintLayout,
+                            response.message(),
+                            requireContext())
                     }
                 }else{
                     mView!!.rv_add_new_featured_listing.visibility = View.GONE
                     mView!!.ll_no_services_found_membership_details.visibility = View.VISIBLE
-                    LogUtils.shortToast(requireContext(), getString(R.string.response_isnt_successful))
+                    Utility.showSnackBarOnResponseError(mView!!.membershipDetailsFragmentConstraintLayout,
+                        requireContext().getString(R.string.response_isnt_successful),
+                        requireContext())
                 }
             }
 
@@ -194,56 +205,62 @@ class MembershipDetailsFragment : Fragment() {
                 mView!!.rv_add_new_featured_listing.visibility = View.GONE
                 mView!!.ll_no_services_found_membership_details.visibility = View.VISIBLE
                 requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                LogUtils.shortToast(requireContext(), throwable.message)
+                Utility.showSnackBarOnResponseError(mView!!.membershipDetailsFragmentConstraintLayout,
+                    throwable.message.toString(),
+                    requireContext())
             }
-
         })
     }
 
 
     private fun deleteServices(serviceId: Int, position: Int) {
-        val call = apiInterface.deleteservice(serviceId,  SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""])
+        val call = apiInterface.deleteservice(serviceId,  sharedPreferenceInstance!![SharedPreferenceUtility.SelectedLang, ""])
         call!!.enqueue(object : Callback<DeleteServiceResponse?>{
             override fun onResponse(
                     call: Call<DeleteServiceResponse?>,
                     response: Response<DeleteServiceResponse?>
             ) {
                 if (response.isSuccessful){
-                    if (response.body()!!.status==1){
-                        serviceslisting.removeAt(position)
-                        if (mView!!.rv_add_new_featured_listing.adapter != null) {
-                            mView!!.rv_add_new_featured_listing.adapter!!.notifyDataSetChanged()
-                        }
-                        if (serviceslisting.size==0){
-                            mView!!.rv_add_new_featured_listing.visibility = View.GONE
-                            mView!!.ll_no_services_found_membership_details.visibility = View.VISIBLE
+                    if (response.body()!=null){
+                        if (response.body()!!.status==1){
+                            serviceslisting.removeAt(position)
+                            if (mView!!.rv_add_new_featured_listing.adapter != null) {
+                                mView!!.rv_add_new_featured_listing.adapter!!.notifyDataSetChanged()
+                            }
+                            if (serviceslisting.size==0){
+                                mView!!.rv_add_new_featured_listing.visibility = View.GONE
+                                mView!!.ll_no_services_found_membership_details.visibility = View.VISIBLE
+                            }else{
+                                mView!!.rv_add_new_featured_listing.visibility = View.VISIBLE
+                                mView!!.ll_no_services_found_membership_details.visibility = View.GONE
+                            }
+                            Utility.showSnackBarOnResponseSuccess(mView!!.membershipDetailsFragmentConstraintLayout,
+                                response.body()!!.message.toString(),
+                                requireContext())
                         }else{
-                            mView!!.rv_add_new_featured_listing.visibility = View.VISIBLE
-                            mView!!.ll_no_services_found_membership_details.visibility = View.GONE
+                            Utility.showSnackBarOnResponseError(mView!!.membershipDetailsFragmentConstraintLayout,
+                                response.body()!!.message.toString(),
+                                requireContext())
                         }
-                        LogUtils.longToast(requireContext(), response.body()!!.message)
+                    }else{
+                        Utility.showSnackBarOnResponseError(mView!!.membershipDetailsFragmentConstraintLayout,
+                            response.message(),
+                            requireContext())
                     }
                 }else{
-                    LogUtils.shortToast(requireContext(), getString(R.string.response_isnt_successful))
+                    Utility.showSnackBarOnResponseError(mView!!.membershipDetailsFragmentConstraintLayout,
+                        requireContext().getString(R.string.response_isnt_successful),
+                        requireContext())
                 }
             }
 
             override fun onFailure(call: Call<DeleteServiceResponse?>, throwable: Throwable) {
                 LogUtils.e("msg", throwable.message)
-                LogUtils.shortToast(requireContext(), getString(R.string.check_internet))
+                Utility.showSnackBarOnResponseError(mView!!.membershipDetailsFragmentConstraintLayout,
+                    throwable.message.toString(),
+                    requireContext())
             }
 
         })
-    }
-
-    companion object{
-        private var instance: SharedPreferenceUtility? = null
-        @Synchronized
-        fun getInstance(): SharedPreferenceUtility {
-            if (instance == null) {
-                instance = SharedPreferenceUtility()
-            }
-            return instance as SharedPreferenceUtility
-        }
     }
 }

@@ -1,6 +1,7 @@
 package com.heena.supplier.fragments
 
 import android.os.Bundle
+import android.os.Handler
 import android.text.TextUtils
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -11,6 +12,7 @@ import android.view.animation.AlphaAnimation
 import androidx.core.widget.doAfterTextChanged
 import androidx.navigation.fragment.findNavController
 import com.heena.supplier.R
+import com.heena.supplier.application.MyApp.Companion.sharedPreferenceInstance
 import com.heena.supplier.models.AddEditBankResponse
 import com.heena.supplier.models.Bank
 import com.heena.supplier.rest.APIClient
@@ -26,6 +28,8 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.IOException
+import java.util.*
+import kotlin.concurrent.schedule
 
 class EditBankDetailsFragment : Fragment() {
     private var mView : View ?= null
@@ -55,7 +59,7 @@ class EditBankDetailsFragment : Fragment() {
             R.layout.fragment_edit_bank_details, container, false)
         Utility.changeLanguage(
             requireContext(),
-            SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, "")
+            sharedPreferenceInstance!!.get(SharedPreferenceUtility.SelectedLang, "")
         )
         setUpViews()
         return mView
@@ -64,13 +68,13 @@ class EditBankDetailsFragment : Fragment() {
     private fun setUpViews() {
         requireActivity().iv_back.setSafeOnClickListener {
             requireActivity().iv_back.startAnimation(AlphaAnimation(1F,0.5F))
-            SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_back)
+            sharedPreferenceInstance!!.hideSoftKeyBoard(requireContext(), requireActivity().iv_back)
             findNavController().popBackStack()
         }
 
         requireActivity().iv_notification.setSafeOnClickListener {
             requireActivity().iv_notification.startAnimation(AlphaAnimation(1F,0.5F))
-            SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_notification)
+            sharedPreferenceInstance!!.hideSoftKeyBoard(requireContext(), requireActivity().iv_notification)
             findNavController().navigate(R.id.notificationsFragment)
         }
 
@@ -121,23 +125,25 @@ class EditBankDetailsFragment : Fragment() {
         val accountNumber = acc_no!!.replace(" ", "")
 
         if (TextUtils.isEmpty(bankName)){
-            mView!!.et_bank_name.requestFocus()
-            mView!!.et_bank_name.error = getString(R.string.please_enter_valid_bank_name)
+            Utility.showSnackBarValidationError(mView!!.editBankDetailsFragmentConstraintLayout,
+                requireContext().getString(R.string.please_enter_valid_bank_name),
+                requireContext())
         }else if (TextUtils.isEmpty(fullName)){
-            mView!!.et_fullname.requestFocus()
-            mView!!.et_fullname.error = getString(R.string.please_enter_your_full_name)
+            Utility.showSnackBarValidationError(mView!!.editBankDetailsFragmentConstraintLayout,
+                requireContext().getString(R.string.please_enter_your_full_name),
+                requireContext())
         }else if(TextUtils.isEmpty(acc_no)){
-            mView!!.et_acc_number.requestFocus()
-            mView!!.et_acc_number.error = getString(R.string.please_enter_valid_account_number)
-        }else if(!SharedPreferenceUtility.getInstance().isAccountNoValid(accountNumber)){
-            mView!!.et_acc_number.requestFocus()
-            mView!!.et_acc_number.error = getString(R.string.please_enter_valid_account_number)
+            Utility.showSnackBarValidationError(mView!!.editBankDetailsFragmentConstraintLayout,
+                requireContext().getString(R.string.please_enter_your_account_number),
+                requireContext())
+        }else if(!sharedPreferenceInstance!!.isAccountNoValid(accountNumber)){
+            Utility.showSnackBarValidationError(mView!!.editBankDetailsFragmentConstraintLayout,
+                requireContext().getString(R.string.please_enter_valid_account_number),
+                requireContext())
         }else if(TextUtils.isEmpty(iban_no)){
-            mView!!.et_iban.requestFocus()
-            mView!!.et_iban.error = getString(R.string.please_enter_valid_iban)
-        }else if(!SharedPreferenceUtility.getInstance().isIbanValid(iban_no!!, accountNumber)){
-            mView!!.et_iban.requestFocus()
-            mView!!.et_iban.error = getString(R.string.please_enter_valid_iban)
+            Utility.showSnackBarValidationError(mView!!.editBankDetailsFragmentConstraintLayout,
+                requireContext().getString(R.string.please_enter_your_iban_number),
+                requireContext())
         }else{
             save()
         }
@@ -147,12 +153,12 @@ class EditBankDetailsFragment : Fragment() {
         mView!!.frag_edit_bank_progressBar.visibility = View.VISIBLE
         requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         val builder = APIClient.createBuilder(arrayOf("user_id","full_name", "bank_name", "account_num", "iban", "lang"),
-        arrayOf(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId, 0).toString(),
+        arrayOf(sharedPreferenceInstance!!.get(SharedPreferenceUtility.UserId, 0).toString(),
         fullName.toString(),
         bankName.toString(),
         acc_no.toString(),
         iban_no.toString(),
-        SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""]))
+        sharedPreferenceInstance!![SharedPreferenceUtility.SelectedLang, ""]))
 
         val call = apiInterface.addEditBanks(builder.build())
         call?.enqueue(object : Callback<AddEditBankResponse?>{
@@ -166,13 +172,23 @@ class EditBankDetailsFragment : Fragment() {
                 try {
                     if (response.isSuccessful){
                         if (response.body()!!.status==1){
-                            LogUtils.longToast(requireContext(), response.body()!!.message)
-                            findNavController().navigate(R.id.homeFragment)
+                            Utility.showSnackBarOnResponseSuccess(mView!!.editBankDetailsFragmentConstraintLayout,
+                                response.body()!!.message.toString(),
+                                requireContext())
+                            Handler().postDelayed(object : Runnable{
+                                override fun run() {
+                                    findNavController().popBackStack()
+                                }
+                            }, 1000)
                         }else{
-                            LogUtils.longToast(requireContext(), response.body()!!.message)
+                            Utility.showSnackBarOnResponseError(mView!!.editBankDetailsFragmentConstraintLayout,
+                                response.body()!!.message.toString(),
+                                requireContext())
                         }
                     }else{
-                        LogUtils.shortToast(requireContext(), getString(R.string.response_isnt_successful))
+                        Utility.showSnackBarOnResponseError(mView!!.editBankDetailsFragmentConstraintLayout,
+                            requireContext().getString(R.string.response_isnt_successful),
+                            requireContext())
                     }
                 }catch (e: IOException) {
                     e.printStackTrace()
@@ -186,7 +202,9 @@ class EditBankDetailsFragment : Fragment() {
 
             override fun onFailure(call: Call<AddEditBankResponse?>, throwable: Throwable) {
                 LogUtils.e("msg", throwable.message)
-                LogUtils.shortToast(requireContext(), getString(R.string.check_internet))
+                Utility.showSnackBarOnResponseError(mView!!.editBankDetailsFragmentConstraintLayout,
+                    throwable.message!!,
+                    requireContext())
                 mView!!.frag_edit_bank_progressBar.visibility= View.GONE
                 requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             }
@@ -219,17 +237,6 @@ class EditBankDetailsFragment : Fragment() {
         }else{
             updateFields(bank)
             mView!!.tv_save_bank_details.text = getString(R.string.update)
-        }
-    }
-
-    companion object{
-        private var instance: SharedPreferenceUtility? = null
-        @Synchronized
-        fun getInstance(): SharedPreferenceUtility {
-            if (instance == null) {
-                instance = SharedPreferenceUtility()
-            }
-            return instance as SharedPreferenceUtility
         }
     }
 }

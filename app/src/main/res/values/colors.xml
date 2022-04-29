@@ -18,6 +18,7 @@
     <color name="gray87">#DEDEDE</color>
     <color name="little_brown">#D1C3B7</color>
     <color name="strike_through_text_color">#F84563</color>
+    <color name="colorSnackBarRed">#ef4141</color>
 
     <color name="calendar_header">@color/colorPrimary</color>
     <color name="calendar_header_title">#1D2634</color>

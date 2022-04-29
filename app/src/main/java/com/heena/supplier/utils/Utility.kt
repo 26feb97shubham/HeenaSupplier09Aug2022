@@ -10,13 +10,16 @@ import android.os.Looper
 import android.provider.Settings
 import android.util.Log
 import android.view.View
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat.finishAffinity
+import androidx.core.content.ContextCompat
 import com.heena.supplier.application.MyApp
 import com.heena.supplier.broadcastreceiver.ConnectivityReceiver
 import com.heena.supplier.rest.APIClient
 import com.heena.supplier.rest.APIInterface
 import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.messaging.FirebaseMessaging
 import com.heena.supplier.R
 import com.heena.supplier.extras.SafeClickListener
@@ -28,7 +31,6 @@ object Utility {
     val apiInterface = APIClient.getClient()!!.create(APIInterface::class.java)
     val IMAGE_DIRECTORY_NAME = "Heena_Supplier"
     var sender_admin = 0 /* 1 for sender and 2 for receiver*/
-    var networkChangeReceiver: ConnectivityReceiver? = null
     var helpCategory: HelpCategory?=null
     var helpSubCategory: HelpSubCategory?=null
     var content : ArrayList<Content>?=null
@@ -50,6 +52,7 @@ object Utility {
         return SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang,"")
     }
 
+    @SuppressLint("MissingPermission")
     fun isNetworkAvailable(): Boolean {
         return try {
             val connectivityManager = MyApp.instance!!.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -64,6 +67,52 @@ object Utility {
     private fun showLog(localizedMessage: String?) {
         Log.e("NetworkChangeReceiver", "" + localizedMessage)
     }
+    fun Snackbar.allowInfiniteLines(): Snackbar {
+        return apply { (view.findViewById<View?>(R.id.snackbar_text) as? TextView?)?.isSingleLine = false }
+    }
+
+    fun showSnackBarOnResponseError(view: View, message: String, context: Context) {
+        val snackBar = Snackbar.make(
+            view, message, Snackbar.LENGTH_LONG
+        )
+        // snackBar.changeFont()
+        snackBar.setBackgroundTint(ContextCompat.getColor(context, R.color.colorSnackBarRed))
+        snackBar.setTextColor(ContextCompat.getColor(context, R.color.white))
+        snackBar.allowInfiniteLines()
+        snackBar.show()
+    }
+
+    fun showSnackBarValidationError(view: View, message: String, context: Context) {
+        val snackBar = Snackbar.make(
+            view, message, Snackbar.LENGTH_LONG
+        )
+        // snackBar.changeFont()
+        snackBar.setBackgroundTint(ContextCompat.getColor(context, R.color.colorSnackBarRed))
+        snackBar.setTextColor(ContextCompat.getColor(context, R.color.white))
+        snackBar.allowInfiniteLines()
+        snackBar.show()
+    }
+
+    fun showSnackBarOnResponseSuccess(view: View, message: String, context: Context) {
+        val snackBar = Snackbar.make(
+            view, message, Snackbar.LENGTH_LONG
+        )
+        snackBar.setBackgroundTint(ContextCompat.getColor(context, R.color.gold))
+        snackBar.setTextColor(ContextCompat.getColor(context, R.color.black))
+        snackBar.allowInfiniteLines()
+        snackBar.show()
+    }
+
+    fun showSnackBarOnValidationSuccess(view: View, message: String, context: Context) {
+        val snackBar = Snackbar.make(
+            view, message, Snackbar.LENGTH_LONG
+        )
+        snackBar.setBackgroundTint(ContextCompat.getColor(context, R.color.gold))
+        snackBar.setTextColor(ContextCompat.getColor(context, R.color.black))
+        snackBar.allowInfiniteLines()
+        snackBar.show()
+    }
+
 
     fun setLanguage(context: Context, language: String){
         val locale = Locale(language)
@@ -83,6 +132,7 @@ object Utility {
         return null
     }
 
+    @SuppressLint("MissingPermission")
     fun hasConnection(ct: Context): Boolean {
         val cm = (ct.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager)
         @SuppressLint("MissingPermission") val wifiNetwork =

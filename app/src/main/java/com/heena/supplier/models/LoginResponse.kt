@@ -1,5 +1,7 @@
 package com.heena.supplier.models
 
+import java.io.Serializable
+
 data class LoginResponse(
 	val message: String? = null,
 	val error: Error? = null,
@@ -7,5 +9,5 @@ data class LoginResponse(
 	val status: Int? = null,
 	val token: String? = null,
 	val user : User? = null
-)
+): Serializable
 

@@ -1,5 +1,7 @@
 package com.heena.supplier.models
 
+import java.io.Serializable
+
 data class Service(
         val price: Price? = null,
         val service_id: Int? = null,
@@ -12,4 +14,4 @@ data class Service(
         val description: String? = null,
         val lat: String? = null,
         val long: String? = null
-)
+): Serializable

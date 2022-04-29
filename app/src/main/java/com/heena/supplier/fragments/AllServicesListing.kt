@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.heena.supplier.R
 import com.heena.supplier.`interface`.ClickInterface
 import com.heena.supplier.adapters.ServicesAdapter
+import com.heena.supplier.application.MyApp.Companion.sharedPreferenceInstance
 import com.heena.supplier.models.DeleteServiceResponse
 import com.heena.supplier.models.Service
 import com.heena.supplier.models.ServiceListingResponse
@@ -27,16 +28,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
 class AllServicesListing : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
     private var mView : View? = null
     var serviceslisting = ArrayList<Service>()
     lateinit var servicesAdapter: ServicesAdapter
@@ -54,17 +46,17 @@ class AllServicesListing : Fragment() {
         mView = inflater.inflate(R.layout.fragment_all_services_listing, container, false)
         Utility.changeLanguage(
             requireContext(),
-            SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, "")
+            sharedPreferenceInstance!!.get(SharedPreferenceUtility.SelectedLang, "")
         )
         requireActivity().iv_back.setSafeOnClickListener {
             requireActivity().iv_back.startAnimation(AlphaAnimation(1F,0.5F))
-            SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_back)
+            sharedPreferenceInstance!!.hideSoftKeyBoard(requireContext(), requireActivity().iv_back)
             findNavController().popBackStack()
         }
 
         requireActivity().iv_notification.setSafeOnClickListener {
             requireActivity().iv_notification.startAnimation(AlphaAnimation(1F,0.5F))
-            SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_notification)
+            sharedPreferenceInstance!!.hideSoftKeyBoard(requireContext(), requireActivity().iv_notification)
             findNavController().navigate(R.id.notificationsFragment)
         }
 
@@ -80,8 +72,8 @@ class AllServicesListing : Fragment() {
         if(!isRefresh) {
             mView!!.all_services_frag_progressBar.visibility = View.VISIBLE
         }
-        val call = apiInterface.serviceslisting(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId,0),
-                SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, ""))
+        val call = apiInterface.serviceslisting(sharedPreferenceInstance!!.get(SharedPreferenceUtility.UserId,0),
+                sharedPreferenceInstance!!.get(SharedPreferenceUtility.SelectedLang, ""))
         call!!.enqueue(object : Callback<ServiceListingResponse?> {
             override fun onResponse(
                     call: Call<ServiceListingResponse?>,
@@ -157,23 +149,29 @@ class AllServicesListing : Fragment() {
                                 bundle.putString("status", status)
                                 findNavController().navigate(R.id.action_myServicesFragment_to_addNewFeaturedFragment, bundle)
                             }
-
                         })
                         mView!!.rvServicesList.adapter = servicesAdapter
-                        servicesAdapter.notifyDataSetChanged()
                     }else{
                         mView!!.noServicesView.visibility = View.VISIBLE
                         mView!!.rvServicesList.visibility = View.GONE
+                        Utility.showSnackBarOnResponseError(mView!!.allServicesListingFragmentConstraintLayout,
+                            response.body()!!.message.toString(),
+                            requireContext())
                     }
                 }else{
                     mView!!.noServicesView.visibility = View.VISIBLE
                     mView!!.rvServicesList.visibility = View.GONE
+                    Utility.showSnackBarOnResponseError(mView!!.allServicesListingFragmentConstraintLayout,
+                        requireContext().getString(R.string.response_isnt_successful),
+                        requireContext())
                 }
             }
 
             override fun onFailure(call: Call<ServiceListingResponse?>, throwable: Throwable) {
                 LogUtils.e("msg", throwable.message)
-                LogUtils.shortToast(requireContext(), getString(R.string.check_internet))
+                Utility.showSnackBarValidationError(mView!!.allServicesListingFragmentConstraintLayout,
+                    throwable.message!!.toString(),
+                    requireContext())
                 mView!!.all_services_frag_progressBar.visibility = View.GONE
                 requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 if(mView!!.all_servieces_swipeRefresh.isRefreshing){
@@ -185,7 +183,7 @@ class AllServicesListing : Fragment() {
     }
 
     private fun deleteServices(serviceId: Int, position: Int) {
-        val call = apiInterface.deleteservice(serviceId, SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""])
+        val call = apiInterface.deleteservice(serviceId, sharedPreferenceInstance!![SharedPreferenceUtility.SelectedLang, ""])
         call!!.enqueue(object : Callback<DeleteServiceResponse?>{
             override fun onResponse(
                     call: Call<DeleteServiceResponse?>,
@@ -205,38 +203,27 @@ class AllServicesListing : Fragment() {
                             mView!!.noServicesView.visibility = View.GONE
                             mView!!.rvServicesList.visibility = View.VISIBLE
                         }
-                        LogUtils.longToast(requireContext(), response.body()!!.message)
+                        Utility.showSnackBarOnResponseSuccess(mView!!.allServicesListingFragmentConstraintLayout,
+                            response.body()!!.message,
+                            requireContext())
+                    }else{
+                        Utility.showSnackBarOnResponseError(mView!!.allServicesListingFragmentConstraintLayout,
+                            response.body()!!.message,
+                            requireContext())
                     }
                 }else{
-                    LogUtils.shortToast(requireContext(), getString(R.string.response_isnt_successful))
+                    Utility.showSnackBarOnResponseError(mView!!.allServicesListingFragmentConstraintLayout,
+                        requireContext().getString(R.string.response_isnt_successful),
+                        requireContext())
                 }
             }
 
             override fun onFailure(call: Call<DeleteServiceResponse?>, throwable: Throwable) {
                 LogUtils.e("msg", throwable.message)
-                LogUtils.shortToast(requireContext(), getString(R.string.check_internet))
+                Utility.showSnackBarOnResponseError(mView!!.allServicesListingFragmentConstraintLayout,
+                    throwable.message.toString(),
+                    requireContext())
             }
-
         })
-    }
-
-    companion object {
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-                AllServicesListing().apply {
-                    arguments = Bundle().apply {
-                        putString(ARG_PARAM1, param1)
-                        putString(ARG_PARAM2, param2)
-                    }
-                }
-
-        private var instance: SharedPreferenceUtility? = null
-        @Synchronized
-        fun getInstance(): SharedPreferenceUtility {
-            if (instance == null) {
-                instance = SharedPreferenceUtility()
-            }
-            return instance as SharedPreferenceUtility
-        }
     }
 }

@@ -1,5 +1,7 @@
 package com.heena.supplier.models
 
+import java.io.Serializable
+
 data class Cards(
     var id : Int,
     var user_id : Int,
@@ -15,4 +17,4 @@ data class Cards(
     var bank : String,
     var country : String,
     var first_six : String
-)
+): Serializable

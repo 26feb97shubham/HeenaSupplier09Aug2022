@@ -1,6 +1,7 @@
 package com.heena.supplier.models
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 data class TransactionURLResponse(
     @SerializedName("status"   ) var status   : Int?    = null,
@@ -8,4 +9,4 @@ data class TransactionURLResponse(
     @SerializedName("message"  ) var message  : String? = null,
     @SerializedName("url"      ) var url      : String? = null,
     @SerializedName("fileName" ) var fileName : String? = null
-)
+): Serializable

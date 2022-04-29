@@ -27,6 +27,7 @@ import com.heena.supplier.BuildConfig.APPLICATION_ID
 import com.heena.supplier.R
 import com.heena.supplier.adapters.MessagesTypeAdapter
 import com.heena.supplier.application.MyApp
+import com.heena.supplier.application.MyApp.Companion.sharedPreferenceInstance
 import com.heena.supplier.application.MyApp.Companion.socket
 import com.heena.supplier.custom.FetchPath
 import com.heena.supplier.models.*
@@ -100,8 +101,9 @@ class ChatWithAdminFragment : Fragment() {
                 Log.e("Granted", "Permissions")
                 openCameraDialog()
             }else{
-                LogUtils.shortToast(requireContext(), getString(R.string.please_allow_permissions))
-                Log.e("Denied", "Permissions")
+                Utility.showSnackBarValidationError(mView!!.chatWithAdminFragmentConstraintLayout,
+                    requireContext().getString(R.string.please_allow_permissions),
+                    requireContext())
             }
         }
 
@@ -117,7 +119,9 @@ class ChatWithAdminFragment : Fragment() {
                     is_share_clicked = true
                     postImage(imagePath, room)
                 } else {
-                    LogUtils.shortToast(requireContext(), "something went wrong! please try again")
+                    Utility.showSnackBarValidationError(mView!!.chatWithAdminFragmentConstraintLayout,
+                        requireContext().getString(R.string.something_went_wrong),
+                        requireContext())
                 }
             }
         }else if (status.equals(PICK_IMAGE_FROM_GALLERY)){
@@ -235,7 +239,7 @@ class ChatWithAdminFragment : Fragment() {
         mView = inflater.inflate(R.layout.fragment_chat_with_admin, container, false)
         Utility.changeLanguage(
             requireContext(),
-            SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, "")
+            sharedPreferenceInstance!!.get(SharedPreferenceUtility.SelectedLang, "")
         )
         return mView
     }
@@ -247,13 +251,13 @@ class ChatWithAdminFragment : Fragment() {
             requireActivity().iv_back.startAnimation(
                 AlphaAnimation(1f, 0.5f)
             )
-            SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_back)
+            sharedPreferenceInstance!!.hideSoftKeyBoard(requireContext(), requireActivity().iv_back)
             findNavController().popBackStack()
         }
 
         requireActivity().iv_notification.setSafeOnClickListener {
             requireActivity().iv_notification.startAnimation(AlphaAnimation(1F,0.5F))
-            SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_notification)
+            sharedPreferenceInstance!!.hideSoftKeyBoard(requireContext(), requireActivity().iv_notification)
             findNavController().navigate(R.id.notificationsFragment)
         }
 
@@ -261,8 +265,8 @@ class ChatWithAdminFragment : Fragment() {
         mView!!.tv_title.text=sub_help_category!!.title
 
         if (Utility.isNetworkAvailable()){
-            getOldMessageList()
             initSocket()
+            getOldMessageList()
         }
         currentDate
 
@@ -272,12 +276,13 @@ class ChatWithAdminFragment : Fragment() {
                 val strMessage = mView!!.et_enter_message.text.toString().trim { it<=' '}
                 message_type = "1"
                 is_share_clicked = false
+                sharedPreferenceInstance!!.hideSoftKeyBoard(requireContext(),mView!!.send_msg)
 
                 val messageObject = JSONObject()
                 try {
                     messageObject.put("message",strMessage)
                     messageObject.put("room", "" + room)
-                    messageObject.put("sender_id", ""+SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.UserId, 0])
+                    messageObject.put("sender_id", ""+sharedPreferenceInstance!![SharedPreferenceUtility.UserId, 0])
                     messageObject.put("receiver_id", ""+admin_id)
                     messageObject.put("help_id",""+help_category!!.id )
                     messageObject.put("sub_help_id",""+sub_help_category!!.id )
@@ -286,17 +291,19 @@ class ChatWithAdminFragment : Fragment() {
                     messageObject.put("mime_type", mime_type)
                     messageObject.put("url", image_url)
                     messageObject.put("created_at", "" + date_time)
+                    mSocket.emit("chatMessage", messageObject)
+                    Log.e("emitMessage", messageObject.toString())
+                    mView!!.et_enter_message.setText("")
+                    if (type == "direct" && directMessageStatus == 0){
+                        disableSendMsg()
+                    }
                 } catch (e: JSONException) {
                     e.printStackTrace()
                 }
-                mSocket.emit("chatMessage", messageObject)
-                Log.e("emitMessage", messageObject.toString())
-                mView!!.et_enter_message.setText("")
-                if (type == "direct" && directMessageStatus == 0){
-                    disableSendMsg()
-                }
             }else {
-                LogUtils.shortToast(requireContext(), requireContext().getString(R.string.message_field_cannot_be_empty))
+                Utility.showSnackBarValidationError(mView!!.chatWithAdminFragmentConstraintLayout,
+                    requireContext().getString(R.string.message_field_cannot_be_empty),
+                    requireContext())
             }
         }
 
@@ -321,7 +328,7 @@ class ChatWithAdminFragment : Fragment() {
     private fun getOldMessageList() {
         mView!!.frag_chat_progressBar.visibility = View.VISIBLE
         val builder = APIClient.createBuilder(arrayOf("user_id","room", "lang"),
-            arrayOf(SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.UserId, 0].toString(), room.toString(), SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""]))
+            arrayOf(sharedPreferenceInstance!![SharedPreferenceUtility.UserId, 0].toString(), room.toString(), sharedPreferenceInstance!![SharedPreferenceUtility.SelectedLang, ""]))
         val call = apiInterface.getOldMessageList(builder.build())
         call?.enqueue(object : Callback<OldMessagesResponse?> {
             override fun onResponse(
@@ -330,24 +337,36 @@ class ChatWithAdminFragment : Fragment() {
             ) {
                 mView!!.frag_chat_progressBar.visibility = View.GONE
                 if (response.isSuccessful){
-                    messagesList.clear()
-                    messagesList = response.body()!!.messages as ArrayList<Message>
-                    if (messagesList.size>0){
-                        mView!!.msgs_list.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-                        messagesTypeAdapter = MessagesTypeAdapter(requireContext(),messagesList)
-                        mView!!.msgs_list.adapter=messagesTypeAdapter
-                        scrollToBottom()
-
+                    if (response.body()!=null){
+                        messagesList.clear()
+                        messagesList = response.body()!!.messages as ArrayList<Message>
+                        if (messagesList.size>0){
+                            mView!!.msgs_list.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+                            messagesTypeAdapter = MessagesTypeAdapter(requireContext(),messagesList)
+                            mView!!.msgs_list.adapter=messagesTypeAdapter
+                            scrollToBottom()
+                        }else{
+                            Utility.showSnackBarOnResponseError(mView!!.chatWithAdminFragmentConstraintLayout,
+                                requireContext().getString(R.string.no_messages_found),
+                                requireContext())
+                        }
                     }else{
-                        LogUtils.shortToast(requireContext(), "No Messages Found")
+                        Utility.showSnackBarOnResponseError(mView!!.chatWithAdminFragmentConstraintLayout,
+                            response.body()!!.message,
+                            requireContext())
                     }
                 }else{
-                    LogUtils.shortToast(requireContext(), requireContext().getString(R.string.response_isnt_successful))
+                    Utility.showSnackBarOnResponseError(mView!!.chatWithAdminFragmentConstraintLayout,
+                        requireContext().getString(R.string.response_isnt_successful),
+                        requireContext())
                 }
             }
 
             override fun onFailure(call: Call<OldMessagesResponse?>, t: Throwable) {
                 mView!!.frag_chat_progressBar.visibility = View.GONE
+                Utility.showSnackBarOnResponseError(mView!!.chatWithAdminFragmentConstraintLayout,
+                    t.message!!,
+                    requireContext())
             }
 
         })
@@ -422,7 +441,7 @@ class ChatWithAdminFragment : Fragment() {
 
         val joinRoom = JSONObject()
         try {
-            joinRoom.put("userid", "" + SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.UserId, 0])
+            joinRoom.put("userid", "" + sharedPreferenceInstance!![SharedPreferenceUtility.UserId, 0])
             joinRoom.put("room", room)
         } catch (e: JSONException) {
             e.printStackTrace()
@@ -444,14 +463,11 @@ class ChatWithAdminFragment : Fragment() {
         requireActivity().runOnUiThread {
             Log.i(ContentValues.TAG, "disconnected")
             isConnected = false
-            /* Toast.makeText(ChatActivity.this,
-                            "disconnected", Toast.LENGTH_LONG).show();*/
         }
     }
     private val onConnectError = Emitter.Listener { args ->
         requireActivity().runOnUiThread {
             Log.d("ErrorConnecting", "" + args[0].toString())
-            Toast.makeText(requireContext(), "connect to server", Toast.LENGTH_LONG).show()
         }
     }
 
@@ -467,7 +483,6 @@ class ChatWithAdminFragment : Fragment() {
                 val message = jsonObject.getString("message")
                 val room = jsonObject.getString("room")
                 val sender_id = jsonObject.getString("sender_id")
-//                val type = jsonObject.getString("type")
                 val message_type = jsonObject.getString("message_type")
                 val receiver_id = jsonObject.getString("receiver_id")
                 val created_at = jsonObject.getString("created_at")
@@ -475,14 +490,12 @@ class ChatWithAdminFragment : Fragment() {
 
                 addMessage_newMsg(chat_id = 0, sender_id.toInt(), receiver_id.toInt(), message = message, message_type, mime_type,room, created_at)
 
-                if (receiver_id.toInt() == SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.UserId, 0]){
+                if (receiver_id.toInt() == sharedPreferenceInstance!![SharedPreferenceUtility.UserId, 0]){
                     if (type == "direct" && directMessageStatus == 0){
                         directMessageStatus = 1
                         enableSendMsg()
                     }
                 }
-
-               // updateMessageIsReadStatus()
 
             } catch (e: JSONException) {
                 e.printStackTrace()
@@ -514,7 +527,6 @@ class ChatWithAdminFragment : Fragment() {
         sender_id: Int,
         receiver_id: Int,
         message: String,
-        /*file: String,*/
         message_type: String,
         mime_type: String,
         chat_room: String,
@@ -526,7 +538,6 @@ class ChatWithAdminFragment : Fragment() {
         mView!!.msgs_list.adapter=messagesTypeAdapter
         messagesTypeAdapter!!.notifyItemInserted(messagesList.size-1)
         scrollToBottom()
-//        messagesTypeAdapter!!.notifyItemInserted(messagesList.size-1)
 
     }
 
@@ -540,7 +551,7 @@ class ChatWithAdminFragment : Fragment() {
     private fun postImage(imagePath: String, room: String?) {
         val builder = APIClient.createMultipartBodyBuilder(arrayOf("room", "lang"),
             arrayOf(room.toString(),
-            SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""]))
+            sharedPreferenceInstance!![SharedPreferenceUtility.SelectedLang, ""]))
         val file = File(imagePath)
         val requestBody = RequestBody.create(MediaType.parse("image/*"), file)
         builder!!.addFormDataPart("chat_file", file.name, requestBody)
@@ -560,7 +571,7 @@ class ChatWithAdminFragment : Fragment() {
                         try {
                             messageObject.put("message",chat_file)
                             messageObject.put("room", "" + room)
-                            messageObject.put("sender_id", ""+SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.UserId, 0])
+                            messageObject.put("sender_id", ""+sharedPreferenceInstance!![SharedPreferenceUtility.UserId, 0])
                             messageObject.put("receiver_id", ""+admin_id)
                             messageObject.put("help_id",""+help_category!!.id )
                             messageObject.put("sub_help_id",""+sub_help_category!!.id )
@@ -579,28 +590,35 @@ class ChatWithAdminFragment : Fragment() {
                             disableSendMsg()
                         }
 
+                    }else{
+                        Utility.showSnackBarOnResponseError(mView!!.chatWithAdminFragmentConstraintLayout,
+                            response.body()!!.message,
+                            requireContext())
                     }
                 }else{
-                    LogUtils.shortToast(requireContext(), requireContext().getString(R.string.response_isnt_successful))
+                    Utility.showSnackBarOnResponseError(mView!!.chatWithAdminFragmentConstraintLayout,
+                        requireContext().getString(R.string.response_isnt_successful),
+                        requireContext())
                 }
             }
 
             override fun onFailure(call: Call<ChatFileUploadResponse?>, t: Throwable) {
-                LogUtils.shortToast(requireContext(), t.message)
+                Utility.showSnackBarOnResponseError(mView!!.chatWithAdminFragmentConstraintLayout,
+                    t.message!!,
+                    requireContext())
             }
-
         })
     }
 
     private fun scrollToBottom() {
-        /*   binding.recyclerView.scrollToPosition(adapter.itemCount - 1)*/
         mView!!.msgs_list.scrollToPosition(messagesTypeAdapter!!.itemCount-1)
     }
     override fun onResume() {
         super.onResume()
-        if (Utility.hasConnection(requireContext()))
+        if (Utility.hasConnection(requireContext())){
             initSocket()
-        getOldMessageList()
+            getOldMessageList()
+        }
     }
 
     public override fun onDestroy() {
@@ -619,29 +637,6 @@ class ChatWithAdminFragment : Fragment() {
             mSocket.off("newChatMessage", NewChatMessage)
             //mSocket!!.off("messages", NewChatMessage)
             //mSocket!!.off("blocked", BlockedUserListener)
-        }
-    }
-
-    private fun updateMessageIsReadStatus(){
-        if (Utility.isNetworkAvailable()) {
-            val map: MutableMap<String, Any> = HashMap()
-            map["api_key"] = "tribe123"
-            map["user_id"] = "" + SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.UserId, 0]
-            map["room"] = "" + room
-//            presenterList.updateMessageIsReadStatus(this@ChatActivity, map)
-        }else{
-//            simpleToast(this@ChatActivity, getString(R.string.no_network_message))
-        }
-    }
-
-    companion object{
-        private var instance: SharedPreferenceUtility? = null
-        @Synchronized
-        fun getInstance(): SharedPreferenceUtility {
-            if (instance == null) {
-                instance = SharedPreferenceUtility()
-            }
-            return instance as SharedPreferenceUtility
         }
     }
 }

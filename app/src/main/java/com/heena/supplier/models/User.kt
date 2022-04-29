@@ -1,5 +1,7 @@
 package com.heena.supplier.models
 
+import java.io.Serializable
+
 data class User(
         val user_id: Int? = null,
         val have_membership: Int? = null,
@@ -11,5 +13,5 @@ data class User(
         val address: String? = null,
         val country: String? = null,
         val email: String? = null,
-        val name: String,
-)
+        val name: String?=null
+): Serializable

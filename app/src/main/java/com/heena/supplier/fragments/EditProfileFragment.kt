@@ -10,6 +10,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
+import android.os.Handler
 import android.provider.MediaStore
 import android.text.TextUtils
 import android.util.Log
@@ -41,9 +42,13 @@ import com.google.android.libraries.places.api.model.AddressComponent
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
+import com.heena.supplier.application.MyApp.Companion.sharedPreferenceInstance
 import com.heena.supplier.utils.Utility.IMAGE_DIRECTORY_NAME
 import com.heena.supplier.utils.Utility.apiInterface
 import com.heena.supplier.utils.Utility.setSafeOnClickListener
+import com.jaiselrahman.filepicker.activity.FilePickerActivity
+import com.jaiselrahman.filepicker.config.Configurations
+import com.jaiselrahman.filepicker.model.MediaFile
 import kotlinx.android.synthetic.main.activity_home2.*
 import kotlinx.android.synthetic.main.activity_sign_up2.view.*
 import kotlinx.android.synthetic.main.fragment_edit_profile.view.*
@@ -58,14 +63,7 @@ import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 class EditProfileFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
     private var mView : View? = null
     private val PERMISSIONS_1 =  arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -75,6 +73,7 @@ class EditProfileFragment : Fragment() {
     val PICK_IMAGE_FROM_GALLERY = 10
     private val CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 100
     private var imagePath = ""
+    private var docpath = ""
     var username: String = ""
     var fullname: String = ""
     var mobilenumber: String = ""
@@ -84,6 +83,7 @@ class EditProfileFragment : Fragment() {
     var mLatitude: Double = 0.0
     var mLongitude: Double = 0.0
     var AUTOCOMPLETE_REQUEST_CODE: Int = 500
+    val PICK_DOC = 11
     var countryName: String = ""
     var profile_pic_changed = false
     var status = 0
@@ -101,6 +101,8 @@ class EditProfileFragment : Fragment() {
                     Log.e("Granted", "Permissions")
                     if (my_click.equals("profile")){
                         openCameraDialog()
+                    }else if (my_click.equals("document")) {
+                        openCameraDialog2()
                     }else{
                         val fields: MutableList<Place.Field> = java.util.ArrayList()
                         fields.add(Place.Field.NAME)
@@ -116,8 +118,9 @@ class EditProfileFragment : Fragment() {
                         resultLauncher.launch(intent)
                     }
                 }else{
-                    LogUtils.shortToast(requireContext(), getString(R.string.please_allow_permissions))
-                    Log.e("Denied", "Permissions")
+                    Utility.showSnackBarValidationError(mView!!.editProfileFragmentConstraintlayout,
+                        requireContext().getString(R.string.please_allow_permissions),
+                        requireContext())
                 }
             }
 
@@ -126,31 +129,92 @@ class EditProfileFragment : Fragment() {
         if (status.equals(CAMERA_CAPTURE_IMAGE_REQUEST_CODE)){
             if (it.resultCode == Activity.RESULT_OK){
                 if (uri != null) {
-                    imagePath = ""
-                    Log.e("uri", uri.toString())
-                    imagePath = uri!!.path!!
-                    Log.e("image_path", imagePath)
-                    Glide.with(this).load("file:///$imagePath").placeholder(R.drawable.user).into(mView!!.civ_profile_update)
+                    if(my_click.equals("document")){
+                        docpath = ""
+                        docpath = uri!!.path!!
+                        Utility.showSnackBarOnValidationSuccess(mView!!.editProfileFragmentConstraintlayout,
+                            requireContext().getString(R.string.document_uploaded),
+                            requireContext())
+                        mView!!.txtUpdateLicenseEditProfile.text = getString(R.string.document_updated)
+                        Glide.with(this).load("file:///$docpath").placeholder(R.drawable.attach).into(mView!!.imgAttachEditProfile)
+                    }else{
+                        imagePath = ""
+                        Log.e("uri", uri.toString())
+                        imagePath = uri!!.path!!
+                        Log.e("image_path", imagePath)
+                        Glide.with(this).load("file:///$imagePath").placeholder(R.drawable.user).into(mView!!.civ_profile_update)
+                    }
                 } else {
-                    LogUtils.shortToast(requireContext(), "something went wrong! please try again")
+                    Utility.showSnackBarValidationError(mView!!.editProfileFragmentConstraintlayout,
+                        requireContext().getString(R.string.something_went_wrong),
+                        requireContext())
                 }
             }
         }else if (status.equals(PICK_IMAGE_FROM_GALLERY)){
             if (it.resultCode==Activity.RESULT_OK){
                 val data: Intent? = it.data
                 if (data!!.data != null) {
-                    imagePath = ""
-                    val uri = data.data
-                    imagePath = if (uri.toString().startsWith("content")) {
-                        FetchPath.getPath(requireContext(), uri!!)!!
-                    } else {
-                        uri!!.path!!
+                    if(my_click.equals("document")){
+                        docpath = ""
+                        val uri = data.data
+                        docpath = if (uri.toString().startsWith("content")) {
+                            FetchPath.getPath(requireContext(), uri!!)!!
+                        } else {
+                            uri!!.path!!
+                        }
+                        mView!!.txtUpdateLicenseEditProfile.text = getString(R.string.document_updated)
+                        Utility.showSnackBarOnValidationSuccess(mView!!.editProfileFragmentConstraintlayout,
+                            requireContext().getString(R.string.document_updated),
+                            requireContext())
+                        Glide.with(this).load("file:///$docpath").placeholder(R.drawable.attach).into(mView!!.imgAttachEditProfile)
+                    }else{
+                        imagePath = ""
+                        val uri = data.data
+                        imagePath = if (uri.toString().startsWith("content")) {
+                            FetchPath.getPath(requireContext(), uri!!)!!
+                        } else {
+                            uri!!.path!!
+                        }
+                        Log.e("image_path", imagePath)
+                        Glide.with(this).applyDefaultRequestOptions(RequestOptions().placeholder(R.drawable.user)).load("file:///$imagePath").into(mView!!.civ_profile_update)
                     }
-                    Log.e("image_path", imagePath)
-                    Glide.with(this).applyDefaultRequestOptions(RequestOptions().placeholder(R.drawable.user)).load("file:///$imagePath").into(mView!!.civ_profile_update)
+
                 }
             }
-        }else if (status.equals(AUTOCOMPLETE_REQUEST_CODE)){
+        }else if (status.equals(PICK_DOC)){
+            if(it.resultCode==Activity.RESULT_OK && it.data!=null){
+                val files: java.util.ArrayList<MediaFile> = it.data!!.getParcelableArrayListExtra(
+                    FilePickerActivity.MEDIA_FILES)!!
+                if (files.size != 0) {
+                    docpath=""
+                    for (i in 0 until files.size) {
+                        val filePath = FetchPath.getPath(requireContext(), files[i].uri)
+                        if (filePath!!.contains(".doc")
+                            || filePath.contains(".docx") || filePath.contains(".pdf") || filePath.contains(".txt")) {
+                            docpath=filePath
+//                        mView.txtUpdateLicense.text = getString(R.string.document_updated)
+                            Utility.showSnackBarOnValidationSuccess(mView!!.editProfileFragmentConstraintlayout,
+                                requireContext().getString(R.string.document_updated),
+                                requireContext())
+                            when {
+                                docpath.contains(".pdf") -> {
+                                    Glide.with(requireContext()).load(docpath).placeholder(R.drawable.pdfbox).into(mView!!.imgAttachEditProfile)
+                                }
+                                docpath.contains(".doc") || docpath.contains(".docx") -> {
+                                    Glide.with(requireContext()).load(docpath).placeholder(R.drawable.docbox).into(mView!!.imgAttachEditProfile)
+                                }
+                                docpath.contains(".txt") -> {
+                                    Glide.with(requireContext()).load(docpath).placeholder(R.drawable.txt).into(mView!!.imgAttachEditProfile)
+                                }
+                                else -> {
+                                    Glide.with(requireContext()).load(docpath).placeholder(R.drawable.txt).into(mView!!.imgAttachEditProfile)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } else if (status.equals(AUTOCOMPLETE_REQUEST_CODE)){
             if (it.resultCode==Activity.RESULT_OK){
                 val place = Autocomplete.getPlaceFromIntent(it.data!!)
                 val latlng = place.latLng
@@ -208,13 +272,6 @@ class EditProfileFragment : Fragment() {
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -222,7 +279,7 @@ class EditProfileFragment : Fragment() {
         mView = inflater.inflate(R.layout.fragment_edit_profile, container, false)
         Utility.changeLanguage(
             requireContext(),
-            SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, "")
+            sharedPreferenceInstance!!.get(SharedPreferenceUtility.SelectedLang, "")
         )
         setUpViews()
         return mView
@@ -231,13 +288,13 @@ class EditProfileFragment : Fragment() {
     private fun setUpViews() {
         requireActivity().iv_back.setSafeOnClickListener {
             requireActivity().iv_back.startAnimation(AlphaAnimation(1F,0.5F))
-            SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_back)
+            sharedPreferenceInstance!!.hideSoftKeyBoard(requireContext(), requireActivity().iv_back)
             findNavController().popBackStack()
         }
 
         requireActivity().iv_notification.setSafeOnClickListener {
             requireActivity().iv_notification.startAnimation(AlphaAnimation(1F,0.5F))
-            SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_notification)
+            sharedPreferenceInstance!!.hideSoftKeyBoard(requireContext(), requireActivity().iv_notification)
             findNavController().navigate(R.id.notificationsFragment)
         }
 
@@ -245,7 +302,7 @@ class EditProfileFragment : Fragment() {
 
         mView!!.btnUpdate.setSafeOnClickListener {
             mView!!.btnUpdate.startAnimation(AlphaAnimation(1f, 0.5f))
-            SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), mView!!.btnUpdate)
+            sharedPreferenceInstance!!.hideSoftKeyBoard(requireContext(), mView!!.btnUpdate)
             validateAndUpdate()
         }
 
@@ -261,6 +318,19 @@ class EditProfileFragment : Fragment() {
             my_click = "location"
             activityResultLauncher.launch(PERMISSIONS_2)
         }
+
+        /*mView!!.imgAttachEditProfile.setSafeOnClickListener {
+            mView!!.imgAttachEditProfile.startAnimation(AlphaAnimation(1f, 0.5f))
+            my_click = "document"
+            activityResultLauncher.launch(PERMISSIONS_1)
+
+        }
+
+        mView!!.txtUpdateLicenseEditProfile.setSafeOnClickListener {
+            mView!!.txtUpdateLicenseEditProfile.startAnimation(AlphaAnimation(1f, 0.5f))
+            my_click = "document"
+            activityResultLauncher.launch(PERMISSIONS_1)
+        }*/
     }
 
     private fun validateAndUpdate() {
@@ -271,43 +341,41 @@ class EditProfileFragment : Fragment() {
         location = mView!!.edtlocation_update.text.toString().trim()
 
         if (TextUtils.isEmpty(username)) {
-            mView!!.scrollViewUpdate.scrollTo(0, 150)
-            mView!!.edtUsername_update.requestFocus()
-            mView!!.edtUsername_update.error=getString(R.string.please_enter_your_full_name)
-            LogUtils.shortToast(requireContext(), getString(R.string.please_enter_your_full_name))
-        } else if (!SharedPreferenceUtility.getInstance().isCharacterAllowed(username)) {
-            mView!!.scrollViewUpdate.scrollTo(0, 150)
-            mView!!.edtUsername_update.requestFocus()
-            mView!!.edtUsername_update.error=getString(R.string.emojis_are_not_allowed)
-            LogUtils.shortToast(requireContext(), getString(R.string.emojis_are_not_allowed))
+            Utility.showSnackBarValidationError(mView!!.editProfileFragmentConstraintlayout,
+                requireContext().getString(R.string.please_enter_your_full_name),
+                requireContext())
+        } else if (!sharedPreferenceInstance!!.isCharacterAllowed(username)) {
+            Utility.showSnackBarValidationError(mView!!.editProfileFragmentConstraintlayout,
+                requireContext().getString(R.string.emojis_are_not_allowed),
+                requireContext())
+
         } else if (TextUtils.isEmpty(fullname)){
-            mView!!.scrollViewUpdate.scrollTo(0, 150)
-            mView!!.edtFullName_update.requestFocus()
-            mView!!.edtFullName_update.error=getString(R.string.please_enter_your_full_name)
-            LogUtils.shortToast(requireContext(), getString(R.string.please_enter_your_full_name))
+            Utility.showSnackBarValidationError(mView!!.editProfileFragmentConstraintlayout,
+                requireContext().getString(R.string.please_enter_your_full_name),
+                requireContext())
+
         } else if (TextUtils.isEmpty(mobilenumber)) {
-            mView!!.scrollViewUpdate.scrollTo(0, 150)
-            mView!!.edtmobilenumber_signup.requestFocus()
-            mView!!.edtmobilenumber_signup.error=getString(R.string.please_enter_your_phone_number)
-            LogUtils.shortToast(requireContext(), getString(R.string.please_enter_your_phone_number))
+            Utility.showSnackBarValidationError(mView!!.editProfileFragmentConstraintlayout,
+                requireContext().getString(R.string.please_enter_your_phone_number),
+                requireContext())
+
         }
         else if ((mobilenumber.length < 7 || mobilenumber.length > 15)) {
-            mView!!.scrollViewUpdate.scrollTo(0, 150)
-            mView!!.edtmobilenumber_update.requestFocus()
-            mView!!.edtmobilenumber_update.error=getString(R.string.mob_num_length_valid)
-            LogUtils.shortToast(requireContext(), getString(R.string.mob_num_length_valid))
+            Utility.showSnackBarValidationError(mView!!.editProfileFragmentConstraintlayout,
+                requireContext().getString(R.string.mob_num_length_valid),
+                requireContext())
+
         }
-        else if (TextUtils.isEmpty(emailaddress) && !SharedPreferenceUtility.getInstance().isEmailValid(emailaddress)) {
-            mView!!.scrollViewUpdate.scrollTo(0, 150)
-            mView!!.edtemailaddress_update.requestFocus()
-            mView!!.edtemailaddress_update.error=getString(R.string.please_enter_valid_email)
-            LogUtils.shortToast(requireContext(), getString(R.string.please_enter_valid_email))
+        else if (TextUtils.isEmpty(emailaddress) && !sharedPreferenceInstance!!.isEmailValid(emailaddress)) {
+            Utility.showSnackBarValidationError(mView!!.editProfileFragmentConstraintlayout,
+                requireContext().getString(R.string.please_enter_valid_email),
+                requireContext())
+
         }
         else if (TextUtils.isEmpty(location)) {
-            mView!!.scrollViewUpdate.scrollTo(0, 150)
-            mView!!.edtlocation_update.requestFocus()
-            mView!!.edtlocation_update.error=getString(R.string.please_enter_valid_loc)
-            LogUtils.shortToast(requireContext(), getString(R.string.please_enter_valid_email))
+            Utility.showSnackBarValidationError(mView!!.editProfileFragmentConstraintlayout,
+                requireContext().getString(R.string.please_enter_valid_loc),
+                requireContext())
         }
         else{
             Update()
@@ -322,19 +390,19 @@ class EditProfileFragment : Fragment() {
 
         if(imagePath.equals("")){
             val builder = APIClient.createBuilder(arrayOf("user_id", "name", "address", "image", "lang"),
-                arrayOf(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId,0).toString(),
+                arrayOf(sharedPreferenceInstance!!.get(SharedPreferenceUtility.UserId,0).toString(),
                     fullname,
                     location.toString(),
                     "",
-                SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""]))
+                sharedPreferenceInstance!![SharedPreferenceUtility.SelectedLang, ""]))
             call = apiInterface.updateProfile(builder.build())
 
         }else{
             val builder = APIClient.createMultipartBodyBuilder(arrayOf("user_id", "name", "address", "lang"),
-                arrayOf(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId,0).toString(),
+                arrayOf(sharedPreferenceInstance!!.get(SharedPreferenceUtility.UserId,0).toString(),
                     fullname,
                     location.toString(),
-                SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""]))
+                sharedPreferenceInstance!![SharedPreferenceUtility.SelectedLang, ""]))
 
             Log.e("image_path", imagePath)
             if (imagePath != "") {
@@ -342,11 +410,11 @@ class EditProfileFragment : Fragment() {
                     profile_pic_changed = false
                     val file = File(imagePath)
                     Log.e("file name ", file.name)
-                    SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.ProfilePic,imagePath)
+                    sharedPreferenceInstance!!.save(SharedPreferenceUtility.ProfilePic,imagePath)
                     val requestBody = RequestBody.create(MediaType.parse("image/*"), file)
                     builder!!.addFormDataPart("image", file.name, requestBody)
                 }else{
-                    SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.ProfilePic,imagePath)
+                    sharedPreferenceInstance!!.save(SharedPreferenceUtility.ProfilePic,imagePath)
                     val requestBody = RequestBody.create(MediaType.parse("image/*"), imagePath)
                     builder!!.addFormDataPart("image", imagePath, requestBody)
                 }
@@ -361,12 +429,24 @@ class EditProfileFragment : Fragment() {
                 try {
                     if (response.body() != null) {
                         if(response.body()!!.status==1){
-                            LogUtils.shortToast(requireContext(), response.body()!!.message)
-                            SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.Fullname,fullname)
-                            SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.Username,username)
-                            SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.Address,location)
-                            findNavController().navigate(R.id.homeFragment)
+                            sharedPreferenceInstance!!.save(SharedPreferenceUtility.Fullname,fullname)
+                            sharedPreferenceInstance!!.save(SharedPreferenceUtility.Username,username)
+                            sharedPreferenceInstance!!.save(SharedPreferenceUtility.Address,location)
+                            Utility.showSnackBarOnResponseSuccess(mView!!.editProfileFragmentConstraintlayout,
+                                response.body()!!.message.toString(),
+                                requireContext())
+
+                            Handler().postDelayed({ findNavController().popBackStack() }, 1200)
+
+                        }else{
+                            Utility.showSnackBarOnResponseError(mView!!.editProfileFragmentConstraintlayout,
+                                response.body()!!.message.toString(),
+                                requireContext())
                         }
+                    }else{
+                        Utility.showSnackBarOnResponseError(mView!!.editProfileFragmentConstraintlayout,
+                            response.message(),
+                            requireContext())
                     }
                 } catch (e: IOException) {
                     e.printStackTrace()
@@ -379,7 +459,9 @@ class EditProfileFragment : Fragment() {
 
             override fun onFailure(call: Call<UpdateProfileResponse?>, throwable: Throwable) {
                 LogUtils.e("msg", throwable.message)
-                LogUtils.shortToast(requireContext(), getString(R.string.check_internet))
+                Utility.showSnackBarOnResponseError(mView!!.editProfileFragmentConstraintlayout,
+                    throwable.message!!,
+                    requireContext())
                 mView!!.progressBar_update.visibility= View.GONE
                 requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             }
@@ -496,7 +578,7 @@ class EditProfileFragment : Fragment() {
     private fun showProfile() {
         requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         mView!!.progressBar_update.visibility= View.VISIBLE
-        val call = Utility.apiInterface.showProfile(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId,0), SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""])
+        val call = Utility.apiInterface.showProfile(sharedPreferenceInstance!!.get(SharedPreferenceUtility.UserId,0), sharedPreferenceInstance!![SharedPreferenceUtility.SelectedLang, ""])
         call?.enqueue(object : Callback<ProfileShowResponse?> {
             override fun onResponse(
                     call: Call<ProfileShowResponse?>,
@@ -508,6 +590,8 @@ class EditProfileFragment : Fragment() {
                     if (response.body() != null) {
                         if(response.body()!!.status==1){
                             imagePath = ""
+                            docpath = ""
+                            docpath = response.body()!!.profile!!.trade_license!!
                             profile_picture = response.body()!!.profile!!.image!!
                             Glide.with(requireContext()).load(response.body()!!.profile!!.image).listener(object : RequestListener<Drawable>{
                                 override fun onLoadFailed(
@@ -537,7 +621,34 @@ class EditProfileFragment : Fragment() {
                             mView!!.edtemailaddress_update.setText(response.body()!!.profile!!.email)
                             mView!!.edtmobilenumber_update.setText(response.body()!!.profile!!.country_code + response.body()!!.profile!!.phone)
                             mView!!.edtlocation_update.setText(response.body()!!.profile!!.address)
+
+                            when {
+                                sharedPreferenceInstance!![SharedPreferenceUtility.DocPath, ""].isNotEmpty() -> {
+                                    when {
+                                        docpath.contains(".pdf") -> {
+                                            Glide.with(requireContext()).load(docpath).placeholder(R.drawable.pdfbox).into(mView!!.imgAttachEditProfile)
+                                        }
+                                        docpath.contains(".doc") || docpath.contains(".docx") -> {
+                                            Glide.with(requireContext()).load(docpath).placeholder(R.drawable.docbox).into(mView!!.imgAttachEditProfile)
+                                        }
+                                        docpath.contains(".txt") -> {
+                                            Glide.with(requireContext()).load(docpath).placeholder(R.drawable.txt).into(mView!!.imgAttachEditProfile)
+                                        }
+                                        else -> {
+                                            Glide.with(requireContext()).load(docpath).placeholder(R.drawable.txt).into(mView!!.imgAttachEditProfile)
+                                        }
+                                    }
+                                }
+                            }
+                        }else{
+                            Utility.showSnackBarOnResponseError(mView!!.editProfileFragmentConstraintlayout,
+                                response.body()!!.message.toString(),
+                                requireContext())
                         }
+                    }else{
+                        Utility.showSnackBarValidationError(mView!!.editProfileFragmentConstraintlayout,
+                            response.message(),
+                            requireContext())
                     }
                 } catch (e: IOException) {
                     e.printStackTrace()
@@ -550,7 +661,9 @@ class EditProfileFragment : Fragment() {
 
             override fun onFailure(call: Call<ProfileShowResponse?>, throwable: Throwable) {
                 LogUtils.e("msg", throwable.message)
-                LogUtils.shortToast(requireContext(), getString(R.string.check_internet))
+                Utility.showSnackBarValidationError(mView!!.editProfileFragmentConstraintlayout,
+                    throwable.message!!,
+                    requireContext())
                 mView!!.progressBar_update.visibility= View.GONE
                 requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             }
@@ -558,24 +671,40 @@ class EditProfileFragment : Fragment() {
         })
     }
 
-    companion object {
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-                EditProfileFragment().apply {
-                    arguments = Bundle().apply {
-                        putString(ARG_PARAM1, param1)
-                        putString(ARG_PARAM2, param2)
-                    }
-                }
-        private var instance: SharedPreferenceUtility? = null
-        @Synchronized
-        fun getInstance(): SharedPreferenceUtility {
-            if (instance == null) {
-                instance = SharedPreferenceUtility()
+    private fun openCameraDialog2() {
+        val items = arrayOf<CharSequence>(getString(R.string.camera), getString(R.string.gallery), getString(R.string.document), getString(R.string.cancel))
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setTitle(getString(R.string.add_documents))
+        builder.setItems(items) { dialogInterface, i ->
+            if (items[i] == getString(R.string.camera)) {
+                captureImage()
+            } else if (items[i] == getString(R.string.gallery)) {
+                chooseImage()
             }
-            return instance as SharedPreferenceUtility
+            else if (items[i] == getString(R.string.document)) {
+                chooseDoc()
+            }else if (items[i] == getString(R.string.cancel)) {
+                dialogInterface.dismiss()
+            }
         }
+        builder.show()
+    }
+
+    private fun chooseDoc() {
+        val intent= Intent(requireContext(), FilePickerActivity::class.java)
+        intent.putExtra(
+            FilePickerActivity.CONFIGS, Configurations.Builder()
+                .setCheckPermission(true)
+                .setShowFiles(true)
+                .setShowImages(false)
+                .setShowAudios(false)
+                .setShowVideos(false)
+                .setMaxSelection(1)
+                .setSuffixes("txt", "pdf","doc", "docx")
+                .setSkipZeroSizeFiles(true)
+                .build())
+        status = PICK_DOC
+        resultLauncher.launch(intent)
 
     }
 }

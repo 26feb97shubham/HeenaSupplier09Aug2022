@@ -1,5 +1,6 @@
 package com.heena.supplier.fragments
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Bundle
@@ -17,6 +18,9 @@ import com.heena.supplier.Dialogs.NoInternetDialog
 import com.heena.supplier.R
 import com.heena.supplier.`interface`.ClickInterface
 import com.heena.supplier.adapters.BookingsAdapter
+import com.heena.supplier.application.MyApp.Companion.sharedPreferenceInstance
+import com.heena.supplier.models.Booking
+import com.heena.supplier.models.BookingDetailsResponse
 import com.heena.supplier.models.BookingItem
 import com.heena.supplier.models.BookingsListingResponse
 import com.heena.supplier.utils.LogUtils
@@ -26,8 +30,11 @@ import com.heena.supplier.utils.Utility.apiInterface
 import com.heena.supplier.utils.Utility.booking_item_type
 import com.heena.supplier.utils.Utility.setSafeOnClickListener
 import kotlinx.android.synthetic.main.activity_home2.*
+import kotlinx.android.synthetic.main.fragment_bookingdetails.view.*
+import kotlinx.android.synthetic.main.fragment_home.view.*
 import kotlinx.android.synthetic.main.fragment_my_bookings.*
 import kotlinx.android.synthetic.main.fragment_my_bookings.view.*
+import kotlinx.android.synthetic.main.fragment_my_bookings.view.tv_no_bookings_found
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -41,6 +48,7 @@ class MyBookingsFragment : Fragment() {
     lateinit var layoutAnimationController: LayoutAnimationController
     private var mView : View?=null
     private var bookingList = ArrayList<BookingItem>()
+    private var bookingId = 0
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -49,7 +57,7 @@ class MyBookingsFragment : Fragment() {
                 R.layout.fragment_my_bookings, container, false)
         Utility.changeLanguage(
             requireContext(),
-            SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, "")
+            sharedPreferenceInstance!!.get(SharedPreferenceUtility.SelectedLang, "")
         )
         return mView
     }
@@ -59,13 +67,13 @@ class MyBookingsFragment : Fragment() {
 
         requireActivity().iv_back.setSafeOnClickListener {
             requireActivity().iv_back.startAnimation(AlphaAnimation(1F,0.5F))
-            SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_back)
+            sharedPreferenceInstance!!.hideSoftKeyBoard(requireContext(), requireActivity().iv_back)
             findNavController().popBackStack()
         }
 
         requireActivity().iv_notification.setSafeOnClickListener {
             requireActivity().iv_notification.startAnimation(AlphaAnimation(1F,0.5F))
-            SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_notification)
+            sharedPreferenceInstance!!.hideSoftKeyBoard(requireContext(), requireActivity().iv_notification)
             findNavController().navigate(R.id.notificationsFragment)
         }
 
@@ -88,7 +96,7 @@ class MyBookingsFragment : Fragment() {
 
         requireActivity().iv_back.setSafeOnClickListener {
             requireActivity().iv_back.startAnimation(AlphaAnimation(1F,0.5F))
-            SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_back)
+            sharedPreferenceInstance!!.hideSoftKeyBoard(requireContext(), requireActivity().iv_back)
             findNavController().popBackStack()
         }
 
@@ -126,8 +134,8 @@ class MyBookingsFragment : Fragment() {
         requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         val hashMap = HashMap<String, String>()
         hashMap.put("type", bookingItemType.toString())
-        hashMap.put("user_id", SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId, 0).toString())
-        hashMap.put("lang", SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, "").toString())
+        hashMap.put("user_id", sharedPreferenceInstance!!.get(SharedPreferenceUtility.UserId, 0).toString())
+        hashMap.put("lang", sharedPreferenceInstance!!.get(SharedPreferenceUtility.SelectedLang, "").toString())
         val call = apiInterface.getBookingsList(hashMap)
         call?.enqueue(object : Callback<BookingsListingResponse?> {
             override fun onResponse(
@@ -137,26 +145,39 @@ class MyBookingsFragment : Fragment() {
                 mView!!.fragment_bookings_progressBar.visibility= View.GONE
                 requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 if (response.isSuccessful){
-                    if (response.body()!!.status == 1){
-                        mView!!.tv_no_bookings_found.visibility = View.GONE
-                        mView!!.nsv_bookings.visibility = View.VISIBLE
-                        bookingList.clear()
-                        bookingList = response.body()!!.booking as ArrayList<BookingItem>
-                        setBookingsAdapter()
+                    if (response.body()!=null){
+                        if (response.body()!!.status == 1){
+                            mView!!.tv_no_bookings_found.visibility = View.GONE
+                            mView!!.nsv_bookings.visibility = View.VISIBLE
+                            bookingList.clear()
+                            bookingList = response.body()!!.booking as ArrayList<BookingItem>
+                            setBookingsAdapter()
+                        }else{
+                            mView!!.tv_no_bookings_found.visibility = View.VISIBLE
+                            mView!!.nsv_bookings.visibility = View.GONE
+                            Utility.showSnackBarOnResponseError(mView!!.myBookingsFragmentConstraintLayout,
+                                response.body()!!.message.toString(),
+                                requireContext())
+                        }
                     }else{
-                        mView!!.tv_no_bookings_found.visibility = View.VISIBLE
-                        mView!!.nsv_bookings.visibility = View.GONE
+                        Utility.showSnackBarOnResponseError(mView!!.myBookingsFragmentConstraintLayout,
+                            response.message(),
+                            requireContext())
                     }
                 }else{
                     mView!!.tv_no_bookings_found.visibility = View.VISIBLE
                     mView!!.nsv_bookings.visibility = View.GONE
-                    LogUtils.shortToast(requireContext(), getString(R.string.response_isnt_successful))
+                    Utility.showSnackBarOnResponseError(mView!!.myBookingsFragmentConstraintLayout,
+                        requireContext().getString(R.string.response_isnt_successful),
+                        requireContext())
                 }
             }
 
             override fun onFailure(call: Call<BookingsListingResponse?>, throwable: Throwable) {
                 LogUtils.e("msg", throwable.message)
-                LogUtils.shortToast(requireContext(), getString(R.string.check_internet))
+                Utility.showSnackBarOnResponseError(mView!!.myBookingsFragmentConstraintLayout,
+                    throwable.message.toString(),
+                    requireContext())
                 mView!!.fragment_bookings_progressBar.visibility= View.GONE
                 mView!!.tv_no_bookings_found.visibility = View.VISIBLE
                 mView!!.nsv_bookings.visibility = View.GONE
@@ -169,14 +190,12 @@ class MyBookingsFragment : Fragment() {
     private fun setBookingsAdapter() {
         bookingsAdapter = BookingsAdapter(requireContext(), bookingList, object : ClickInterface.OnRecyclerItemClick{
             override fun OnClickAction(position: Int) {
-                val bundle = Bundle()
-                bundle.putInt("booking_id", bookingList[position].booking_id!!)
-                findNavController().navigate(R.id.action_appointmentFragment_to_bookingDetailsFragment, bundle)
+                bookingId = bookingList[position].booking_id!!
+                showBookingDetails(bookingId)
             }
-
         })
 
-        if (SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang,"")=="ar"){
+        if (sharedPreferenceInstance!!.get(SharedPreferenceUtility.SelectedLang,"")=="ar"){
             layoutAnimationController = AnimationUtils.loadLayoutAnimation(requireContext(), arabic_animId)
         }else{
             layoutAnimationController = AnimationUtils.loadLayoutAnimation(requireContext(), english_animId)
@@ -187,18 +206,47 @@ class MyBookingsFragment : Fragment() {
         rv_tabs_listing.scheduleLayoutAnimation()
     }
 
+    private fun showBookingDetails(bookingId : Int){
+        mView!!.fragment_bookings_progressBar.visibility = View.VISIBLE
+        requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+        val call = Utility.apiInterface.showBooking(booking_id = bookingId.toString(), sharedPreferenceInstance!![SharedPreferenceUtility.SelectedLang, ""])
+        call?.enqueue(object : Callback<BookingDetailsResponse?>{
+            @SuppressLint("SetTextI18n")
+            override fun onResponse(call: Call<BookingDetailsResponse?>, response: Response<BookingDetailsResponse?>) {
+                mView!!.fragment_bookings_progressBar.visibility= View.GONE
+                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                if(response.isSuccessful){
+                    if (response.body()!=null){
+                        if (response.body()!!.status==1){
+                            val booking = response.body()!!.booking as Booking
+                            val bundle = Bundle()
+                            bundle.putSerializable("booking", booking)
+                            findNavController().navigate(R.id.bookingDetailsFragment, bundle)
+                        }else{
+                            Utility.showSnackBarOnResponseError(mView!!.myBookingsFragmentConstraintLayout,
+                                response.body()!!.message.toString(),
+                                requireContext())
+                        }
+                    }else{
+                        Utility.showSnackBarOnResponseError(mView!!.myBookingsFragmentConstraintLayout,
+                            response.message(),
+                            requireContext())
+                    }
+                }else{
+                    Utility.showSnackBarOnResponseError(mView!!.myBookingsFragmentConstraintLayout,
+                        response.body()!!.message.toString(),
+                        requireContext())
+                }
 
-
-    companion object{
-        private var instance: SharedPreferenceUtility? = null
-        @Synchronized
-        fun getInstance(): SharedPreferenceUtility {
-            if (instance == null) {
-                instance = SharedPreferenceUtility()
             }
-            return instance as SharedPreferenceUtility
-        }
+
+            override fun onFailure(call: Call<BookingDetailsResponse?>, throwable: Throwable) {
+                mView!!.fragment_bookings_progressBar.visibility= View.GONE
+                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                Utility.showSnackBarOnResponseError(mView!!.myBookingsFragmentConstraintLayout,
+                    throwable.message.toString(),
+                    requireContext())
+            }
+        })
     }
-
-
 }

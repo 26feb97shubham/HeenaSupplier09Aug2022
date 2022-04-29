@@ -1,25 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/myProfileFragmentConstraintLayout"
     android:background="@android:color/transparent"
     tools:context=".fragments.MyProfileFragment">
-
-    <ScrollView
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+    <ScrollView
+        android:id="@+id/nestedScrollView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/_8sdp">
+            android:paddingHorizontal="@dimen/_8sdp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/profile_image_layout"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_200sdp"
+                android:layout_height="0dp"
+                app:layout_constraintDimensionRatio="1:0.40"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <de.hdodenhof.circleimageview.CircleImageView
@@ -33,26 +44,26 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <androidx.core.widget.ContentLoadingProgressBar
+                    android:id="@+id/civProfilecontentProgressbar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:layout_constraintTop_toTopOf="@id/civ_profile"
+                    android:visibility="visible"
                     app:layout_constraintBottom_toBottomOf="@id/civ_profile"
-                    app:layout_constraintStart_toStartOf="@id/civ_profile"
                     app:layout_constraintEnd_toEndOf="@id/civ_profile"
-                    android:id="@+id/civProfilecontentProgressbar"
-                    android:visibility="visible"/>
+                    app:layout_constraintStart_toStartOf="@id/civ_profile"
+                    app:layout_constraintTop_toTopOf="@id/civ_profile" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_naqashat_name_location"
                 android:layout_width="wrap_content"
-                android:maxWidth="@dimen/_150sdp"
                 android:layout_height="@dimen/_20sdp"
                 android:layout_marginTop="@dimen/_8sdp"
                 android:layout_marginEnd="@dimen/_20sdp"
                 android:ellipsize="end"
-                android:gravity="center_vertical"
                 android:fontFamily="@font/avenir_medium"
+                android:gravity="center_vertical"
+                android:maxWidth="@dimen/_150sdp"
                 android:maxLines="2"
                 android:text="Naqasha Farah / Dubai"
                 android:textAllCaps="false"
@@ -86,13 +97,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_6sdp"
+                android:ellipsize="end"
                 android:fontFamily="@font/avenir_medium"
-                android:text="5 years wedding experience"
                 android:maxWidth="@dimen/_100sdp"
+                android:maxLines="2"
+                android:text="5 years wedding experience"
                 android:textAllCaps="false"
                 android:textColor="@color/gold"
-                android:ellipsize="end"
-                android:maxLines="2"
                 android:textSize="@dimen/_9ssp"
                 android:textStyle="normal"
                 android:visibility="visible"
@@ -203,273 +214,304 @@
             </LinearLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/naqashat_services_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_10sdp"
-                android:visibility="visible"
-                app:layout_constraintTop_toBottomOf="@id/naqashat_categories_layout">
-
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/tv_offers_n_disc"
-                    android:layout_width="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/naqashat_categories_layout"
+                android:layout_marginTop="@dimen/_10sdp">
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/naqashat_services_layout"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_8sdp"
-                    android:drawablePadding="@dimen/_8sdp"
-                    android:paddingEnd="@dimen/_8sdp"
-                    android:fontFamily="@font/avenir_medium"
-                    android:text="@string/offers_and_discounts"
-                    android:textAllCaps="false"
-                    android:textColor="@color/gold"
-                    android:textSize="@dimen/_10ssp"
-                    android:textStyle="normal"
-                    app:drawableStartCompat="@drawable/price_tag_layer_list"
+                    app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/tv_add_new_offers"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:drawablePadding="@dimen/_8sdp"
-                    android:ellipsize="end"
-                    android:paddingStart="@dimen/_8sdp"
-                    android:fontFamily="@font/avenir_medium"
-                    android:gravity="center"
-                    android:maxLines="1"
-                    android:text="@string/add_new_offers"
-                    android:textAllCaps="false"
-                    android:textColor="@color/text_gold_color_dark"
-                    android:textDirection="locale"
-                    android:textSize="@dimen/_10ssp"
-                    android:textStyle="normal"
-                    app:drawableStartCompat="@drawable/plus_layer_list"
-                    app:layout_constraintBottom_toBottomOf="@id/tv_offers_n_disc"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/tv_offers_n_disc" />
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rv_offers_n_discs"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_8sdp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_offers_n_disc" />
-
-                <LinearLayout
-                    android:id="@+id/ll_no_offers_and_disc_found"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/_100sdp"
-                    android:layout_marginTop="@dimen/_8sdp"
-                    android:visibility="gone"
-                    app:layout_constraintTop_toBottomOf="@id/rv_offers_n_discs">
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:visibility="visible">
 
                     <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/tv_no_offers_n_disc"
-                        android:layout_width="match_parent"
+                        android:id="@+id/tv_offers_n_disc"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
+                        android:layout_marginTop="@dimen/_8sdp"
+                        android:drawablePadding="@dimen/_8sdp"
                         android:fontFamily="@font/avenir_medium"
-                        android:gravity="center"
-                        android:paddingHorizontal="@dimen/_8sdp"
-                        android:text="@string/no_offers_and_discounts_found"
+                        android:paddingEnd="@dimen/_8sdp"
+                        android:text="@string/offers_and_discounts"
                         android:textAllCaps="false"
                         android:textColor="@color/gold"
                         android:textSize="@dimen/_10ssp"
-                        android:textStyle="normal" />
-                </LinearLayout>
-
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/tv_services_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_8sdp"
-                    android:fontFamily="@font/avenir_medium"
-                    android:paddingEnd="@dimen/_8sdp"
-                    android:text="@string/services"
-                    android:textAllCaps="false"
-                    android:textColor="@color/gold"
-                    android:textSize="@dimen/_10ssp"
-                    android:textStyle="normal"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ll_no_offers_and_disc_found" />
-
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/tv_add_new_service"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:drawablePadding="@dimen/_8sdp"
-                    android:ellipsize="end"
-                    android:fontFamily="@font/avenir_medium"
-                    android:gravity="center"
-                    android:maxLines="1"
-                    android:paddingStart="@dimen/_8sdp"
-                    android:text="@string/add_new_service"
-                    android:textAllCaps="false"
-                    android:textColor="@color/text_gold_color_dark"
-                    android:textDirection="locale"
-                    android:textSize="@dimen/_10ssp"
-                    android:textStyle="normal"
-                    app:drawableStartCompat="@drawable/plus_layer_list"
-                    app:layout_constraintBottom_toBottomOf="@id/tv_services_name"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/tv_services_name" />
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rv_services_listing"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_8sdp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_services_name" />
-
-                <LinearLayout
-                    android:id="@+id/ll_no_service_found"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/_100sdp"
-                    android:layout_marginTop="@dimen/_8sdp"
-                    android:visibility="gone"
-                    app:layout_constraintTop_toBottomOf="@id/rv_services_listing">
+                        android:textStyle="normal"
+                        app:drawableStartCompat="@drawable/price_tag_layer_list"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/tv_no_service"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
+                        android:id="@+id/tv_add_new_offers"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:drawablePadding="@dimen/_8sdp"
+                        android:ellipsize="end"
                         android:fontFamily="@font/avenir_medium"
                         android:gravity="center"
-                        android:paddingHorizontal="@dimen/_8sdp"
-                        android:text="@string/no_service_found"
+                        android:maxLines="1"
+                        android:paddingStart="@dimen/_8sdp"
+                        android:text="@string/add_new_offers"
+                        android:textAllCaps="false"
+                        android:textColor="@color/text_gold_color_dark"
+                        android:textDirection="locale"
+                        android:textSize="@dimen/_10ssp"
+                        android:textStyle="normal"
+                        app:drawableStartCompat="@drawable/plus_layer_list"
+                        app:layout_constraintBottom_toBottomOf="@id/tv_offers_n_disc"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/tv_offers_n_disc" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rv_offers_n_discs"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_8sdp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tv_offers_n_disc" />
+
+                    <LinearLayout
+                        android:id="@+id/ll_no_offers_and_disc_found"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/_100sdp"
+                        android:layout_marginTop="@dimen/_8sdp"
+                        android:visibility="gone"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        android:gravity="center"
+                        app:layout_constraintTop_toBottomOf="@id/rv_offers_n_discs">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/tv_no_offers_n_disc"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:fontFamily="@font/avenir_medium"
+                            android:gravity="center"
+                            android:paddingHorizontal="@dimen/_8sdp"
+                            android:text="@string/no_offers_and_discounts_found"
+                            android:textAllCaps="false"
+                            android:textColor="@color/gold"
+                            android:textSize="@dimen/_10ssp"
+                            android:textStyle="normal" />
+                    </LinearLayout>
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/tv_services_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_8sdp"
+                        android:fontFamily="@font/avenir_medium"
+                        android:paddingEnd="@dimen/_8sdp"
+                        android:text="@string/services"
                         android:textAllCaps="false"
                         android:textColor="@color/gold"
                         android:textSize="@dimen/_10ssp"
-                        android:textStyle="normal" />
-                </LinearLayout>
+                        android:textStyle="normal"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/ll_no_offers_and_disc_found" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/tv_add_new_service"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:drawablePadding="@dimen/_8sdp"
+                        android:ellipsize="end"
+                        android:fontFamily="@font/avenir_medium"
+                        android:gravity="center"
+                        android:maxLines="1"
+                        android:paddingStart="@dimen/_8sdp"
+                        android:text="@string/add_new_service"
+                        android:textAllCaps="false"
+                        android:textColor="@color/text_gold_color_dark"
+                        android:textDirection="locale"
+                        android:textSize="@dimen/_10ssp"
+                        android:textStyle="normal"
+                        app:drawableStartCompat="@drawable/plus_layer_list"
+                        app:layout_constraintBottom_toBottomOf="@id/tv_services_name"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/tv_services_name" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rv_services_listing"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="@dimen/_8sdp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tv_services_name" />
+
+                    <LinearLayout
+                        android:id="@+id/ll_no_service_found"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/_100sdp"
+                        android:layout_marginTop="@dimen/_8sdp"
+                        android:visibility="gone"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        android:gravity="center"
+                        app:layout_constraintTop_toBottomOf="@id/rv_services_listing">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/tv_no_service"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:fontFamily="@font/avenir_medium"
+                            android:gravity="center"
+                            android:paddingHorizontal="@dimen/_8sdp"
+                            android:text="@string/no_service_found"
+                            android:textAllCaps="false"
+                            android:textColor="@color/gold"
+                            android:textSize="@dimen/_10ssp"
+                            android:textStyle="normal" />
+                    </LinearLayout>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/naqashat_gallery_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_10sdp"
-                android:visibility="gone"
-                app:layout_constraintTop_toBottomOf="@id/naqashat_categories_layout">
-
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/card_upload_photo"
-                    android:layout_width="@dimen/_100sdp"
-                    android:layout_height="@dimen/_30sdp"
-                    android:layout_marginTop="@dimen/_8sdp"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/naqashat_gallery_layout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:strokeColor="@color/gold"
-                    app:strokeWidth="@dimen/_1sdp">
+                    app:layout_constraintBottom_toBottomOf="parent">
 
-                    <com.google.android.material.textview.MaterialTextView
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/card_upload_photo"
+                        android:layout_width="@dimen/_100sdp"
+                        android:layout_height="@dimen/_30sdp"
+                        android:layout_marginTop="@dimen/_8sdp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:strokeColor="@color/gold"
+                        app:strokeWidth="@dimen/_1sdp">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/avenir_45_book"
+                            android:gravity="center"
+                            android:layout_gravity="center"
+                            android:paddingHorizontal="@dimen/_8sdp"
+                            android:text="@string/upload_photo"
+                            android:textAllCaps="false"
+                            android:textColor="@color/text_gold_color_dark"
+                            android:textSize="@dimen/_10ssp"
+                            android:textStyle="normal"
+                            app:drawableStartCompat="@drawable/camera_icon_layer_list" />
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rv_naqashat_gallery"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:visibility="visible"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/card_upload_photo" />
+
+                    <LinearLayout
+                        android:id="@+id/ll_no_gallery_found"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:fontFamily="@font/avenir_45_book"
-                        android:gravity="center"
-                        android:paddingHorizontal="@dimen/_8sdp"
-                        android:text="@string/upload_photo"
-                        android:textAllCaps="false"
-                        android:textColor="@color/text_gold_color_dark"
-                        android:textSize="@dimen/_10ssp"
-                        android:textStyle="normal"
-                        app:drawableStartCompat="@drawable/camera_icon_layer_list" />
-                </com.google.android.material.card.MaterialCardView>
+                        android:layout_height="@dimen/_100sdp"
+                        android:layout_marginTop="@dimen/_8sdp"
+                        android:visibility="gone"
+                        app:layout_constraintTop_toBottomOf="@id/rv_naqashat_gallery">
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rv_naqashat_gallery"
-                    android:layout_width="match_parent"
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/tv_no_gallery"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:fontFamily="@font/avenir_medium"
+                            android:gravity="center"
+                            android:paddingHorizontal="@dimen/_8sdp"
+                            android:text="@string/no_gallery_found"
+                            android:textAllCaps="false"
+                            android:textColor="@color/gold"
+                            android:textSize="@dimen/_10ssp"
+                            android:textStyle="normal" />
+                    </LinearLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/naqashat_reviews_layout"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_10sdp"
-                    android:visibility="visible"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/card_upload_photo" />
-
-                <LinearLayout
-                    android:id="@+id/ll_no_gallery_found"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/_100sdp"
-                    android:layout_marginTop="@dimen/_8sdp"
                     android:visibility="gone"
-                    app:layout_constraintTop_toBottomOf="@id/rv_naqashat_gallery">
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent">
 
-                    <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/tv_no_gallery"
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rv_reviews"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:fontFamily="@font/avenir_medium"
-                        android:gravity="center"
-                        android:paddingHorizontal="@dimen/_8sdp"
-                        android:text="@string/no_gallery_found"
-                        android:textAllCaps="false"
-                        android:textColor="@color/gold"
-                        android:textSize="@dimen/_10ssp"
-                        android:textStyle="normal" />
-                </LinearLayout>
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:nestedScrollingEnabled="false"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/naqashat_reviews_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_10sdp"
-                android:visibility="gone"
-                app:layout_constraintTop_toBottomOf="@id/naqashat_categories_layout">
+                    <LinearLayout
+                        android:id="@+id/ll_no_comments_found"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_100sdp"
+                        android:layout_marginTop="@dimen/_8sdp"
+                        android:visibility="gone"
+                        app:layout_constraintTop_toBottomOf="@id/rv_reviews">
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rv_reviews"
-                    android:layout_width="match_parent"
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/tv_no_comments"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:fontFamily="@font/avenir_medium"
+                            android:gravity="center"
+                            android:paddingHorizontal="@dimen/_8sdp"
+                            android:text="@string/no_comments_found"
+                            android:textAllCaps="false"
+                            android:textColor="@color/gold"
+                            android:textSize="@dimen/_10ssp"
+                            android:textStyle="normal" />
+                    </LinearLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+                <ProgressBar
+                    android:id="@+id/fragment_profile_progressBar"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_10sdp"
+                    android:elevation="@dimen/_5sdp"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
-
-                <LinearLayout
-                    android:id="@+id/ll_no_comments_found"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/_100sdp"
-                    android:layout_marginTop="@dimen/_8sdp"
-                    android:visibility="gone"
-                    app:layout_constraintTop_toBottomOf="@id/rv_reviews">
-
-                    <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/tv_no_comments"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:fontFamily="@font/avenir_medium"
-                        android:gravity="center"
-                        android:paddingHorizontal="@dimen/_8sdp"
-                        android:text="@string/no_comments_found"
-                        android:textAllCaps="false"
-                        android:textColor="@color/gold"
-                        android:textSize="@dimen/_10ssp"
-                        android:textStyle="normal" />
-                </LinearLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
-    <ProgressBar
-        android:id="@+id/fragment_profile_progressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:elevation="@dimen/_5sdp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

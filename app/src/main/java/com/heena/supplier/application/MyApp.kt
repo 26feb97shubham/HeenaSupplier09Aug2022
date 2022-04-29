@@ -9,6 +9,7 @@ import com.google.android.libraries.places.api.Places
 import com.google.firebase.FirebaseApp
 import com.heena.supplier.R
 import com.heena.supplier.utils.LogUtils
+import com.heena.supplier.utils.SharedPreferenceUtility
 import io.socket.client.IO
 import io.socket.client.Manager
 import io.socket.client.Socket
@@ -23,7 +24,9 @@ class MyApp : Application() {
     companion object {
         var socket: Socket? = null
         var instance: MyApp? = null
-        var SOCKET_URL: String = "https://henna.devtechnosys.info:17303"
+        //var SOCKET_URL: String = "https://alniqasha.ae:17303"
+        var SOCKET_URL: String = "https://alniqasha.ae:17303"
+        var sharedPreferenceInstance : SharedPreferenceUtility?=null
     }
     public override fun attachBaseContext(base: Context) {
         instance = this
@@ -40,6 +43,7 @@ class MyApp : Application() {
     override fun onCreate() {
         super.onCreate()
         FirebaseApp.initializeApp(this)
+        sharedPreferenceInstance = SharedPreferenceUtility.getInstance()
         Places.initialize(this, getString(R.string.places_api_key))
          AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
 

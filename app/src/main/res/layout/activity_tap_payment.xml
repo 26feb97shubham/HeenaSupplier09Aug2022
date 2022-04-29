@@ -25,13 +25,14 @@
         android:layout_marginTop="@dimen/_10sdp"
         android:fontFamily="@font/expressway_rg"
         android:gravity="center"
-        android:text="Please do not press back button until the payment is is process"
+        android:text="@string/please_do_not_press_back_button_until_the_payment_is_is_process"
         android:textColor="@color/gold"
         android:textSize="@dimen/_11ssp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:letterSpacing="0.1"
-        app:layout_constraintTop_toBottomOf="@id/tapPaymentGatewayLogo" />
+        app:layout_constraintTop_toBottomOf="@id/tapPaymentGatewayLogo"
+        tools:targetApi="lollipop" />
 
     <RelativeLayout
         android:id="@+id/webViewLayout"

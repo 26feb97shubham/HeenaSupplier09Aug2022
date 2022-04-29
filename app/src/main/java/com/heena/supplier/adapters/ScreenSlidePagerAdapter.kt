@@ -11,7 +11,6 @@ class ScreenSlidePagerAdapter(fragmentActivity: FragmentActivity) : FragmentStat
     }
 
     override fun createFragment(position: Int): Fragment {
-        val fragment= IntroFragment(position)
-        return fragment
+        return IntroFragment(position)
     }
 }

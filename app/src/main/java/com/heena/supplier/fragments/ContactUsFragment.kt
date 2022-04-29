@@ -10,6 +10,7 @@ import android.view.WindowManager
 import android.view.animation.AlphaAnimation
 import androidx.navigation.fragment.findNavController
 import com.heena.supplier.R
+import com.heena.supplier.application.MyApp.Companion.sharedPreferenceInstance
 import com.heena.supplier.models.ContactUsResponse
 import com.heena.supplier.rest.APIClient
 import com.heena.supplier.utils.LogUtils
@@ -39,7 +40,7 @@ class ContactUsFragment : Fragment() {
             R.layout.fragment_contact_us, container, false)
         Utility.changeLanguage(
             requireContext(),
-            SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, "")
+            sharedPreferenceInstance!!.get(SharedPreferenceUtility.SelectedLang, "")
         )
         setUpViews()
         return mView
@@ -48,13 +49,13 @@ class ContactUsFragment : Fragment() {
     private fun setUpViews() {
         requireActivity().iv_back.setSafeOnClickListener {
             requireActivity().iv_back.startAnimation(AlphaAnimation(1F,0.5F))
-            SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_back)
+            sharedPreferenceInstance!!.hideSoftKeyBoard(requireContext(), requireActivity().iv_back)
             findNavController().popBackStack()
         }
 
         requireActivity().iv_notification.setSafeOnClickListener {
             requireActivity().iv_notification.startAnimation(AlphaAnimation(1F,0.5F))
-            SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_notification)
+            sharedPreferenceInstance!!.hideSoftKeyBoard(requireContext(), requireActivity().iv_notification)
             findNavController().navigate(R.id.notificationsFragment)
         }
 
@@ -69,17 +70,21 @@ class ContactUsFragment : Fragment() {
         mymessage = mView!!.et_message.text.toString().trim()
 
         if (TextUtils.isEmpty(fullName)){
-            mView!!.et_fullname.requestFocus()
-            mView!!.et_fullname.error = getString(R.string.please_enter_your_full_name)
+            Utility.showSnackBarValidationError(mView!!.contactUsFragmentConstraintLayout,
+                requireContext().getString(R.string.please_enter_your_full_name),
+                requireContext())
         }else if(TextUtils.isEmpty(emailAddress)) {
-            mView!!.et_email_address.requestFocus()
-            mView!!.et_email_address.error=getString(R.string.please_enter_valid_email)
-        }else if(!SharedPreferenceUtility.getInstance().isEmailValid(emailAddress)) {
-            mView!!.et_email_address.requestFocus()
-            mView!!.et_email_address.error=getString(R.string.please_enter_valid_email)
+            Utility.showSnackBarValidationError(mView!!.contactUsFragmentConstraintLayout,
+                requireContext().getString(R.string.please_enter_your_email_address),
+                requireContext())
+        }else if(!sharedPreferenceInstance!!.isEmailValid(emailAddress)) {
+            Utility.showSnackBarValidationError(mView!!.contactUsFragmentConstraintLayout,
+                requireContext().getString(R.string.please_enter_valid_email),
+                requireContext())
         }else if (TextUtils.isEmpty(mymessage)){
-            mView!!.et_message.requestFocus()
-            mView!!.et_message.error = getString(R.string.please_enter_valid_message)
+            Utility.showSnackBarValidationError(mView!!.contactUsFragmentConstraintLayout,
+                requireContext().getString(R.string.please_enter_valid_message),
+                requireContext())
         }else{
             save()
         }
@@ -89,11 +94,11 @@ class ContactUsFragment : Fragment() {
         requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         mView!!.fragment_contact_us_progressBar.visibility= View.VISIBLE
         val builder = APIClient.createBuilder(arrayOf("user_id","name","email","message","lang"),
-                arrayOf(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId,0).toString(),
+                arrayOf(sharedPreferenceInstance!!.get(SharedPreferenceUtility.UserId,0).toString(),
                         fullName,
                         emailAddress,
                         mymessage,
-                        SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang,"")))
+                        sharedPreferenceInstance!!.get(SharedPreferenceUtility.SelectedLang,"")))
 
         val call = apiInterface.contactUs(builder.build())
         call?.enqueue(object : Callback<ContactUsResponse?> {
@@ -103,14 +108,19 @@ class ContactUsFragment : Fragment() {
                 try {
                     if(response.isSuccessful){
                         if (response.body()!!.status==1){
-                            LogUtils.longToast(requireContext(), response.body()!!.message)
+                            Utility.showSnackBarOnResponseSuccess(mView!!.contactUsFragmentConstraintLayout,
+                                response.body()!!.message.toString(),
+                                requireContext())
                             findNavController().navigate(R.id.action_contactUsFragment_to_homeFragment)
-                        }
-                        else{
-                            LogUtils.longToast(requireContext(), response.body()!!.message)
+                        } else{
+                            Utility.showSnackBarOnResponseError(mView!!.contactUsFragmentConstraintLayout,
+                                response.body()!!.message.toString(),
+                                requireContext())
                         }
                     }else{
-                        LogUtils.longToast(requireContext(), getString(R.string.response_isnt_successful))
+                        Utility.showSnackBarOnResponseSuccess(mView!!.contactUsFragmentConstraintLayout,
+                            requireContext().getString(R.string.response_isnt_successful),
+                            requireContext())
                     }
                 } catch (e: IOException) {
                     e.printStackTrace()
@@ -123,21 +133,12 @@ class ContactUsFragment : Fragment() {
 
             override fun onFailure(call: Call<ContactUsResponse?>, throwable: Throwable) {
                 LogUtils.e("msg", throwable.message)
-                LogUtils.shortToast(requireContext(), getString(R.string.check_internet))
+                Utility.showSnackBarOnResponseSuccess(mView!!.contactUsFragmentConstraintLayout,
+                    throwable.message!!,
+                    requireContext())
                 mView!!.fragment_contact_us_progressBar.visibility= View.GONE
                 requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             }
         })
-    }
-
-    companion object{
-        private var instance: SharedPreferenceUtility? = null
-        @Synchronized
-        fun getInstance(): SharedPreferenceUtility {
-            if (instance == null) {
-                instance = SharedPreferenceUtility()
-            }
-            return instance as SharedPreferenceUtility
-        }
     }
 }

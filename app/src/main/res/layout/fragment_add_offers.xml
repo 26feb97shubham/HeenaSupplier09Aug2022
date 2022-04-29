@@ -7,59 +7,70 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:custom="http://schemas.android.com/apk/res-auto"
     android:background="@android:color/transparent"
+    android:id="@+id/addOfferFragmentConstraintLayout"
     tools:context=".fragments.AddOffers">
 
     <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="@dimen/_12sdp">
+
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_add_new_offers_txt"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                android:fontFamily="@font/avenir_medium"
+                android:paddingHorizontal="10dp"
                 android:text="@string/add_new_offers"
                 android:textAllCaps="false"
-                android:textSize="@dimen/_14ssp"
                 android:textColor="@color/gold"
+                android:textSize="@dimen/_14ssp"
                 android:textStyle="normal"
-                android:fontFamily="@font/avenir_medium"/>
+                app:layout_constraintEnd_toEndOf="@+id/view1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <View
                 android:id="@+id/view1"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
+                android:layout_marginTop="@dimen/_10sdp"
                 android:background="@color/gold"
-                app:layout_constraintTop_toBottomOf="@id/tv_add_new_offers_txt"
                 app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginTop="@dimen/_10sdp"/>
+                app:layout_constraintTop_toBottomOf="@id/tv_add_new_offers_txt" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_choose_service_txt"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@+id/view1"
                 android:layout_marginTop="@dimen/_8sdp"
-                app:layout_constraintStart_toStartOf="parent"
+                android:fontFamily="@font/avenir_medium"
                 android:text="@string/choose_services"
                 android:textAllCaps="false"
-                android:textSize="@dimen/_14ssp"
                 android:textColor="@color/gold"
+                android:textSize="@dimen/_14ssp"
+                android:paddingHorizontal="10dp"
                 android:textStyle="normal"
-                android:fontFamily="@font/avenir_medium"/>
+                app:layout_constraintEnd_toEndOf="@+id/tv_add_new_offers_txt"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/view1" />
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/card_choose_services"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_30sdp"
                 android:layout_marginTop="@dimen/_10sdp"
-                app:layout_constraintTop_toBottomOf="@id/tv_choose_service_txt"
-                app:layout_constraintStart_toStartOf="parent"
                 app:cardCornerRadius="@dimen/_15sdp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_choose_service_txt"
                 app:strokeColor="@color/gold"
                 app:strokeWidth="@dimen/_1sdp">
 
@@ -70,8 +81,8 @@
                     android:drawablePadding="@dimen/_8sdp"
                     android:fontFamily="@font/avenir_medium"
                     android:gravity="center_vertical"
-                    android:paddingHorizontal="@dimen/_12ssp"
                     android:hint="@string/choose_services"
+                    android:paddingHorizontal="@dimen/_12ssp"
                     android:textAllCaps="false"
                     android:textColor="@color/text_gold_color_dark"
                     android:textColorHint="@color/text_gold_color_dark"
@@ -85,133 +96,138 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_10sdp"
-                app:layout_constraintTop_toBottomOf="@id/card_choose_services"
-                app:layout_constraintStart_toStartOf="parent"
-                app:cardCornerRadius="@dimen/_6sdp"
-                app:strokeColor="@color/gold"
                 android:visibility="gone"
+                app:cardCornerRadius="@dimen/_6sdp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/card_choose_services"
+                app:strokeColor="@color/gold"
                 app:strokeWidth="@dimen/_1sdp">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_services_listing"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="@dimen/_10sdp"/>
+                    android:padding="@dimen/_10sdp" />
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/serviceCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardElevation="@dimen/_8sdp"
-                app:cardCornerRadius="@dimen/_6sdp"
-                android:paddingVertical="@dimen/_10sdp"
                 android:layout_marginTop="@dimen/_10sdp"
-                app:layout_constraintTop_toBottomOf="@id/cards_service_categories_listing"
+                android:paddingVertical="@dimen/_10sdp"
+                android:visibility="gone"
+                app:cardCornerRadius="@dimen/_6sdp"
+                app:cardElevation="@dimen/_8sdp"
                 app:layout_constraintStart_toStartOf="parent"
-                android:visibility="gone">
+                app:layout_constraintTop_toBottomOf="@id/cards_service_categories_listing">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="@dimen/_6sdp">
+
                     <com.google.android.material.card.MaterialCardView
                         android:id="@+id/view"
                         android:layout_width="@dimen/_60sdp"
                         android:layout_height="@dimen/_60sdp"
                         app:cardCornerRadius="@dimen/_10sdp"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintStart_toStartOf="parent">
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent">
+
                             <ImageView
                                 android:id="@+id/img"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:scaleType="centerCrop"
                                 android:src="@drawable/def_henna"
-                                app:layout_constraintTop_toTopOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"/>
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
                             <androidx.core.widget.ContentLoadingProgressBar
+                                android:id="@+id/cpImg"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                app:layout_constraintTop_toTopOf="@id/img"
                                 app:layout_constraintBottom_toBottomOf="@id/img"
-                                app:layout_constraintStart_toStartOf="@id/img"
                                 app:layout_constraintEnd_toEndOf="@id/img"
-                                android:id="@+id/cpImg"/>
+                                app:layout_constraintStart_toStartOf="@id/img"
+                                app:layout_constraintTop_toTopOf="@id/img" />
                         </androidx.constraintlayout.widget.ConstraintLayout>
                     </com.google.android.material.card.MaterialCardView>
+
                     <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/tv_services"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintStart_toEndOf="@id/view"
-                        android:text="@string/services"
-                        android:textColor="@color/text_gold_color_dark"
+                        android:layout_gravity="center"
                         android:layout_marginStart="@dimen/_10sdp"
                         android:fontFamily="@font/avenir_medium"
                         android:gravity="center_vertical"
+                        android:text="@string/services"
+                        android:textColor="@color/text_gold_color_dark"
+                        android:textSize="@dimen/_10ssp"
                         android:textStyle="normal"
-                        android:layout_gravity="center"
-                        android:textSize="@dimen/_10ssp" />
+                        app:layout_constraintStart_toEndOf="@id/view"
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/tv_price"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:layout_constraintTop_toBottomOf="@id/tv_services"
-                        app:layout_constraintStart_toEndOf="@id/view"
-                        android:text="AED 800"
-                        android:textColor="@color/text_gold_color_dark"
-                        android:layout_marginTop="@dimen/_4sdp"
+                        android:layout_gravity="center"
                         android:layout_marginStart="@dimen/_10sdp"
+                        android:layout_marginTop="@dimen/_4sdp"
                         android:fontFamily="@font/avenir_medium"
                         android:gravity="center_vertical"
+                        android:text="AED 800"
+                        android:textColor="@color/text_gold_color_dark"
+                        android:textSize="@dimen/_10ssp"
                         android:textStyle="normal"
-                        android:layout_gravity="center"
-                        android:textSize="@dimen/_10ssp" />
+                        app:layout_constraintStart_toEndOf="@id/view"
+                        app:layout_constraintTop_toBottomOf="@id/tv_services" />
 
                     <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/category"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_8sdp"
+                        android:ellipsize="end"
+                        android:fontFamily="@font/avenir_medium"
                         android:gravity="start"
+                        android:maxLines="1"
                         android:text="@string/category"
                         android:textAlignment="viewStart"
-                        android:textDirection="locale"
+                        android:textAllCaps="false"
                         android:textColor="@color/text_gold_color_dark"
+                        android:textDirection="locale"
                         android:textSize="@dimen/_10ssp"
                         android:textStyle="normal"
-                        android:maxLines="1"
-                        android:ellipsize="end"
-                        android:layout_marginTop="@dimen/_8sdp"
                         app:layout_constraintStart_toStartOf="@id/tv_services"
-                        app:layout_constraintTop_toBottomOf="@+id/tv_price"
-                        android:textAllCaps="false"
-                        android:fontFamily="@font/avenir_medium"/>
+                        app:layout_constraintTop_toBottomOf="@+id/tv_price" />
 
                     <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/tv_category_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_20sdp"
+                        android:ellipsize="end"
+                        android:fontFamily="@font/avenir_medium"
                         android:gravity="start"
+                        android:maxLines="1"
                         android:text="Hand Henna"
                         android:textAlignment="viewStart"
-                        android:textDirection="locale"
+                        android:textAllCaps="false"
                         android:textColor="@color/text_gold_color_dark"
+                        android:textDirection="locale"
                         android:textSize="@dimen/_10ssp"
                         android:textStyle="normal"
-                        android:maxLines="1"
-                        android:ellipsize="end"
-                        android:layout_marginStart="@dimen/_20sdp"
-                        app:layout_constraintStart_toEndOf="@id/category"
-                        app:layout_constraintTop_toTopOf="@id/category"
                         app:layout_constraintBottom_toBottomOf="@id/category"
-                        android:textAllCaps="false"
-                        android:fontFamily="@font/avenir_medium"/>
+                        app:layout_constraintStart_toEndOf="@id/category"
+                        app:layout_constraintTop_toTopOf="@id/category" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
             </com.google.android.material.card.MaterialCardView>
@@ -220,39 +236,40 @@
                 android:id="@+id/view2"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
+                android:layout_marginTop="@dimen/_10sdp"
                 android:background="@color/gold"
-                app:layout_constraintTop_toBottomOf="@id/serviceCard"
                 app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginTop="@dimen/_10sdp"/>
+                app:layout_constraintTop_toBottomOf="@id/serviceCard" />
 
             <LinearLayout
                 android:id="@+id/ll_offers_discount"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
                 android:orientation="vertical"
-                app:layout_constraintTop_toBottomOf="@id/view2"
-                android:layout_marginHorizontal="@dimen/_6sdp"
-                android:layout_marginTop="@dimen/_10sdp">
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/view2">
+
                 <com.google.android.material.textview.MaterialTextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/avenir_medium"
                     android:text="@string/discount"
                     android:textAllCaps="false"
+                    android:paddingHorizontal="10dp"
+                    android:textColor="@color/text_gold_color_dark"
                     android:textSize="@dimen/_11ssp"
-                    android:textStyle="normal"
-                    android:fontFamily="@font/avenir_medium"
-                    android:textColor="@color/text_gold_color_dark"/>
+                    android:textStyle="normal" />
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_30sdp"
-                    android:layout_marginTop="@dimen/_8sdp"
                     android:layout_gravity="center_vertical"
+                    android:layout_marginTop="@dimen/_8sdp"
                     android:gravity="center_vertical">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:textDirection="locale"
-                        android:textAlignment="viewStart"
-                        android:gravity="center_vertical|start"
                         android:id="@+id/et_discount"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -261,13 +278,16 @@
                         android:drawableStart="@drawable/edit_2"
                         android:drawablePadding="@dimen/_8sdp"
                         android:fontFamily="@font/avenir_medium"
+                        android:gravity="center_vertical|start"
                         android:hint=" - - "
                         android:inputType="number"
                         android:maxLength="2"
                         android:padding="@dimen/_8sdp"
                         android:singleLine="true"
                         android:text="0"
+                        android:textAlignment="viewStart"
                         android:textColor="@color/gold"
+                        android:textDirection="locale"
                         android:textSize="@dimen/_11ssp"
                         android:textStyle="normal"
                         tools:ignore="TouchTargetSizeCheck" />
@@ -277,28 +297,34 @@
 
             <LinearLayout
                 android:id="@+id/ll_offers_price"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/ll_offers_discount"
+                android:layout_marginTop="@dimen/_10sdp"
                 android:orientation="horizontal"
-                android:layout_marginTop="@dimen/_10sdp">
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ll_offers_discount">
+
                 <LinearLayout
                     android:id="@+id/ll_offers_lady_price"
                     android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
                     android:layout_marginHorizontal="@dimen/_6sdp"
-                    android:layout_marginTop="@dimen/_10sdp">
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
                     <com.google.android.material.textview.MaterialTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/avenir_medium"
                         android:text="@string/total"
                         android:textAllCaps="false"
+                        android:textColor="@color/text_gold_color_dark"
                         android:textSize="@dimen/_11ssp"
-                        android:textStyle="normal"
-                        android:fontFamily="@font/avenir_medium"
-                        android:textColor="@color/text_gold_color_dark"/>
+                        android:textStyle="normal" />
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/_30sdp"
@@ -309,8 +335,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:background="@null"
-                            android:textDirection="locale"
-                            android:textAlignment="viewStart"
                             android:backgroundTint="@color/gray"
                             android:drawableStart="@drawable/edit_2"
                             android:drawablePadding="@dimen/_8sdp"
@@ -320,30 +344,36 @@
                             android:maxLength="8"
                             android:padding="@dimen/_8sdp"
                             android:singleLine="true"
+                            android:textAlignment="viewStart"
                             android:textColor="@color/gold"
+                            android:textDirection="locale"
                             android:textSize="@dimen/_11ssp"
                             android:textStyle="normal"
                             tools:ignore="TouchTargetSizeCheck" />
                     </LinearLayout>
 
                 </LinearLayout>
+
                 <LinearLayout
                     android:id="@+id/ll_offers_child_price"
                     android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
                     android:layout_marginHorizontal="@dimen/_6sdp"
-                    android:layout_marginTop="@dimen/_10sdp">
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
                     <com.google.android.material.textview.MaterialTextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/avenir_medium"
                         android:text="@string/offer_price"
                         android:textAllCaps="false"
+                        android:paddingHorizontal="10dp"
+                        android:textColor="@color/text_gold_color_dark"
                         android:textSize="@dimen/_11ssp"
-                        android:textStyle="normal"
-                        android:fontFamily="@font/avenir_medium"
-                        android:textColor="@color/text_gold_color_dark"/>
+                        android:textStyle="normal" />
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/_30sdp"
@@ -355,8 +385,6 @@
                             android:layout_height="match_parent"
                             android:background="@null"
                             android:backgroundTint="@color/gray"
-                            android:textDirection="locale"
-                            android:textAlignment="viewStart"
                             android:drawableStart="@drawable/edit_2"
                             android:drawablePadding="@dimen/_8sdp"
                             android:enabled="false"
@@ -364,10 +392,12 @@
                             android:fontFamily="@font/avenir_medium"
                             android:hint=" - - "
                             android:inputType="none"
-                            android:maxLength="8"
+                            android:maxLength="30"
                             android:padding="@dimen/_8sdp"
                             android:singleLine="true"
+                            android:textAlignment="viewStart"
                             android:textColor="@color/gold"
+                            android:textDirection="locale"
                             android:textSize="@dimen/_11ssp"
                             android:textStyle="normal"
 
@@ -378,24 +408,27 @@
             </LinearLayout>
 
 
-
-
             <LinearLayout
                 android:id="@+id/ll_offer_duration"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/ll_offers_price"
+                android:layout_marginTop="@dimen/_10sdp"
                 android:orientation="vertical"
-                android:layout_marginTop="@dimen/_10sdp">
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ll_offers_price">
+
                 <com.google.android.material.textview.MaterialTextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/avenir_medium"
                     android:text="@string/duration"
                     android:textAllCaps="false"
+                    android:paddingHorizontal="10dp"
+                    android:textColor="@color/text_gold_color_dark"
                     android:textSize="@dimen/_11ssp"
-                    android:textStyle="normal"
-                    android:fontFamily="@font/avenir_medium"
-                    android:textColor="@color/text_gold_color_dark"/>
+                    android:textStyle="normal" />
+
                 <LinearLayout
                     android:id="@+id/ll_card_duration"
                     android:layout_width="match_parent"
@@ -406,15 +439,15 @@
                         android:id="@+id/et_card_duration"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:layout_gravity="center_vertical"
                         android:background="@null"
                         android:backgroundTint="@color/gray"
                         android:drawablePadding="@dimen/_10sdp"
                         android:fontFamily="@font/avenir_medium"
                         android:hint=" - - "
-                        android:textColorHint="@color/gold"
-                        android:layout_gravity="center_vertical"
                         android:padding="@dimen/_8sdp"
                         android:textColor="@color/gold"
+                        android:textColorHint="@color/gold"
                         android:textSize="@dimen/_10ssp"
                         android:textStyle="normal"
                         app:drawableStartCompat="@drawable/ic_actions_calendar" />
@@ -425,12 +458,13 @@
                 android:id="@+id/cv_Calendar"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:cardCornerRadius="@dimen/_8sdp"
                 android:layout_marginTop="@dimen/_8sdp"
-                app:layout_constraintStart_toStartOf="parent"
+                android:visibility="gone"
+                app:cardCornerRadius="@dimen/_8sdp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/ll_offer_duration"
-                android:visibility="gone">
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ll_offer_duration">
+
                 <com.archit.calendardaterangepicker.customviews.DateRangeCalendarView
                     android:id="@+id/cdrvCalendar"
                     android:layout_width="wrap_content"
@@ -449,23 +483,23 @@
 
                 </com.archit.calendardaterangepicker.customviews.DateRangeCalendarView>
             </com.google.android.material.card.MaterialCardView>
-            
+
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_save_service"
                 android:layout_width="@dimen/_200sdp"
                 android:layout_height="@dimen/_40sdp"
+                android:layout_marginTop="@dimen/_30sdp"
                 android:layout_weight="1"
                 android:background="@drawable/curved_gold_filled_rect_box"
-                android:text="@string/save"
                 android:fontFamily="@font/avenir_medium"
-                android:textSize="@dimen/_15ssp"
-                android:textColor="@color/black"
-                android:layout_marginTop="@dimen/_30sdp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/cv_Calendar"
+                android:gravity="center"
+                android:text="@string/save"
                 android:textAllCaps="true"
-                android:gravity="center"/>
+                android:textColor="@color/black"
+                android:textSize="@dimen/_15ssp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/cv_Calendar" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
     <ProgressBar

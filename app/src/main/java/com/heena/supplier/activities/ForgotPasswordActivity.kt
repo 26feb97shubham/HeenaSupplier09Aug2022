@@ -3,16 +3,19 @@ package com.heena.supplier.activities
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import android.text.TextUtils
 import android.view.View
 import android.view.WindowManager
 import android.view.animation.AlphaAnimation
 import androidx.core.widget.doOnTextChanged
 import com.heena.supplier.R
+import com.heena.supplier.application.MyApp.Companion.sharedPreferenceInstance
 import com.heena.supplier.models.ForgotPasswordResponse
 import com.heena.supplier.rest.APIClient
 import com.heena.supplier.utils.LogUtils
 import com.heena.supplier.utils.SharedPreferenceUtility
+import com.heena.supplier.utils.Utility
 import com.heena.supplier.utils.Utility.apiInterface
 import com.heena.supplier.utils.Utility.setSafeOnClickListener
 import kotlinx.android.synthetic.main.activity_forgot_password2.*
@@ -28,21 +31,25 @@ class ForgotPasswordActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_forgot_password2)
+        Utility.changeLanguage(
+            this,
+            sharedPreferenceInstance!![SharedPreferenceUtility.SelectedLang, ""]
+        )
         setUpViews()
     }
 
     private fun setUpViews() {
         edtemailaddress.doOnTextChanged { _, _, _, _ ->
-            if (!TextUtils.isEmpty(emailAddress) && !SharedPreferenceUtility.getInstance().isEmailValid(emailAddress!!)) {
-                scrollView.scrollTo(0, 210)
-                edtemailaddress_signup.requestFocus()
-                edtemailaddress_signup.error=getString(R.string.please_enter_valid_email)
+            if (!TextUtils.isEmpty(emailAddress) && !sharedPreferenceInstance!!.isEmailValid(emailAddress!!)) {
+                Utility.showSnackBarValidationError(forgotPasswordActivityConstraintLayout,
+                    getString(R.string.please_enter_valid_email),
+                    this)
             }
         }
 
         btnSubmit.setSafeOnClickListener {
             btnSubmit.startAnimation(AlphaAnimation(1f, 0.5f))
-            SharedPreferenceUtility.getInstance().hideSoftKeyBoard(this, btnSubmit)
+            sharedPreferenceInstance!!.hideSoftKeyBoard(this, btnSubmit)
             validateAndForgot()
         }
     }
@@ -51,9 +58,9 @@ class ForgotPasswordActivity : AppCompatActivity() {
         emailAddress = edtemailaddress.text.toString().trim()
 
         if(TextUtils.isEmpty(emailAddress)){
-            edtemailaddress.requestFocus()
-            edtemailaddress.error=getString(R.string.please_enter_valid_email)
-            LogUtils.longToast(this, getString(R.string.please_enter_valid_email))
+            Utility.showSnackBarValidationError(forgotPasswordActivityConstraintLayout,
+                getString(R.string.please_enter_valid_email),
+                this)
         }else{
             forgotPassword()
         }
@@ -65,7 +72,7 @@ class ForgotPasswordActivity : AppCompatActivity() {
 
         val builder = APIClient.createBuilder(arrayOf("email", "lang"),
                 arrayOf(emailAddress!!.trim { it <= ' ' },
-                        SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""]
+                        sharedPreferenceInstance!![SharedPreferenceUtility.SelectedLang, ""]
                             .toString()))
 
         val call = apiInterface.forgotPassword(builder.build())
@@ -76,15 +83,24 @@ class ForgotPasswordActivity : AppCompatActivity() {
                 try {
                     if(response.isSuccessful){
                         if (response.body()!!.status == 1){
-                            LogUtils.longToast(this@ForgotPasswordActivity, response.body()!!.message)
-                            startActivity(
-                                Intent(this@ForgotPasswordActivity, OtpVerificationActivity::class.java).putExtra("ref", "2").putExtra("emailaddress", emailAddress))
-                            finishAffinity()
+                            Utility.showSnackBarOnResponseSuccess(forgotPasswordActivityConstraintLayout,
+                                response.body()!!.message.toString(),
+                                this@ForgotPasswordActivity)
+                            Handler().postDelayed({
+                                startActivity(
+                                    Intent(this@ForgotPasswordActivity, OtpVerificationActivity::class.java).putExtra("ref", "2").putExtra("emailaddress", emailAddress))
+                                finishAffinity()
+                            }, 1200)
+
                         }else{
-                            LogUtils.longToast(this@ForgotPasswordActivity, response.body()!!.message)
+                            Utility.showSnackBarOnResponseError(forgotPasswordActivityConstraintLayout,
+                                response.body()!!.message.toString(),
+                                this@ForgotPasswordActivity)
                         }
                     }else{
-                        LogUtils.longToast(this@ForgotPasswordActivity, getString(R.string.response_isnt_successful))
+                        Utility.showSnackBarOnResponseError(forgotPasswordActivityConstraintLayout,
+                            getString(R.string.response_isnt_successful),
+                            this@ForgotPasswordActivity)
                     }
                 } catch (e: IOException) {
                     e.printStackTrace()
@@ -97,22 +113,13 @@ class ForgotPasswordActivity : AppCompatActivity() {
 
             override fun onFailure(call: Call<ForgotPasswordResponse?>, throwable: Throwable) {
                 LogUtils.e("msg", throwable.message)
-                LogUtils.shortToast(this@ForgotPasswordActivity, getString(R.string.check_internet))
+                Utility.showSnackBarOnResponseError(forgotPasswordActivityConstraintLayout,
+                    getString(R.string.check_internet),
+                    this@ForgotPasswordActivity)
                 progressBar.visibility= View.GONE
                 window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             }
         })
 
     }
-    companion object{
-        private var instance: SharedPreferenceUtility? = null
-        @Synchronized
-        fun getInstance(): SharedPreferenceUtility {
-            if (instance == null) {
-                instance = SharedPreferenceUtility()
-            }
-            return instance as SharedPreferenceUtility
-        }
-    }
-
 }

@@ -1,15 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@android:color/transparent"
+    android:id="@+id/subscriptionFragmentConstraintLayout"
     tools:context=".fragments.SubscriptionFragment">
 
     <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -20,37 +27,37 @@
                 android:id="@+id/iv_logo_subs"
                 android:layout_width="@dimen/_200sdp"
                 android:layout_height="@dimen/_100sdp"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:src="@drawable/golden_logo"
                 android:layout_marginTop="@dimen/_30sdp"
-                android:contentDescription="@string/logo"/>
+                android:contentDescription="@string/logo"
+                android:src="@drawable/golden_logo"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@+id/iv_logo_subs"
                 android:layout_marginTop="@dimen/_20sdp"
-                app:layout_constraintStart_toStartOf="parent"
-                android:text="@string/buy_subscription_plan"
                 android:fontFamily="@font/avenir_heavy"
-                android:textColor="@color/gold"
-                android:textStyle="normal"
-                android:textAllCaps="false"
                 android:gravity="center"
-                android:textSize="@dimen/_12ssp"/>
+                android:text="@string/buy_subscription_plan"
+                android:textAllCaps="false"
+                android:textColor="@color/gold"
+                android:textSize="@dimen/_11ssp"
+                android:textStyle="normal"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/iv_logo_subs" />
 
             <RelativeLayout
                 android:id="@+id/rl_subs_details"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_180sdp"
-                app:layout_constraintTop_toBottomOf="@+id/tv_header"
-                app:layout_constraintStart_toStartOf="parent"
                 android:layout_marginTop="@dimen/_30sdp"
                 android:background="@drawable/little_curved_transparent"
-                android:padding="@dimen/_10sdp">
+                android:padding="@dimen/_10sdp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_header">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_subscription_plans"
@@ -62,34 +69,33 @@
                 android:id="@+id/pageIndicator_subscription_plans"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:piSelectedColor="@color/gold"
-                app:piDefaultColor="@color/bg_gray"
-                android:visibility="visible"
-                app:piDotSpacing="@dimen/_5sdp"
                 android:layout_marginTop="@dimen/_10sdp"
                 android:paddingVertical="@dimen/_8sdp"
-                app:layout_constraintTop_toBottomOf="@+id/rl_subs_details"
-                app:layout_constraintStart_toStartOf="parent"
+                android:visibility="visible"
                 app:layout_constraintEnd_toEndOf="parent"
-                />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/rl_subs_details"
+                app:piDefaultColor="@color/bg_gray"
+                app:piDotSpacing="@dimen/_5sdp"
+                app:piSelectedColor="@color/gold" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_buy_subscription"
                 android:layout_width="@dimen/_150sdp"
                 android:layout_height="@dimen/_40sdp"
-                android:text="@string/buy"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/_40sdp"
+                android:background="@drawable/curved_gold_filled_rect_box"
                 android:fontFamily="@font/avenir_heavy"
+                android:gravity="center"
+                android:text="@string/buy"
+                android:textAllCaps="true"
                 android:textColor="@color/white"
                 android:textSize="@dimen/_16ssp"
                 android:textStyle="normal"
-                android:textAllCaps="true"
-                android:background="@drawable/curved_gold_filled_rect_box"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/rl_subs_details"
-                android:layout_marginTop="@dimen/_40sdp"
-                android:layout_centerHorizontal="true"
-                android:gravity="center"/>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/rl_subs_details" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 

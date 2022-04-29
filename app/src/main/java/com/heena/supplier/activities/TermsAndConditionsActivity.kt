@@ -12,6 +12,7 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.heena.supplier.Dialogs.NoInternetDialog
 import com.heena.supplier.R
+import com.heena.supplier.application.MyApp.Companion.sharedPreferenceInstance
 import com.heena.supplier.utils.SharedPreferenceUtility
 import com.heena.supplier.utils.Utility
 import com.heena.supplier.utils.Utility.setSafeOnClickListener
@@ -22,6 +23,10 @@ class TermsAndConditionsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_terms_and_conditions)
+        Utility.changeLanguage(
+            this,
+            sharedPreferenceInstance!![SharedPreferenceUtility.SelectedLang, ""]
+        )
         setUpViews()
     }
 
@@ -33,7 +38,7 @@ class TermsAndConditionsActivity : AppCompatActivity() {
         }
 
         tnc_url =
-            if (SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""] != "en") {
+            if (sharedPreferenceInstance!![SharedPreferenceUtility.SelectedLang, ""] != "en") {
                 "https://alniqasha.ae/terms-and-conditions/ar"
             } else {
                 "https://alniqasha.ae/terms-and-conditions/en"

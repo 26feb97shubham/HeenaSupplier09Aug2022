@@ -11,6 +11,7 @@ import android.view.animation.AlphaAnimation
 import androidx.navigation.fragment.findNavController
 import com.heena.supplier.R
 import com.heena.supplier.activities.HomeActivity
+import com.heena.supplier.application.MyApp.Companion.sharedPreferenceInstance
 import com.heena.supplier.utils.LogUtils
 import com.heena.supplier.utils.SharedPreferenceUtility
 import com.heena.supplier.utils.Utility
@@ -30,7 +31,7 @@ class SelectLangFragment : Fragment() {
         mView = inflater.inflate(R.layout.fragment_select_lang, container, false)
         Utility.changeLanguage(
             requireContext(),
-            SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, "")
+            sharedPreferenceInstance!!.get(SharedPreferenceUtility.SelectedLang, "")
         )
         setUpViews()
         return mView
@@ -39,22 +40,22 @@ class SelectLangFragment : Fragment() {
     private fun setUpViews() {
         requireActivity().iv_back.setSafeOnClickListener {
             requireActivity().iv_back.startAnimation(AlphaAnimation(1F,0.5F))
-            SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_back)
+            sharedPreferenceInstance!!.hideSoftKeyBoard(requireContext(), requireActivity().iv_back)
             findNavController().popBackStack()
         }
 
         requireActivity().iv_notification.setSafeOnClickListener {
             requireActivity().iv_notification.startAnimation(AlphaAnimation(1F,0.5F))
-            SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_notification)
+            sharedPreferenceInstance!!.hideSoftKeyBoard(requireContext(), requireActivity().iv_notification)
             findNavController().navigate(R.id.notificationsFragment)
         }
 
 
-        if(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, "") =="en"){
+        if(sharedPreferenceInstance!!.get(SharedPreferenceUtility.SelectedLang, "") =="en"){
             selectEnglish()
         }
 
-        else if(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, "") =="ar"){
+        else if(sharedPreferenceInstance!!.get(SharedPreferenceUtility.SelectedLang, "") =="ar"){
             selectArabic()
         }
 
@@ -72,44 +73,33 @@ class SelectLangFragment : Fragment() {
         }
 
         mView!!.btnContinue.setSafeOnClickListener {
-            /* btnContinue.startAnimation(AlphaAnimation(1f, 0.5f))
-             startActivity(Intent(this, ChooseLoginSignUpActivity::class.java))*/
-
             mView!!.btnContinue.startAnimation(AlphaAnimation(1f, 0.5f))
             if(TextUtils.isEmpty(selectLang)){
                 LogUtils.shortToast(requireContext(), getString(R.string.please_choose_your_language))
             }
             else{
                 Utility.changeLanguage(requireContext(), selectLang)
-                SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.SelectedLang, selectLang)
+                sharedPreferenceInstance!!.save(SharedPreferenceUtility.SelectedLang, selectLang)
                 requireContext().startActivity(Intent(requireContext(), HomeActivity::class.java))
             }
         }
     }
 
     private fun selectArabic() {
-        /*    selectLang = "ar"
-            SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.SelectedLang, selectLang)
-            arabic_sub_view.setBackgroundResource(R.drawable.curved_white_filled_rect_box)
-            english_sub_view.setBackgroundColor(resources.getColor(android.R.color.transparent))*/
         selectLang = "ar"
-        Utility.changeLanguage(requireContext(), selectLang)
+//        Utility.changeLanguage(requireContext(), selectLang)
         setTextForLang()
-        SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.SelectedLang, selectLang)
+//        sharedPreferenceInstance!!.save(SharedPreferenceUtility.SelectedLang, selectLang)
         mView!!.arabic_sub_view.setBackgroundResource(R.drawable.curved_white_filled_rect_box)
         mView!!.english_sub_view.setBackgroundColor(resources.getColor(android.R.color.transparent))
     }
 
     private fun selectEnglish() {
-        /*   selectLang = "en"
-           SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.SelectedLang, selectLang)
-           english_sub_view.setBackgroundResource(R.drawable.curved_white_filled_rect_box)
-           arabic_sub_view.setBackgroundColor(resources.getColor(android.R.color.transparent))*/
 
         selectLang = "en"
-        Utility.changeLanguage(requireContext(), selectLang)
+//        Utility.changeLanguage(requireContext(), selectLang)
         setTextForLang()
-        SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.SelectedLang, selectLang)
+//        sharedPreferenceInstance!!.save(SharedPreferenceUtility.SelectedLang, selectLang)
         mView!!.english_sub_view.setBackgroundResource(R.drawable.curved_white_filled_rect_box)
         mView!!.arabic_sub_view.setBackgroundColor(resources.getColor(android.R.color.transparent))
     }
@@ -117,17 +107,5 @@ class SelectLangFragment : Fragment() {
     private fun setTextForLang(){
         mView!!.tv_choose_lang.text = getString(R.string.choose_language)
         mView!!.btnContinue.text = getString(R.string.continue_btn)
-    }
-
-
-    companion object{
-        private var instance: SharedPreferenceUtility? = null
-        @Synchronized
-        fun getInstance(): SharedPreferenceUtility {
-            if (instance == null) {
-                instance = SharedPreferenceUtility()
-            }
-            return instance as SharedPreferenceUtility
-        }
     }
 }

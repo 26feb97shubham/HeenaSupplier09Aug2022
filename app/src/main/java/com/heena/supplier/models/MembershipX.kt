@@ -3,11 +3,11 @@ package com.heena.supplier.models
 import java.io.Serializable
 
 data class MembershipX(
-    val day: Int,
-    val have: Int,
-    val id: Int,
-    val name : String,
-    val amount : Int,
-    val end_date : String,
-    val total_day : Int
+    var day: Int?=null,
+    var have: Int?=null,
+    var id: Int?=null,
+    var name : String?=null,
+    var amount : Int?=null,
+    var end_date : String?=null,
+    var total_day : Int?=null
 ) : Serializable

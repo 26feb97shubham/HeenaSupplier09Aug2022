@@ -7,11 +7,14 @@ import android.view.animation.AlphaAnimation
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.heena.supplier.R
+import com.heena.supplier.fragments.NotificationsFragment
 import com.heena.supplier.utils.SharedPreferenceUtility
 import com.heena.supplier.utils.Utility
 import com.heena.supplier.utils.Utility.exitApp
@@ -22,6 +25,7 @@ import kotlinx.android.synthetic.main.side_top_view.view.*
 
 class HomeActivity : AppCompatActivity() {
     private lateinit var navController: NavController
+    private var isLogin : Boolean = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Utility.changeLanguage(
@@ -59,6 +63,7 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun setUpViews() {
+        isLogin = SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.IsLogin, false]
         if(intent != null){
             type=intent.getStringExtra("type").toString()
             notification = intent.getBooleanExtra("notification", false)
@@ -79,9 +84,11 @@ class HomeActivity : AppCompatActivity() {
 
         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, GravityCompat.START)
 
-        if (notification){
-            notification = false
-            findNavController(R.id.nav_home_host_fragment).navigate(R.id.notificationsFragment)
+        if (isLogin){
+            if (notification){
+                notification = false
+                navController.navigate(R.id.notificationsFragment)
+            }
         }
 
         iv_back.setSafeOnClickListener {

@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import com.heena.supplier.R
+import com.heena.supplier.application.MyApp
 import com.heena.supplier.utils.LogUtils
 import com.heena.supplier.utils.SharedPreferenceUtility
 import com.heena.supplier.utils.Utility
@@ -24,6 +25,10 @@ class NoInternetDialog : DialogFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_nointernet_dialog, container, false)
+        Utility.changeLanguage(
+            requireContext(),
+            MyApp.sharedPreferenceInstance!![SharedPreferenceUtility.SelectedLang, ""]
+        )
         setUpViews(view)
         return view
     }

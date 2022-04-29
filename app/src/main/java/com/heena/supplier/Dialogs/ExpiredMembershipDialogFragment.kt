@@ -9,7 +9,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import com.heena.supplier.R
+import com.heena.supplier.application.MyApp
 import com.heena.supplier.utils.SharedPreferenceUtility
+import com.heena.supplier.utils.Utility
 import com.heena.supplier.utils.Utility.setSafeOnClickListener
 import kotlinx.android.synthetic.main.fragment_expired_membership_dialog.view.*
 
@@ -25,6 +27,10 @@ class ExpiredMembershipDialogFragment : DialogFragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_expired_membership_dialog, container, false)
+        Utility.changeLanguage(
+            requireContext(),
+            MyApp.sharedPreferenceInstance!![SharedPreferenceUtility.SelectedLang, ""]
+        )
         setUpViews(view)
         return view
     }

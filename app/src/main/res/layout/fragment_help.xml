@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@android:color/transparent"
+    android:id="@+id/helpFragmentConstraintLayout"
     tools:context=".fragments.HelpFragment">
 
 
@@ -12,8 +14,9 @@
         android:id="@+id/iv_logo"
         android:layout_width="@dimen/_150sdp"
         android:layout_height="@dimen/_80sdp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="@dimen/_20sdp"
         android:src="@drawable/golden_logo" />
 
@@ -21,8 +24,9 @@
         android:id="@+id/tv_title"
         android:layout_width="@dimen/_200sdp"
         android:layout_height="@dimen/_40sdp"
-        android:layout_below="@id/iv_logo"
-        android:layout_centerHorizontal="true"
+        app:layout_constraintTop_toBottomOf="@id/iv_logo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="@dimen/_20sdp"
         android:fontFamily="@font/avenir_medium"
         android:gravity="center"
@@ -32,17 +36,22 @@
         android:textSize="@dimen/_24ssp" />
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_below="@id/tv_title"
-        android:layout_marginTop="@dimen/_10sdp"
         android:background="@drawable/left_right_light_brown_filled_bg"
+        android:orientation="vertical"
         android:paddingHorizontal="@dimen/_10sdp"
+        android:layout_marginTop="10dp"
         android:paddingTop="@dimen/_20sdp"
         android:paddingBottom="@dimen/_10sdp"
-        android:orientation="vertical">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_title">
 
         <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/mtv_help_desc"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.1"
@@ -52,66 +61,67 @@
             android:textColor="@color/text_gold_color_dark"
             android:textSize="@dimen/_14ssp"
             android:textStyle="normal"
-            android:id="@+id/mtv_help_desc"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_help_text"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="0.8"
             android:layout_marginTop="@dimen/_10sdp"
-            app:layout_constraintTop_toBottomOf="@id/mtv_help_desc"/>
+            android:layout_weight="0.8"
+            app:layout_constraintTop_toBottomOf="@id/mtv_help_desc" />
 
         <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_sub_category_one"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:visibility="gone"
             app:cardBackgroundColor="@color/white"
             app:cardCornerRadius="@dimen/_5sdp"
-            app:layout_constraintTop_toBottomOf="@id/mtv_help_desc"
-            android:id="@+id/card_sub_category_one"
-            android:visibility="gone"
-            android:layout_marginTop="@dimen/_8sdp">
+            app:layout_constraintTop_toBottomOf="@id/mtv_help_desc">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_margin="@dimen/_8sdp">
+                android:layout_margin="@dimen/_8sdp"
+                android:orientation="vertical">
+
                 <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/sub_category_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Sample Text"
                     android:drawableEnd="@drawable/ic_baseline_keyboard_arrow_down_24"
-                    app:drawableTint="@color/text_gold_color_dark"
-                    android:textSize="@dimen/_13ssp"
-                    android:fontFamily="@font/expressway_rg"
                     android:drawablePadding="@dimen/_8sdp"
-                    android:id="@+id/sub_category_title"/>
+                    android:fontFamily="@font/expressway_rg"
+                    android:text="Sample Text"
+                    android:textSize="@dimen/_13ssp"
+                    app:drawableTint="@color/text_gold_color_dark" />
 
                 <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_sub_category"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/rv_sub_category"
-                    android:layout_marginVertical="@dimen/_8sdp"/>
+                    android:layout_marginVertical="@dimen/_8sdp" />
             </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
 
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/solutions_content_rv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/solutions_content_rv"
-            android:visibility="gone"/>
+            android:visibility="gone" />
 
         <WebView
+            android:id="@+id/web_view_faq"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="0.8"
             android:layout_marginTop="@dimen/_10sdp"
-            android:id="@+id/web_view_faq"
-            android:visibility="gone"/>
+            android:layout_weight="0.8"
+            android:visibility="gone" />
 
         <LinearLayout
             android:id="@+id/ll_need_more_help"
@@ -121,10 +131,12 @@
             android:orientation="vertical"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent">
+
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_need_more_help"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_6sdp"
                 android:layout_marginTop="@dimen/_10sdp"
                 android:fontFamily="@font/avenir_medium"
                 android:text="@string/need_more_help"
@@ -132,8 +144,8 @@
                 android:textColor="@color/text_gold_color_dark"
                 android:textSize="@dimen/_14ssp"
                 android:textStyle="normal"
-                android:layout_marginHorizontal="@dimen/_6sdp"
                 app:layout_constraintStart_toStartOf="parent" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -152,13 +164,13 @@
                     app:cardElevation="@dimen/_4sdp">
 
                     <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/mtv_faq"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:fontFamily="@font/avenir_medium"
                         android:gravity="center"
                         android:text="@string/faq_page"
                         android:textAllCaps="true"
-                        android:id="@+id/mtv_faq"
                         android:textColor="@color/text_gold_color_dark"
                         android:textSize="@dimen/_15ssp" />
                 </com.google.android.material.card.MaterialCardView>
@@ -194,8 +206,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
-        android:elevation="@dimen/_5sdp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:elevation="@dimen/_5sdp"
         android:visibility="gone"
         style="@style/Theme.Progressbar"
-        android:indeterminateTint="@color/gold"
-        android:layout_centerInParent="true"/></RelativeLayout>
+        android:layout_centerInParent="true"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

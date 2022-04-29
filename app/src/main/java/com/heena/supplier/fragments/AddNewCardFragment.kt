@@ -12,11 +12,13 @@ import androidx.core.widget.doAfterTextChanged
 import androidx.core.widget.doOnTextChanged
 import androidx.navigation.fragment.findNavController
 import com.heena.supplier.R
+import com.heena.supplier.application.MyApp.Companion.sharedPreferenceInstance
 import com.heena.supplier.extras.AsteriskPasswordTransformationMethod
 import com.heena.supplier.models.AddDeleteCardResponse
 import com.heena.supplier.rest.APIClient
 import com.heena.supplier.utils.LogUtils
 import com.heena.supplier.utils.SharedPreferenceUtility
+import com.heena.supplier.utils.Utility
 import com.heena.supplier.utils.Utility.apiInterface
 import com.heena.supplier.utils.Utility.changeLanguage
 import com.heena.supplier.utils.Utility.setSafeOnClickListener
@@ -49,7 +51,7 @@ class AddNewCardFragment : Fragment() {
         // Inflate the layout for this fragment
         mView = inflater.inflate(
                 R.layout.fragment_add_new_card, container, false)
-        changeLanguage(requireContext(), SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, ""))
+        changeLanguage(requireContext(), sharedPreferenceInstance!!.get(SharedPreferenceUtility.SelectedLang, ""))
         sdf.isLenient = false
         setUpViews()
         return mView
@@ -60,30 +62,38 @@ class AddNewCardFragment : Fragment() {
     private fun setUpViews() {
         requireActivity().iv_back.setSafeOnClickListener {
             requireActivity().iv_back.startAnimation(AlphaAnimation(1F,0.5F))
-            SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_back)
+            sharedPreferenceInstance!!.hideSoftKeyBoard(requireContext(), requireActivity().iv_back)
             findNavController().popBackStack()
         }
 
         requireActivity().iv_notification.setSafeOnClickListener {
             requireActivity().iv_notification.startAnimation(AlphaAnimation(1F,0.5F))
-            SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_notification)
+            sharedPreferenceInstance!!.hideSoftKeyBoard(requireContext(), requireActivity().iv_notification)
             findNavController().navigate(R.id.notificationsFragment)
         }
 
         mView!!.tv_save_card.setSafeOnClickListener {
             card_expiry = mView!!.et_expiry.text.toString().trim()
             if (card_expiry.equals("")){
-                LogUtils.shortToast(requireContext(), getString(R.string.please_enter_valid_expiry_date))
+                Utility.showSnackBarValidationError(mView!!.addNewCardFragmentConstraintLayout,
+                    requireContext().getString(R.string.please_enter_valid_expiry_date),
+                    requireContext())
             }else{
-                expiry_date=sdf.parse(card_expiry)
-                expired= expiry_date!!.before(Date())
-                validateAndSave()
+                try {
+                    expiry_date=sdf.parse(card_expiry)
+                    expired= expiry_date!!.before(Date())
+                    validateAndSave()
+                }catch (e:java.lang.Exception){
+                    Utility.showSnackBarValidationError(mView!!.addNewCardFragmentConstraintLayout,
+                        e.localizedMessage,
+                        requireContext())
+                }
             }
         }
 
         addTextWatcher()
 
-        if (SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, "").equals("en")){
+        if (sharedPreferenceInstance!!.get(SharedPreferenceUtility.SelectedLang, "").equals("en")){
             val drawable = requireContext().resources.getDrawable(R.drawable.card_bg)
             mView!!.ll_card.background = drawable
         }else{
@@ -99,22 +109,29 @@ class AddNewCardFragment : Fragment() {
         card_expiry = mView!!.et_expiry.text.toString().trim()
 
         if (TextUtils.isEmpty(card_title)){
-            mView!!.et_card_title.requestFocus()
-            mView!!.et_card_title.error = getString(R.string.please_enter_valid_card_title)
+            Utility.showSnackBarValidationError(mView!!.addNewCardFragmentConstraintLayout,
+                requireContext().getString(R.string.please_enter_valid_card_title),
+                requireContext())
         }else if (TextUtils.isEmpty(card_number)){
-            mView!!.et_card_number.requestFocus()
-            mView!!.et_card_number.error = getString(R.string.please_enter_valid_card_number)
+            Utility.showSnackBarValidationError(mView!!.addNewCardFragmentConstraintLayout,
+                requireContext().getString(R.string.please_enter_valid_card_number),
+                requireContext())
         }else if (card_number.length<16){
-            mView!!.et_card_number.requestFocus()
-            mView!!.et_card_number.error = getString(R.string.please_enter_valid_card_number)
+            Utility.showSnackBarValidationError(mView!!.addNewCardFragmentConstraintLayout,
+                requireContext().getString(R.string.please_enter_valid_card_number),
+                requireContext())
         }else if (TextUtils.isEmpty(card_cvv)){
-            mView!!.et_cvv.requestFocus()
-            mView!!.et_cvv.error = getString(R.string.please_enter_valid_cvv)
+            Utility.showSnackBarValidationError(mView!!.addNewCardFragmentConstraintLayout,
+                requireContext().getString(R.string.please_enter_valid_cvv),
+                requireContext())
         }else if (card_cvv.length<3){
-            mView!!.et_cvv.requestFocus()
-            mView!!.et_cvv.error = getString(R.string.please_enter_valid_cvv)
+            Utility.showSnackBarValidationError(mView!!.addNewCardFragmentConstraintLayout,
+                requireContext().getString(R.string.please_enter_valid_cvv),
+                requireContext())
         }else if (expired){
-            LogUtils.shortToast(requireContext(), getString(R.string.card_is_expired))
+            Utility.showSnackBarValidationError(mView!!.addNewCardFragmentConstraintLayout,
+                requireContext().getString(R.string.card_is_expired),
+                requireContext())
         }else{
             save()
         }
@@ -124,11 +141,11 @@ class AddNewCardFragment : Fragment() {
         requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         progressBar_add_card.visibility= View.VISIBLE
         val builder = APIClient.createBuilder(arrayOf("user_id", "name", "number","cvv", "expiry_date", "type", "card_id", "lang"),
-        arrayOf(SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.UserId, 0].toString(),
+        arrayOf(sharedPreferenceInstance!![SharedPreferenceUtility.UserId, 0].toString(),
         card_title,
         card_number,
         card_cvv,
-        card_expiry, "0", "", SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""]))
+        card_expiry, "0", "", sharedPreferenceInstance!![SharedPreferenceUtility.SelectedLang, ""]))
         val call = apiInterface.addDeleteCard(builder.build())
         call!!.enqueue(object : Callback<AddDeleteCardResponse?>{
             override fun onResponse(
@@ -140,11 +157,19 @@ class AddNewCardFragment : Fragment() {
                 try {
                     if (response.isSuccessful){
                         if (response.body()!!.status==1){
-                            LogUtils.longToast(requireContext(), response.body()!!.message)
+                            Utility.showSnackBarOnResponseSuccess(mView!!.addNewCardFragmentConstraintLayout,
+                                response.body()!!.message.toString(),
+                                requireContext())
                             findNavController().popBackStack()
+                        }else{
+                            Utility.showSnackBarOnResponseError(mView!!.addNewCardFragmentConstraintLayout,
+                                response.body()!!.message.toString(),
+                                requireContext())
                         }
                     }else{
-                        LogUtils.longToast(requireContext(), getString(R.string.response_isnt_successful))
+                        Utility.showSnackBarOnResponseError(mView!!.addNewCardFragmentConstraintLayout,
+                            requireContext().getString(R.string.response_isnt_successful),
+                            requireContext())
                     }
                 }catch (e: IOException) {
                     e.printStackTrace()
@@ -157,7 +182,9 @@ class AddNewCardFragment : Fragment() {
 
             override fun onFailure(call: Call<AddDeleteCardResponse?>, throwable: Throwable) {
                 LogUtils.e("msg", throwable.message)
-                LogUtils.shortToast(requireContext(), getString(R.string.check_internet))
+                Utility.showSnackBarOnResponseError(mView!!.addNewCardFragmentConstraintLayout,
+                   throwable.message.toString(),
+                    requireContext())
                 progressBar_add_card.visibility= View.GONE
                 requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             }
@@ -222,16 +249,5 @@ class AddNewCardFragment : Fragment() {
         }
 
         mView!!.et_cvv.transformationMethod = AsteriskPasswordTransformationMethod()
-    }
-
-    companion object{
-        private var instance: SharedPreferenceUtility? = null
-        @Synchronized
-        fun getInstance(): SharedPreferenceUtility {
-            if (instance == null) {
-                instance = SharedPreferenceUtility()
-            }
-            return instance as SharedPreferenceUtility
-        }
     }
 }

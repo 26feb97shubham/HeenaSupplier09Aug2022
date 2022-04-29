@@ -10,24 +10,14 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.heena.supplier.R
 import com.heena.supplier.adapters.ImageViewAdapter
+import com.heena.supplier.application.MyApp.Companion.sharedPreferenceInstance
 import com.heena.supplier.utils.SharedPreferenceUtility
 import com.heena.supplier.utils.Utility
 import com.heena.supplier.utils.Utility.setSafeOnClickListener
 import kotlinx.android.synthetic.main.activity_home2.*
 import kotlinx.android.synthetic.main.fragment_view_image.view.*
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [ViewImageFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class ViewImageFragment : Fragment() {
-    // TODO: Rename and change types of parameters
     private var gallery = ArrayList<String>()
     private var mView  :View?=null
     private var imageViewAdapter : ImageViewAdapter?=null
@@ -44,7 +34,7 @@ class ViewImageFragment : Fragment() {
         mView = inflater.inflate(R.layout.fragment_view_image, container, false)
         Utility.changeLanguage(
             requireContext(),
-            SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, "")
+            sharedPreferenceInstance!!.get(SharedPreferenceUtility.SelectedLang, "")
         )
         return mView
     }
@@ -54,7 +44,7 @@ class ViewImageFragment : Fragment() {
 
         requireActivity().iv_back.setSafeOnClickListener {
             requireActivity().iv_back.startAnimation(AlphaAnimation(1F,0.5F))
-            SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_back)
+            sharedPreferenceInstance!!.hideSoftKeyBoard(requireContext(), requireActivity().iv_back)
             findNavController().popBackStack()
         }
 
@@ -74,18 +64,5 @@ class ViewImageFragment : Fragment() {
         imageViewAdapter = ImageViewAdapter(requireActivity(), gallery)
         mView!!.rv_images.adapter = imageViewAdapter
         imageViewAdapter!!.notifyDataSetChanged()
-    }
-
-
-    companion object {
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-                ViewImageFragment().apply {
-                    arguments = Bundle().apply {
-                        putString(ARG_PARAM1, param1)
-                        putString(ARG_PARAM2, param2)
-                    }
-                }
     }
 }

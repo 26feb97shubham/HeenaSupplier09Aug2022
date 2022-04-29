@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.view.animation.AlphaAnimation
 import com.heena.supplier.R
+import com.heena.supplier.application.MyApp.Companion.sharedPreferenceInstance
 import com.heena.supplier.utils.LogUtils
 import com.heena.supplier.utils.SharedPreferenceUtility
 import com.heena.supplier.utils.Utility
@@ -18,17 +19,21 @@ class ChooseLangActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_choose_lang2)
+        Utility.changeLanguage(
+            this,
+            sharedPreferenceInstance!![SharedPreferenceUtility.SelectedLang, ""]
+        )
         setUpViews()
     }
     private fun setUpViews() {
         selectLang = "ar"
-        if(SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""] =="en"){
-            selectLang = SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""]
+        if(sharedPreferenceInstance!![SharedPreferenceUtility.SelectedLang, ""] =="en"){
+            selectLang = sharedPreferenceInstance!![SharedPreferenceUtility.SelectedLang, ""]
             selectEnglish()
         }
 
-        else if(SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""] =="ar"){
-            selectLang = SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""]
+        else if(sharedPreferenceInstance!![SharedPreferenceUtility.SelectedLang, ""] =="ar"){
+            selectLang = sharedPreferenceInstance!![SharedPreferenceUtility.SelectedLang, ""]
             selectArabic()
         }
 
@@ -38,6 +43,7 @@ class ChooseLangActivity : AppCompatActivity() {
                 selectArabic()
             }
         }
+
         englishView.setSafeOnClickListener {
             if(selectLang != "en") {
                 englishView.startAnimation(AlphaAnimation(1f, 0.5f))
@@ -48,13 +54,16 @@ class ChooseLangActivity : AppCompatActivity() {
         btnContinue.setSafeOnClickListener {
             btnContinue.startAnimation(AlphaAnimation(1f, 0.5f))
             if(TextUtils.isEmpty(selectLang)){
-                LogUtils.shortToast(this, getString(R.string.please_choose_your_language))
+                Utility.showSnackBarValidationError(chooseLanguageActivityConstraintLayout,
+                    getString(R.string.please_choose_your_language),
+                    this)
+
             }
             else{
                 Utility.changeLanguage(this, selectLang)
-                SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.FIRSTTIME, true)
-                SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.ISSELECTLANGUAGE, true)
-                SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.SelectedLang, selectLang)
+                sharedPreferenceInstance!!.save(SharedPreferenceUtility.FIRSTTIME, true)
+                sharedPreferenceInstance!!.save(SharedPreferenceUtility.ISSELECTLANGUAGE, true)
+                sharedPreferenceInstance!!.save(SharedPreferenceUtility.SelectedLang, selectLang)
                 startActivity(Intent(this, IntroductionActivity::class.java))
                 finishAffinity()
             }
@@ -63,18 +72,14 @@ class ChooseLangActivity : AppCompatActivity() {
 
     private fun selectArabic() {
         selectLang = "ar"
-        Utility.changeLanguage(this, selectLang)
         setTextForLang()
-        SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.SelectedLang, selectLang)
         arabic_sub_view.setBackgroundResource(R.drawable.curved_white_filled_rect_box)
         english_sub_view.setBackgroundColor(Color.TRANSPARENT)
     }
 
     private fun selectEnglish() {
         selectLang = "en"
-        Utility.changeLanguage(this, selectLang)
         setTextForLang()
-        SharedPreferenceUtility.getInstance().save(SharedPreferenceUtility.SelectedLang, selectLang)
         english_sub_view.setBackgroundResource(R.drawable.curved_white_filled_rect_box)
         arabic_sub_view.setBackgroundColor(Color.TRANSPARENT)
     }

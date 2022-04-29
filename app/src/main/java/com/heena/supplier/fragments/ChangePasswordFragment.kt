@@ -12,6 +12,7 @@ import android.view.animation.AlphaAnimation
 import androidx.core.widget.doOnTextChanged
 import androidx.navigation.fragment.findNavController
 import com.heena.supplier.R
+import com.heena.supplier.application.MyApp.Companion.sharedPreferenceInstance
 import com.heena.supplier.models.ChangePasswordResponse
 import com.heena.supplier.rest.APIClient
 import com.heena.supplier.utils.LogUtils
@@ -27,21 +28,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.io.IOException
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [ChangePasswordFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class ChangePasswordFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
     private var mView : View?=null
     var oldPassword: String = ""
     var newPassword: String = ""
@@ -66,7 +53,7 @@ class ChangePasswordFragment : Fragment() {
         mView = inflater.inflate(R.layout.fragment_change_password, container, false)
         Utility.changeLanguage(
             requireContext(),
-            SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, "")
+            sharedPreferenceInstance!!.get(SharedPreferenceUtility.SelectedLang, "")
         )
         setUpViews()
         return mView
@@ -75,13 +62,13 @@ class ChangePasswordFragment : Fragment() {
     private fun setUpViews() {
         requireActivity().iv_back.setSafeOnClickListener {
             requireActivity().iv_back.startAnimation(AlphaAnimation(1F,0.5F))
-            SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_back)
+            sharedPreferenceInstance!!.hideSoftKeyBoard(requireContext(), requireActivity().iv_back)
             findNavController().popBackStack()
         }
 
         requireActivity().iv_notification.setSafeOnClickListener {
             requireActivity().iv_notification.startAnimation(AlphaAnimation(1F,0.5F))
-            SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_notification)
+            sharedPreferenceInstance!!.hideSoftKeyBoard(requireContext(), requireActivity().iv_notification)
             findNavController().navigate(R.id.notificationsFragment)
         }
 
@@ -91,7 +78,7 @@ class ChangePasswordFragment : Fragment() {
         }
 
         mView!!.edtNewPass.doOnTextChanged { charSeq, start, before, count ->
-            if(SharedPreferenceUtility.getInstance().isPasswordValid(charSeq.toString())){
+            if(sharedPreferenceInstance!!.isPasswordValid(charSeq.toString())){
                 mView!!.imgPassVerify.visibility=View.VISIBLE
 
             }
@@ -112,11 +99,13 @@ class ChangePasswordFragment : Fragment() {
                 else{
                     mView!!.imgConfPassVerify.visibility=View.VISIBLE
                     mView!!.txtPassMatch.visibility=View.VISIBLE
-                    SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), mView!!.edtConfirmPassword)
+                    sharedPreferenceInstance!!.hideSoftKeyBoard(requireContext(), mView!!.edtConfirmPassword)
                 }
             }
             else{
-                mView!!.edtNewPass.error=getString(R.string.please_first_enter_your_password)
+                Utility.showSnackBarValidationError(mView!!.changePasswordFragmentConstraintLayout,
+                    requireContext().getString(R.string.please_first_enter_your_password),
+                    requireContext())
             }
         }
 
@@ -185,28 +174,38 @@ class ChangePasswordFragment : Fragment() {
         confirmPassword= mView!!.edtConfirmPassword.text.toString()
 
         if (TextUtils.isEmpty(oldPassword)) {
-            mView!!.edtOldPass.requestFocus()
-            mView!!.edtOldPass.error=getString(R.string.please_enter_your_old_password)
+            Utility.showSnackBarValidationError(mView!!.changePasswordFragmentConstraintLayout,
+                requireContext().getString(R.string.please_enter_your_old_password),
+                requireContext())
         }
-        else if (!SharedPreferenceUtility.getInstance().isPasswordValid(oldPassword)) {
-            mView!!.edtOldPass.requestFocus()
-            mView!!.edtOldPass.error=getString(R.string.password_length_valid)
+        else if (!sharedPreferenceInstance!!.isPasswordValid(oldPassword)) {
+            Utility.showSnackBarValidationError(mView!!.changePasswordFragmentConstraintLayout,
+                requireContext().getString(R.string.password_length_valid),
+                requireContext())
+        }else if (!oldPassword.equals(sharedPreferenceInstance!!.get(SharedPreferenceUtility.OldPassword, ""))){
+            Utility.showSnackBarValidationError(mView!!.changePasswordFragmentConstraintLayout,
+                requireContext().getString(R.string.password_doesnt_match_with_old_password),
+                requireContext())
         }
         else if (TextUtils.isEmpty(newPassword)) {
-            mView!!.edtNewPass.requestFocus()
-            mView!!.edtNewPass.error=getString(R.string.please_enter_your_new_password)
+            Utility.showSnackBarValidationError(mView!!.changePasswordFragmentConstraintLayout,
+                requireContext().getString(R.string.please_enter_your_new_password),
+                requireContext())
         }
-        else if (!SharedPreferenceUtility.getInstance().isPasswordValid(newPassword)) {
-            mView!!.edtNewPass.requestFocus()
-            mView!!.edtNewPass.error=getString(R.string.password_length_valid)
+        else if (!sharedPreferenceInstance!!.isPasswordValid(newPassword)) {
+            Utility.showSnackBarValidationError(mView!!.changePasswordFragmentConstraintLayout,
+                requireContext().getString(R.string.password_length_valid),
+                requireContext())
         }
         else if (TextUtils.isEmpty(confirmPassword)) {
-            mView!!.edtConfirmPassword.requestFocus()
-            mView!!.edtConfirmPassword.error=getString(R.string.please_verify_your_password)
+            Utility.showSnackBarValidationError(mView!!.changePasswordFragmentConstraintLayout,
+                requireContext().getString(R.string.please_enter_your_confirm_password),
+                requireContext())
         }
         else if (!confirmPassword.equals(newPassword)) {
-            mView!!.edtConfirmPassword.requestFocus()
-            mView!!.edtConfirmPassword.error=getString(R.string.password_doesnt_match_with_confirm_password)
+            Utility.showSnackBarValidationError(mView!!.changePasswordFragmentConstraintLayout,
+                requireContext().getString(R.string.password_doesnt_match_with_confirm_password),
+                requireContext())
         }
         else{
             changePassword()
@@ -218,8 +217,8 @@ class ChangePasswordFragment : Fragment() {
         mView!!.progressBar.visibility= View.VISIBLE
 
         val builder = APIClient.createBuilder(arrayOf("user_id", "new_pwd", "old_pwd", "lang"),
-            arrayOf(SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.UserId, 0].toString()
-                , newPassword, oldPassword, SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""].toString()))
+            arrayOf(sharedPreferenceInstance!![SharedPreferenceUtility.UserId, 0].toString()
+                , newPassword, oldPassword, sharedPreferenceInstance!![SharedPreferenceUtility.SelectedLang, ""].toString()))
         val call = apiInterface.changePassword(builder.build())
         call!!.enqueue(object : Callback<ChangePasswordResponse?> {
             override fun onResponse(call: Call<ChangePasswordResponse?>, response: Response<ChangePasswordResponse?>) {
@@ -228,9 +227,19 @@ class ChangePasswordFragment : Fragment() {
                 try {
                     if (response.body() != null) {
                         if(response.body()!!.status==1){
-                            LogUtils.shortToast(requireContext(), response.body()!!.message)
+                            Utility.showSnackBarOnResponseSuccess(mView!!.changePasswordFragmentConstraintLayout,
+                                response.body()!!.message.toString(),
+                                requireContext())
                             findNavController().popBackStack()
+                        }else{
+                            Utility.showSnackBarOnResponseError(mView!!.changePasswordFragmentConstraintLayout,
+                                response.body()!!.message.toString(),
+                                requireContext())
                         }
+                    }else{
+                        Utility.showSnackBarOnResponseError(mView!!.changePasswordFragmentConstraintLayout,
+                            response.message(),
+                            requireContext())
                     }
                 } catch (e: IOException) {
                     e.printStackTrace()
@@ -243,31 +252,13 @@ class ChangePasswordFragment : Fragment() {
 
             override fun onFailure(call: Call<ChangePasswordResponse?>, throwable: Throwable) {
                 LogUtils.e("msg", throwable.message)
-                LogUtils.shortToast(requireContext(), getString(R.string.check_internet))
+                Utility.showSnackBarOnResponseError(mView!!.changePasswordFragmentConstraintLayout,
+                    throwable.message!!,
+                    requireContext())
                 mView!!.progressBar.visibility= View.GONE
                 requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             }
         })
 
-    }
-
-    companion object {
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            ChangePasswordFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
-
-        private var instance: SharedPreferenceUtility? = null
-        @Synchronized
-        fun getInstance(): SharedPreferenceUtility {
-            if (instance == null) {
-                instance = SharedPreferenceUtility()
-            }
-            return instance as SharedPreferenceUtility
-        }
     }
 }

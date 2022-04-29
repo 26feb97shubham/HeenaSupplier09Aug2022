@@ -11,12 +11,17 @@ import com.heena.supplier.utils.SharedPreferenceUtility
 import com.heena.supplier.utils.SharedPreferenceUtility.Companion.FIRSTTIME
 import com.heena.supplier.utils.Utility
 import com.google.firebase.FirebaseApp
+import com.heena.supplier.application.MyApp.Companion.sharedPreferenceInstance
 
 @SuppressLint("CustomSplashScreen")
 class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
+        Utility.changeLanguage(
+            this,
+            sharedPreferenceInstance!![SharedPreferenceUtility.SelectedLang, ""]
+        )
         FirebaseApp.initializeApp(this)
         Utility.deviceId(this)
         setUpViews()
@@ -31,31 +36,31 @@ class SplashActivity : AppCompatActivity() {
 
         Handler(Looper.getMainLooper()).postDelayed(
             {
-                if(!SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.ISSELECTLANGUAGE,false)
-                    && !(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.ISINTRODUCTION,false))
-                    && !(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.IsLogin,false)))
+                if(!sharedPreferenceInstance!!.get(SharedPreferenceUtility.ISSELECTLANGUAGE,false)
+                    && !(sharedPreferenceInstance!!.get(SharedPreferenceUtility.ISINTRODUCTION,false))
+                    && !(sharedPreferenceInstance!!.get(SharedPreferenceUtility.IsLogin,false)))
                 {
                     val intent = Intent(this, ChooseLangActivity::class.java)
                     startActivity(intent)
                     finish()
                 }
-                else if((SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.ISSELECTLANGUAGE,false))
-                    && !(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.ISINTRODUCTION,false))
-                    && !(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.IsLogin,false)))
+                else if((sharedPreferenceInstance!!.get(SharedPreferenceUtility.ISSELECTLANGUAGE,false))
+                    && !(sharedPreferenceInstance!!.get(SharedPreferenceUtility.ISINTRODUCTION,false))
+                    && !(sharedPreferenceInstance!!.get(SharedPreferenceUtility.IsLogin,false)))
                 {
                     val intent = Intent(this, IntroductionActivity::class.java)
                     startActivity(intent)
                     finish()
-                }else if((SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.ISSELECTLANGUAGE,false))
-                    && (SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.ISINTRODUCTION,false))
-                    && !(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.IsLogin,false)))
+                }else if((sharedPreferenceInstance!!.get(SharedPreferenceUtility.ISSELECTLANGUAGE,false))
+                    && (sharedPreferenceInstance!!.get(SharedPreferenceUtility.ISINTRODUCTION,false))
+                    && !(sharedPreferenceInstance!!.get(SharedPreferenceUtility.IsLogin,false)))
                 {
                     val intent = Intent(this, LoginActivity::class.java)
                     startActivity(intent)
                     finish()
-                }else if((SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.ISSELECTLANGUAGE,false))
-                    && (SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.ISINTRODUCTION,false))
-                    && (SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.IsLogin,false)))
+                }else if((sharedPreferenceInstance!!.get(SharedPreferenceUtility.ISSELECTLANGUAGE,false))
+                    && (sharedPreferenceInstance!!.get(SharedPreferenceUtility.ISINTRODUCTION,false))
+                    && (sharedPreferenceInstance!!.get(SharedPreferenceUtility.IsLogin,false)))
                 {
                     val intent = Intent(this, HomeActivity::class.java)
                     startActivity(intent)
@@ -68,17 +73,4 @@ class SplashActivity : AppCompatActivity() {
             2000,
         )
     }
-
-
-    companion object{
-        private var instance: SharedPreferenceUtility? = null
-        @Synchronized
-        fun getInstance(): SharedPreferenceUtility {
-            if (instance == null) {
-                instance = SharedPreferenceUtility()
-            }
-            return instance as SharedPreferenceUtility
-        }
-    }
-
 }

@@ -13,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import com.heena.supplier.Dialogs.NoInternetDialog
 import com.heena.supplier.R
 import com.heena.supplier.adapters.CardSliderAdapter
+import com.heena.supplier.application.MyApp.Companion.sharedPreferenceInstance
 import com.heena.supplier.models.AddDeleteCardResponse
 import com.heena.supplier.models.Cards
 import com.heena.supplier.models.ViewCardResponse
@@ -44,7 +45,7 @@ class MyCards : Fragment() {
         mView =  inflater.inflate(R.layout.fragment_my_cards, container, false)
         Utility.changeLanguage(
             requireContext(),
-            SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, "")
+            sharedPreferenceInstance!!.get(SharedPreferenceUtility.SelectedLang, "")
         )
         return mView
     }
@@ -68,13 +69,13 @@ class MyCards : Fragment() {
 
         requireActivity().iv_back.setSafeOnClickListener {
             requireActivity().iv_back.startAnimation(AlphaAnimation(1F,0.5F))
-            SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_back)
+            sharedPreferenceInstance!!.hideSoftKeyBoard(requireContext(), requireActivity().iv_back)
             findNavController().popBackStack()
         }
 
         requireActivity().iv_notification.setSafeOnClickListener {
             requireActivity().iv_notification.startAnimation(AlphaAnimation(1F,0.5F))
-            SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_notification)
+            sharedPreferenceInstance!!.hideSoftKeyBoard(requireContext(), requireActivity().iv_notification)
             findNavController().navigate(R.id.notificationsFragment)
         }
 
@@ -108,11 +109,11 @@ class MyCards : Fragment() {
         requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         mView!!.progressBar_view_cards.visibility= View.VISIBLE
         val builder = APIClient.createBuilder(arrayOf("user_id", "name", "number","cvv", "expiry_date", "type", "card_id", "lang"),
-            arrayOf(SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.UserId, 0].toString(),
+            arrayOf(sharedPreferenceInstance!![SharedPreferenceUtility.UserId, 0].toString(),
                 cardsList[pos].name,
                 cardsList[pos].number,
                 cardsList[pos].cvv,
-                cardsList[pos].expiry_date, "1", cardsList[pos].id.toString(), SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""]))
+                cardsList[pos].expiry_date, "1", cardsList[pos].id.toString(), sharedPreferenceInstance!![SharedPreferenceUtility.SelectedLang, ""]))
         val call = apiInterface.addDeleteCard(builder.build())
         call!!.enqueue(object : Callback<AddDeleteCardResponse?>{
             override fun onResponse(
@@ -123,21 +124,34 @@ class MyCards : Fragment() {
                 requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 try {
                     if (response.isSuccessful){
-                        if (response.body()!!.status==1){
+                        if(response.body()!=null){
+                            if (response.body()!!.status==1){
                                 fragmentsList.removeAt(pos)
-                            if (fragmentsList.size==0){
-                                mView!!.tv_no_cards_found.visibility = View.VISIBLE
-                                mView!!.tv_delete_card.visibility = View.GONE
+                                if (fragmentsList.size==0){
+                                    mView!!.tv_no_cards_found.visibility = View.VISIBLE
+                                    mView!!.tv_delete_card.visibility = View.GONE
+                                }else{
+                                    mView!!.tv_no_cards_found.visibility = View.GONE
+                                    mView!!.tv_delete_card.visibility = View.VISIBLE
+                                }
+                                Utility.showSnackBarOnResponseSuccess(mView!!.myCardsFragmentConstraintLayout,
+                                    response.body()!!.message.toString(),
+                                    requireContext())
+                                CardSliderAdapter.notifyDataSetChanged()
                             }else{
-                                mView!!.tv_no_cards_found.visibility = View.GONE
-                                mView!!.tv_delete_card.visibility = View.VISIBLE
+                                Utility.showSnackBarOnResponseError(mView!!.myCardsFragmentConstraintLayout,
+                                    response.body()!!.message.toString(),
+                                    requireContext())
                             }
-                            CardSliderAdapter.notifyDataSetChanged()
                         }else{
-                            LogUtils.shortToast(requireContext(), response.body()!!.message)
+                            Utility.showSnackBarOnResponseError(mView!!.myCardsFragmentConstraintLayout,
+                                response.message(),
+                                requireContext())
                         }
                     }else{
-                        LogUtils.longToast(requireContext(), getString(R.string.response_isnt_successful))
+                        Utility.showSnackBarOnResponseError(mView!!.myCardsFragmentConstraintLayout,
+                            requireContext().getString(R.string.response_isnt_successful),
+                            requireContext())
                     }
                 }catch (e: IOException) {
                     e.printStackTrace()
@@ -150,7 +164,9 @@ class MyCards : Fragment() {
 
             override fun onFailure(call: Call<AddDeleteCardResponse?>, throwable: Throwable) {
                 LogUtils.e("msg", throwable.message)
-                LogUtils.shortToast(requireContext(), getString(R.string.check_internet))
+                Utility.showSnackBarOnResponseError(mView!!.myCardsFragmentConstraintLayout,
+                    throwable.message.toString(),
+                    requireContext())
                 mView!!.progressBar_view_cards.visibility= View.GONE
                 requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             }
@@ -161,7 +177,7 @@ class MyCards : Fragment() {
     private fun viewCards() {
         requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         mView!!.progressBar_view_cards.visibility= View.VISIBLE
-        val call = apiInterface.showCards(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId, 0), SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""])
+        val call = apiInterface.showCards(sharedPreferenceInstance!!.get(SharedPreferenceUtility.UserId, 0), sharedPreferenceInstance!![SharedPreferenceUtility.SelectedLang, ""])
         call!!.enqueue(object : Callback<ViewCardResponse?>{
             override fun onResponse(
                 call: Call<ViewCardResponse?>,
@@ -171,39 +187,50 @@ class MyCards : Fragment() {
                 requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 try {
                     if (response.isSuccessful){
-                        if (response.body()!!.status==1){
-                            mView!!.tv_no_cards_found.visibility = View.GONE
-                            cardsList.clear()
-                            fragmentsList.clear()
-                            cardsList = (response.body()!!.cards as ArrayList<Cards>?)!!
-
-                            if(cardsList.size==0){
-                                mView!!.tv_delete_card.visibility = View.GONE
-                                mView!!.tv_no_cards_found.visibility = View.VISIBLE
-                            }else{
-                                mView!!.tv_delete_card.visibility = View.VISIBLE
+                        if (response.body()!=null){
+                            if (response.body()!!.status==1){
                                 mView!!.tv_no_cards_found.visibility = View.GONE
-                            }
+                                cardsList.clear()
+                                fragmentsList.clear()
+                                cardsList = (response.body()!!.cards as ArrayList<Cards>?)!!
 
-                            for (i in 0 until cardsList.size){
-                                fragmentsList.add(CardSliderFragment(cardsList[i]))
-                            }
-                            total_no_of_cards = cardsList.size
-                            CardSliderAdapter = CardSliderAdapter(requireActivity(), fragmentsList)
-                            mView!!.vpCards.adapter =  CardSliderAdapter
-                            // Disable clip to padding
-                            mView!!.vpCards.setClipChildren(false)
-                            mView!!.vpCards.setClipToPadding(false)
-                            mView!!.vpCards.setOffscreenPageLimit(3)
+                                if(cardsList.size==0){
+                                    mView!!.tv_delete_card.visibility = View.GONE
+                                    mView!!.tv_no_cards_found.visibility = View.VISIBLE
+                                }else{
+                                    mView!!.tv_delete_card.visibility = View.VISIBLE
+                                    mView!!.tv_no_cards_found.visibility = View.GONE
+                                }
 
-                            mView!!.vpCards.setPageTransformer{ page: View, position: Float ->
-                                page.scaleY = 1 - (0.14f * abs(position))
+                                for (i in 0 until cardsList.size){
+                                    fragmentsList.add(CardSliderFragment(cardsList[i]))
+                                }
+                                total_no_of_cards = cardsList.size
+                                CardSliderAdapter = CardSliderAdapter(requireActivity(), fragmentsList)
+                                mView!!.vpCards.adapter =  CardSliderAdapter
+                                // Disable clip to padding
+                                mView!!.vpCards.setClipChildren(false)
+                                mView!!.vpCards.setClipToPadding(false)
+                                mView!!.vpCards.setOffscreenPageLimit(3)
+
+                                mView!!.vpCards.setPageTransformer{ page: View, position: Float ->
+                                    page.scaleY = 1 - (0.14f * abs(position))
+                                }
+                            }else{
+                                mView!!.tv_no_cards_found.visibility = View.VISIBLE
+                                Utility.showSnackBarOnResponseError(mView!!.myCardsFragmentConstraintLayout,
+                                    response.body()!!.message.toString(),
+                                    requireContext())
                             }
                         }else{
-                            mView!!.tv_no_cards_found.visibility = View.VISIBLE
+                            Utility.showSnackBarOnResponseError(mView!!.myCardsFragmentConstraintLayout,
+                                response.message(),
+                                requireContext())
                         }
                     }else{
-                        LogUtils.longToast(requireContext(), getString(R.string.response_isnt_successful))
+                        Utility.showSnackBarOnResponseError(mView!!.myCardsFragmentConstraintLayout,
+                            requireContext().getString(R.string.response_isnt_successful),
+                            requireContext())
                     }
                 }catch (e: IOException) {
                     e.printStackTrace()
@@ -216,22 +243,12 @@ class MyCards : Fragment() {
 
             override fun onFailure(call: Call<ViewCardResponse?>, throwable: Throwable) {
                 LogUtils.e("msg", throwable.message)
-                LogUtils.shortToast(requireContext(), getString(R.string.check_internet))
+                Utility.showSnackBarOnResponseError(mView!!.myCardsFragmentConstraintLayout,
+                    throwable.message.toString(),
+                    requireContext())
                 mView!!.progressBar_view_cards.visibility= View.GONE
                 requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             }
         })
     }
-
-    companion object{
-        private var instance: SharedPreferenceUtility? = null
-        @Synchronized
-        fun getInstance(): SharedPreferenceUtility {
-            if (instance == null) {
-                instance = SharedPreferenceUtility()
-            }
-            return instance as SharedPreferenceUtility
-        }
-    }
-
 }

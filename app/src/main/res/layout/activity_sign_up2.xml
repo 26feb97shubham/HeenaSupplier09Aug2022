@@ -5,166 +5,169 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/default_background"
+    android:id="@+id/signUpActivityConstraintLayout"
     tools:context=".activities.SignUpActivity">
 
     <ScrollView
         android:id="@+id/scrollView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="@dimen/_20sdp"
-            android:paddingTop="@dimen/_20sdp">
+            android:paddingVertical="@dimen/_7sdp">
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/iv_logo"
                 android:layout_width="@dimen/_200sdp"
                 android:layout_height="@dimen/_100sdp"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:contentDescription="@string/logo"
                 android:src="@drawable/golden_logo"
-                android:layout_marginTop="@dimen/_30sdp"
-                android:contentDescription="@string/logo"/>
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_sign_up"
                 android:layout_width="@dimen/_200sdp"
                 android:layout_height="@dimen/_40sdp"
-                app:layout_constraintTop_toBottomOf="@+id/iv_logo"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginTop="@dimen/_20sdp"
+                android:layout_marginBottom="@dimen/_10sdp"
+                android:elevation="@dimen/_5sdp"
                 android:fontFamily="@font/avenirlt85heavy"
-                android:includeFontPadding="false"
-                android:textColor="@color/gold"
                 android:gravity="center"
+                android:includeFontPadding="false"
+                android:text="@string/sign_up"
+                android:textAllCaps="true"
+                android:textColor="@color/gold"
                 android:textSize="@dimen/_20ssp"
                 android:textStyle="normal"
-                android:layout_marginBottom="@dimen/_10sdp"
-                android:textAllCaps="true"
-                android:elevation="@dimen/_5sdp"
-                android:text="@string/sign_up"/>
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/iv_logo" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_signup_desc"
                 android:layout_width="@dimen/_250sdp"
                 android:layout_height="@dimen/_40sdp"
-                app:layout_constraintTop_toBottomOf="@+id/tv_sign_up"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginTop="@dimen/_20sdp"
+                android:layout_marginBottom="@dimen/_10sdp"
+                android:elevation="@dimen/_5sdp"
                 android:fontFamily="@font/avenir_45_book"
-                android:includeFontPadding="false"
-                android:textColor="@color/gold"
                 android:gravity="center"
+                android:includeFontPadding="false"
+                android:text="@string/after_completing_your_registration_enjoy_browsing_our_services_and_features"
+                android:textAllCaps="false"
+                android:textColor="@color/gold"
                 android:textSize="@dimen/_10ssp"
                 android:textStyle="normal"
-                android:layout_marginBottom="@dimen/_10sdp"
-                android:textAllCaps="false"
-                android:elevation="@dimen/_5sdp"
-                android:text="@string/after_completing_your_registration_enjoy_browsing_our_services_and_features"/>
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_sign_up" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/profileView"
                 android:layout_width="@dimen/_140sdp"
                 android:layout_height="@dimen/_140sdp"
                 android:layout_marginTop="@dimen/_30sdp"
-                app:layout_constraintTop_toBottomOf="@+id/tv_signup_desc"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
+                app:layout_constraintTop_toBottomOf="@+id/tv_signup_desc">
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/civ_profile"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
                     android:src="@drawable/def_edit_profile"
                     app:civ_border_color="@color/gold"
-                    app:civ_border_width="1dp"/>
+                    app:civ_border_width="1dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
 
             <com.google.android.material.textfield.TextInputEditText
-                android:textDirection="locale"
-                android:textAlignment="viewStart"
                 android:id="@+id/edtUsername_signup"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_40sdp"
-                app:layout_constraintTop_toBottomOf="@+id/profileView"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginTop="@dimen/_30sdp"
                 android:layout_marginHorizontal="@dimen/_30sdp"
+                android:layout_marginTop="@dimen/_30sdp"
+                android:layout_marginBottom="@dimen/_40sdp"
                 android:background="@drawable/gold_border_white_filled_rect_box_curved"
-                android:textColorHint="@color/text_color"
+                android:elevation="@dimen/_5sdp"
+                android:fontFamily="@font/avenir_medium"
+                android:hint="@string/username"
+                android:imeOptions="actionNext"
+                android:importantForAutofill="no"
+                android:includeFontPadding="false"
+                android:inputType="text"
+                android:maxLength="55"
+                android:maxLines="1"
                 android:paddingHorizontal="@dimen/_10sdp"
                 android:paddingVertical="@dimen/_6sdp"
-                android:includeFontPadding="false"
-                android:textColor="@color/text_color"
-                android:fontFamily="@font/avenir_medium"
-                android:layout_marginBottom="@dimen/_40sdp"
-                android:textSize="@dimen/_11ssp"
+                android:textAlignment="viewStart"
                 android:textAllCaps="false"
-                android:elevation="@dimen/_5sdp"
-                android:maxLines="1"
-                android:maxLength="55"
-                android:inputType="text"
-                android:imeOptions="actionNext"
-                android:hint="@string/username"
-                android:importantForAutofill="no" />
+                android:textColor="@color/text_color"
+                android:textColorHint="@color/text_color"
+                android:textDirection="locale"
+                android:textSize="@dimen/_11ssp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/profileView" />
 
             <LinearLayout
+                android:id="@+id/llMobileNumber"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_40sdp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/edtUsername_signup"
-                app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginHorizontal="@dimen/_30sdp"
                 android:layout_marginTop="@dimen/_15sdp"
                 android:layout_marginBottom="@dimen/_40sdp"
                 android:background="@drawable/gold_border_white_filled_rect_box_curved"
-                android:id="@+id/llMobileNumber"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/edtUsername_signup">
 
                 <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/mtvCountryCode"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/edtUsername_signup"
-                    android:text="+971"
                     android:layout_gravity="center_vertical"
                     android:gravity="center_vertical"
                     android:paddingStart="@dimen/_8sdp"
+                    android:text="+971"
                     android:textColor="@color/gold"
-                    android:id="@+id/mtvCountryCode"/>
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/edtUsername_signup" />
 
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:textDirection="locale"
-                    android:textAlignment="viewStart"
                     android:id="@+id/edtmobilenumber_signup"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_40sdp"
-                    android:paddingStart="@dimen/_4sdp"
+                    android:background="@null"
                     android:elevation="@dimen/_5sdp"
                     android:fontFamily="@font/avenir_medium"
                     android:hint="@string/mobile_number"
                     android:imeOptions="actionNext"
                     android:includeFontPadding="false"
-                    android:background="@null"
                     android:inputType="number"
-                    android:padding="@dimen/_10sdp"
-                    android:maxLines="1"
                     android:maxLength="14"
+                    android:maxLines="1"
+                    android:padding="@dimen/_10sdp"
+                    android:paddingStart="@dimen/_4sdp"
+                    android:textAlignment="viewStart"
                     android:textAllCaps="false"
                     android:textColor="@color/text_color"
                     android:textColorHint="@color/text_color"
+                    android:textDirection="locale"
                     android:textSize="@dimen/_12ssp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -172,7 +175,7 @@
             </LinearLayout>
 
 
-        <!--    <com.google.android.material.textfield.TextInputEditText
+            <!--    <com.google.android.material.textfield.TextInputEditText
                 android:textDirection="locale"
                 android:textAlignment="viewStart"
                 android:id="@+id/edtmobilenumber_signup"
@@ -201,287 +204,325 @@
                 android:hint="@string/mobile_number"/>-->
 
             <com.google.android.material.textfield.TextInputEditText
-                android:textDirection="locale"
-                android:textAlignment="viewStart"
                 android:id="@+id/edtemailaddress_signup"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_40sdp"
-                android:maxLines="1"
-                android:maxLength="55"
-                app:layout_constraintTop_toBottomOf="@+id/llMobileNumber"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginTop="@dimen/_15sdp"
                 android:layout_marginHorizontal="@dimen/_30sdp"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:layout_marginBottom="@dimen/_40sdp"
                 android:background="@drawable/gold_border_white_filled_rect_box_curved"
-                android:textColorHint="@color/text_color"
+                android:elevation="@dimen/_5sdp"
+                android:fontFamily="@font/avenir_medium"
+                android:hint="@string/email_address"
+                android:imeOptions="actionNext"
+                android:includeFontPadding="false"
+                android:inputType="textEmailAddress"
+                android:maxLength="55"
+                android:maxLines="1"
                 android:paddingHorizontal="@dimen/_10sdp"
                 android:paddingVertical="@dimen/_6sdp"
-                android:includeFontPadding="false"
-                android:textColor="@color/text_color"
-                android:fontFamily="@font/avenir_medium"
-                android:layout_marginBottom="@dimen/_40sdp"
-                android:textSize="@dimen/_11ssp"
+                android:textAlignment="viewStart"
                 android:textAllCaps="false"
-                android:elevation="@dimen/_5sdp"
-                android:inputType="textEmailAddress"
-                android:imeOptions="actionNext"
-                android:hint="@string/email_address"/>
+                android:textColor="@color/text_color"
+                android:textColorHint="@color/text_color"
+                android:textDirection="locale"
+                android:textSize="@dimen/_11ssp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/llMobileNumber" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_emirate"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_40sdp"
-                app:layout_constraintTop_toBottomOf="@+id/edtemailaddress_signup"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginTop="@dimen/_15sdp"
                 android:layout_marginHorizontal="@dimen/_30sdp"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:layout_marginBottom="@dimen/_40sdp"
                 android:background="@drawable/gold_border_white_filled_rect_box_curved"
-                android:textColorHint="@color/text_color"
+                android:drawablePadding="@dimen/_8sdp"
+                android:elevation="@dimen/_5sdp"
+                android:fontFamily="@font/avenir_medium"
+                android:gravity="center_vertical"
+                android:hint="@string/emirates"
+                android:includeFontPadding="false"
+                android:maxLength="55"
+                android:maxLines="1"
                 android:paddingHorizontal="@dimen/_10sdp"
                 android:paddingVertical="@dimen/_6sdp"
-                android:includeFontPadding="false"
-                android:textColor="@color/text_color"
-                android:fontFamily="@font/avenir_medium"
-                android:layout_marginBottom="@dimen/_40sdp"
-                android:textSize="@dimen/_11ssp"
                 android:textAllCaps="false"
-                android:elevation="@dimen/_5sdp"
-                android:maxLines="1"
-                android:maxLength="55"
-                android:drawablePadding="@dimen/_8sdp"
-                android:hint="@string/emirates"
-                android:gravity="center_vertical"
-                app:drawableEndCompat="@drawable/dark_brown_down_icon" />
+                android:textColor="@color/text_color"
+                android:textColorHint="@color/text_color"
+                android:textSize="@dimen/_11ssp"
+                app:drawableEndCompat="@drawable/dark_brown_down_icon"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/edtemailaddress_signup" />
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cards_countries_listing"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_10sdp"
-                app:layout_constraintTop_toBottomOf="@+id/tv_emirate"
-                app:layout_constraintStart_toStartOf="parent"
-                app:cardCornerRadius="@dimen/_6sdp"
                 android:layout_marginHorizontal="@dimen/_30sdp"
-                app:strokeColor="@color/gold"
+                android:layout_marginTop="@dimen/_10sdp"
                 android:visibility="gone"
+                app:cardCornerRadius="@dimen/_6sdp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_emirate"
+                app:strokeColor="@color/gold"
                 app:strokeWidth="@dimen/_1sdp">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_countries_listing"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:cardBackgroundColor="@android:color/transparent"
-                    android:padding="@dimen/_10sdp"/>
+                    android:padding="@dimen/_10sdp"
+                    app:cardBackgroundColor="@android:color/transparent" />
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/edtlocation_signup"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_40sdp"
-                app:layout_constraintTop_toBottomOf="@+id/cards_countries_listing"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginTop="@dimen/_15sdp"
                 android:layout_marginHorizontal="@dimen/_30sdp"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:layout_marginBottom="@dimen/_40sdp"
                 android:background="@drawable/gold_border_white_filled_rect_box_curved"
-                android:textColorHint="@color/text_color"
+                android:drawablePadding="@dimen/_8sdp"
+                android:elevation="@dimen/_5sdp"
+                android:ellipsize="end"
+                android:fontFamily="@font/avenir_medium"
+                android:gravity="center_vertical"
+                android:hint="@string/location_1"
+                android:includeFontPadding="false"
+                android:maxLength="55"
+                android:maxLines="1"
                 android:paddingHorizontal="@dimen/_10sdp"
                 android:paddingVertical="@dimen/_6sdp"
-                android:maxLines="1"
-                android:maxLength="55"
-                android:includeFontPadding="false"
-                android:textColor="@color/text_color"
-                android:fontFamily="@font/avenir_medium"
-                android:layout_marginBottom="@dimen/_40sdp"
-                android:textSize="@dimen/_11ssp"
                 android:singleLine="true"
-                android:ellipsize="end"
                 android:textAllCaps="false"
-                android:gravity="center_vertical"
-                android:elevation="@dimen/_5sdp"
-                android:drawablePadding="@dimen/_8sdp"
-                android:hint="@string/location_1"
-                app:drawableStartCompat="@drawable/location_pin_dark_brown_layer_list" />
+                android:textColor="@color/text_color"
+                android:textColorHint="@color/text_color"
+                android:textSize="@dimen/_11ssp"
+                app:drawableStartCompat="@drawable/location_pin_dark_brown_layer_list"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cards_countries_listing" />
 
             <LinearLayout
                 android:id="@+id/passlayout"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_40sdp"
-                app:layout_constraintTop_toBottomOf="@+id/edtlocation_signup"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginTop="@dimen/_40sdp"
                 android:layout_marginHorizontal="@dimen/_30sdp"
+                android:layout_marginTop="@dimen/_40sdp"
+                android:background="@drawable/gold_border_white_filled_rect_box_curved"
                 android:orientation="horizontal"
-                android:background="@drawable/gold_border_white_filled_rect_box_curved">
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/edtlocation_signup">
+
                 <com.google.android.material.textfield.TextInputEditText
-                    android:textDirection="locale"
-                    android:textAlignment="viewStart"
                     android:id="@+id/edtpassword_signup"
                     android:layout_width="0dp"
-                    android:layout_weight="0.9"
                     android:layout_height="match_parent"
-                    android:background="@android:color/transparent"
-                    android:textColorHint="@color/text_color"
-                    android:textColor="@color/text_color"
-                    android:fontFamily="@font/avenir_medium"
-                    android:textSize="@dimen/_11ssp"
-                    android:maxLines="1"
-                    android:maxLength="55"
                     android:layout_marginHorizontal="@dimen/_6sdp"
-                    android:textAllCaps="false"
-                    android:inputType="textPassword"
+                    android:layout_weight="0.9"
+                    android:background="@android:color/transparent"
+                    android:fontFamily="@font/avenir_medium"
+                    android:hint="@string/password"
                     android:imeOptions="actionNext"
-                    android:hint="@string/password"/>
+                    android:inputType="textPassword"
+                    android:maxLength="55"
+                    android:maxLines="1"
+                    android:textAlignment="viewStart"
+                    android:textAllCaps="false"
+                    android:textColor="@color/text_color"
+                    android:textColorHint="@color/text_color"
+                    android:textDirection="locale"
+                    android:textSize="@dimen/_11ssp" />
+
                 <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/iv_pass_show_hide"
                     android:layout_width="0dp"
-                    android:layout_weight="0.1"
                     android:layout_height="match_parent"
+                    android:layout_marginHorizontal="@dimen/_6sdp"
+                    android:layout_weight="0.1"
                     android:src="@drawable/invisible"
-                    app:tint="@color/gray"
-                    android:layout_marginHorizontal="@dimen/_6sdp"/>
+                    app:tint="@color/gray" />
             </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/cnfrmpasslayout"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_40sdp"
-                app:layout_constraintTop_toBottomOf="@+id/passlayout"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginTop="@dimen/_15sdp"
                 android:layout_marginHorizontal="@dimen/_30sdp"
-                android:background="@drawable/gold_border_white_filled_rect_box_curved">
+                android:layout_marginTop="@dimen/_15sdp"
+                android:background="@drawable/gold_border_white_filled_rect_box_curved"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/passlayout">
+
                 <com.google.android.material.textfield.TextInputEditText
-                    android:textDirection="locale"
-                    android:textAlignment="viewStart"
                     android:id="@+id/edtcnfrmpassword_signup"
                     android:layout_width="0dp"
-                    android:layout_weight="0.9"
                     android:layout_height="match_parent"
-                    android:background="@android:color/transparent"
-                    android:textColorHint="@color/text_color"
-                    android:includeFontPadding="false"
-                    android:textColor="@color/text_color"
                     android:layout_marginHorizontal="@dimen/_6sdp"
-                    android:fontFamily="@font/avenir_medium"
-                    android:textSize="@dimen/_11ssp"
-                    android:textAllCaps="false"
-                    android:maxLines="1"
-                    android:maxLength="55"
+                    android:layout_weight="0.9"
+                    android:background="@android:color/transparent"
                     android:elevation="@dimen/_5sdp"
-                    android:inputType="textPassword"
+                    android:fontFamily="@font/avenir_medium"
+                    android:hint="@string/confirm_password"
                     android:imeOptions="actionDone"
-                    android:hint="@string/confirm_password" />
+                    android:includeFontPadding="false"
+                    android:inputType="textPassword"
+                    android:maxLength="55"
+                    android:maxLines="1"
+                    android:textAlignment="viewStart"
+                    android:textAllCaps="false"
+                    android:textColor="@color/text_color"
+                    android:textColorHint="@color/text_color"
+                    android:textDirection="locale"
+                    android:textSize="@dimen/_11ssp" />
+
                 <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/iv_cnfrm_pass_show_hide"
                     android:layout_width="0dp"
-                    android:layout_weight="0.1"
                     android:layout_height="match_parent"
+                    android:layout_marginHorizontal="@dimen/_6sdp"
+                    android:layout_weight="0.1"
                     android:src="@drawable/invisible"
-                    app:tint="@color/gray"
-                    android:layout_marginHorizontal="@dimen/_6sdp" />
+                    app:tint="@color/gray" />
             </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/rlUploadLicense"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_25sdp"
+                android:visibility="visible"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cnfrmpasslayout">
+
+                <ImageView
+                    android:id="@+id/imgAttach"
+                    android:layout_width="@dimen/_50sdp"
+                    android:layout_height="@dimen/_50sdp"
+                    android:src="@drawable/attach" />
+
+                <TextView
+                    android:id="@+id/txt2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_marginStart="@dimen/_10sdp"
+                    android:layout_marginEnd="@dimen/_10sdp"
+                    android:layout_toEndOf="@+id/imgAttach"
+                    android:fontFamily="@font/expressway_rg"
+                    android:text="@string/upload_trade_license"
+                    android:textColor="@color/gold"
+                    android:textSize="@dimen/_10ssp" />
+
+            </RelativeLayout>
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/btnSignUp"
                 android:layout_width="@dimen/_240sdp"
                 android:layout_height="@dimen/_45sdp"
-                app:layout_constraintTop_toBottomOf="@+id/cnfrmpasslayout"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginTop="@dimen/_60sdp"
-                android:background="@drawable/curved_gold_filled_rect_box"
-                android:fontFamily="@font/avenir_45_book"
-                android:includeFontPadding="false"
-                android:textColor="@color/black"
                 android:layout_marginBottom="@dimen/_40sdp"
+                android:background="@drawable/curved_gold_filled_rect_box"
+                android:elevation="@dimen/_5sdp"
+                android:fontFamily="@font/avenir_45_book"
                 android:gravity="center"
+                android:includeFontPadding="false"
+                android:text="@string/sign_up"
+                android:textAllCaps="true"
+                android:textColor="@color/black"
                 android:textSize="@dimen/_15ssp"
                 android:textStyle="normal"
-                android:textAllCaps="true"
-                android:elevation="@dimen/_5sdp"
-                android:text="@string/sign_up"/>
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/rlUploadLicense" />
 
             <RelativeLayout
                 android:id="@+id/rlBottom"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/_20sdp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/btnSignUp"
                 android:layout_marginTop="@dimen/_30sdp"
-                android:layout_marginBottom="@dimen/_10sdp">
+                android:layout_marginBottom="@dimen/_10sdp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/btnSignUp">
+
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_already_have_an_account"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/_15sdp"
-                    android:textColor="@color/gold"
                     android:layout_alignParentBottom="true"
-                    android:gravity="center"
-                    android:fontFamily="@font/avenir_45_book"
-                    android:includeFontPadding="false"
-                    android:textSize="@dimen/_11ssp"
-                    android:textAllCaps="false"
+                    android:layout_marginStart="@dimen/_15sdp"
                     android:elevation="@dimen/_5sdp"
-                    android:text="@string/already_have_an_account"/>
+                    android:fontFamily="@font/avenir_45_book"
+                    android:gravity="center"
+                    android:includeFontPadding="false"
+                    android:text="@string/already_have_an_account"
+                    android:textAllCaps="false"
+                    android:textColor="@color/gold"
+                    android:textSize="@dimen/_11ssp" />
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_login"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
                     android:layout_marginStart="@dimen/_5sdp"
                     android:layout_toEndOf="@id/tv_already_have_an_account"
+                    android:elevation="@dimen/_5sdp"
                     android:fontFamily="@font/avenir_45_book"
                     android:includeFontPadding="false"
-                    android:textColor="@color/gold"
-                    android:layout_alignParentBottom="true"
-                    android:textSize="@dimen/_11ssp"
                     android:textAllCaps="true"
-                    android:elevation="@dimen/_5sdp"/>
+                    android:textColor="@color/gold"
+                    android:textSize="@dimen/_11ssp" />
             </RelativeLayout>
 
             <LinearLayout
                 android:id="@+id/ll_tnc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintTop_toBottomOf="@id/cnfrmpasslayout"
-                app:layout_constraintStart_toStartOf="parent"
                 android:layout_marginHorizontal="@dimen/_30sdp"
+                android:layout_marginTop="@dimen/_20sdp"
                 android:gravity="center_vertical"
-                android:layout_marginTop="@dimen/_20sdp">
+                android:orientation="horizontal"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/rlUploadLicense">
 
                 <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/imgChk"
                     android:layout_width="@dimen/_15sdp"
                     android:layout_height="@dimen/_15sdp"
                     android:src="@drawable/un_check" />
+
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/txtPlsAccept"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_8sdp"
+                    android:fontFamily="@font/expressway_rg"
                     android:text="@string/i_accept_the"
                     android:textColor="@color/gold"
-                    android:textSize="@dimen/_12ssp"
-                    android:layout_marginStart="@dimen/_8sdp"
-                    android:fontFamily="@font/expressway_rg" />
+                    android:textSize="@dimen/_12ssp" />
+
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/txtTermsConditions"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_5sdp"
+                    android:layout_marginEnd="@dimen/_15sdp"
+                    android:fontFamily="@font/expressway_rg"
                     android:text="@string/terms_and_conditions_underlined"
+                    android:textAllCaps="true"
                     android:textColor="@color/gold"
                     android:textSize="@dimen/_12ssp"
                     android:textStyle="normal"
-                    android:textAllCaps="true"
-                    android:fontFamily="@font/expressway_rg"
-                    android:layout_marginEnd="@dimen/_15sdp"
-                    android:layout_marginStart="@dimen/_5sdp"
                     tools:ignore="AllCaps" />
 
             </LinearLayout>

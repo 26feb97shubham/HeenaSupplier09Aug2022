@@ -38,6 +38,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
+import com.heena.supplier.application.MyApp.Companion.sharedPreferenceInstance
 import com.heena.supplier.utils.Utility.setSafeOnClickListener
 import kotlinx.android.synthetic.main.activity_home2.*
 import kotlinx.android.synthetic.main.fragment_address_sheet.*
@@ -102,7 +103,7 @@ class AddressSheetFragment : Fragment(),
         mView = inflater.inflate(R.layout.fragment_address_sheet, container, false)
         Utility.changeLanguage(
             requireContext(),
-            SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, "")
+            sharedPreferenceInstance!!.get(SharedPreferenceUtility.SelectedLang, "")
         )
         getCountires()
         return mView
@@ -114,14 +115,14 @@ class AddressSheetFragment : Fragment(),
 
         requireActivity().iv_back.setSafeOnClickListener {
             requireActivity().iv_back.startAnimation(AlphaAnimation(1F, 0.5F))
-            SharedPreferenceUtility.getInstance()
+            sharedPreferenceInstance!!
                 .hideSoftKeyBoard(requireContext(), requireActivity().iv_back)
             findNavController().popBackStack()
         }
 
         requireActivity().iv_notification.setSafeOnClickListener {
             requireActivity().iv_notification.startAnimation(AlphaAnimation(1F, 0.5F))
-            SharedPreferenceUtility.getInstance()
+            sharedPreferenceInstance!!
                 .hideSoftKeyBoard(requireContext(), requireActivity().iv_notification)
             findNavController().navigate(R.id.notificationsFragment)
         }
@@ -146,7 +147,7 @@ class AddressSheetFragment : Fragment(),
             mView!!.iv_toggle_on.visibility = View.GONE
         }
         placeClick =
-            SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.PLACECLICK, false)
+            sharedPreferenceInstance!!.get(SharedPreferenceUtility.PLACECLICK, false)
 
         mView!!.mapView.onCreate(mapViewBundle)
         mView!!.mapView.getMapAsync(this)
@@ -154,7 +155,7 @@ class AddressSheetFragment : Fragment(),
 
         /*mView!!.tv_location.setSafeOnClickListener {
             placeClick = true
-            SharedPreferenceUtility.getInstance()
+            sharedPreferenceInstance!!
                 .save(SharedPreferenceUtility.PLACECLICK, placeClick)
             val fields: MutableList<Place.Field> = ArrayList()
             fields.add(Place.Field.NAME)
@@ -194,11 +195,11 @@ class AddressSheetFragment : Fragment(),
                 Log.e("Lat", mLatitude.toString())
                 Log.e("Lng", mLongitude.toString())
 
-                SharedPreferenceUtility.getInstance()
+                sharedPreferenceInstance!!
                     .save(SharedPreferenceUtility.SavedAddress, tv_location.text.toString())
-                SharedPreferenceUtility.getInstance()
+                sharedPreferenceInstance!!
                     .save(SharedPreferenceUtility.SavedLat, mLatitude.toString())
-                SharedPreferenceUtility.getInstance()
+                sharedPreferenceInstance!!
                     .save(SharedPreferenceUtility.SavedLng, mLongitude.toString())
                 findNavController().popBackStack()
             } else {
@@ -209,7 +210,7 @@ class AddressSheetFragment : Fragment(),
 
     private fun getCountires() {
         if (Utility.isNetworkAvailable()){
-            val call = Utility.apiInterface.getCountries(SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""])
+            val call = Utility.apiInterface.getCountries(sharedPreferenceInstance!![SharedPreferenceUtility.SelectedLang, ""])
             call!!.enqueue(object : Callback<CountryResponse?> {
                 override fun onResponse(call: Call<CountryResponse?>, response: Response<CountryResponse?>) {
                     try {
@@ -218,10 +219,14 @@ class AddressSheetFragment : Fragment(),
                                 countryList.clear()
                                 countryList = response.body()!!.country as ArrayList<CountryItem>
                             }else{
-                                LogUtils.shortToast(requireContext(), getString(R.string.response_isnt_successful))
+                                Utility.showSnackBarOnResponseError(mView!!.addressSheetFragmentConstraintLayout,
+                                    response.body()!!.message.toString(),
+                                    requireContext())
                             }
                         }else {
-                            LogUtils.shortToast(requireContext(), getString(R.string.response_isnt_successful))
+                            Utility.showSnackBarOnResponseError(mView!!.addressSheetFragmentConstraintLayout,
+                                response.message(),
+                                requireContext())
                         }
                     } catch (e: IOException) {
                         e.printStackTrace()
@@ -234,11 +239,15 @@ class AddressSheetFragment : Fragment(),
 
                 override fun onFailure(call: Call<CountryResponse?>, throwable: Throwable) {
                     LogUtils.e("msg", throwable.message)
-                    LogUtils.shortToast(requireContext(),throwable.message)
+                    Utility.showSnackBarOnResponseError(mView!!.addressSheetFragmentConstraintLayout,
+                        throwable.message!!,
+                        requireContext())
                 }
             })
         }else{
-            LogUtils.shortToast(requireContext(), getString(R.string.check_internet))
+            Utility.showSnackBarValidationError(mView!!.addressSheetFragmentConstraintLayout,
+                requireContext().getString(R.string.check_internet),
+                requireContext())
         }
 
     }
@@ -246,10 +255,13 @@ class AddressSheetFragment : Fragment(),
     private fun validateAndSave(countryId: Int?) {
         title = mView!!.et_title.text.toString().trim()
         if(TextUtils.isEmpty(title)){
-            mView!!.et_title.requestFocus()
-            mView!!.et_title.error = getString(R.string.please_enter_valid_title)
+            Utility.showSnackBarValidationError(mView!!.addressSheetFragmentConstraintLayout,
+                requireContext().getString(R.string.please_enter_valid_title),
+                requireContext())
         }else if (countryId==null || countryId==0){
-            LogUtils.shortToast(requireContext(), requireContext().getString(R.string.no_country_found))
+            Utility.showSnackBarValidationError(mView!!.addressSheetFragmentConstraintLayout,
+                requireContext().getString(R.string.no_country_found),
+                requireContext())
         }else{
             saveAddress(countryId)
         }
@@ -263,43 +275,46 @@ class AddressSheetFragment : Fragment(),
                 is_default.toString(),
                 country_Id.toString(),
                 building_name.toString(),
-                SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId, 0).toString()))
+                sharedPreferenceInstance!!.get(SharedPreferenceUtility.UserId, 0).toString()))
         val call = Utility.apiInterface.addAddress(builder.build())
         call!!.enqueue(object : Callback<AddEditDeleteAddressResponse?> {
             override fun onResponse(call: Call<AddEditDeleteAddressResponse?>, response: Response<AddEditDeleteAddressResponse?>) {
                 if (response.isSuccessful) {
                     if (response.body() != null) {
                         if (response.body()!!.status == 1) {
-                            LogUtils.shortToast(requireContext(), response.body()!!.message)
+                            Utility.showSnackBarOnResponseSuccess(mView!!.addressSheetFragmentConstraintLayout,
+                                response.body()!!.message.toString(),
+                                requireContext())
                             findNavController().popBackStack()
+                        }else{
+                            Utility.showSnackBarOnResponseError(mView!!.addressSheetFragmentConstraintLayout,
+                                response.body()!!.message.toString(),
+                                requireContext())
                         }
                     } else {
-                        LogUtils.shortToast(requireContext(), response.message())
+                        Utility.showSnackBarOnResponseError(mView!!.addressSheetFragmentConstraintLayout,
+                            response.message(),
+                            requireContext())
                     }
                 } else {
-                    LogUtils.shortToast(requireContext(), getString(R.string.response_isnt_successful))
+                    Utility.showSnackBarOnResponseError(mView!!.addressSheetFragmentConstraintLayout,
+                        requireContext().getString(R.string.response_isnt_successful),
+                        requireContext())
                 }
             }
 
             override fun onFailure(call: Call<AddEditDeleteAddressResponse?>, throwable: Throwable) {
                 LogUtils.e("msg", throwable.message)
-                LogUtils.shortToast(requireContext(), throwable.localizedMessage)
+                Utility.showSnackBarOnResponseError(mView!!.addressSheetFragmentConstraintLayout,
+                    throwable.message.toString(),
+                    requireContext())
             }
-
         })
     }
 
     companion object {
         const val TAG = "AddressBottomSheetFragment"
-        private var instance: SharedPreferenceUtility? = null
         private var gMap : GoogleMap?=null
-        @Synchronized
-        fun getInstance(): SharedPreferenceUtility {
-            if (instance == null) {
-                instance = SharedPreferenceUtility()
-            }
-            return instance as SharedPreferenceUtility
-        }
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -310,8 +325,6 @@ class AddressSheetFragment : Fragment(),
         gMap!!.uiSettings.isMapToolbarEnabled = true;
         gMap!!.uiSettings.isMyLocationButtonEnabled = true;
         fetchCurrentLocation()
-
-
     }
 
     fun fetchCurrentLocation() {

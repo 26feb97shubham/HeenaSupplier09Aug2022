@@ -1,81 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/black"
+    android:id="@+id/membershipBottomSheetDialogCoordinatorLayout"
     tools:context=".bottomsheets.MembershipBottomSheetDialogFragment">
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent">
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/_12sdp">
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_membership_plans"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:listitem="@layout/membership_plan_items"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            android:orientation="horizontal"
-            android:scrollbars="horizontal"
-            app:layout_constraintEnd_toEndOf="parent"/>
+        android:layout_height="@dimen/_200sdp">
 
-        <com.chahinem.pageindicator.PageIndicator
-            android:id="@+id/pageIndicator2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:piSelectedColor="@color/gold"
-            app:piDefaultColor="@color/bg_gray"
-            android:visibility="visible"
-            app:piDotSpacing="@dimen/_5sdp"
-            android:layout_marginTop="@dimen/_10sdp"
-            android:paddingVertical="@dimen/_8sdp"
-            app:layout_constraintTop_toBottomOf="@+id/rv_membership_plans"
-            app:layout_constraintStart_toStartOf="parent"
+        <ScrollView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            />
-
-
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/tv_subscribe"
-            android:layout_width="@dimen/_200sdp"
-            android:layout_height="@dimen/_40sdp"
-            android:background="@drawable/curved_gold_filled_rect_box"
-            android:text="@string/subscribe"
-            android:fontFamily="@font/avenir_medium"
-            android:textColor="@color/black"
-            android:textStyle="normal"
-            android:gravity="center"
-            android:textSize="@dimen/_15sdp"
-            android:textAllCaps="true"
-            android:visibility="visible"
-            android:layout_marginTop="@dimen/_10sdp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginHorizontal="@dimen/_30sdp"
-            app:layout_constraintTop_toBottomOf="@id/pageIndicator2" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/_12sdp">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_membership_plans"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:scrollbars="horizontal"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:listitem="@layout/membership_plan_items" />
+
+                <com.chahinem.pageindicator.PageIndicator
+                    android:id="@+id/pageIndicator2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:paddingVertical="@dimen/_8sdp"
+                    android:visibility="visible"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/rv_membership_plans"
+                    app:piDefaultColor="@color/bg_gray"
+                    app:piDotSpacing="@dimen/_5sdp"
+                    app:piSelectedColor="@color/gold" />
+
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tv_subscribe"
+                    android:layout_width="@dimen/_200sdp"
+                    android:layout_height="@dimen/_40sdp"
+                    android:layout_marginHorizontal="@dimen/_30sdp"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:background="@drawable/curved_gold_filled_rect_box"
+                    android:fontFamily="@font/avenir_medium"
+                    android:gravity="center"
+                    android:text="@string/subscribe"
+                    android:textAllCaps="true"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_15sdp"
+                    android:textStyle="normal"
+                    android:visibility="visible"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/pageIndicator2" />
+
+
+                <ProgressBar
+                    android:id="@+id/membership_bottom_sheet_progressBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:elevation="@dimen/_5sdp"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="@id/rv_membership_plans"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/rv_membership_plans" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </ScrollView>
     </androidx.constraintlayout.widget.ConstraintLayout>
-    </ScrollView>
-
-
-
-    <ProgressBar
-        android:id="@+id/membership_bottom_sheet_progressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:elevation="@dimen/_5sdp"
-        android:visibility="gone"
-        android:layout_marginBottom="@dimen/_10sdp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_centerInParent="true"/>
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.animation.AlphaAnimation
 import com.heena.supplier.R
+import com.heena.supplier.application.MyApp
 import com.heena.supplier.utils.SharedPreferenceUtility
 import com.heena.supplier.utils.Utility
 import com.heena.supplier.utils.Utility.setSafeOnClickListener
@@ -14,6 +15,10 @@ class ChooseLoginSignUpActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_choose_login_sign_up2)
+        Utility.changeLanguage(
+            this,
+            MyApp.sharedPreferenceInstance!![SharedPreferenceUtility.SelectedLang, ""]
+        )
         setUpViews()
     }
     private fun setUpViews() {
@@ -30,15 +35,4 @@ class ChooseLoginSignUpActivity : AppCompatActivity() {
     override fun onBackPressed() {
         Utility.exitApp(this, this)
     }
-    companion object{
-        private var instance: SharedPreferenceUtility? = null
-        @Synchronized
-        fun getInstance(): SharedPreferenceUtility {
-            if (instance == null) {
-                instance = SharedPreferenceUtility()
-            }
-            return instance as SharedPreferenceUtility
-        }
-    }
-
 }

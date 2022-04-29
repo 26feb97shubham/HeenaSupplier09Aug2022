@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Hena_Supplier</string>
+    <string name="app_name">AlNaqasha Supplier</string>
     <string name="mobile_number">رقم الهاتف المحمول</string>
     <string name="email_address">عنوان البريد الإلكتروني</string>
     <string name="confirm_password">تأكيد كلمة المرور</string>
@@ -50,9 +50,9 @@
     <string name="offers_and_discounts">العروض والخصومات:</string>
     <string name="supplier_name">اسم المورد</string>
     <string name="category">الفئة</string>
-    <string name="bookings_history">تاريخ الحجوزات</string>
+    <string name="bookings_history">الحجوزات السابقة</string>
     <string name="pending">المعلقه</string>
-    <string name="completed">اكمال</string>
+    <string name="completed">مكتمل</string>
     <string name="accepted">قبلت</string>
     <string name="cancelled">الغاء</string>
     <string name="book_service">خدمة الكتاب</string>
@@ -87,7 +87,7 @@
     <string name="subscribe">اشترك</string>
     <string name="membership">عضويه</string>
     <string name="add_new_featured">إضافة مميزة جديدة</string>
-    <string name="accept">تقبل</string>
+    <string name="accept">قبول </string>
     <string name="reject">رفض</string>
     <string name="booking_details">تفاصيل الحجز</string>
     <string name="status">حالة</string>
@@ -122,7 +122,7 @@
     <string name="bank_name">اسم البنك</string>
     <string name="full_name">الاسم الكامل</string>
     <string name="account_number">رقم الحساب</string>
-    <string name="edit">حرر</string>
+    <string name="edit">تعديل</string>
     <string name="general_information">معلومات عامة</string>
     <string name="message">رسالة</string>
     <string name="good_day_nhow_can_we_help_you_today">يوم سعيد!  كيف يمكننا مساعدتك اليوم؟</string>
@@ -146,7 +146,7 @@
     <string name="edit_card">تحرير البطاقة</string>
     <string name="delete_card">حذف البطاقة</string>
     <string name="add_new_address">إضافة عنوان جديد</string>
-    <string name="saved_address">العنوان المحفوظ</string>
+    <string name="saved_address">العناوين المحفوظة</string>
     <string name="please_choose_your_language">الرجاء اختيار لغتك</string>
     <string name="verify_password_length_valid">يجب أن يكون طول كلمة المرور 6 أحرف كحد أدنى</string>
     <string name="camera">كاميرا</string>
@@ -204,7 +204,7 @@
     <string name="please_enter_valid_message">الرجاء إدخال رسالة صالحة</string>
     <string name="update">تحديث</string>
     <string name="add_bank_details">إضافة تفاصيل البنك</string>
-    <string name="saved_banks">يطاقاتي </string>
+    <string name="saved_banks">بطاقاتي </string>
     <string name="add_new_banks">اضافة بطاقة بنكية</string>
     <string name="no_banks_found">لم يتم العثور على بنوك</string>
     <string name="my_banks">بنوكي</string>
@@ -237,14 +237,15 @@
     <string name="purchased">شراء</string>
     <string name="category1">باب</string>
     <string name="delete_message">هل تريد بالتأكيد حذف الصورة؟</string>
-    <string name="buy_subscription_plan">تريد الحصول على المميز؟ شراء خطة الاشتراك، والتفاصيل أدناه:</string>
+    <string name="buy_subscription_plan">  هل تريد ان تصبحي نقاشة مميزة؟ يمكنك شراء عضوية بالاطلاع على التفاصيل التالية
+</string>
     <string name="subscription_title">عنوان الاشتراك</string>
-    <string name="buy">ابتاع</string>
+    <string name="buy">شراء</string>
     <string name="try_again">حاول مرة أخرى</string>
     <string name="go_back">الرجوع للخلف</string>
     <string name="ooops">أووبس</string>
     <string name="no_internet">لا إنترنت</string>
-    <string name="premium_service">حالة الرق</string>
+    <string name="premium_service">حالة العضوية المميزة</string>
     <string name="bookings">الحجوزات</string>
     <string name="save_changes">احفظ التغييرات</string>
     <string name="username_invalid">اسم المستخدم غير صالح</string>
@@ -315,4 +316,38 @@
     <string name="username_or_email">اسم المستخدم/ عنوان البريد الإلكتروني</string>
     <string name="view_service_details">عرض تفاصيل الخدمة</string>
     <string name="view_offer_details">عرض تفاصيل العرض</string>
+    <string name="card_is_not_valid">البطاقة غير موجودة أو البطاقة غير صالحة</string>
+    <string name="please_select_a_card_to_continue">الرجاء تحديد بطاقة للمتابعة</string>
+    <string name="upload_trade_license">تحميل الرخصة التجارية</string>
+    <string name="document">وثيقة</string>
+    <string name="add_documents">أضف الوثيقة</string>
+    <string name="document_uploaded">تم تحميل المستند.</string>
+    <string name="document_updated">تم تحديث المستند.</string>
+    <string name="update_trade_license">تحديث الرخصة التجارية</string>
+    <string name="please_upload_your_trade_license">يرجى رفع الرخصة التجارية الخاصة بك</string>
+    <string name="cancel_payment">الغاء الدفع</string>
+    <string name="cancel_payment_message">هل أنت متأكد أنك تريد إلغاء الدفع؟</string>
+    <string name="cancel_message">تم إلغاء عملية الدفع بواسطتك!</string>
+    <string name="country">دولة</string>
+    <string name="please_enter_valid_emirate">الرجاء إدخال إمارة صالحة</string>
+    <string name="please_enter_valid_country">الرجاء إدخال بلد صالح</string>
+    <string name="please_enter_your_confirm_password">الرجاء إدخال تأكيد كلمة المرور الخاصة بك</string>
+    <string name="please_enter_your_username_or_emailaddress">الرجاء إدخال اسم المستخدم / البريد الإلكتروني الخاص بك</string>
+    <string name="please_login_signup_to_access_this_functionality">يرجى تسجيل الدخول / التسجيل للوصول إلى هذه الوظيفة</string>
+    <string name="default_address">تقصير</string>
+    <string name="select_emirates">اختر الإمارة</string>
+    <string name="something_went_wrong">هناك خطأ ما</string>
+    <string name="please_upload_your_profile">يرجى تحميل صورة ملف التعريف الخاص بك</string>
+    <string name="payment_failed">عملية الدفع فشلت</string>
+    <string name="please_enter_your_email_address">الرجاء إدخال عنوان البريد الإلكتروني الخاص بك</string>
+    <string name="please_select_emirates">الرجاء تحديد الإمارات</string>
+    <string name="no_messages_found">لا توجد رسائل</string>
+    <string name="please_enter_your_account_number">الرجاء إدخال رقم حسابك</string>
+    <string name="please_enter_your_iban_number">الرجاء إدخال رقم الآيبان الخاص بك</string>
+    <string name="total_revenue">إجمالي الإيرادات</string>
+    <string name="please_do_not_press_back_button_until_the_payment_is_is_process">يرجى عدم الضغط على زر الرجوع حتى تتم معالجة الدفع</string>
+    <string name="thank_you_for_registration">شكرا لتسجيلك معنا. تم إرسال حسابك لموافقة المسؤول</string>
+    <string name="trade_license">الرخصة التجارية</string>
+    <string name="password_doesnt_match_with_old_password">كلمة المرور لا تتطابق مع كلمة المرور القديمة</string>
+    <string name="excel_sheet_downloaded_successfully">تم تنزيل مستند الإيرادات بنجاح. يرجى التحقق من تخزين هاتفك أو بطاقة الذاكرة الداخلية أو قسم التنزيل.</string>
 </resources>

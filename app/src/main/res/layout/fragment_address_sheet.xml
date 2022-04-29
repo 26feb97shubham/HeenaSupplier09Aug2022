@@ -1,159 +1,169 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:map="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:background="@android:color/transparent"
+    android:id="@+id/addressSheetFragmentConstraintLayout"
     tools:context=".fragments.AddressSheetFragment">
 
     <RelativeLayout
         android:id="@+id/rl_mapView"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_weight="0.5"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintHeight_percent="0.35"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
         <com.google.android.gms.maps.MapView
             android:id="@+id/mapView"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/white"
-            android:name="com.google.android.gms.maps.SupportMapFragment" />
+            android:background="@color/white" />
+
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/img_marker"
             android:layout_width="@dimen/_25sdp"
             android:layout_height="@dimen/_25sdp"
             android:layout_centerInParent="true"
-            map:srcCompat="@drawable/location_pin" />
+            map:srcCompat="@drawable/ic_baseline_location_on_24"
+            tools:ignore="VectorDrawableCompat" />
     </RelativeLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <ScrollView
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_weight="0.5"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rl_mapView">
-        <ScrollView
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/_12sdp">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_select_your_address"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:paddingBottom="@dimen/_12sdp">
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/tv_select_your_address"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    android:text="@string/select_your_address"
-                    android:textColor="@color/gold"
-                    android:layout_marginTop="@dimen/_10sdp"
-                    android:layout_marginStart="@dimen/_10sdp"
-                    android:fontFamily="@font/avenir_medium"
-                    android:gravity="center_vertical"
-                    android:textStyle="normal"
-                    android:layout_gravity="center"
-                    android:textSize="@dimen/_24ssp" />
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:fontFamily="@font/avenir_medium"
+                android:layout_marginHorizontal="@dimen/_12sdp"
+                android:paddingHorizontal="10dp"
+                android:gravity="center_vertical"
+                android:text="@string/select_your_address"
+                android:textColor="@color/gold"
+                android:textSize="@dimen/_12ssp"
+                android:textStyle="normal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_move_pin_desc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:layout_constraintTop_toBottomOf="@id/tv_select_your_address"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    android:text="@string/move_the_pin_on_the_map_to_select_your_exact_location_or_enter_it_manually"
-                    android:textColor="@color/gold"
-                    android:layout_marginTop="@dimen/_10sdp"
+                    android:layout_gravity="center"
                     android:layout_marginStart="@dimen/_10sdp"
+                    android:layout_marginTop="@dimen/_10sdp"
                     android:fontFamily="@font/avenir_medium"
                     android:gravity="center"
-                    android:textStyle="normal"
-                    android:layout_gravity="center"
-                    android:textSize="@dimen/_11ssp" />
-
-                <LinearLayout
-                    android:id="@+id/title_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_marginHorizontal="@dimen/_10sdp"
-                    android:layout_marginTop="@dimen/_10sdp"
-                    app:layout_constraintTop_toBottomOf="@id/tv_move_pin_desc"
-                    app:layout_constraintStart_toStartOf="parent">
-                    <com.google.android.material.textview.MaterialTextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/title"
-                        android:textColor="@color/gold"
-                        android:layout_marginTop="@dimen/_6sdp"
-                        android:fontFamily="@font/avenir_medium"
-                        android:gravity="center_vertical"
-                        android:textStyle="normal"
-                        android:textSize="@dimen/_12ssp" />
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:textDirection="locale"
-                        android:textAlignment="viewStart"
-                        android:paddingStart="@dimen/_4sdp"
-                        android:id="@+id/et_title"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/_40sdp"
-                        android:hint="@string/enter_your_title"
-                        android:textColorHint="@color/gold"
-                        android:layout_marginTop="@dimen/_6sdp"
-                        app:backgroundTint="@color/gold"
-                        android:inputType="text"
-                        android:maxLines="1"
-                        android:maxLength="55"
-                        android:textCursorDrawable="@drawable/cursor_color"
-                        android:textColor="@color/gold"
-                        android:textAllCaps="false"
-                        android:textSize="@dimen/_11ssp"/>
-                </LinearLayout>
-
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/tv_location_txt"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintTop_toBottomOf="@id/title_layout"
-                    app:layout_constraintStart_toStartOf="@+id/tv_location"
-                    android:text="@string/location"
+                    android:text="@string/move_the_pin_on_the_map_to_select_your_exact_location_or_enter_it_manually"
                     android:textColor="@color/gold"
-                    android:layout_marginTop="@dimen/_20sdp"
-                    android:fontFamily="@font/avenir_medium"
-                    android:gravity="center_vertical"
-                    android:layout_marginHorizontal="@dimen/_10sdp"
+                    android:textSize="@dimen/_11ssp"
                     android:textStyle="normal"
-                    android:layout_gravity="center"
-                    android:textSize="@dimen/_14ssp" />
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_select_your_address" />
+
+            <LinearLayout
+                android:id="@+id/title_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_move_pin_desc">
 
                 <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/tv_location"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_6sdp"
+                    android:fontFamily="@font/avenir_medium"
+                    android:paddingHorizontal="10dp"
+                    android:gravity="center_vertical"
+                    android:text="@string/title"
+                    android:textColor="@color/gold"
+                    android:textSize="@dimen/_12ssp"
+                    android:textStyle="normal" />
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_title"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_40sdp"
-                    app:layout_constraintTop_toBottomOf="@id/tv_location_txt"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    android:text="@string/location"
-                    android:layout_marginHorizontal="@dimen/_10sdp"
-                    android:textColor="@color/text_gold_color_dark"
                     android:layout_marginTop="@dimen/_6sdp"
-                    android:paddingHorizontal="@dimen/_8sdp"
-                    android:fontFamily="@font/avenir_medium"
-                    android:background="@drawable/gold_border_white_filled_rect_box_curved"
-                    android:gravity="center_vertical"
-                    android:textStyle="normal"
-                    android:layout_gravity="center"
-                    android:textSize="@dimen/_10ssp"
-                    android:singleLine="true"
-                    android:ellipsize="end"
-                    app:drawableStartCompat="@drawable/location_pin_dark_brown_layer_list"
-                    android:drawablePadding="@dimen/_8sdp"/>
+                    android:hint="@string/enter_your_title"
+                    android:inputType="text"
+                    android:maxLength="55"
+                    android:maxLines="1"
+                    android:paddingHorizontal="@dimen/_4sdp"
+                    android:textAlignment="viewStart"
+                    android:textAllCaps="false"
+                    android:textColor="@color/gold"
+                    android:textColorHint="@color/gold"
+                    android:textCursorDrawable="@drawable/cursor_color"
+                    android:textDirection="locale"
+                    android:textSize="@dimen/_11ssp"
+                    app:backgroundTint="@color/gold" />
+            </LinearLayout>
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_location_txt"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:fontFamily="@font/avenir_medium"
+                android:gravity="center_vertical"
+                android:text="@string/location"
+                android:textColor="@color/gold"
+                android:textSize="@dimen/_14ssp"
+                android:paddingHorizontal="10dp"
+                android:textStyle="normal"
+                app:layout_constraintEnd_toEndOf="@+id/tv_location"
+                app:layout_constraintStart_toStartOf="@+id/tv_location"
+                app:layout_constraintTop_toBottomOf="@id/title_layout" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_location"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_40sdp"
+                android:layout_gravity="center"
+                android:layout_marginHorizontal="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_6sdp"
+                android:background="@drawable/gold_border_white_filled_rect_box_curved"
+                android:drawablePadding="@dimen/_8sdp"
+                android:ellipsize="end"
+                android:fontFamily="@font/avenir_medium"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="@dimen/_8sdp"
+                android:singleLine="true"
+                android:text="@string/location"
+                android:textColor="@color/text_gold_color_dark"
+                android:textSize="@dimen/_10ssp"
+                android:textStyle="normal"
+                app:drawableStartCompat="@drawable/location_pin_dark_brown_layer_list"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_location_txt" />
 
                 <RelativeLayout
                     android:id="@+id/set_as_default_layout"
@@ -162,19 +172,20 @@
                     android:layout_marginHorizontal="@dimen/_10sdp"
                     android:layout_marginTop="@dimen/_14sdp"
                     app:layout_constraintTop_toBottomOf="@id/tv_location">
+
                     <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/tv_switch_txt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/set_as_default"
-                        android:textColor="@color/gold"
-                        android:layout_centerVertical="true"
                         android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
                         android:layout_marginVertical="@dimen/_6sdp"
                         android:fontFamily="@font/avenir_medium"
                         android:gravity="center_vertical"
-                        android:textStyle="normal"
+                        android:text="@string/set_as_default"
+                        android:textColor="@color/gold"
                         android:textSize="@dimen/_12ssp"
+                        android:textStyle="normal"
                         tools:ignore="RelativeOverlap" />
 
                     <LinearLayout
@@ -182,67 +193,65 @@
                         android:layout_width="@dimen/_40sdp"
                         android:layout_height="match_parent"
                         android:layout_alignParentEnd="true"
-                        android:layout_marginHorizontal="@dimen/_10sdp"
                         android:layout_centerVertical="true"
+                        android:layout_marginHorizontal="@dimen/_10sdp"
                         android:orientation="horizontal">
-                        <com.google.android.material.imageview.ShapeableImageView
-                            android:layout_width="@dimen/_40sdp"
-                            android:layout_height="@dimen/_20sdp"
-                            app:layout_constraintTop_toBottomOf="@+id/view1"
-                            android:id="@+id/iv_toggle_off"
-                            android:src="@drawable/toggle_off"/>
 
                         <com.google.android.material.imageview.ShapeableImageView
+                            android:id="@+id/iv_toggle_off"
                             android:layout_width="@dimen/_40sdp"
                             android:layout_height="@dimen/_20sdp"
-                            app:layout_constraintTop_toBottomOf="@+id/view1"
+                            android:src="@drawable/toggle_off"
+                            app:layout_constraintTop_toBottomOf="@+id/view1" />
+
+                        <com.google.android.material.imageview.ShapeableImageView
                             android:id="@+id/iv_toggle_on"
+                            android:layout_width="@dimen/_40sdp"
+                            android:layout_height="@dimen/_20sdp"
                             android:src="@drawable/toggle_on"
-                            android:visibility="gone"/>
+                            android:visibility="gone"
+                            app:layout_constraintTop_toBottomOf="@+id/view1" />
                     </LinearLayout>
 
                 </RelativeLayout>
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_enter_manually"
-                    android:layout_width="@dimen/_250sdp"
+                    android:layout_width="@dimen/_200sdp"
                     android:layout_height="@dimen/_40sdp"
-                    android:background="@drawable/curved_gold_filled_rect_box"
-                    android:text="@string/enter_manually"
-                    android:fontFamily="@font/avenir_medium"
-                    android:textStyle="normal"
-                    android:textColor="@color/black"
-                    android:gravity="center"
-                    android:textSize="@dimen/_15sdp"
-                    android:textAllCaps="true"
-                    android:visibility="visible"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
                     android:layout_marginHorizontal="@dimen/_30sdp"
-                    app:layout_constraintTop_toBottomOf="@id/set_as_default_layout"
-                    android:layout_marginTop="@dimen/_40sdp"/>
+                    android:layout_marginTop="@dimen/_30sdp"
+                    android:background="@drawable/curved_gold_filled_rect_box"
+                    android:fontFamily="@font/avenir_medium"
+                    android:gravity="center"
+                    android:text="@string/enter_manually"
+                    android:textAllCaps="true"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_15sdp"
+                    android:textStyle="normal"
+                    android:visibility="visible"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/set_as_default_layout" />
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_submit"
-                    android:layout_width="@dimen/_250sdp"
+                    android:layout_width="@dimen/_200sdp"
                     android:layout_height="@dimen/_40sdp"
-                    android:background="@drawable/curved_gold_filled_rect_box"
-                    android:text="@string/save"
-                    android:fontFamily="@font/avenir_medium"
-                    android:textColor="@color/black"
-                    android:textStyle="normal"
-                    android:gravity="center"
-                    android:textSize="@dimen/_15sdp"
-                    android:textAllCaps="true"
-                    android:visibility="visible"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
                     android:layout_marginHorizontal="@dimen/_30sdp"
-                    app:layout_constraintTop_toBottomOf="@id/tv_enter_manually"
-                    android:layout_marginTop="@dimen/_20sdp"/>
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:background="@drawable/curved_gold_filled_rect_box"
+                    android:fontFamily="@font/avenir_medium"
+                    android:gravity="center"
+                    android:text="@string/save"
+                    android:textAllCaps="true"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_15sdp"
+                    android:textStyle="normal"
+                    android:visibility="visible"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_enter_manually" />
             </androidx.constraintlayout.widget.ConstraintLayout>
-        </ScrollView>
-    </LinearLayout>
-
-
-</LinearLayout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

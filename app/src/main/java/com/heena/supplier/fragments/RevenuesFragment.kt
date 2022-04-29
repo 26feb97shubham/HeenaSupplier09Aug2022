@@ -21,6 +21,7 @@ import com.heena.supplier.R
 import com.heena.supplier.`interface`.ClickInterface
 import com.heena.supplier.adapters.RevenuesAdapter
 import com.heena.supplier.adapters.ServiceListingAdapter
+import com.heena.supplier.application.MyApp.Companion.sharedPreferenceInstance
 import com.heena.supplier.models.*
 import com.heena.supplier.rest.APIClient
 import com.heena.supplier.rest.APIInterface
@@ -83,7 +84,7 @@ class RevenuesFragment : Fragment() {
             }
             if(allAreGranted) {
                 Log.e("Granted", "Permissions")
-                queryMap.put("lang", SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, ""))
+                queryMap.put("lang", sharedPreferenceInstance!!.get(SharedPreferenceUtility.SelectedLang, ""))
                 queryMap.put("service_id", "")
                 queryMap.put("from", "")
                 queryMap.put("to", "")
@@ -91,7 +92,10 @@ class RevenuesFragment : Fragment() {
                 getTransactionURL(queryMap)
 
             }else{
-                LogUtils.shortToast(requireContext(), getString(R.string.please_allow_permissions))
+                Utility.showSnackBarOnResponseError(mView!!.revenuesFragmentConstraintLayout,
+                    requireContext().getString(R.string.please_allow_permissions),
+                    requireContext())
+
                 Log.e("Denied", "Permissions")
             }
         }
@@ -99,7 +103,7 @@ class RevenuesFragment : Fragment() {
     private fun getTransactionURL(queryMap: HashMap<String, String>) {
         mView!!.frag_revenues_progressBar.visibility = View.VISIBLE
         requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-        val call = apiInterface.getTransactionURL(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId, 0), queryMap)
+        val call = apiInterface.getTransactionURL(sharedPreferenceInstance!!.get(SharedPreferenceUtility.UserId, 0), queryMap)
         call?.enqueue(object : Callback<TransactionURLResponse?>{
             override fun onResponse(call: Call<TransactionURLResponse?>, response: Response<TransactionURLResponse?>) {
                 mView!!.frag_revenues_progressBar.visibility = View.GONE
@@ -110,9 +114,15 @@ class RevenuesFragment : Fragment() {
                         if (url != null) {
                             downloadRevenueExcel(url)
                         }
+                    }else{
+                        Utility.showSnackBarOnResponseError(mView!!.revenuesFragmentConstraintLayout,
+                            response.body()!!.message.toString(),
+                            requireContext())
                     }
                 }else{
-                    LogUtils.shortToast(requireContext(), getString(R.string.response_isnt_successful))
+                    Utility.showSnackBarOnResponseError(mView!!.revenuesFragmentConstraintLayout,
+                        requireContext().getString(R.string.response_isnt_successful),
+                        requireContext())
                     mView!!.rv_revenues_listing.visibility = View.GONE
                     mView!!.ll_no_transactions_found.visibility = View.VISIBLE
                 }
@@ -123,7 +133,9 @@ class RevenuesFragment : Fragment() {
                 requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 mView!!.rv_revenues_listing.visibility = View.GONE
                 mView!!.ll_no_transactions_found.visibility = View.VISIBLE
-                LogUtils.shortToast(requireContext(), t.message)
+                Utility.showSnackBarOnResponseError(mView!!.revenuesFragmentConstraintLayout,
+                    t.message!!,
+                    requireContext())
             }
 
         })
@@ -135,6 +147,10 @@ class RevenuesFragment : Fragment() {
     ): View? {
         mView = inflater.inflate(
                 R.layout.fragment_revenues, container, false)
+        Utility.changeLanguage(
+            requireContext(),
+            sharedPreferenceInstance!!.get(SharedPreferenceUtility.SelectedLang, "")
+        )
         return mView
     }
 
@@ -143,13 +159,13 @@ class RevenuesFragment : Fragment() {
 
         requireActivity().iv_back.setSafeOnClickListener {
             requireActivity().iv_back.startAnimation(AlphaAnimation(1F,0.5F))
-            SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_back)
+            sharedPreferenceInstance!!.hideSoftKeyBoard(requireContext(), requireActivity().iv_back)
             findNavController().popBackStack()
         }
 
         requireActivity().iv_notification.setSafeOnClickListener {
             requireActivity().iv_notification.startAnimation(AlphaAnimation(1F,0.5F))
-            SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_notification)
+            sharedPreferenceInstance!!.hideSoftKeyBoard(requireContext(), requireActivity().iv_notification)
             findNavController().navigate(R.id.notificationsFragment)
         }
 
@@ -159,26 +175,26 @@ class RevenuesFragment : Fragment() {
             noInternetDialog.setRetryCallback(object : NoInternetDialog.RetryInterface{
                 override fun retry() {
                     noInternetDialog.dismiss()
-                    queryMap["lang"] = SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, "")
+                    getServices()
+                    queryMap["lang"] = sharedPreferenceInstance!!.get(SharedPreferenceUtility.SelectedLang, "")
                     queryMap["service_id"] = ""
                     queryMap["from"] = ""
                     queryMap["to"] = ""
                     queryMap["search"] = ""
                     getTransactionsList(queryMap)
-                    getServices()
                 }
 
             })
             noInternetDialog.show(requireActivity().supportFragmentManager, "Revenues Fragment")
         }else{
+            getServices()
             queryMap["lang"] =
-                SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, "")
+                sharedPreferenceInstance!!.get(SharedPreferenceUtility.SelectedLang, "")
             queryMap["service_id"] = ""
             queryMap["from"] = ""
             queryMap["to"] = ""
             queryMap["search"] = ""
             getTransactionsList(queryMap)
-            getServices()
         }
 
         mView!!.civ_excel_doc.setSafeOnClickListener {
@@ -192,11 +208,14 @@ class RevenuesFragment : Fragment() {
             override fun onEditorAction(textView: TextView?, actionId: Int, keyEvent : KeyEvent?): Boolean {
                 if (actionId == EditorInfo.IME_ACTION_DONE){
                     search_keyword = mView!!.et_search.text.toString()
-                    SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(),  mView!!.et_search)
+                    sharedPreferenceInstance!!.hideSoftKeyBoard(requireContext(),  mView!!.et_search)
                     if (TextUtils.isEmpty(search_keyword)){
-                        LogUtils.shortToast(requireContext(), getString(R.string.please_enter_search_keyword_for_searching))
+                        Utility.showSnackBarValidationError(mView!!.revenuesFragmentConstraintLayout,
+                            requireContext().getString(R.string.please_enter_search_keyword_for_searching),
+                            requireContext())
+
                     }else{
-                        queryMap["lang"] = SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, "")
+                        queryMap["lang"] = sharedPreferenceInstance!!.get(SharedPreferenceUtility.SelectedLang, "")
                         queryMap["service_id"] = ""
                         queryMap["from"] = ""
                         queryMap["to"] = ""
@@ -267,7 +286,7 @@ class RevenuesFragment : Fragment() {
     }
 
     private fun validateAndProceed() {
-        queryMap.put("lang", SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, ""))
+        queryMap.put("lang", sharedPreferenceInstance!!.get(SharedPreferenceUtility.SelectedLang, ""))
         queryMap.put("service_id", service_id.toString())
         queryMap.put("from", myStartDate)
         queryMap.put("to", myEndDate)
@@ -277,8 +296,8 @@ class RevenuesFragment : Fragment() {
     }
 
     private fun getServices() {
-        val call = apiInterface.serviceslisting(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId, 0),
-        SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang,""))
+        val call = apiInterface.serviceslisting(sharedPreferenceInstance!!.get(SharedPreferenceUtility.UserId, 0),
+        sharedPreferenceInstance!!.get(SharedPreferenceUtility.SelectedLang,""))
         call?.enqueue(object : Callback<ServiceListingResponse?>{
             override fun onResponse(call: Call<ServiceListingResponse?>, response: Response<ServiceListingResponse?>) {
                 try {
@@ -302,12 +321,7 @@ class RevenuesFragment : Fragment() {
                                 }
                             })
                             mView!!.rv_services_listing.adapter = serviceListingAdapter
-                            serviceListingAdapter.notifyDataSetChanged()
-                        } else {
-                            LogUtils.longToast(requireContext(), response.body()!!.message)
                         }
-                    } else {
-                        LogUtils.shortToast(requireContext(), getString(R.string.response_isnt_successful))
                     }
                 } catch (e: IOException) {
                     e.printStackTrace()
@@ -319,7 +333,6 @@ class RevenuesFragment : Fragment() {
             }
 
             override fun onFailure(call: Call<ServiceListingResponse?>, t: Throwable) {
-                LogUtils.shortToast(requireContext(), t.message)
             }
 
         })
@@ -337,7 +350,7 @@ class RevenuesFragment : Fragment() {
     private fun getTransactionsList(queryMap: HashMap<String, String>) {
         mView!!.frag_revenues_progressBar.visibility = View.VISIBLE
         requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-        val call = apiInterface.getTransactionsList(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId, 0), queryMap)
+        val call = apiInterface.getTransactionsList(sharedPreferenceInstance!!.get(SharedPreferenceUtility.UserId, 0), queryMap)
         call?.enqueue(object : Callback<TransactionsListingResponse?>{
             override fun onResponse(call: Call<TransactionsListingResponse?>, response: Response<TransactionsListingResponse?>) {
                 mView!!.frag_revenues_progressBar.visibility = View.GONE
@@ -347,15 +360,21 @@ class RevenuesFragment : Fragment() {
                         transactionsList.clear()
                         transactionsList = response.body()!!.transaction as ArrayList<TransactionItem>
                         if (transactionsList.size==0){
-                            mView!!.card_search_filter.visibility = View.GONE
                             mView!!.rv_revenues_listing.visibility = View.GONE
                             mView!!.ll_no_transactions_found.visibility = View.VISIBLE
+                            mView!!.civ_excel_doc.isEnabled = false
                         }else{
-                            mView!!.card_search_filter.visibility = View.VISIBLE
                             mView!!.rv_revenues_listing.visibility = View.VISIBLE
                             mView!!.ll_no_transactions_found.visibility = View.GONE
+                            mView!!.et_search.isEnabled = true
+                            mView!!.civ_excel_doc.isEnabled = true
+                            mView!!.civ_filter.isEnabled = true
                         }
-                        val balance = "AED " + Utility.convertDoubleValueWithCommaSeparator(response.body()!!.balance!!.toDouble())
+                        val balance = if (response.body()!!.balance!!.isNaN()){
+                            "AED "+0.0
+                        }else{
+                            "AED " + Utility.convertDoubleValueWithCommaSeparator(response.body()!!.balance!!.toDouble())
+                        }
                         mView!!.tv_revenues.text = balance
                         setTransactionsAdapter(transactionsList)
                     }else{
@@ -364,7 +383,9 @@ class RevenuesFragment : Fragment() {
                         mView!!.ll_no_transactions_found.visibility = View.VISIBLE
                     }
                 }else{
-                    LogUtils.shortToast(requireContext(), getString(R.string.response_isnt_successful))
+                    Utility.showSnackBarOnResponseError(mView!!.revenuesFragmentConstraintLayout,
+                        requireContext().getString(R.string.response_isnt_successful),
+                        requireContext())
                     mView!!.rv_revenues_listing.visibility = View.GONE
                     mView!!.ll_no_transactions_found.visibility = View.VISIBLE
                 }
@@ -375,7 +396,10 @@ class RevenuesFragment : Fragment() {
                 requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 mView!!.rv_revenues_listing.visibility = View.GONE
                 mView!!.ll_no_transactions_found.visibility = View.VISIBLE
-                LogUtils.shortToast(requireContext(), t.message)
+                Utility.showSnackBarOnResponseError(mView!!.revenuesFragmentConstraintLayout,
+                    t.message.toString(),
+                    requireContext())
+
             }
 
         })
@@ -385,12 +409,11 @@ class RevenuesFragment : Fragment() {
         mView!!.rv_revenues_listing.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.VERTICAL, false)
         revenuesAdapter = RevenuesAdapter(requireContext(), transactionsList)
         mView!!.rv_revenues_listing.adapter = revenuesAdapter
-        revenuesAdapter.notifyDataSetChanged()
         mView!!.rv_revenues_listing.setHasFixedSize(true)
     }
 
 
-    private fun downloadRevenueExcel(/*progressDialog: ProgressDialog, */excelDownloadUrl: String) {
+    private fun downloadRevenueExcel(excelDownloadUrl: String) {
         if (Utility.isNetworkAvailable()) {
             val dir: File =  File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "alniqasha")
             if (dir == null || !dir.exists())
@@ -418,8 +441,7 @@ class RevenuesFragment : Fragment() {
                             "Server returned HTTP ",
                             c.responseCode.toString() + " " + c.responseMessage
                         )
-                        //progressDialog.dismiss()
-                    }
+                   }
                     val fos: FileOutputStream =
                         FileOutputStream(excelFile) //Get OutputStream for NewFile Location
                     val `is` = c.inputStream //Get InputStream for connection
@@ -432,8 +454,10 @@ class RevenuesFragment : Fragment() {
                     `is`.close()
                     requireActivity().runOnUiThread {
                         if (excelFile != null) {
-                            //progressDialog.dismiss()
-                            LogUtils.shortToast(requireContext(), excelFile.absolutePath)
+                                val message = requireContext().getString(R.string.excel_sheet_downloaded_successfully)
+                            Utility.showSnackBarOnResponseSuccess(mView!!.revenuesFragmentConstraintLayout,
+                                message,
+                                requireContext())
                             Log.e("er", excelFile.absolutePath)
                         }
                     }
@@ -443,18 +467,9 @@ class RevenuesFragment : Fragment() {
             }
 
         } else {
-            LogUtils.shortToast(context, getString(R.string.check_internet))
-        }
-    }
-
-    companion object{
-        private var instance: SharedPreferenceUtility? = null
-        @Synchronized
-        fun getInstance(): SharedPreferenceUtility {
-            if (instance == null) {
-                instance = SharedPreferenceUtility()
-            }
-            return instance as SharedPreferenceUtility
+            Utility.showSnackBarOnResponseError(mView!!.revenuesFragmentConstraintLayout,
+                requireContext().getString(R.string.check_internet),
+                requireContext())
         }
     }
 }

@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.heena.supplier.R
+import com.heena.supplier.application.MyApp.Companion.sharedPreferenceInstance
 import com.heena.supplier.models.Message
 import com.heena.supplier.utils.SharedPreferenceUtility
 import com.heena.supplier.utils.Utility.sender_admin
@@ -71,7 +72,7 @@ class MessagesTypeAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        if (messageList[position].sender_id==SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.UserId, 0]){
+        if (messageList[position].sender_id==sharedPreferenceInstance!![SharedPreferenceUtility.UserId, 0]){
             sender_admin = 1
         }else{
             sender_admin = 2
@@ -83,7 +84,7 @@ class MessagesTypeAdapter(
         val message = messageList[position]
         val booking_item_type =
             when (messageList[position].sender_id) {
-                SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.UserId, 0] -> {
+                sharedPreferenceInstance!![SharedPreferenceUtility.UserId, 0] -> {
                     1
                 }
                 else -> {

@@ -41,6 +41,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 android:text="1234 5783 1231 9123"
                 android:textColor="#F7F7F7"
+                android:textDirection="ltr"
                 android:textStyle="normal"
                 android:fontFamily="@font/avenir_medium"
                 android:textSize="@dimen/_18ssp" />

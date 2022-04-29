@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.heena.supplier.R
 import com.heena.supplier.`interface`.ClickInterface
 import com.heena.supplier.adapters.RegistrationMembershipPlansListAdapter
+import com.heena.supplier.application.MyApp.Companion.sharedPreferenceInstance
 import com.heena.supplier.models.BuyMembership
 import com.heena.supplier.models.Membership
 import com.heena.supplier.models.MembershipListResponse
@@ -47,6 +48,10 @@ class MembershipRegistrationActivity : AppCompatActivity() {
 
         mContext = this
         setContentView(R.layout.activity_membership_registration2)
+        Utility.changeLanguage(
+            this,
+            sharedPreferenceInstance!![SharedPreferenceUtility.SelectedLang, ""]
+        )
 
         if (intent.extras !== null) {
             emailaddress = intent.getStringExtra(ConstClass.EMAILADDRESS).toString()
@@ -72,9 +77,12 @@ class MembershipRegistrationActivity : AppCompatActivity() {
             if (registrationMembershipPlansListAdapter.getSelected() != null) {
                 membershipId = registrationMembershipPlansListAdapter.getSelected()!!.membership_id
                 membership = registrationMembershipPlansListAdapter.getSelected()
-                if (SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.MembershipId, 0] == membershipId
+                if (sharedPreferenceInstance!![SharedPreferenceUtility.MembershipId, 0] == membershipId
                 ) {
-                    LogUtils.shortToast(this, getString(R.string.plan_already_purchased))
+                    Utility.showSnackBarValidationError(membershipRegistrationActivityConstraintLayout,
+                        getString(R.string.plan_already_purchased),
+                        this)
+
                 } else {
                     startActivity(
                         Intent(this, PaymentFragmentActivity::class.java).putExtra(
@@ -88,10 +96,10 @@ class MembershipRegistrationActivity : AppCompatActivity() {
                     //purchaseMembership()
                 }
             } else {
-                LogUtils.shortToast(
-                    this,
-                    getString(R.string.please_select_the_membership_plan_first_to_continue)
-                )
+                Utility.showSnackBarValidationError(membershipRegistrationActivityConstraintLayout,
+                    getString(R.string.please_select_the_membership_plan_first_to_continue),
+                    this)
+
             }
         }
     }
@@ -100,7 +108,7 @@ class MembershipRegistrationActivity : AppCompatActivity() {
         if(isNetworkAvailable()){
             window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             membership_registration_progressBar.visibility= View.VISIBLE
-            val call = apiInterface.membershipList(SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.UserId, 0], SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""])
+            val call = apiInterface.membershipList(sharedPreferenceInstance!![SharedPreferenceUtility.UserId, 0], sharedPreferenceInstance!![SharedPreferenceUtility.SelectedLang, ""])
             call!!.enqueue(object : Callback<MembershipListResponse?>{
                 @SuppressLint("NotifyDataSetChanged")
                 override fun onResponse(call: Call<MembershipListResponse?>, response: Response<MembershipListResponse?>) {
@@ -123,14 +131,23 @@ class MembershipRegistrationActivity : AppCompatActivity() {
                                     pageIndicator2_activity.attachTo(rv_membership_plans)
                                     registrationMembershipPlansListAdapter.notifyDataSetChanged()
                                 }else{
-                                    LogUtils.longToast(this@MembershipRegistrationActivity, response.body()!!.message)
+                                    Utility.showSnackBarOnResponseError(membershipRegistrationActivityConstraintLayout,
+                                        response.body()!!.message.toString(),
+                                        this@MembershipRegistrationActivity)
                                 }
+
+                            }else{
+                                Utility.showSnackBarOnResponseError(membershipRegistrationActivityConstraintLayout,
+                                    response.message(),
+                                    this@MembershipRegistrationActivity)
 
                             }
                         }else{
                             membership_card.visibility = View.GONE
                             btnSignUp.visibility = View.GONE
-                            LogUtils.longToast(this@MembershipRegistrationActivity,getString(R.string.response_isnt_successful))
+                            Utility.showSnackBarOnResponseError(membershipRegistrationActivityConstraintLayout,
+                                getString(R.string.response_isnt_successful),
+                                this@MembershipRegistrationActivity)
                         }
                     } catch (e: IOException) {
                         e.printStackTrace()
@@ -143,7 +160,9 @@ class MembershipRegistrationActivity : AppCompatActivity() {
 
                 override fun onFailure(call: Call<MembershipListResponse?>, throwable: Throwable) {
                     LogUtils.e("msg", throwable.message)
-                    LogUtils.shortToast(this@MembershipRegistrationActivity,throwable.localizedMessage)
+                    Utility.showSnackBarOnResponseError(membershipRegistrationActivityConstraintLayout,
+                        getString(R.string.check_internet),
+                        this@MembershipRegistrationActivity)
                     membership_card.visibility = View.GONE
                     btnSignUp.visibility = View.GONE
                     membership_registration_progressBar.visibility = View.GONE
@@ -157,17 +176,4 @@ class MembershipRegistrationActivity : AppCompatActivity() {
     override fun onBackPressed() {
         Utility.exitApp(this, this)
     }
-
-
-    companion object{
-        private var instance: SharedPreferenceUtility? = null
-        @Synchronized
-        fun getInstance(): SharedPreferenceUtility {
-            if (instance == null) {
-                instance = SharedPreferenceUtility()
-            }
-            return instance as SharedPreferenceUtility
-        }
-    }
-
 }

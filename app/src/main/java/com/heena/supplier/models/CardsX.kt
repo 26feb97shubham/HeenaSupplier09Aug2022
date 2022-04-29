@@ -1,6 +1,7 @@
 package com.heena.supplier.models
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 data class CardsX(
 	@SerializedName("id"          ) var id          : String? = null,
@@ -8,15 +9,16 @@ data class CardsX(
 	@SerializedName("object"      ) var my_object      : String? = null,
 	@SerializedName("live_mode"      ) var live_mode      : String? = null,
 	@SerializedName("type"      ) var type      : String? = null,
+	@SerializedName("used"      ) var used      : Boolean? = null,
 	@SerializedName("card"      ) var CardY      : CardY? = null,
 
-)
+): Serializable
 
 data class Issuer(
 	@SerializedName("bank"    ) var bank    : String? = null,
 	@SerializedName("country" ) var country : String? = null,
 	@SerializedName("id"      ) var id      : String? = null
-)
+): Serializable
 
 data class CardY(
 	@SerializedName("id"          ) var id          : String? = null,
@@ -32,5 +34,5 @@ data class CardY(
 	@SerializedName("exp_year"    ) var expYear     : Int?    = null,
 	@SerializedName("last_four"   ) var lastFour    : String? = null,
 	@SerializedName("first_six"   ) var firstSix    : String? = null
-)
+): Serializable
 

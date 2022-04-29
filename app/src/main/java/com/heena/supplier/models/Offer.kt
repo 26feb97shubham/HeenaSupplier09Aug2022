@@ -1,5 +1,7 @@
 package com.heena.supplier.models
 
+import java.io.Serializable
+
 data class Offer(
         val price: String? = null,
         val offer_price: String? = null,
@@ -8,4 +10,4 @@ data class Offer(
         val started_at: String? = null,
         val offer_id: String? = null,
         val ended_at: String? = null
-)
+): Serializable

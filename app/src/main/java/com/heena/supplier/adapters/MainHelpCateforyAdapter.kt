@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.heena.supplier.R
 import com.heena.supplier.`interface`.ClickInterface
+import com.heena.supplier.application.MyApp.Companion.sharedPreferenceInstance
 import com.heena.supplier.models.Content
 import com.heena.supplier.models.HelpCategory
 import com.heena.supplier.models.HelpSubCategory
@@ -27,10 +28,10 @@ class MainHelpCateforyAdapter(
     RecyclerView.Adapter<MainHelpCateforyAdapter.MainHelpCateforyAdapterVH>() {
     private var sub_help_category_list = ArrayList<HelpSubCategory>()
     private var subHelpCategoryAdapter : SubHelpCategoryAdapter?=null
+    private var openPosition = -1
     inner class MainHelpCateforyAdapterVH(private val itemView : View) : RecyclerView.ViewHolder(itemView){
-        var isOpen=false
         fun bind(helpCategory: HelpCategory, position: Int) {
-            val title = if (SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""].equals("ar")){
+            val title = if (sharedPreferenceInstance!![SharedPreferenceUtility.SelectedLang, ""].equals("ar")){
                 helpCategory.title_ar
             }else{
                 helpCategory.title
@@ -38,29 +39,51 @@ class MainHelpCateforyAdapter(
             itemView.text_main_category.text = title
             itemView.text_main_category.setOnClickListener {
                 mainhelpCategoryClicked.mainHelpCategory(position)
-                if(isOpen){
-                    isOpen = false
-                    val drawable = context.resources.getDrawable(R.drawable.ic_baseline_keyboard_arrow_right_24)
-                    if (SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""].equals("ar")){
+                if (openPosition == position) {
+                    openPosition = -1
+                } else {
+                    openPosition = position
+                }
+                notifyDataSetChanged()
+            }
+
+            if(position == openPosition) {
+                if (helpCategory == null) {
+                    itemView.card_sub_category.visibility = View.VISIBLE
+                    itemView.text_no_sub_categories_found.visibility = View.VISIBLE
+                    itemView.rv_sub_category.visibility = View.GONE
+                } else {
+                    itemView.card_sub_category.visibility = View.VISIBLE
+                    if (sharedPreferenceInstance!!.get(SharedPreferenceUtility.SelectedLang,"").equals("ar")){
+                        val drawable = context.resources.getDrawable(R.drawable.ic_baseline_keyboard_arrow_down_24)
                         itemView.text_main_category.setCompoundDrawablesWithIntrinsicBounds(drawable,null,null, null)
                     }else{
+                        val drawable = context.resources.getDrawable(R.drawable.ic_baseline_keyboard_arrow_down_24)
                         itemView.text_main_category.setCompoundDrawablesWithIntrinsicBounds(null,null,drawable, null)
                     }
+                    if (helpCategory.help_sub_category.isEmpty()) {
+                        itemView.text_no_sub_categories_found.visibility = View.VISIBLE
+                        itemView.rv_sub_category.visibility = View.GONE
+                    } else {
+                        itemView.text_no_sub_categories_found.visibility = View.GONE
+                        itemView.rv_sub_category.visibility = View.VISIBLE
+                    }
+                }
+
+            }else {
+                if (sharedPreferenceInstance!!.get(SharedPreferenceUtility.SelectedLang,"").equals("ar")){
+                    val drawable = context.resources.getDrawable(R.drawable.ic_baseline_keyboard_arrow_right_24)
+                    itemView.text_main_category.setCompoundDrawablesWithIntrinsicBounds(drawable,null,null, null)
                     itemView.card_sub_category.visibility = View.GONE
                 }else{
-                    isOpen = true
-                    val drawable = context.resources.getDrawable(R.drawable.ic_baseline_keyboard_arrow_down_24)
-                    if (SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""].equals("ar")){
-                        itemView.text_main_category.setCompoundDrawablesWithIntrinsicBounds(drawable,null,null, null)
-                    }else{
-                        itemView.text_main_category.setCompoundDrawablesWithIntrinsicBounds(null,null,drawable, null)
-                    }
-                    itemView.card_sub_category.visibility = View.VISIBLE
+                    val drawable = context.resources.getDrawable(R.drawable.ic_baseline_keyboard_arrow_right_24)
+                    itemView.text_main_category.setCompoundDrawablesWithIntrinsicBounds(null,null,drawable, null)
+                    itemView.card_sub_category.visibility = View.GONE
                 }
             }
 
             itemView.rv_sub_category.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-            sub_help_category_list = mainHelpCategoryList[position].help_sub_category as ArrayList<HelpSubCategory>
+            sub_help_category_list = helpCategory.help_sub_category as ArrayList<HelpSubCategory>
             subHelpCategoryAdapter = SubHelpCategoryAdapter(context,sub_help_category_list, object :
                 ClickInterface.subhelpCategoryClicked{
                 override fun subHelpCategory(position: Int, content: ArrayList<Content>) {
@@ -71,7 +94,6 @@ class MainHelpCateforyAdapter(
                 }
             })
             itemView.rv_sub_category.adapter = subHelpCategoryAdapter
-            subHelpCategoryAdapter!!.notifyDataSetChanged()
 
             if(sub_help_category_list.size==0){
                 itemView.text_no_sub_categories_found.visibility = View.VISIBLE

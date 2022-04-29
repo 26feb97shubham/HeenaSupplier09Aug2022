@@ -12,14 +12,14 @@ import android.webkit.WebView
 import androidx.navigation.fragment.findNavController
 import com.heena.supplier.Dialogs.NoInternetDialog
 import com.heena.supplier.R
+import com.heena.supplier.application.MyApp.Companion.sharedPreferenceInstance
 import com.heena.supplier.extras.MyWebViewClient
 import com.heena.supplier.utils.SharedPreferenceUtility
 import com.heena.supplier.utils.Utility
 import com.heena.supplier.utils.Utility.setSafeOnClickListener
 import kotlinx.android.synthetic.main.activity_home2.*
 import kotlinx.android.synthetic.main.fragment_c_m_s.view.*
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+
 class CMSFragment : Fragment() {
     var lang = ""
     var mView : View?=null
@@ -44,7 +44,7 @@ class CMSFragment : Fragment() {
         mView = inflater.inflate(R.layout.fragment_c_m_s, container, false)
         Utility.changeLanguage(
             requireContext(),
-            SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, "")
+            sharedPreferenceInstance!!.get(SharedPreferenceUtility.SelectedLang, "")
         )
         setUpViews()
         return mView
@@ -54,18 +54,18 @@ class CMSFragment : Fragment() {
 
         requireActivity().iv_back.setSafeOnClickListener {
             requireActivity().iv_back.startAnimation(AlphaAnimation(1F,0.5F))
-            SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_back)
+            sharedPreferenceInstance!!.hideSoftKeyBoard(requireContext(), requireActivity().iv_back)
             findNavController().popBackStack()
         }
 
         requireActivity().iv_notification.setSafeOnClickListener {
             requireActivity().iv_notification.startAnimation(AlphaAnimation(1F,0.5F))
-            SharedPreferenceUtility.getInstance().hideSoftKeyBoard(requireContext(), requireActivity().iv_notification)
+            sharedPreferenceInstance!!.hideSoftKeyBoard(requireContext(), requireActivity().iv_notification)
             findNavController().navigate(R.id.notificationsFragment)
         }
 
         when {
-            SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""] == "en" -> {
+            sharedPreferenceInstance!![SharedPreferenceUtility.SelectedLang, ""] == "en" -> {
                 about_us_url = "https://alniqasha.ae/about-us/en"
                 privacy_policy_url = "https://alniqasha.ae/privacy-policy/en"
                 tnc_url = "https://alniqasha.ae/terms-and-conditions/en"
@@ -79,8 +79,7 @@ class CMSFragment : Fragment() {
             }
         }
 
-        instance = SharedPreferenceUtility.getInstance()
-        lang = instance!!.get(SharedPreferenceUtility.SelectedLang,"").toString()
+        lang = sharedPreferenceInstance!!.get(SharedPreferenceUtility.SelectedLang,"").toString()
         Utility.setLanguage(requireContext(),lang)
 
         if(!Utility.hasConnection(requireContext())){
@@ -108,37 +107,22 @@ class CMSFragment : Fragment() {
         mView!!.web_view.setBackgroundColor(Color.TRANSPARENT)
         if (Build.VERSION.SDK_INT >= 11) mView!!.web_view?.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null)
         mView!!.tv_title.text = title
-        if(title.equals(getString(R.string.about_us))){
-            mView!!.web_view.loadUrl(about_us_url)
-        }else if (title.equals(getString(R.string.privacy_and_policy))){
-            mView!!.web_view.loadUrl(privacy_policy_url)
-        }else if(title.equals(getString(R.string.terms_and_conditions))){
-            mView!!.web_view.loadUrl(tnc_url)
-        }else if (title.equals(getString(R.string.frequently_asked_questions))){
-            mView!!.web_view.loadUrl(faq_url)
-        }else{
-            mView!!.web_view.loadUrl(about_us_url)
-        }
-    }
-
-    companion object{
-        private var instance: SharedPreferenceUtility? = null
-        @Synchronized
-        fun getInstance(): SharedPreferenceUtility {
-            if (instance == null) {
-                instance = SharedPreferenceUtility()
+        when {
+            title.equals(getString(R.string.about_us)) -> {
+                mView!!.web_view.loadUrl(about_us_url)
             }
-            return instance as SharedPreferenceUtility
-        }
-
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            CMSFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
+            title.equals(getString(R.string.privacy_and_policy)) -> {
+                mView!!.web_view.loadUrl(privacy_policy_url)
             }
+            title.equals(getString(R.string.terms_and_conditions)) -> {
+                mView!!.web_view.loadUrl(tnc_url)
+            }
+            title.equals(getString(R.string.frequently_asked_questions)) -> {
+                mView!!.web_view.loadUrl(faq_url)
+            }
+            else -> {
+                mView!!.web_view.loadUrl(about_us_url)
+            }
+        }
     }
 }

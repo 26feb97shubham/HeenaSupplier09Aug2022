@@ -12,6 +12,7 @@ import com.heena.supplier.utils.Utility.mSelectedItem
 import kotlinx.android.synthetic.main.item_cards_list.view.*
 
 class PaymentsCardAdapter(private val  context: Context, private val data:ArrayList<Cards>, private val click: ClickInterface.OnRecyclerItemClick) : RecyclerView.Adapter<PaymentsCardAdapter.PaymentsCardAdapterVH>() {
+    private var lastCheckedPosition = -1
     inner class PaymentsCardAdapterVH(itemVIew : View) : RecyclerView.ViewHolder(itemVIew){
 
     }
@@ -24,13 +25,16 @@ class PaymentsCardAdapter(private val  context: Context, private val data:ArrayL
 
     override fun onBindViewHolder(holder: PaymentsCardAdapterVH, position: Int) {
         holder.itemView.tv_card_title.text = data[position].brand
-        val card_ending = "Ending in "+data[position].number
+        val card_ending = context.getString(R.string.ending_in)+" "+data[position].number
         holder.itemView.tv_ending_card_number.text = card_ending
         holder.itemView.iv_selected_unselected.isChecked = position==mSelectedItem
 
         holder.itemView.iv_selected_unselected.setOnClickListener {
-            mSelectedItem = holder.absoluteAdapterPosition
-            click.OnClickAction(position)
+            val copyOfLastCheckedPosition = lastCheckedPosition
+            lastCheckedPosition = holder.bindingAdapterPosition
+            notifyItemChanged(copyOfLastCheckedPosition)
+            notifyItemChanged(lastCheckedPosition)
+            click.OnClickAction(lastCheckedPosition)
         }
     }
 

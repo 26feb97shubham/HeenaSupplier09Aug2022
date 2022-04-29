@@ -9,6 +9,8 @@ import com.heena.supplier.R
 import com.heena.supplier.`interface`.ClickInterface
 import com.heena.supplier.utils.SharedPreferenceUtility
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.heena.supplier.application.MyApp
+import com.heena.supplier.utils.Utility
 import kotlinx.android.synthetic.main.fragment_book_service_bottom_sheet.*
 
 class BookServiceBottomSheetFragment : BottomSheetDialogFragment() {
@@ -22,6 +24,10 @@ class BookServiceBottomSheetFragment : BottomSheetDialogFragment() {
         // Inflate the layout for this fragment
         val view  = inflater.inflate(
             R.layout.fragment_book_service_bottom_sheet, container, false)
+        Utility.changeLanguage(
+            requireContext(),
+            MyApp.sharedPreferenceInstance!![SharedPreferenceUtility.SelectedLang, ""]
+        )
         return view
     }
 

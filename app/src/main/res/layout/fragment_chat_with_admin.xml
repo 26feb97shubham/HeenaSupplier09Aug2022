@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@android:color/transparent"
+    android:id="@+id/chatWithAdminFragmentConstraintLayout"
     tools:context=".fragments.ChatWithAdminFragment">
 
     <com.google.android.material.card.MaterialCardView

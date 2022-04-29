@@ -1,5 +1,6 @@
 package com.heena.supplier.bottomsheets
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.text.TextUtils
@@ -8,6 +9,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
+import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.heena.supplier.R
 import com.heena.supplier.`interface`.ClickInterface
@@ -17,6 +20,8 @@ import com.heena.supplier.rest.APIClient
 import com.heena.supplier.utils.LogUtils
 import com.heena.supplier.utils.SharedPreferenceUtility
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.heena.supplier.application.MyApp.Companion.sharedPreferenceInstance
+import com.heena.supplier.utils.Utility
 import com.heena.supplier.utils.Utility.apiInterface
 import com.heena.supplier.utils.Utility.isNetworkAvailable
 import kotlinx.android.synthetic.main.activity_sign_up2.*
@@ -37,17 +42,27 @@ class AddAddressBottomSheetFragment : BottomSheetDialogFragment(){
     private var building_name : String?=null
     private var title : String?=null
     private var street_area : String?=null
-    private var is_default : Int?=null
-    private var countryList = ArrayList<CountryItem>()
+    private var is_default = 0
     lateinit var countryListingAdapter: CountryListingAdapter
     private var selectedCountry : String?=null
-    private var countryId : Int?=null
     private var is_set_default = false
+    private var selectedEmirates : String?=null
+    private var emiratesList = ArrayList<Emirates>()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.BottomSheetDialogTheme)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         mView= inflater.inflate(R.layout.fragment_add_address_bottom_sheet, container, false)
+        Utility.changeLanguage(
+            requireContext(),
+            sharedPreferenceInstance!![SharedPreferenceUtility.SelectedLang, ""]
+        )
+        dialog!!.window!!.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
         setUpViews()
         return mView
     }
@@ -66,23 +81,23 @@ class AddAddressBottomSheetFragment : BottomSheetDialogFragment(){
         }
 
         mView!!.tv_save.setOnClickListener {
-            validate(countryId)
+            validate(229)
         }
 
         mView!!.tv_emirate.setOnClickListener {
-            getCountires()
+            getEmirates()
         }
 
         mView!!.iv_toggle_off.setOnClickListener {
             is_set_default = true
-            is_default = 0
+            is_default = 1
             mView!!.iv_toggle_off.visibility = View.GONE
             mView!!.iv_toggle_on.visibility = View.VISIBLE
         }
 
         mView!!.iv_toggle_on.setOnClickListener {
             is_set_default = false
-            is_default = 1
+            is_default = 0
             mView!!.iv_toggle_off.visibility = View.VISIBLE
             mView!!.iv_toggle_on.visibility = View.GONE
         }
@@ -90,7 +105,7 @@ class AddAddressBottomSheetFragment : BottomSheetDialogFragment(){
 
 
     private fun showAddress() {
-        val call = apiInterface.showAddress(addressId, SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, ""))
+        val call = apiInterface.showAddress(addressId, sharedPreferenceInstance!!.get(SharedPreferenceUtility.SelectedLang, ""))
         call?.enqueue(object : Callback<ShowAddressResponse?> {
             override fun onResponse(call: Call<ShowAddressResponse?>, response: Response<ShowAddressResponse?>) {
                 try {
@@ -102,17 +117,27 @@ class AddAddressBottomSheetFragment : BottomSheetDialogFragment(){
                             mView!!.et_title.setText(addressItem.title)
                             mView!!.et_street_area.setText(addressItem.street)
                             mView!!.tv_emirate.text = addressItem.country!!.name
-                            if (addressItem.is_default==1){
-                                mView!!.iv_toggle_on.visibility = View.VISIBLE
+                            if (addressItem.is_default==0){
                                 mView!!.iv_toggle_off.visibility = View.VISIBLE
+                                mView!!.iv_toggle_on.visibility = View.GONE
+                            }else{
+                                mView!!.iv_toggle_off.visibility = View.GONE
+                                mView!!.iv_toggle_on.visibility = View.VISIBLE
                             }
+                            is_default = addressItem.is_default!!
                         }else{
-                            mView!!.cards_countries_listing.visibility = View.GONE
-                            LogUtils.shortToast(requireContext(), getString(R.string.response_isnt_successful))
+                            mView!!.cards_country_listing.visibility = View.GONE
+                            mView!!.cards_emirates_listing.visibility = View.GONE
+                            Utility.showSnackBarOnResponseError(mView!!.addAddressBottomSheetdialogCoordinatorlayout,
+                                response.body()!!.message.toString(),
+                                requireContext())
                         }
                     }else {
-                        mView!!.cards_countries_listing.visibility = View.GONE
-                        LogUtils.shortToast(requireContext(), getString(R.string.response_isnt_successful))
+                        mView!!.cards_country_listing.visibility = View.GONE
+                        mView!!.cards_emirates_listing.visibility = View.GONE
+                        Utility.showSnackBarOnResponseError(mView!!.addAddressBottomSheetdialogCoordinatorlayout,
+                            response.message(),
+                            requireContext())
                     }
                 } catch (e: IOException) {
                     e.printStackTrace()
@@ -125,46 +150,50 @@ class AddAddressBottomSheetFragment : BottomSheetDialogFragment(){
 
             override fun onFailure(call: Call<ShowAddressResponse?>, throwable: Throwable) {
                 LogUtils.e("msg", throwable.message)
-                LogUtils.shortToast(requireContext(),throwable.message)
+                Utility.showSnackBarOnResponseError(mView!!.addAddressBottomSheetdialogCoordinatorlayout,
+                    throwable.message.toString(),
+                    requireContext())
             }
 
         })
     }
 
-    private fun getCountires() {
+    private fun getEmirates() {
         if (isNetworkAvailable()){
-            val call = apiInterface.getCountries(SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang, ""))
-            call!!.enqueue(object : Callback<CountryResponse?> {
-                override fun onResponse(call: Call<CountryResponse?>, response: Response<CountryResponse?>) {
+            val call = apiInterface.getEmirates(sharedPreferenceInstance!![SharedPreferenceUtility.SelectedLang, ""])
+            call!!.enqueue(object : Callback<EmiratesListResponse?> {
+                @SuppressLint("NotifyDataSetChanged")
+                override fun onResponse(call: Call<EmiratesListResponse?>, response: Response<EmiratesListResponse?>) {
                     try {
                         if (response.body() != null) {
                             if (response.body()!!.status==1){
-                                cards_countries_listing.visibility = View.VISIBLE
-                                rv_countries_listing.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-                                countryList = response.body()!!.country as ArrayList<CountryItem>
-                                countryListingAdapter = CountryListingAdapter(requireContext(), countryList, object :  ClickInterface.OnRecyclerItemClick{
+                                mView!!.cards_emirates_listing.visibility = View.VISIBLE
+                                mView!!.rv_emirates_listing.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+                                emiratesList = response.body()!!.emirates as ArrayList<Emirates>
+                                countryListingAdapter = CountryListingAdapter(requireContext(),null, emiratesList, object :  ClickInterface.OnRecyclerItemClick{
                                     override fun OnClickAction(position: Int) {
-                                        if (SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang,"").equals("ar")){
-                                            tv_emirate.text = countryList[position].name_ar
-                                        }else
-                                        {
-                                            tv_emirate.text = countryList[position].name
+                                        if (sharedPreferenceInstance!!.get(SharedPreferenceUtility.SelectedLang, "").equals("ar")){
+                                            mView!!.tv_emirate.text = emiratesList[position].nameAr
+                                        }else{
+                                            mView!!.tv_emirate.text = emiratesList[position].name
                                         }
-                                        selectedCountry = tv_emirate.text.toString().trim()
-                                        cards_countries_listing.visibility = View.GONE
-                                        countryId = countryList[position].country_id
-                                        Log.e("service_id", countryId.toString())
+                                        selectedEmirates = mView!!.tv_emirate.text.toString().trim()
+                                        mView!!.cards_emirates_listing.visibility = View.GONE
                                     }
                                 })
-                                rv_countries_listing.adapter = countryListingAdapter
+                                mView!!.rv_emirates_listing.adapter = countryListingAdapter
                                 countryListingAdapter.notifyDataSetChanged()
                             }else{
-                                cards_countries_listing.visibility = View.GONE
-                                LogUtils.shortToast(requireContext(), getString(R.string.response_isnt_successful))
+                                mView!!.cards_emirates_listing.visibility = View.GONE
+                                Utility.showSnackBarOnResponseError(mView!!.addAddressBottomSheetdialogCoordinatorlayout,
+                                    response.body()!!.message.toString(),
+                                    requireContext())
                             }
                         }else {
-                            cards_countries_listing.visibility = View.GONE
-                            LogUtils.shortToast(requireContext(), getString(R.string.response_isnt_successful))
+                            mView!!.cards_emirates_listing.visibility = View.GONE
+                            Utility.showSnackBarOnResponseError(mView!!.addAddressBottomSheetdialogCoordinatorlayout,
+                                response.message(),
+                                requireContext())
                         }
                     } catch (e: IOException) {
                         e.printStackTrace()
@@ -175,14 +204,19 @@ class AddAddressBottomSheetFragment : BottomSheetDialogFragment(){
                     }
                 }
 
-                override fun onFailure(call: Call<CountryResponse?>, throwable: Throwable) {
+                override fun onFailure(call: Call<EmiratesListResponse?>, throwable: Throwable) {
                     LogUtils.e("msg", throwable.message)
-                    LogUtils.shortToast(requireContext(),throwable.message)
+                    Utility.showSnackBarOnResponseError(mView!!.addAddressBottomSheetdialogCoordinatorlayout,
+                        throwable.message.toString(),
+                        requireContext())
                 }
             })
         }else{
-            LogUtils.shortToast(requireContext(), getString(R.string.check_internet))
+            Utility.showSnackBarValidationError(mView!!.addAddressBottomSheetdialogCoordinatorlayout,
+                requireContext().getString(R.string.check_internet),
+                requireContext())
         }
+
     }
 
     private fun validate(countryId: Int?) {
@@ -191,28 +225,50 @@ class AddAddressBottomSheetFragment : BottomSheetDialogFragment(){
         title = mView!!.et_title.text.toString().trim()
         street_area = mView!!.et_street_area.text.toString().trim()
 
-        if (TextUtils.isEmpty(flat_villa)){
-            mView!!.et_flat_villa.requestFocus()
-            mView!!.et_flat_villa.error = getString(R.string.please_enter_valid_flat_villa_name)
-        }else if(TextUtils.isEmpty(building_name)){
-            mView!!.et_building_name.requestFocus()
-            mView!!.et_building_name.error = getString(R.string.please_enter_valid_building_name)
-        }else if(TextUtils.isEmpty(title)){
-            mView!!.et_title.requestFocus()
-            mView!!.et_title.error = getString(R.string.please_enter_valid_title)
-        }else if (TextUtils.isEmpty(street_area)){
-            mView!!.et_street_area.requestFocus()
-            mView!!.et_street_area.error = getString(R.string.please_enter_valid_street_area)
-        }else{
-            if (status.equals("edit")){
-                editAddress(addressId.toString())
-            }else{
-                saveAddress(countryId)
+        when {
+            TextUtils.isEmpty(flat_villa) -> {
+                Utility.showSnackBarValidationError(mView!!.addAddressBottomSheetdialogCoordinatorlayout,
+                    requireContext().getString(R.string.please_enter_valid_flat_villa_name),
+                    requireContext())
+            }
+            TextUtils.isEmpty(building_name) -> {
+                Utility.showSnackBarValidationError(mView!!.addAddressBottomSheetdialogCoordinatorlayout,
+                    requireContext().getString(R.string.please_enter_valid_building_name),
+                    requireContext())
+            }
+            TextUtils.isEmpty(title) -> {
+                Utility.showSnackBarValidationError(mView!!.addAddressBottomSheetdialogCoordinatorlayout,
+                    requireContext().getString(R.string.please_enter_valid_title),
+                    requireContext())
+            }
+            TextUtils.isEmpty(street_area) -> {
+                Utility.showSnackBarValidationError(mView!!.addAddressBottomSheetdialogCoordinatorlayout,
+                    requireContext().getString(R.string.please_enter_valid_street_area),
+                    requireContext())
+            }
+            TextUtils.isEmpty(selectedEmirates) -> {
+                Utility.showSnackBarValidationError(mView!!.addAddressBottomSheetdialogCoordinatorlayout,
+                    requireContext().getString(R.string.please_enter_valid_emirate),
+                    requireContext())
+            }
+           /* TextUtils.isEmpty(selectedCountry) -> {
+                Utility.showSnackBarValidationError(mView!!.addAddressBottomSheetdialogCoordinatorlayout,
+                    requireContext().getString(R.string.please_enter_valid_country),
+                    requireContext())
+            }*/
+            else -> {
+                if (status.equals("edit")){
+                    if (countryId != null) {
+                        editAddress(addressId.toString(), countryId)
+                    }
+                }else{
+                    saveAddress(countryId)
+                }
             }
         }
     }
 
-    private fun editAddress(address_id: String) {
+    private fun editAddress(address_id: String, countryId: Int) {
         val edit_address_builder = APIClient.createBuilder(arrayOf("flat", "title", "street", "is_default", "country_id", "building_name", "address_id", "lang"),
             arrayOf(flat_villa.toString(),
                 title.toString(),
@@ -221,27 +277,39 @@ class AddAddressBottomSheetFragment : BottomSheetDialogFragment(){
                 countryId.toString(),
                 building_name.toString(),
                 address_id.toString(),
-            SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""]))
+            sharedPreferenceInstance!![SharedPreferenceUtility.SelectedLang, ""]))
         val call = apiInterface.editAddress(edit_address_builder.build())
         call!!.enqueue(object : Callback<AddEditDeleteAddressResponse?> {
             override fun onResponse(call: Call<AddEditDeleteAddressResponse?>, response: Response<AddEditDeleteAddressResponse?>) {
                 if (response.isSuccessful){
                     if (response.body()!=null){
                         if (response.body()!!.status==1){
-                            LogUtils.shortToast(requireContext(), response.body()!!.message)
+                            Utility.showSnackBarOnResponseSuccess(mView!!.addAddressBottomSheetdialogCoordinatorlayout,
+                                response.body()!!.message.toString(),
+                                requireContext())
                             dismiss()
+                        }else{
+                            Utility.showSnackBarOnResponseError(mView!!.addAddressBottomSheetdialogCoordinatorlayout,
+                                response.body()!!.message.toString(),
+                                requireContext())
                         }
                     }else{
-                        LogUtils.shortToast(requireContext(), response.message())
+                        Utility.showSnackBarOnResponseError(mView!!.addAddressBottomSheetdialogCoordinatorlayout,
+                            response.message(),
+                            requireContext())
                     }
                 }else{
-                    LogUtils.shortToast(requireContext(), getString(R.string.response_isnt_successful))
+                    Utility.showSnackBarOnResponseError(mView!!.addAddressBottomSheetdialogCoordinatorlayout,
+                        requireContext().getString(R.string.response_isnt_successful),
+                        requireContext())
                 }
             }
 
             override fun onFailure(call: Call<AddEditDeleteAddressResponse?>, throwable: Throwable) {
                 LogUtils.e("msg", throwable.message)
-                LogUtils.shortToast(requireContext(), throwable.localizedMessage)
+                Utility.showSnackBarOnResponseError(mView!!.addAddressBottomSheetdialogCoordinatorlayout,
+                    throwable.message.toString(),
+                    requireContext())
             }
 
         })
@@ -255,28 +323,40 @@ class AddAddressBottomSheetFragment : BottomSheetDialogFragment(){
                 is_default.toString(),
                 country_Id.toString(),
                 building_name.toString(),
-                SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.UserId, 0).toString(),
-            SharedPreferenceUtility.getInstance()[SharedPreferenceUtility.SelectedLang, ""]))
+                sharedPreferenceInstance!!.get(SharedPreferenceUtility.UserId, 0).toString(),
+            sharedPreferenceInstance!![SharedPreferenceUtility.SelectedLang, ""]))
         val call = apiInterface.addAddress(add_address_builder.build())
         call!!.enqueue(object : Callback<AddEditDeleteAddressResponse?> {
             override fun onResponse(call: Call<AddEditDeleteAddressResponse?>, response: Response<AddEditDeleteAddressResponse?>) {
                 if (response.isSuccessful){
                     if (response.body()!=null){
                         if (response.body()!!.status==1){
-                            LogUtils.shortToast(requireContext(), response.body()!!.message)
+                            Utility.showSnackBarOnResponseSuccess(mView!!.addAddressBottomSheetdialogCoordinatorlayout,
+                                response.body()!!.message.toString(),
+                                requireContext())
                             dismiss()
+                        }else{
+                            Utility.showSnackBarOnResponseError(mView!!.addAddressBottomSheetdialogCoordinatorlayout,
+                                response.body()!!.message.toString(),
+                                requireContext())
                         }
                     }else{
-                        LogUtils.shortToast(requireContext(), response.message())
+                        Utility.showSnackBarOnResponseError(mView!!.addAddressBottomSheetdialogCoordinatorlayout,
+                            response.message(),
+                            requireContext())
                     }
                 }else{
-                    LogUtils.shortToast(requireContext(), getString(R.string.response_isnt_successful))
+                    Utility.showSnackBarOnResponseError(mView!!.addAddressBottomSheetdialogCoordinatorlayout,
+                        requireContext().getString(R.string.response_isnt_successful),
+                        requireContext())
                 }
             }
 
             override fun onFailure(call: Call<AddEditDeleteAddressResponse?>, throwable: Throwable) {
                 LogUtils.e("msg", throwable.message)
-                LogUtils.shortToast(requireContext(), throwable.localizedMessage)
+                Utility.showSnackBarOnResponseError(mView!!.addAddressBottomSheetdialogCoordinatorlayout,
+                    throwable.message.toString(),
+                    requireContext())
             }
 
         })
