@@ -76,7 +76,7 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-            <com.google.android.material.textfield.TextInputEditText
+            <TextView
                 android:id="@+id/edtUsername_update"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_40sdp"
@@ -87,10 +87,8 @@
                 app:elevation="@dimen/_5sdp"
                 android:fontFamily="@font/avenir_medium"
                 android:hint="@string/username"
-                android:imeOptions="actionNext"
                 android:importantForAutofill="no"
                 android:includeFontPadding="false"
-                android:inputType="text"
                 android:maxLength="55"
                 android:maxLines="1"
                 android:padding="@dimen/_10sdp"

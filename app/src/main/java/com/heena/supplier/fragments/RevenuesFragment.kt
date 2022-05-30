@@ -401,7 +401,6 @@ class RevenuesFragment : Fragment() {
                     requireContext())
 
             }
-
         })
     }
 

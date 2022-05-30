@@ -69,9 +69,9 @@ class HelpFragment : Fragment() {
 
     private fun showHelp() {
         mView!!.frag_help_progressBar.visibility = View.VISIBLE
-        val builder = APIClient.createBuilder(arrayOf("user_id","lang"),
+        val builder = APIClient.createBuilder(arrayOf("user_id","lang","role"),
             arrayOf(sharedPreferenceInstance!![SharedPreferenceUtility.UserId, 0].toString(),
-                sharedPreferenceInstance!![SharedPreferenceUtility.SelectedLang, ""]))
+                sharedPreferenceInstance!![SharedPreferenceUtility.SelectedLang, ""],"manager"))
         val call = apiInterface.dashHelpCategory(builder.build())
         call!!.enqueue(object : Callback<DashHelpCategoryResponse?>{
             override fun onResponse(

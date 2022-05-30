@@ -108,7 +108,7 @@ interface APIInterface {
     fun showBanks(@Path("user_id") user_id  :Int, @Query("lang") lang : String) : Call<BankDetailsResponse?>?
 
     @GET(APIUtils.DASHBOARD)
-    fun getDashboard(@Path("user_id") user_id  :Int, @Query("lang") lang : String) : Call<DashboardResponse?>?
+    fun getDashboard(@Path("user_id") user_id  :Int, @Query("lang") lang : String, @Query("manager_email") manager_email : String) : Call<DashboardResponse?>?
 
     @GET(APIUtils.BOOKINGLISTING)
     fun getBookingsList(@QueryMap query : HashMap<String, String>) : Call<BookingsListingResponse?>?

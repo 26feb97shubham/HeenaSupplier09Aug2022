@@ -75,6 +75,7 @@ class HomeFragment : Fragment() {
     private var subscription_id = 0
     private var membershipId :Int = 0
     var user_profile_name : String = ""
+    var manager_email : String = ""
     var service : Service?= null
     private var bookingId = 0
     private var mView : View?=null
@@ -175,6 +176,8 @@ class HomeFragment : Fragment() {
                             }else{
                                 response.body()!!.profile!!.name!!
                             }
+                            manager_email = response.body()!!.profile!!.email!!
+                            sharedPreferenceInstance!!.save(SharedPreferenceUtility.UserEmail, manager_email)
 
                             Log.e("username", user_profile_name)
                             Log.e("address", response.body()!!.profile!!.address!!)
@@ -213,7 +216,9 @@ class HomeFragment : Fragment() {
     private fun getDashBoard() {
         mView!!.fragment_home_progressBar.visibility = VISIBLE
         requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-        val call = apiInterface.getDashboard(sharedPreferenceInstance!![SharedPreferenceUtility.UserId, 0], sharedPreferenceInstance!![SharedPreferenceUtility.SelectedLang, ""])
+        val call = apiInterface.getDashboard(sharedPreferenceInstance!![SharedPreferenceUtility.UserId, 0],
+            sharedPreferenceInstance!![SharedPreferenceUtility.SelectedLang, ""],
+            sharedPreferenceInstance!![SharedPreferenceUtility.UserEmail, ""])
 
         call?.enqueue(object : Callback<DashboardResponse?>{
             @SuppressLint("NotifyDataSetChanged")
@@ -243,10 +248,10 @@ class HomeFragment : Fragment() {
                             membershipId = membershipX!!.id!!
                         }
 
-                        if (response.body()!!.banks==null){
+                        if (response.body()!!.banks!!.account_number.isNullOrEmpty()){
                             sharedPreferenceInstance!!.save(SharedPreferenceUtility.IsBankAdded, false)
                         }else{
-                            sharedPreferenceInstance!!.save(SharedPreferenceUtility.IsBankAdded, false)
+                            sharedPreferenceInstance!!.save(SharedPreferenceUtility.IsBankAdded, true)
                         }
 
                         if (membershipX!=null){

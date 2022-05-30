@@ -103,7 +103,6 @@ class MainHelpCateforyAdapter(
                 itemView.rv_sub_category.visibility = View.VISIBLE
             }
         }
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainHelpCateforyAdapterVH {

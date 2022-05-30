@@ -168,18 +168,14 @@ class EditBankDetailsFragment : Fragment() {
             ) {
                 mView!!.frag_edit_bank_progressBar.visibility= View.GONE
                 requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-
                 try {
                     if (response.isSuccessful){
                         if (response.body()!!.status==1){
                             Utility.showSnackBarOnResponseSuccess(mView!!.editBankDetailsFragmentConstraintLayout,
                                 response.body()!!.message.toString(),
                                 requireContext())
-                            Handler().postDelayed(object : Runnable{
-                                override fun run() {
-                                    findNavController().popBackStack()
-                                }
-                            }, 1000)
+                            sharedPreferenceInstance!!.save(SharedPreferenceUtility.IsBankAdded, true)
+                            Handler().postDelayed({ findNavController().popBackStack() }, 1000)
                         }else{
                             Utility.showSnackBarOnResponseError(mView!!.editBankDetailsFragmentConstraintLayout,
                                 response.body()!!.message.toString(),

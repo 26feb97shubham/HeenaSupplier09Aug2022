@@ -786,7 +786,7 @@ class SignUpActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRec
         if (imagePath != "" && docpath != "") {
             val builder = APIClient.createMultipartBodyBuilder(arrayOf("username","country_code", "phone",
                 "email", "password", "country_id", "lat",
-                "long", "device_token","device_type", "lang", "address"),
+                "long", "device_token","device_type", "lang", "address", "role"),
                 arrayOf(username.trim({ it <= ' ' }),
                     "+971",
                     mobilenumber.trim({ it <= ' ' }),
@@ -802,7 +802,7 @@ class SignUpActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRec
                     sharedPreferenceInstance!!
                         .get(SharedPreferenceUtility.SelectedLang, "")
                         .toString(),
-                    location!!.trim({it <= ' '})))
+                    location!!.trim({it <= ' '}), "suplier"))
             val file = File(imagePath)
             Log.e("file name ", file.name)
             val requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file)
@@ -814,7 +814,7 @@ class SignUpActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRec
         }else{
             val builder = APIClient.createMultipartBodyBuilder(arrayOf("username","country_code",
                 "phone", "email", "password", "country_id", "lat", "long", "device_token","device_type",
-                "lang", "address", "image", "trade_license"),
+                "lang", "address", "image", "trade_license", "role"),
                 arrayOf(username.trim({ it <= ' ' }),
                     "+971",
                     mobilenumber.trim({ it <= ' ' }),
@@ -831,7 +831,7 @@ class SignUpActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRec
                         .get(SharedPreferenceUtility.SelectedLang, "")
                         .toString(),
                     location!!.trim({it <= ' '}),
-                "", ""))
+                "", "", "manager"))
             call = apiInterface.signUp(builder!!.build())
 
         }

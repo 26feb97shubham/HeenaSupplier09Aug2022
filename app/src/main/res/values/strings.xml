@@ -128,7 +128,7 @@
     <string name="bank_name">Bank Name</string>
     <string name="full_name">Full Name</string>
     <string name="account_number">Account Number</string>
-    <string name="iban" translatable="false">IBAN</string>
+    <string name="iban">IBAN</string>
     <string name="edit">Edit</string>
     <string name="general_information">General Information</string>
     <string name="message">Message</string>
@@ -141,7 +141,7 @@
     <string name="register">Register</string>
     <string name="card_title">Card Title</string>
     <string name="card_number">Card Number</string>
-    <string name="cvv" translatable="false">CVV</string>
+    <string name="cvv">CVV</string>
     <string name="expiry_date">Expiry Date</string>
     <string name="save_card">Save Card</string>
     <string name="choose_language">Choose Language</string>
@@ -183,14 +183,6 @@
     <string name="response">Response</string>
     <string name="response_isnt_successful">Response Unsuccessful</string>
     <string name="title_activity_payment_fragment" translatable="false">PaymentFragmentActivity</string>
-
-    <!--   <string name="google_map_api_key" translatable="false">AIzaSyD_Tu3xoBItqwRaaZmICV90yq-PO_Xpjc0</string>
-    &lt;!&ndash;<string name="places_api_key">AIzaSyBeTKFFtBtiUm41-Ykp1Nxs12e5ERHVLu0</string>&ndash;&gt;
-    <string name="places_api_key" translatable="false">AIzaSyCh5hBReaLSROrja5l_F4k8a30c18lM9sE</string>-->
-    <!--
-    This string is used for square devices and overridden by hello_world in
-    values-round/strings.xml for round devices.
-    -->
     <string name="title_activity_add_new_card" translatable="false">AddNewCardActivity</string>
     <string name="max_ten_image">Maximum 10 image can upload</string>
     <string name="please_select_the_membership_plan_first_to_continue">Please select the membership plan to continue</string>

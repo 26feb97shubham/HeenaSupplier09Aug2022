@@ -268,6 +268,17 @@ class LoginActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRece
                                     ))
                                 }
                             }
+                            5 -> {
+                                emailaddress = response.body()!!.user!!.email!!
+                                myuserId = response.body()!!.user!!.user_id!!
+                                sharedPreferenceInstance!!.save(SharedPreferenceUtility.UserEmail, emailaddress)
+                                sharedPreferenceInstance!!.save(SharedPreferenceUtility.UserId, myuserId)
+                                sharedPreferenceInstance!!.save(SharedPreferenceUtility.IsLogin, false)
+                                sharedPreferenceInstance!!.save(SharedPreferenceUtility.IsVerified, false)
+                                Utility.showSnackBarOnResponseError(loginActivityConstraintLayout,
+                                    getString(R.string.inactive_account),
+                                    this@LoginActivity)
+                            }
                             else -> {
                                 Utility.showSnackBarOnResponseError(loginActivityConstraintLayout,
                                     response.body()!!.message.toString(),

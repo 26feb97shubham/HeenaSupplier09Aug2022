@@ -148,43 +148,6 @@ class AddNewServiceFragment : Fragment() {
                     photoData.path = imagePath
                     pathList.add(photoData)
                     setServicePhotoAdapter(pathList)
-/*                    mView!!.rv_uploaded_photos.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-                    addNewPhotosAdapter = AddNewPhotosAdapter(
-                        requireContext(),
-                        pathList,
-                        service_status,
-                        object : ClickInterface.OnRecyclerItemClick {
-                            override fun OnClickAction(position: Int) {
-                                if (service_status.equals("show")){
-
-                                }else{
-                                    if(galleryItemListSize>position) {
-                                        val alert = android.app.AlertDialog.Builder(requireContext())
-                                        alert.setMessage(requireContext().getString(R.string.delete_message))
-                                        alert.setCancelable(false)
-                                        alert.setPositiveButton(getString(R.string.yes)) { dialog, i ->
-                                            dialog.cancel()
-                                            deleteServerimage(position)
-                                        }
-                                        alert.setNegativeButton(getString(R.string.no)) { dialog, i ->
-                                            dialog.cancel()
-                                        }
-                                        alert.show()
-                                    }
-                                    else {
-                                        Log.e("check", "" + position)
-                                        pathList.removeAt(position)
-                                        mView!!.iv_upload_photo.isEnabled = (pathList.size<5)
-                                        Log.e("check size", "" + pathList.size)
-                                        mView!!.rv_uploaded_photos.adapter=addNewPhotosAdapter
-                                    }
-                                    mView!!.iv_upload_photo.alpha = 1f
-                                    mView!!.iv_upload_photo.isEnabled = true
-                                }
-
-                            }
-                        })
-                    mView!!.rv_uploaded_photos.adapter = addNewPhotosAdapter*/
                 } else {
                     Utility.showSnackBarValidationError(mView!!.addNewServiceFragmentConstraintLayout,
                         requireContext().getString(R.string.something_went_wrong),
@@ -734,7 +697,9 @@ class AddNewServiceFragment : Fragment() {
     private fun save() {
         requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         mView!!.add_service_progressBar.visibility= View.VISIBLE
-        val builder = APIClient.createMultipartBodyBuilder(arrayOf("user_id", "category_id", "name", "price", "address", "lat", "long", "description", "subscription_id", "lang"),
+        val builder = APIClient.createMultipartBodyBuilder(arrayOf("user_id", "category_id",
+            "name", "price", "address", "lat",
+            "long", "description", "subscription_id", "lang", "manager_email"),
                 arrayOf(sharedPreferenceInstance!!.get(SharedPreferenceUtility.UserId, 0).toString(),
                         category_id.toString(),
                         service_title,
@@ -744,7 +709,8 @@ class AddNewServiceFragment : Fragment() {
                         mLongitude.toString(),
                         service_description,
                     subscription_id.toString(),
-                sharedPreferenceInstance!![SharedPreferenceUtility.SelectedLang, ""]))
+                    sharedPreferenceInstance!![SharedPreferenceUtility.SelectedLang, ""],
+                sharedPreferenceInstance!![SharedPreferenceUtility.UserEmail, ""], "1"))
 
         for(i in 0 until pathList.size){
             val file = File(pathList[i].path)
