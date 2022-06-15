@@ -8,16 +8,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AlphaAnimation
+import android.webkit.WebChromeClient
 import android.webkit.WebView
+import android.webkit.WebViewClient
 import androidx.navigation.fragment.findNavController
 import com.heena.supplier.Dialogs.NoInternetDialog
 import com.heena.supplier.R
+import com.heena.supplier.application.MyApp.Companion.instance
 import com.heena.supplier.application.MyApp.Companion.sharedPreferenceInstance
 import com.heena.supplier.extras.MyWebViewClient
 import com.heena.supplier.utils.SharedPreferenceUtility
 import com.heena.supplier.utils.Utility
+import com.heena.supplier.utils.Utility.addCardURL
 import com.heena.supplier.utils.Utility.setSafeOnClickListener
 import kotlinx.android.synthetic.main.activity_home2.*
+import kotlinx.android.synthetic.main.fragment_c_m_s.*
 import kotlinx.android.synthetic.main.fragment_c_m_s.view.*
 
 class CMSFragment : Fragment() {
@@ -120,8 +125,41 @@ class CMSFragment : Fragment() {
             title.equals(getString(R.string.frequently_asked_questions)) -> {
                 mView!!.web_view.loadUrl(faq_url)
             }
+            title.equals("addCards") -> {
+                mView!!.web_view.loadUrl(addCardURL+ sharedPreferenceInstance?.get(SharedPreferenceUtility.UserId, 0)
+                    .toString())
+            }
             else -> {
                 mView!!.web_view.loadUrl(about_us_url)
+            }
+        }
+        mView!!.web_view.webChromeClient = object : WebChromeClient() {
+            override fun onProgressChanged(view: WebView, progress: Int) {
+                super.onProgressChanged(view, progress)
+                cms_progressBar.visibility= View.VISIBLE
+                if(progress>=80){
+                    cms_progressBar.visibility= View.GONE
+                }
+
+            }
+        }
+        mView!!.web_view.webViewClient = object : WebViewClient(){
+            override fun shouldOverrideUrlLoading(
+                view: WebView, url: String?
+            ): Boolean {
+                cms_progressBar.visibility= View.VISIBLE
+                return if(!url.equals("")){
+                    if(url!!.contains("success")){
+                        findNavController().popBackStack()
+                    }
+                    true
+                }else{
+                    true
+                }
+            }
+            override fun onPageFinished(view: WebView?, url: String?) {
+                super.onPageFinished(view, url)
+                cms_progressBar.visibility= View.GONE
             }
         }
     }

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/default_background"
+    tools:context=".activities.AddCardWebActivity">
+
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:layout_width="@dimen/_140sdp"
+        android:layout_height="@dimen/_80sdp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:src="@drawable/golden_logo"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:id="@+id/addCardWebActivityLogo"/>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/addCardActivityTv"
+        android:layout_width="@dimen/_240sdp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:fontFamily="@font/expressway_rg"
+        android:gravity="center"
+        android:text="@string/please_do_not_press_back_button_until_the_add_card_is_is_process"
+        android:textColor="@color/gold"
+        android:textSize="@dimen/_11ssp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:letterSpacing="0.1"
+        app:layout_constraintTop_toBottomOf="@id/addCardWebActivityLogo"
+        tools:targetApi="lollipop" />
+
+    <RelativeLayout
+        android:id="@+id/addCardWebActivityWebViewLayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@drawable/white_card_top_radius"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/addCardActivityTv"
+        android:orientation="vertical"
+        android:layout_marginTop="@dimen/_10sdp">
+
+        <WebView
+            android:id="@+id/addCardActivityWebView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="@dimen/_6sdp"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:background="@android:color/transparent" />
+    </RelativeLayout>
+
+    <ProgressBar
+        android:id="@+id/addCardActivityProgressbar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/addCardWebActivityWebViewLayout"
+        app:layout_constraintBottom_toBottomOf="@id/addCardWebActivityWebViewLayout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:elevation="@dimen/_5sdp"
+        android:visibility="visible" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

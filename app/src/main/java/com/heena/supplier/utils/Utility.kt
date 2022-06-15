@@ -37,6 +37,7 @@ object Utility {
     var mSelectedItem = -1
     var doubleClick:Boolean=false
     var booking_item_type = 0
+    const val addCardURL = "https://alniqasha.ae/page/payment_form/"
 
 
     fun changeLanguage(context: Context, language:String){

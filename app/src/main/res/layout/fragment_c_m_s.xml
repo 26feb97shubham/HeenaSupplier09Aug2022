@@ -47,16 +47,19 @@
             android:background="@android:color/transparent"
             app:layout_constraintTop_toTopOf="parent" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        <ProgressBar
+            android:id="@+id/cms_progressBar"
+            style="@style/Theme.Progressbar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:elevation="@dimen/_5sdp"
+            android:indeterminateTint="@color/gold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/web_view"
+            app:layout_constraintStart_toStartOf="@+id/web_view"
+            app:layout_constraintTop_toTopOf="@+id/web_view" />
 
-    <ProgressBar
-        android:id="@+id/cms_progressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:elevation="@dimen/_5sdp"
-        android:visibility="gone"
-        style="@style/Theme.Progressbar"
-        android:indeterminateTint="@color/gold"
-        android:layout_centerInParent="true"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </RelativeLayout>

@@ -92,7 +92,7 @@ class PaymentFragmentActivity : AppCompatActivity() {
         }
 
         tv_add_new_card_activity.setSafeOnClickListener {
-            startActivity(Intent(this, AddNewCardActivity::class.java))
+            startActivity(Intent(this, AddCardWebActivity::class.java))
         }
     }
 
