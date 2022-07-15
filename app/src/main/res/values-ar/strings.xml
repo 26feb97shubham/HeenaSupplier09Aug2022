@@ -50,9 +50,9 @@
     <string name="offers_and_discounts">العروض و الخصومات</string>
     <string name="supplier_name">اسم المورد</string>
     <string name="category">الفئة</string>
-    <string name="bookings_history">تاريخ الحجز</string>
+    <string name="bookings_history">الحجوزات السابقة</string>
     <string name="pending">انتظار</string>
-    <string name="completed">تم الاكتمال</string>
+    <string name="completed">مكتمل</string>
     <string name="accepted">تم الموافقة</string>
     <string name="cancelled">الغاء</string>
     <string name="book_service">احجز خدمة</string>

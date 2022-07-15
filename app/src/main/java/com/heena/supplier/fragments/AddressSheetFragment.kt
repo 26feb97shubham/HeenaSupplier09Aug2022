@@ -268,14 +268,14 @@ class AddressSheetFragment : Fragment(),
     }
 
     private fun saveAddress(country_Id: Int?) {
-        val builder = APIClient.createBuilder(arrayOf("flat", "title", "street", "is_default", "country_id", "building_name", "user_id"),
+        val builder = APIClient.createBuilder(arrayOf("flat", "title", "street", "is_default", "country_id", "building_name", "user_id", "lat", "langt"),
             arrayOf(flat_villa.toString(),
                 title.toString(),
                 street_area.toString(),
                 is_default.toString(),
                 country_Id.toString(),
                 building_name.toString(),
-                sharedPreferenceInstance!!.get(SharedPreferenceUtility.UserId, 0).toString()))
+                sharedPreferenceInstance!!.get(SharedPreferenceUtility.UserId, 0).toString(), mLatitude.toString(), mLongitude.toString()))
         val call = Utility.apiInterface.addAddress(builder.build())
         call!!.enqueue(object : Callback<AddEditDeleteAddressResponse?> {
             override fun onResponse(call: Call<AddEditDeleteAddressResponse?>, response: Response<AddEditDeleteAddressResponse?>) {
@@ -336,6 +336,8 @@ class AddressSheetFragment : Fragment(),
                 if (location != null) {
                     lastLocation = location
                     val currentLatLng = LatLng(lastLocation!!.latitude, lastLocation!!.longitude)
+                    mLatitude = lastLocation!!.latitude
+                    mLongitude = lastLocation!!.longitude
                     gMap!!.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 15f))
                     mView!!.mapView.onResume()
                     gMap!!.setOnCameraIdleListener(this)
@@ -362,7 +364,9 @@ class AddressSheetFragment : Fragment(),
                 if (locality != null && country != null)
                 {
                     current_latitude = addressList[0].latitude
+                    mLatitude = addressList[0].latitude
                     current_longitude = addressList[0].longitude
+                    mLongitude = addressList[0].longitude
                     Log.e("cureent_lati", current_latitude.toString())
                     Log.e("cureent_longni", current_longitude.toString())
                     strAddress = addressList[0].getAddressLine(0)

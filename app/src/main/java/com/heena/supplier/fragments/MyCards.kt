@@ -80,7 +80,10 @@ class MyCards : Fragment() {
         }
 
         mView!!.tv_add_new_card.setSafeOnClickListener {
-            findNavController().navigate(R.id.mycardsFragment_to_addNewCardFragment)
+//            findNavController().navigate(R.id.mycardsFragment_to_addNewCardFragment)
+            val bundle = Bundle()
+            bundle.putString("title", "addCards")
+            findNavController().navigate(R.id.CMSFragment, bundle)
         }
 
 

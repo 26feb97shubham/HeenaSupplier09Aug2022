@@ -269,9 +269,9 @@ class SignUpActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRec
                 if (files.size != 0) {
                     docpath=""
                     for (i in 0 until files.size) {
-                        /* val uri = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID, File(files[i].toString()))
-                         Log.e("uri", uri.toString())*/
-                        val filePath = FetchPath.getPath(this, files[i].uri)
+                         val uri = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID, File(files[i].toString()))
+                         Log.e("uri", uri.toString())
+                        val filePath = FetchPath.getPath(this, uri)
                         if (filePath!!.contains(".doc")
                             || filePath.contains(".docx") || filePath.contains(".pdf") || filePath.contains(".txt")) {
                             docpath=filePath

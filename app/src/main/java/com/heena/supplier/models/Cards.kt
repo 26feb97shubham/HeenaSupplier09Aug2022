@@ -14,7 +14,5 @@ data class Cards(
     var card_id : String,
     var brand : String,
     var scheme : String,
-    var bank : String,
-    var country : String,
     var first_six : String
 ): Serializable

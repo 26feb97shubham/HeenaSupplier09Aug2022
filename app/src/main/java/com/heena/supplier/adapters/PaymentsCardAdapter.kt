@@ -27,7 +27,7 @@ class PaymentsCardAdapter(private val  context: Context, private val data:ArrayL
         holder.itemView.tv_card_title.text = data[position].brand
         val card_ending = context.getString(R.string.ending_in)+" "+data[position].number
         holder.itemView.tv_ending_card_number.text = card_ending
-        holder.itemView.iv_selected_unselected.isChecked = position==mSelectedItem
+        holder.itemView.iv_selected_unselected.isChecked = position==lastCheckedPosition
 
         holder.itemView.iv_selected_unselected.setOnClickListener {
             val copyOfLastCheckedPosition = lastCheckedPosition

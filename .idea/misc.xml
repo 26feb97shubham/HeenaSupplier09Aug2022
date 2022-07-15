@@ -4,6 +4,7 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Shubham_Jain/HeenaSupplier/app/src/main/res/drawable-xhdpi/ic_baseline_keyboard_brown_arrow_down_24.xml" value="0.20925925925925926" />
+        <entry key="..\:/Shubham_Jain/HeenaSupplier/app/src/main/res/drawable/bottom_tab_color.xml" value="0.1535" />
         <entry key="..\:/Shubham_Jain/HeenaSupplier/app/src/main/res/drawable/chat_partner_bg.xml" value="0.20925925925925926" />
         <entry key="..\:/Shubham_Jain/HeenaSupplier/app/src/main/res/drawable/chat_user_bg.xml" value="0.20925925925925926" />
         <entry key="..\:/Shubham_Jain/HeenaSupplier/app/src/main/res/drawable/gold_border_transparent_background.xml" value="0.2638888888888889" />
@@ -48,7 +49,7 @@
         <entry key="..\:/Shubham_Jain/HeenaSupplier/app/src/main/res/layout/dialog_progress.xml" value="0.16018518518518518" />
         <entry key="..\:/Shubham_Jain/HeenaSupplier/app/src/main/res/layout/dropdown_hint_item.xml" value="0.16018518518518518" />
         <entry key="..\:/Shubham_Jain/HeenaSupplier/app/src/main/res/layout/filtered_offers_n_disc_recycler_item_listing.xml" value="0.17314814814814813" />
-        <entry key="..\:/Shubham_Jain/HeenaSupplier/app/src/main/res/layout/fragment_add_address_bottom_sheet.xml" value="0.2259963768115942" />
+        <entry key="..\:/Shubham_Jain/HeenaSupplier/app/src/main/res/layout/fragment_add_address_bottom_sheet.xml" value="0.25" />
         <entry key="..\:/Shubham_Jain/HeenaSupplier/app/src/main/res/layout/fragment_add_new_card.xml" value="0.2259963768115942" />
         <entry key="..\:/Shubham_Jain/HeenaSupplier/app/src/main/res/layout/fragment_add_new_service.xml" value="0.36666666666666664" />
         <entry key="..\:/Shubham_Jain/HeenaSupplier/app/src/main/res/layout/fragment_add_offers.xml" value="0.36666666666666664" />
@@ -131,7 +132,7 @@
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

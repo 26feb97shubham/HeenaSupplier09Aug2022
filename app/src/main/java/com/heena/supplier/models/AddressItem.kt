@@ -11,5 +11,7 @@ data class AddressItem(
     val title: String? = null,
     val street: String? = null,
     val is_default: Int? = null,
-    val created_at: String? = null
+    val created_at: String? = null,
+    val lat: Double? = null,
+    val langt: Double? = null
 ): Serializable

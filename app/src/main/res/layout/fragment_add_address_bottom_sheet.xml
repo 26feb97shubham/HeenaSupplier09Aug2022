@@ -19,13 +19,54 @@
                 android:paddingVertical="@dimen/_12sdp">
 
                 <LinearLayout
-                    android:id="@+id/flat_villa_layout"
+                    android:id="@+id/searchAddressLL"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/_10sdp"
                     android:orientation="vertical"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_6sdp"
+                        android:fontFamily="@font/avenir_medium"
+                        android:gravity="center_vertical"
+                        android:text="@string/search_address"
+                        android:textColor="@color/gold"
+                        android:textSize="@dimen/_12ssp"
+                        android:textStyle="normal" />
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_search_address"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_40sdp"
+                        android:layout_marginTop="@dimen/_6sdp"
+                        android:fontFamily="@font/avenir_medium"
+                        android:hint="- -"
+                        android:inputType="text"
+                        android:maxLength="55"
+                        android:maxLines="1"
+                        android:paddingStart="@dimen/_4sdp"
+                        android:textAlignment="viewStart"
+                        android:textAllCaps="false"
+                        android:textColor="@color/gold"
+                        android:textColorHint="@color/gold"
+                        android:textCursorDrawable="@drawable/cursor_color"
+                        android:textDirection="locale"
+                        android:textSize="@dimen/_11ssp"
+                        app:backgroundTint="@color/gold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/flat_villa_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/_10sdp"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:orientation="vertical"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/searchAddressLL">
 
                     <com.google.android.material.textview.MaterialTextView
                         android:layout_width="wrap_content"

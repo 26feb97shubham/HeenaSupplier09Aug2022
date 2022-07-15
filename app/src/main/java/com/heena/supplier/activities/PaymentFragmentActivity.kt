@@ -202,16 +202,22 @@ class PaymentFragmentActivity : AppCompatActivity() {
                                     }
                                 }
                             }else{
+                                membership_payment_progressBar.visibility = View.GONE
+                                window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                                 Utility.showSnackBarOnResponseError(paymentFragmentActivityConstraintLayout,
                                     getString(R.string.payment_failed),
                                     this@PaymentFragmentActivity)
                             }
                         }else{
+                            membership_payment_progressBar.visibility = View.GONE
+                            window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                             Utility.showSnackBarOnResponseError(paymentFragmentActivityConstraintLayout,
                                 getString(R.string.payment_failed),
                                 this@PaymentFragmentActivity)
                         }
                     }else{
+                        membership_payment_progressBar.visibility = View.GONE
+                        window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                         Utility.showSnackBarOnResponseError(paymentFragmentActivityConstraintLayout,
                             getString(R.string.response_isnt_successful),
                             this@PaymentFragmentActivity)

@@ -361,8 +361,10 @@
     <string name="please_enter_your_iban_number">Please enter your IBAN number</string>
     <string name="total_revenue">Total Revenue</string>
     <string name="trade_license">Trade License</string>
+    <string name="search_address">Search Address</string>
     <string name="thank_you_for_registration">Thank You for registering with us. Your account has been sent for admin approval</string>
     <string name="please_do_not_press_back_button_until_the_payment_is_is_process">Please do not press back button until the payment is in process</string>
     <string name="please_do_not_press_back_button_until_the_add_card_is_is_process">Please do not press back button until the card adding is in process</string>
     <string name="excel_sheet_downloaded_successfully">Revenue document has been downloaded successfully. Kindly check your phone storage or internal memory card or download section.</string>
+    <string name="please_select_the_address_first">Please select the address first!</string>
 </resources>

@@ -212,7 +212,7 @@ class SharedPreferenceUtility {
         const val DocPath = "docPath"
         const val UserEmail = "userEmail"
         const val IsLogin = "isLogin"
-        const val IsWelcomeShow = "isWelcomeShow"
+        const val IsWelcomeShow = "IsWelcomeShow"
         const val ISINTRODUCTION = "isIntroduction"
         const val SavedAddress= "savedAddress"
         const val FIRSTTIME = "isFirstTime"
