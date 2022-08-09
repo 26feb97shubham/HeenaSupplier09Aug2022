@@ -370,12 +370,17 @@ class RevenuesFragment : Fragment() {
                             mView!!.civ_excel_doc.isEnabled = true
                             mView!!.civ_filter.isEnabled = true
                         }
-                        val balance = if (response.body()!!.balance!!.isNaN()){
+                        /*val balance = if (response.body()!!.balance!!.isNaN()){
                             "AED "+0.0
                         }else{
                             "AED " + Utility.convertDoubleValueWithCommaSeparator(response.body()!!.balance!!.toDouble())
+                        }*/
+                        var totalBalance = 0.0
+
+                        for (i in 0 until transactionsList.size){
+                            totalBalance += transactionsList[i].amount!!.toDouble()
                         }
-                        mView!!.tv_revenues.text = balance
+                        mView!!.tv_revenues.text = "AED ${totalBalance.toString()}"
                         setTransactionsAdapter(transactionsList)
                     }else{
                         LogUtils.shortToast(requireContext(), response.body()!!.message)

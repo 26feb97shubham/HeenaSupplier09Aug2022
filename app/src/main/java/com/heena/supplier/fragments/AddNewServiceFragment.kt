@@ -49,6 +49,7 @@ import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.heena.supplier.application.MyApp.Companion.sharedPreferenceInstance
 import com.heena.supplier.custom.FetchPath
 import com.heena.supplier.utils.Utility.IMAGE_DIRECTORY_NAME
+import com.heena.supplier.utils.Utility.createImageFromContentUri
 import com.heena.supplier.utils.Utility.setSafeOnClickListener
 import kotlinx.android.synthetic.main.activity_home2.*
 import kotlinx.android.synthetic.main.fragment_add_new_service.view.*
@@ -139,20 +140,12 @@ class AddNewServiceFragment : Fragment() {
     var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         if (status.equals(CAMERA_CAPTURE_IMAGE_REQUEST_CODE)){
             if (it.resultCode == Activity.RESULT_OK){
-                if (uri != null) {
-                    imagePath = ""
-                    Log.e("uri", uri.toString())
-                    imagePath = uri!!.path!!
-                    val photoData = PhotoData()
-                    photoData.status = "new"
-                    photoData.path = imagePath
-                    pathList.add(photoData)
-                    setServicePhotoAdapter(pathList)
-                } else {
-                    Utility.showSnackBarValidationError(mView!!.addNewServiceFragmentConstraintLayout,
-                        requireContext().getString(R.string.something_went_wrong),
-                        requireContext())
-                }
+                val photoData = PhotoData()
+                photoData.status = "new"
+                photoData.path = imagePath
+                pathList.add(photoData)
+                setServicePhotoAdapter(pathList)
+                imagePath = ""
             }
         }else if (status.equals(PICK_IMAGE_MULTIPLE)){
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
@@ -165,7 +158,8 @@ class AddNewServiceFragment : Fragment() {
                         if (count+pathList.size<=5){
                             for (i in 0 until count) {
                                 val selectedImage: Uri = data.clipData!!.getItemAt(i).uri
-                                imagePath = FetchPath.getPath(requireActivity(), selectedImage!!)!!
+                                val file = createImageFromContentUri(requireContext(),selectedImage)
+                                imagePath = file!!.absolutePath
                                 val photoData = PhotoData()
                                 photoData.status = "new"
                                 photoData.path = imagePath
@@ -178,24 +172,12 @@ class AddNewServiceFragment : Fragment() {
                                 requireContext().getString(R.string.only_five_images_can_be_selected_at_once),
                                 requireContext())
                         }
-                    } else if (data.data != null) {
+                    }
+                    else if (data.data != null) {
                         var imagePath= ""
                         val imageURI = data.data
-/*                        if (imageURI.toString().startsWith("content")) {
-                            imagePath = FetchPath.getPath(requireActivity(), selectedImage)!!
-                        } else {
-                            imagePath = imageURI?.getPath()!!
-                        }*/
-                       /* if (imageURI.toString().startsWith("content")) {
-                            imagePath = imageURI?.let { it1 ->
-                                FetchPath.getPath(requireActivity(),
-                                    it1
-                                )
-                            }!!
-                        } else {
-                            imagePath = imageURI!!.getPath()!!
-                        }*/
-                        imagePath = FetchPath.getPath(requireActivity(), imageURI!!)!!
+                        val file = createImageFromContentUri(requireContext(),imageURI!!)
+                        imagePath = file!!.absolutePath
 
                         val photoData = PhotoData()
                         photoData.status = "new"
@@ -216,13 +198,10 @@ class AddNewServiceFragment : Fragment() {
                         if (count+pathList.size<=5){
                             for (i in 0 until count) {
                                 val selectedImage: Uri = data.clipData!!.getItemAt(i).uri
-                                /*if (selectedImage.toString().startsWith("content")) {
-                                    imagePath = FetchPath.getPath(requireActivity(), selectedImage)!!
-                                } else {
-                                    imagePath = selectedImage.path!!
-                                }*/
 
-                                imagePath = FetchPath.getPath(requireActivity(), selectedImage)!!
+                                val file = createImageFromContentUri(requireContext(),selectedImage)
+                                //imagePath = FetchPath.getPath(requireActivity(), selectedImage)!!
+                                imagePath = file!!.absolutePath
                                 val photoData = PhotoData()
                                 photoData.status = "new"
                                 photoData.path = imagePath
@@ -234,18 +213,18 @@ class AddNewServiceFragment : Fragment() {
                                 requireContext().getString(R.string.only_five_images_can_be_selected_at_once),
                                 requireContext())
                         }
-                    } else if (data.data != null) {
+                    }
+                    else if (data.data != null) {
                         val imageURI = data.data
                         imagePath = ""
-                        if (imageURI.toString().startsWith("content")) {
-                            imagePath = imageURI?.let { it1 ->
-                                FetchPath.getPath(requireContext(),
-                                    it1
-                                )
-                            }!!
-                        } else {
-                            imagePath = imageURI!!.getPath()!!
-                        }
+                        /*imagePath = if (imageURI.toString().startsWith("content")) ({
+                            FetchPath.getPath(requireActivity(), imageURI!!)
+                        }).toString() else {
+                            imageURI!!.path!!
+                        }*/
+
+                        val file = createImageFromContentUri(requireContext(),imageURI!!)
+                        imagePath = file!!.absolutePath
 
                         Log.e("activity", ""+requireActivity())
                         val photoData = PhotoData()
@@ -710,7 +689,7 @@ class AddNewServiceFragment : Fragment() {
                         service_description,
                     subscription_id.toString(),
                     sharedPreferenceInstance!![SharedPreferenceUtility.SelectedLang, ""],
-                sharedPreferenceInstance!![SharedPreferenceUtility.UserEmail, ""], "1"))
+                sharedPreferenceInstance!![SharedPreferenceUtility.UserEmail, ""]))
 
         for(i in 0 until pathList.size){
             val file = File(pathList[i].path)
@@ -806,11 +785,19 @@ class AddNewServiceFragment : Fragment() {
 
     private fun captureImage() {
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        uri = getOutputMediaFileUri(MEDIA_TYPE_IMAGE)
-        intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
-        status = CAMERA_CAPTURE_IMAGE_REQUEST_CODE
-        resultLauncher.launch(intent)
+        val file_name = "JPEG_${SimpleDateFormat("yyyyMMdd_HHmmss",Locale.ENGLISH).format(Date())}"
+        val storageDirectroy: File = requireContext().externalCacheDir!!
+        try {
+            val imageFile: File = File.createTempFile(file_name, ".jpeg", storageDirectroy)
+            imagePath = imageFile.absolutePath
+            val imageURI = FileProvider.getUriForFile(requireContext(), requireContext().applicationInfo.packageName+".provider", imageFile)
+            intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, imageURI)
+            status = CAMERA_CAPTURE_IMAGE_REQUEST_CODE
+            resultLauncher.launch(intent)
+        }catch (e : IOException){
+            e.printStackTrace()
+        }
     }
 
     fun getOutputMediaFileUri(type: Int): Uri {

@@ -5,6 +5,8 @@ import android.app.Activity
 import android.content.Context
 import android.content.res.Configuration
 import android.net.ConnectivityManager
+import android.net.Uri
+import android.os.Environment
 import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
@@ -24,6 +26,9 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.heena.supplier.R
 import com.heena.supplier.extras.SafeClickListener
 import com.heena.supplier.models.*
+import java.io.File
+import java.io.FileOutputStream
+import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -38,7 +43,8 @@ object Utility {
     var doubleClick:Boolean=false
     var booking_item_type = 0
     const val addCardURL = "https://alniqasha.ae/page/payment_form/"
-
+    const val paymentURL = "https://secure.3gdirectpay.com/payv3.php?ID="
+    const val DPOPaymentRedirectURL = "https://alniqasha.ae/success"
 
     fun changeLanguage(context: Context, language:String){
         val locale = Locale(language)
@@ -92,6 +98,28 @@ object Utility {
         snackBar.setTextColor(ContextCompat.getColor(context, R.color.white))
         snackBar.allowInfiniteLines()
         snackBar.show()
+    }
+
+    fun createImageFromContentUri(context: Context, uri: Uri): File? {
+        val inputStream =
+            context.contentResolver.openInputStream(uri)!!
+        val file_name = "JPEG_${SimpleDateFormat("yyyyMMdd_HHmmss",Locale.ENGLISH).format(Date())}"
+        val storageDirectroy: File =
+            context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!
+        try {
+            val imageFile: File = File.createTempFile(file_name, ".jpeg", storageDirectroy)
+            val outputStream = FileOutputStream(imageFile, false)
+            var read: Int
+            val bytes = ByteArray(DEFAULT_BUFFER_SIZE)
+            while (inputStream.read(bytes).also { read = it } != -1) {
+                outputStream.write(bytes, 0, read)
+            }
+            outputStream.close()
+            inputStream.close()
+            return imageFile
+        } catch (e: Exception) {
+            return null
+        }
     }
 
     fun showSnackBarOnResponseSuccess(view: View, message: String, context: Context) {

@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.heena.supplier.R
 import com.heena.supplier.models.Notification
+import com.heena.supplier.utils.SharedPreferenceUtility
 import kotlinx.android.synthetic.main.item_notifications_list.view.*
 
 class NotificationsAdapter(private val context: Context, private val data:ArrayList<Notification>): RecyclerView.Adapter<NotificationsAdapter.MyViewHolder>() {
@@ -18,8 +19,14 @@ class NotificationsAdapter(private val context: Context, private val data:ArrayL
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.itemView.notificationTitle.text = data[position].title
-        holder.itemView.notificationsDetails.text = data[position].message
+
+        if (SharedPreferenceUtility.getInstance().get(SharedPreferenceUtility.SelectedLang,"").equals("ar")){
+            holder.itemView.notificationTitle.text = data[position].titleAr
+            holder.itemView.notificationsDetails.text = data[position].messageAr
+        }else{
+            holder.itemView.notificationTitle.text = data[position].title
+            holder.itemView.notificationsDetails.text = data[position].message
+        }
         holder.itemView.notificationCreatedTime.text = data[position].createAt
     }
 

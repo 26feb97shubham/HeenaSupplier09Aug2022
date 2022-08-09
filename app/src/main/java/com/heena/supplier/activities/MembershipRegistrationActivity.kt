@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.gson.Gson
 import com.heena.supplier.R
 import com.heena.supplier.`interface`.ClickInterface
 import com.heena.supplier.adapters.RegistrationMembershipPlansListAdapter
@@ -15,6 +16,14 @@ import com.heena.supplier.application.MyApp.Companion.sharedPreferenceInstance
 import com.heena.supplier.models.BuyMembership
 import com.heena.supplier.models.Membership
 import com.heena.supplier.models.MembershipListResponse
+import com.heena.supplier.models.SourceModel
+import com.heena.supplier.rest.APIClient
+import com.heena.supplier.rest.APIInterface
+import com.heena.supplier.rest.APIUtils
+import com.heena.supplier.rest.APIUtils.ServicePayment
+import com.heena.supplier.rest.APIUtils.ServicePaymentTOKEN
+import com.heena.supplier.rest.APIUtils.resultExplanationPayment
+import com.heena.supplier.rest.APIUtils.resultExplanationPaymentStatus
 import com.heena.supplier.utils.ConstClass
 import com.heena.supplier.utils.LogUtils
 import com.heena.supplier.utils.SharedPreferenceUtility
@@ -28,7 +37,9 @@ import kotlinx.android.synthetic.main.activity_membership_registration2.rv_membe
 import kotlinx.android.synthetic.main.activity_payment_fragment.*
 import kotlinx.android.synthetic.main.activity_sign_up2.*
 import kotlinx.android.synthetic.main.fragment_membership_bottom_sheet_dialog.*
+import okhttp3.ResponseBody
 import org.json.JSONException
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -37,6 +48,7 @@ import java.io.IOException
 class MembershipRegistrationActivity : AppCompatActivity() {
     var emailaddress : String?= null
     var membershipId : Int = 0
+    var membershipPrice : Float = 0.0F
     private lateinit var registrationMembershipPlansListAdapter: RegistrationMembershipPlansListAdapter
     private var membershipList = ArrayList<Membership>()
     private var membership : Membership?=null
@@ -92,8 +104,7 @@ class MembershipRegistrationActivity : AppCompatActivity() {
                     )
                     finish()
 
-
-                    //purchaseMembership()
+//                    purchaseMembership()
                 }
             } else {
                 Utility.showSnackBarValidationError(membershipRegistrationActivityConstraintLayout,
@@ -125,6 +136,8 @@ class MembershipRegistrationActivity : AppCompatActivity() {
                                     registrationMembershipPlansListAdapter = RegistrationMembershipPlansListAdapter(this@MembershipRegistrationActivity,membershipList, object : ClickInterface.OnRecyclerItemClick{
                                         override fun OnClickAction(position: Int) {
                                             membershipId  = membershipList[position].membership_id
+                                            membershipPrice  = membershipList[position].price.toFloat()
+
                                         }
                                     })
                                     rv_membership_plans.adapter = registrationMembershipPlansListAdapter
@@ -167,6 +180,76 @@ class MembershipRegistrationActivity : AppCompatActivity() {
                     btnSignUp.visibility = View.GONE
                     membership_registration_progressBar.visibility = View.GONE
                     window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                }
+
+            })
+        }
+    }
+
+
+    private fun purchaseMembership() {
+        ServicePayment = true
+        if (Utility.isNetworkAvailable()){
+            window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+            membership_registration_progressBar.visibility= View.VISIBLE
+            val builder = APIClient.createBuilder(arrayOf("user_id","membership_id", "membership_price", "type", "subscription_id", "subscription_price"),
+                arrayOf(sharedPreferenceInstance!![SharedPreferenceUtility.UserId, 0].toString(),
+                    membershipId.toString(), membershipPrice.toString(), "1", "", ""))
+            val apiInterface = APIClient.getPaymentClient()!!.create(APIInterface::class.java)
+            val call = apiInterface.paymentToken(builder.build())
+
+            call.enqueue(object : Callback<ResponseBody?>{
+                override fun onResponse(
+                    call: Call<ResponseBody?>,
+                    response: Response<ResponseBody?>
+                ) {
+                    membership_registration_progressBar.visibility = View.GONE
+                    window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                    try {
+                        if(resultExplanationPaymentStatus){
+                            if (response.isSuccessful){
+                                if (ServicePaymentTOKEN.isEmpty()){
+                                    Utility.showSnackBarOnResponseError(membershipRegistrationActivityConstraintLayout,
+                                        getString(R.string.check_internet),
+                                        this@MembershipRegistrationActivity)
+                                }else{
+                                    val bundle = Bundle()
+                                    bundle.putString("TransToken",ServicePaymentTOKEN)
+                                    bundle.putString("user_id",sharedPreferenceInstance!![SharedPreferenceUtility.UserId, 0].toString())
+                                    bundle.putString("type","1")
+                                    bundle.putString("membership_id",membershipId.toString())
+                                    bundle.putString("membership_price",membershipPrice.toString())
+                                    bundle.putString("days","")
+                                    bundle.putString("starting_at","")
+                                    bundle.putString("ending_at","")
+                                    bundle.putString("subscription_id","")
+                                    bundle.putString("subscription_price","")
+                                    bundle.putBoolean("isRegister", true)
+                                    bundle.putBoolean("isPurchaseMembership", false)
+                                    bundle.putBoolean("isPurchaseSubscriptions", false)
+                                    startActivity(Intent(this@MembershipRegistrationActivity, PaymentDetailsActivity::class.java).putExtras(bundle))
+                                }
+                            }else{
+                                Utility.showSnackBarOnResponseError(membershipRegistrationActivityConstraintLayout,
+                                    getString(R.string.response_isnt_successful),
+                                    this@MembershipRegistrationActivity)
+                            }
+                        }else{
+                            Utility.showSnackBarOnResponseError(membershipRegistrationActivityConstraintLayout,
+                                resultExplanationPayment,
+                                this@MembershipRegistrationActivity)
+                        }
+                    }catch (e : java.lang.Exception){
+                        e.printStackTrace()
+                    }
+                }
+
+                override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
+                    membership_registration_progressBar.visibility = View.GONE
+                    window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                    Utility.showSnackBarOnResponseError(membershipRegistrationActivityConstraintLayout,
+                        getString(R.string.check_internet),
+                        this@MembershipRegistrationActivity)
                 }
 
             })

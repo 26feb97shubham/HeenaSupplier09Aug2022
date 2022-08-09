@@ -128,7 +128,7 @@ class MyProfileFragment : Fragment() {
     var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         if (status.equals(CAMERA_CAPTURE_IMAGE_REQUEST_CODE)){
             if (it.resultCode == Activity.RESULT_OK){
-                if (uri != null) {
+                /*if (uri != null) {
                     imagePath = ""
                     Log.e("uri", uri.toString())
                     imagePath = uri!!.path!!
@@ -138,7 +138,11 @@ class MyProfileFragment : Fragment() {
                     Utility.showSnackBarValidationError(mView!!.myProfileFragmentConstraintLayout,
                         requireContext().getString(R.string.something_went_wrong),
                         requireContext())
-                }
+                }*/
+
+                galleryPhotos.add(imagePath)
+                setUploadPhotos(galleryPhotos)
+                imagePath = ""
             }
         }else if (status.equals(PICK_IMAGE_FROM_GALLERY)){
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
@@ -153,8 +157,14 @@ class MyProfileFragment : Fragment() {
                             requireContext())
                     }else if(cout+galleryPhotos.size<=5){
                         for (i in 0 until cout) {
-                            val imageurl: Uri = data.clipData!!.getItemAt(i).uri
+                           /* val imageurl: Uri = data.clipData!!.getItemAt(i).uri
                             imagePath = FetchPath.getPath(requireActivity(), imageurl)!!
+                            galleryPhotos.add(imagePath)*/
+
+                            val selectedImage: Uri = data.clipData!!.getItemAt(i).uri
+                            val file =
+                                Utility.createImageFromContentUri(requireContext(), selectedImage)
+                            imagePath = file!!.absolutePath
                             galleryPhotos.add(imagePath)
                         }
                         setUploadPhotos(galleryPhotos)
@@ -164,7 +174,16 @@ class MyProfileFragment : Fragment() {
                             requireContext())
                     }
                 } else if (data?.data!=null) {
-                    val imagePath = data.data!!.path
+                   /* val imagePath = data.data!!.path
+                    galleryPhotos.add(imagePath.toString())
+                    setUploadPhotos(galleryPhotos)*/
+
+
+                    var imagePath= ""
+                    val imageURI = data.data
+                    val file = Utility.createImageFromContentUri(requireContext(), imageURI!!)
+                    imagePath = file!!.absolutePath
+
                     galleryPhotos.add(imagePath.toString())
                     setUploadPhotos(galleryPhotos)
                 }
@@ -180,8 +199,14 @@ class MyProfileFragment : Fragment() {
                                 requireContext())
                         }else if(cout+galleryPhotos.size<=10){
                             for (i in 0 until cout) {
-                                val imageurl: Uri = data.clipData!!.getItemAt(i).uri
+                                /*val imageurl: Uri = data.clipData!!.getItemAt(i).uri
                                 imagePath = FetchPath.getPath(requireActivity(), imageurl)!!
+                                galleryPhotos.add(imagePath)*/
+
+                                val selectedImage: Uri = data.clipData!!.getItemAt(i).uri
+                                val file =
+                                    Utility.createImageFromContentUri(requireContext(), selectedImage)
+                                imagePath = file!!.absolutePath
                                 galleryPhotos.add(imagePath)
                             }
                             setUploadPhotos(galleryPhotos)
@@ -191,9 +216,17 @@ class MyProfileFragment : Fragment() {
                                 requireContext())
                         }
                     } else if (data?.data!=null) {
-                        val imageURI = data.data!!
+                       /* val imageURI = data.data!!
                         imagePath = FetchPath.getPath(requireActivity(), imageURI)!!
                         galleryPhotos.add(imagePath)
+                        setUploadPhotos(galleryPhotos)*/
+
+                        var imagePath= ""
+                        val imageURI = data.data
+                        val file = Utility.createImageFromContentUri(requireContext(), imageURI!!)
+                        imagePath = file!!.absolutePath
+
+                        galleryPhotos.add(imagePath.toString())
                         setUploadPhotos(galleryPhotos)
                     }
                 }
@@ -957,12 +990,27 @@ class MyProfileFragment : Fragment() {
     }
 
     private fun captureImage() {
-        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+      /*  val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         uri = getOutputMediaFileUri(MEDIA_TYPE_IMAGE)
         intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
         intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
         status = CAMERA_CAPTURE_IMAGE_REQUEST_CODE
-        resultLauncher.launch(intent)
+        resultLauncher.launch(intent)*/
+
+        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        val file_name = "JPEG_${SimpleDateFormat("yyyyMMdd_HHmmss",Locale.ENGLISH).format(Date())}"
+        val storageDirectroy: File = requireContext().externalCacheDir!!
+        try {
+            val imageFile: File = File.createTempFile(file_name, ".jpeg", storageDirectroy)
+            imagePath = imageFile.absolutePath
+            val imageURI = FileProvider.getUriForFile(requireContext(), requireContext().applicationInfo.packageName+".provider", imageFile)
+            intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, imageURI)
+            status = CAMERA_CAPTURE_IMAGE_REQUEST_CODE
+            resultLauncher.launch(intent)
+        }catch (e : IOException){
+            e.printStackTrace()
+        }
     }
 
     fun getOutputMediaFileUri(type: Int): Uri {

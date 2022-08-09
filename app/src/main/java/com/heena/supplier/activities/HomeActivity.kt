@@ -3,7 +3,9 @@ package com.heena.supplier.activities
 import android.graphics.Point
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
 import android.view.animation.AlphaAnimation
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -20,6 +22,8 @@ import com.heena.supplier.utils.Utility
 import com.heena.supplier.utils.Utility.exitApp
 import com.heena.supplier.utils.Utility.setSafeOnClickListener
 import kotlinx.android.synthetic.main.activity_home2.*
+import kotlinx.android.synthetic.main.custom_toast_layout.*
+import kotlinx.android.synthetic.main.custom_toast_layout.view.*
 import kotlinx.android.synthetic.main.side_top_view.view.*
 
 
@@ -127,4 +131,5 @@ class HomeActivity : AppCompatActivity() {
     private fun openNotificationFragment(destFragment: Int) {
         findNavController(destFragment).navigate(R.id.notificationsFragment)
     }
+
 }

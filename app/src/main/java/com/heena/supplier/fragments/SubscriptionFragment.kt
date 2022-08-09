@@ -87,7 +87,7 @@ class SubscriptionFragment : Fragment() {
                 findNavController().navigate(R.id.myPaymentFragment, bundle)
             }else{
                 Utility.showSnackBarValidationError(mView!!.subscriptionFragmentConstraintLayout,
-                    requireContext().getString(R.string.please_select_the_membership_plan_first_to_continue),
+                    requireContext().getString(R.string.please_select_the_subscription_plan_first_to_continue),
                     requireContext())
             }
         }

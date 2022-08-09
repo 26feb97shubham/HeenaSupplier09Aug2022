@@ -19,6 +19,7 @@ import com.heena.supplier.models.LoginResponse
 import com.heena.supplier.models.RegisterVerifyResendResponse
 import com.heena.supplier.rest.APIClient
 import com.heena.supplier.rest.APIInterface
+import com.heena.supplier.utils.ConstClass
 import com.heena.supplier.utils.LogUtils
 import com.heena.supplier.utils.SharedPreferenceUtility
 import com.heena.supplier.utils.Utility
@@ -220,19 +221,37 @@ class LoginActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRece
                     if(response.isSuccessful){
                         when (response.body()!!.status) {
                             1 -> {
-                                sharedPreferenceInstance!!.save(SharedPreferenceUtility.IsLogin, true)
                                 sharedPreferenceInstance!!.save(SharedPreferenceUtility.IsVerified, true)
                                 myuserId = response.body()!!.user!!.user_id!!
-                                sharedPreferenceInstance!!.save(SharedPreferenceUtility.UserId, myuserId)
-                                sharedPreferenceInstance!!.save(SharedPreferenceUtility.ProfilePic, response.body()!!.user!!.image)
-                                sharedPreferenceInstance!!.save(SharedPreferenceUtility.OldPassword, password)
-                                Utility.showSnackBarOnResponseSuccess(loginActivityConstraintLayout,
-                                    response.body()!!.message.toString(),
-                                    this@LoginActivity)
-                                window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                                Timer().schedule(800){
-                                    startActivity(Intent(this@LoginActivity, HomeActivity::class.java).putExtra(SharedPreferenceUtility.UserId, myuserId))
+
+                                if(response.body()!!.user!!.have_membership==0){
+                                    sharedPreferenceInstance!!.save(SharedPreferenceUtility.IsLogin, false)
+                                    sharedPreferenceInstance!!.save(SharedPreferenceUtility.UserId, myuserId)
+                                    sharedPreferenceInstance!!.save(SharedPreferenceUtility.ProfilePic, response.body()!!.user!!.image)
+                                    sharedPreferenceInstance!!.save(SharedPreferenceUtility.OldPassword, password)
+                                    Utility.showSnackBarOnResponseSuccess(loginActivityConstraintLayout,
+                                        response.body()!!.message.toString(),
+                                        this@LoginActivity)
+                                    window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                                    Timer().schedule(800){
+                                        startActivity(Intent(this@LoginActivity, MembershipRegistrationActivity::class.java).putExtra(
+                                            ConstClass.EMAILADDRESS, response.body()!!.user!!.email))
+                                    }
+                                }else{
+                                    sharedPreferenceInstance!!.save(SharedPreferenceUtility.IsLogin, true)
+                                    sharedPreferenceInstance!!.save(SharedPreferenceUtility.UserId, myuserId)
+                                    sharedPreferenceInstance!!.save(SharedPreferenceUtility.ProfilePic, response.body()!!.user!!.image)
+                                    sharedPreferenceInstance!!.save(SharedPreferenceUtility.OldPassword, password)
+                                    Utility.showSnackBarOnResponseSuccess(loginActivityConstraintLayout,
+                                        response.body()!!.message.toString(),
+                                        this@LoginActivity)
+                                    window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                                    Timer().schedule(800){
+                                        startActivity(Intent(this@LoginActivity, HomeActivity::class.java).putExtra(SharedPreferenceUtility.UserId, myuserId))
+                                    }
+
                                 }
+
                             }
                             2 -> {
                                 emailaddress = response.body()!!.user!!.email!!

@@ -10,7 +10,7 @@
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/membership_card"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/_90sdp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -80,22 +80,25 @@
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_membership_desc"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="@dimen/_8sdp"
+                android:ellipsize="end"
+                android:fontFamily="@font/avenir_medium"
                 android:gravity="start"
+                android:maxLines="3"
                 android:text="@string/service_desc"
                 android:textAlignment="viewStart"
-                android:textDirection="locale"
+                android:textAllCaps="false"
                 android:textColor="@color/text_gold_color_dark"
+                android:textDirection="locale"
                 android:textSize="@dimen/_10ssp"
                 android:textStyle="bold"
-                android:maxLines="3"
-                android:ellipsize="end"
-                android:layout_marginVertical="@dimen/_8sdp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_membership_title"
-                android:textAllCaps="false"
-                android:fontFamily="@font/avenir_medium"/>
+                app:layout_constraintVertical_bias="0.384" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 

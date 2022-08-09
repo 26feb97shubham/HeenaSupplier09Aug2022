@@ -12,7 +12,9 @@ data class Notification (
 
     @SerializedName("notification_id" ) var notificationId : Int?    = null,
     @SerializedName("title"           ) var title          : String? = null,
+    @SerializedName("title_ar"           ) var titleAr          : String? = null,
     @SerializedName("message"         ) var message        : String? = null,
+    @SerializedName("message_ar"         ) var messageAr        : String? = null,
     @SerializedName("is_new"          ) var isNew          : Int?    = null,
     @SerializedName("create_at"       ) var createAt       : String? = null,
     @SerializedName("comment_id"      ) var commentId      : Int?    = null,

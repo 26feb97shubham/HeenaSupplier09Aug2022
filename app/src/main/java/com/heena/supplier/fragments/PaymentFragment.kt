@@ -16,12 +16,15 @@ import com.google.gson.Gson
 import com.heena.supplier.Dialogs.NoInternetDialog
 import com.heena.supplier.R
 import com.heena.supplier.`interface`.ClickInterface
+import com.heena.supplier.activities.PaymentDetailsActivity
 import com.heena.supplier.activities.TapPaymentActivity
 import com.heena.supplier.adapters.PaymentsCardAdapter
 import com.heena.supplier.application.MyApp.Companion.sharedPreferenceInstance
 import com.heena.supplier.models.*
 import com.heena.supplier.rest.APIClient
 import com.heena.supplier.rest.APIInterface
+import com.heena.supplier.rest.APIUtils
+import com.heena.supplier.rest.APIUtils.ServicePayment
 import com.heena.supplier.utils.LogUtils
 import com.heena.supplier.utils.SharedPreferenceUtility
 import com.heena.supplier.utils.Utility
@@ -30,6 +33,7 @@ import com.heena.supplier.utils.Utility.convertDoubleValueWithCommaSeparator
 import com.heena.supplier.utils.Utility.mSelectedItem
 import com.heena.supplier.utils.Utility.setSafeOnClickListener
 import kotlinx.android.synthetic.main.activity_home2.*
+import kotlinx.android.synthetic.main.activity_membership_registration2.*
 import kotlinx.android.synthetic.main.fragment_payment.*
 import kotlinx.android.synthetic.main.fragment_payment.view.*
 import okhttp3.ResponseBody
@@ -117,7 +121,12 @@ class PaymentFragment : Fragment() {
             showCardsListing()
         }
 
-        mView!!.tv_subscribe!!.setSafeOnClickListener { // dismiss dialog
+        mView!!.tv_subscribe!!.setSafeOnClickListener {
+          /*  if (direction==1){
+                purchaseMembership()
+            }else if (direction==2){
+                purchaseSubscriptions()
+            }*/
             if (TextUtils.isEmpty(card_id)){
                 Utility.showSnackBarValidationError(mView!!.paymentFragmentConstraintLayout,
                     requireContext().getString(R.string.please_select_a_card_to_continue),
@@ -141,6 +150,198 @@ class PaymentFragment : Fragment() {
         }
 
     }
+
+/*    private fun purchaseSubscriptions() {
+        ServicePayment = true
+        if (Utility.isNetworkAvailable()){
+            requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+            frag_payment_progressBar.visibility= View.VISIBLE
+            val apiInterface = APIClient.getPaymentClient()!!.create(APIInterface::class.java)
+            val builder = APIClient.createBuilder(arrayOf("user_id","membership_id", "membership_price", "type", "subscription_id", "subscription_price"),
+                arrayOf(sharedPreferenceInstance!![SharedPreferenceUtility.UserId, 0].toString(),
+                    "", "", "2", subscription!!.subscription_plans_id.toString(), subscription!!.amount.toString()))
+            val call = apiInterface.paymentToken(builder.build())
+            call!!.enqueue(object : Callback<ResponseBody?> {
+                override fun onResponse(
+                    call: Call<ResponseBody?>,
+                    response: Response<ResponseBody?>
+                ) {
+                    frag_payment_progressBar.visibility = View.GONE
+                    requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+
+                    try {
+                        if(APIUtils.resultExplanationPaymentStatus){
+                            if (response.isSuccessful){
+                                if (APIUtils.ServicePaymentTOKEN.isEmpty()){
+                                    Utility.showSnackBarOnResponseError(paymentFragmentConstraintLayout,
+                                        getString(R.string.check_internet),
+                                        requireContext())
+                                }else{
+                                    val bundle = Bundle()
+                                    bundle.putString("TransToken", APIUtils.ServicePaymentTOKEN)
+                                    bundle.putString("user_id",sharedPreferenceInstance!![SharedPreferenceUtility.UserId, 0].toString())
+                                    bundle.putString("type","2")
+                                    bundle.putString("membership_id","")
+                                    bundle.putString("membership_price", "")
+                                    bundle.putString("subscription_id",subscription!!.subscription_plans_id.toString())
+                                    bundle.putString("subscription_price",subscription!!.amount.toString())
+                                    bundle.putString("days",subscription!!.days.toString())
+                                    bundle.putString("starting_at",subscription!!.created_at)
+                                    bundle.putString("ending_at",subscription!!.updated_at)
+                                    bundle.putBoolean("isRegister", false)
+                                    bundle.putBoolean("isPurchaseMembership", false)
+                                    bundle.putBoolean("isPurchaseSubscriptions", true)
+                                    startActivity(Intent(requireContext(), PaymentDetailsActivity::class.java).putExtras(bundle))
+                                }
+                            }else{
+                                Utility.showSnackBarOnResponseError(mView!!.paymentFragmentConstraintLayout,
+                                    getString(R.string.response_isnt_successful),
+                                    requireContext())
+                            }
+                        }else{
+                            Utility.showSnackBarOnResponseError(mView!!.paymentFragmentConstraintLayout,
+                                APIUtils.resultExplanationPayment,
+                                requireContext())
+                        }
+                    }catch (e : java.lang.Exception){
+                        e.printStackTrace()
+                    }
+                }
+
+                override fun onFailure(call: Call<ResponseBody?>, throwable: Throwable) {
+                    frag_payment_progressBar.visibility = View.GONE
+                    requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                    LogUtils.e("msg", throwable.message)
+                    Utility.showSnackBarOnResponseError(mView!!.paymentFragmentConstraintLayout,
+                        throwable.message.toString(),
+                        requireContext())
+                }
+
+            })
+        }
+    }
+
+    private fun purchaseMembership() {
+        ServicePayment = true
+        if (Utility.isNetworkAvailable()){
+            requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+            frag_payment_progressBar.visibility= View.VISIBLE
+            val apiInterface = APIClient.getPaymentClient()!!.create(APIInterface::class.java)
+            val builder = APIClient.createBuilder(arrayOf("user_id","membership_id", "membership_price", "type", "subscription_id", "subscription_price"),
+                arrayOf(sharedPreferenceInstance!![SharedPreferenceUtility.UserId, 0].toString(),
+                    membership!!.membership_id.toString(), membership!!.price.toString(), "1", "", ""))
+           *//* val builder = APIClient.createBuilder(arrayOf("user_id","membership_id", "card_id"),
+                arrayOf(sharedPreferenceInstance!![SharedPreferenceUtility.UserId, 0].toString(),
+                    membership!!.membership_id.toString(), card_id))*//*
+            val call = apiInterface.paymentToken(builder.build())
+            call!!.enqueue(object : Callback<ResponseBody?> {
+                override fun onResponse(
+                    call: Call<ResponseBody?>,
+                    response: Response<ResponseBody?>
+                ) {
+                    frag_payment_progressBar.visibility = View.GONE
+                    requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                    *//*if (response.isSuccessful){
+                        if(response.body()!=null){
+                            val jsonObject = JSONObject(response.body()!!.string())
+                            if (jsonObject.getInt("status")==1){
+                                val data = jsonObject.getJSONObject("data")
+                                if(data!=null){
+                                    val source = Gson().fromJson(data.getJSONObject("source").toString(), SourceModel::class.java)
+                                    val type = if (source.type==null){
+                                        ""
+                                    }else{
+                                        source.type
+                                    }
+                                    if (type.equals("CARD_NOT_PRESENT")){
+                                        Utility.showSnackBarOnResponseError(mView!!.paymentFragmentConstraintLayout,
+                                            requireContext().getString(R.string.card_is_not_valid),
+                                            requireContext())
+                                    }else{
+                                        url = data.getJSONObject("transaction").getString("url")
+                                        tapID = data.getString("id")
+                                        redirectionURL = data.getJSONObject("redirect").getString("url")+"/"+tapID
+                                        val bundle = Bundle()
+                                        bundle.putString("url", url)
+                                        bundle.putString("redirect_url", redirectionURL)
+                                        bundle.putString("tap_id", tapID)
+                                        bundle.putBoolean("isRegister", false)
+                                        bundle.putBoolean("isPurchaseMembership", true)
+                                        bundle.putBoolean("isPurchaseSubscriptions", false)
+                                        requireActivity().startActivity(Intent(requireContext(), TapPaymentActivity::class.java).putExtras(bundle))
+                                    }
+                                }
+                            }else{
+                                Utility.showSnackBarOnResponseError(mView!!.paymentFragmentConstraintLayout,
+                                    requireContext().getString(R.string.payment_failed),
+                                    requireContext())
+                            }
+                        }else{
+                            Utility.showSnackBarOnResponseError(mView!!.paymentFragmentConstraintLayout,
+                                requireContext().getString(R.string.payment_failed),
+                                requireContext())
+                        }
+                    }else{
+                        Utility.showSnackBarOnResponseError(mView!!.paymentFragmentConstraintLayout,
+                            requireContext().getString(R.string.response_isnt_successful),
+                            requireContext())
+
+                    }*//*
+
+
+                    try {
+                        if(APIUtils.resultExplanationPaymentStatus){
+                            if (response.isSuccessful){
+                                if (APIUtils.ServicePaymentTOKEN.isEmpty()){
+                                    Utility.showSnackBarOnResponseError(membershipRegistrationActivityConstraintLayout,
+                                        getString(R.string.check_internet),
+                                        requireContext())
+                                }else{
+                                    val bundle = Bundle()
+                                    bundle.putString("TransToken", APIUtils.ServicePaymentTOKEN)
+                                    bundle.putString("user_id",sharedPreferenceInstance!![SharedPreferenceUtility.UserId, 0].toString())
+                                    bundle.putString("type","1")
+                                    bundle.putString("membership_id",membership!!.membership_id.toString())
+                                    bundle.putString("membership_price", membership!!.price.toString())
+                                    bundle.putString("subscription_id","")
+                                    bundle.putString("subscription_price","")
+                                    bundle.putString("days","")
+                                    bundle.putString("starting_at","")
+                                    bundle.putString("ending_at","")
+                                    bundle.putBoolean("isRegister", false)
+                                    bundle.putBoolean("isPurchaseMembership", true)
+                                    bundle.putBoolean("isPurchaseSubscriptions", false)
+                                    startActivity(Intent(requireContext(), PaymentDetailsActivity::class.java).putExtras(bundle))
+                                }
+                            }else{
+                                Utility.showSnackBarOnResponseError(mView!!.paymentFragmentConstraintLayout,
+                                    getString(R.string.response_isnt_successful),
+                                    requireContext())
+                            }
+                        }else{
+                            Utility.showSnackBarOnResponseError(mView!!.paymentFragmentConstraintLayout,
+                                APIUtils.resultExplanationPayment,
+                                requireContext())
+                        }
+                    }catch (e : java.lang.Exception){
+                        e.printStackTrace()
+                    }
+                }
+
+                override fun onFailure(call: Call<ResponseBody?>, throwable: Throwable) {
+                    frag_payment_progressBar.visibility = View.GONE
+                    requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                    LogUtils.e("msg", throwable.message)
+                    Utility.showSnackBarOnResponseError(mView!!.paymentFragmentConstraintLayout,
+                        throwable.message.toString(),
+                        requireContext())
+                }
+
+            })
+        }
+    }*/
+
+
 
     private fun purchaseSubscriptions() {
         if (Utility.isNetworkAvailable()){

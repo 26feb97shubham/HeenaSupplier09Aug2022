@@ -1,6 +1,7 @@
 package com.heena.supplier.`interface`
 
 
+import android.view.View
 import com.heena.supplier.models.CategoryItem
 import com.heena.supplier.models.Content
 import java.util.*
@@ -8,6 +9,10 @@ import java.util.*
 interface ClickInterface {
     interface OnRecyclerItemClick{
         fun OnClickAction(position: Int)
+    }
+
+    interface OnRecyclerMembershipItemClick{
+        fun OnClickAction(viewItem : View, position: Int)
     }
 
     interface OnGalleryItemClick{

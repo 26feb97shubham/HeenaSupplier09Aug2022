@@ -15,10 +15,12 @@ import com.heena.supplier.activities.ChooseLoginSignUpActivity
 import com.heena.supplier.application.MyApp.Companion.sharedPreferenceInstance
 import com.heena.supplier.utils.SharedPreferenceUtility
 import com.heena.supplier.utils.Utility
+import kotlinx.android.synthetic.main.fragment_intro.*
 
 class IntroFragment(val position: Int) : Fragment() {
     private var btnContinue : TextView? = null
     private var ivLogo : ImageView? = null
+    private var mainIV : ImageView? = null
     private var mainView : ConstraintLayout?= null
     private var tvIntroContent : TextView? = null
     private var mView: View? = null
@@ -39,24 +41,25 @@ class IntroFragment(val position: Int) : Fragment() {
         btnContinue = mView!!.findViewById(R.id.tv_continue)
         ivLogo = mView!!.findViewById(R.id.iv_logo)
         mainView = mView!!.findViewById(R.id.mainView)
+        mainIV = mView!!.findViewById(R.id.mainIV)
         tvIntroContent = mView!!.findViewById(R.id.tv_intro_content)
 
 
         when (position) {
             0 -> {
-                mainView!!.setBackgroundResource(R.drawable.intro_screen_1_bg)
+                mainIV!!.setImageResource(R.drawable.intro_screen_1_bg)
                 ivLogo!!.visibility = View.GONE
                 btnContinue!!.visibility = View.GONE
                 tvIntroContent!!.text = getString(R.string.intro_page_1_txt)
             }
             1 -> {
-                mainView!!.setBackgroundResource(R.drawable.intro_screen_2_bg)
+                mainIV!!.setImageResource(R.drawable.intro_screen_2_bg)
                 ivLogo!!.visibility = View.GONE
                 btnContinue!!.visibility = View.GONE
                 tvIntroContent!!.text = getString(R.string.intro_page_2_txt)
             }
             else -> {
-                mainView!!.setBackgroundResource(R.drawable.intro_screen_3_bg)
+                mainIV!!.setImageResource(R.drawable.intro_screen_3_bg)
                 ivLogo!!.visibility = View.VISIBLE
                 btnContinue!!.visibility = View.VISIBLE
                 tvIntroContent!!.text = getString(R.string.intro_page_3_txt)

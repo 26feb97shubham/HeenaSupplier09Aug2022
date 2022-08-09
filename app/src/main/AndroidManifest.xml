@@ -40,6 +40,9 @@
         android:usesCleartextTraffic="true"
         android:windowSoftInputMode="adjustResize|stateVisible">
         <activity
+            android:name=".activities.PaymentDetailsActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.AddCardWebActivity"
             android:exported="false" />
         <activity

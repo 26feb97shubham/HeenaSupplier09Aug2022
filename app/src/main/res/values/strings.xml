@@ -367,4 +367,11 @@
     <string name="please_do_not_press_back_button_until_the_add_card_is_is_process">Please do not press back button until the card adding is in process</string>
     <string name="excel_sheet_downloaded_successfully">Revenue document has been downloaded successfully. Kindly check your phone storage or internal memory card or download section.</string>
     <string name="please_select_the_address_first">Please select the address first!</string>
+    <string name="membership_purchased_successfully">Membership purchased successfully</string>
+    <string name="subscription_purchased_successfully">Subscription purchased successfully</string>
+    <string name="please_select_the_subscription_plan_first_to_continue">Please select the subscription plan to continue</string>
+    <string name="please_enter_valid_mobile_number">Please enter valid mobile number</string>
+    <string name="subscription_status">Subscription Status</string>
+    <string name="payment_status">Payment Status</string>
+    <string name="enter_your_email_address_and_mobile_number_and_we_will_be_sending_you_the_otp_to_reset_your_password">Enter your email address and mobile number and we will be sending you the OTP to reset your password</string>
 </resources>

@@ -119,84 +119,98 @@
                 android:background="@color/gold"
                 app:layout_constraintTop_toBottomOf="@id/tv_membership_desc" />
 
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/tv_payment_txt2"
-                android:layout_width="wrap_content"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cardCL"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_8sdp"
-                android:ellipsize="end"
-                android:fontFamily="@font/avenir_medium"
-                android:gravity="start"
-                android:maxLines="1"
-                android:text="@string/payment"
-                android:textAlignment="viewStart"
-                android:textAllCaps="false"
-                android:textColor="@color/gold"
-                android:textDirection="locale"
-                android:textSize="@dimen/_10ssp"
-                android:textStyle="normal"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/view2" />
-
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/tv_add_new_card"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_20sdp"
-                android:drawablePadding="@dimen/_8sdp"
-                android:ellipsize="end"
-                android:fontFamily="@font/avenir_medium"
-                android:gravity="center_vertical"
-                android:maxLines="1"
-                android:text="@string/add_new_card"
-                android:textAllCaps="false"
-                android:textColor="@color/gold"
-                android:textDirection="locale"
-                android:textSize="@dimen/_10ssp"
-                android:textStyle="normal"
-                app:drawableStartCompat="@drawable/plus_layer_list"
-                app:layout_constraintBottom_toBottomOf="@id/tv_payment_txt2"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/tv_payment_txt2" />
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/card_creditcard"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_8sdp"
-                android:maxHeight="@dimen/_100sdp"
                 android:visibility="visible"
-                app:cardCornerRadius="@dimen/_6sdp"
+                android:layout_marginTop="@dimen/_8sdp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_payment_txt2"
-                app:strokeColor="@color/gold"
-                app:strokeWidth="@dimen/_1sdp">
+                app:layout_constraintTop_toBottomOf="@id/view2">
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rv_cards_listing"
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tv_payment_txt2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_8sdp"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/avenir_medium"
+                    android:gravity="start"
+                    android:maxLines="1"
+                    android:text="@string/payment"
+                    android:textAlignment="viewStart"
+                    android:textAllCaps="false"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:textColor="@color/gold"
+                    android:textDirection="locale"
+                    android:textSize="@dimen/_10ssp"
+                    android:textStyle="normal" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tv_add_new_card"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_20sdp"
+                    android:drawablePadding="@dimen/_8sdp"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/avenir_medium"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:text="@string/add_new_card"
+                    android:textAllCaps="false"
+                    android:textColor="@color/gold"
+                    android:textDirection="locale"
+                    android:textSize="@dimen/_10ssp"
+                    android:textStyle="normal"
+                    app:drawableStartCompat="@drawable/plus_layer_list"
+                    app:layout_constraintBottom_toBottomOf="@id/tv_payment_txt2"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/tv_payment_txt2" />
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/card_creditcard"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:padding="@dimen/_8sdp" />
-            </com.google.android.material.card.MaterialCardView>
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_8sdp"
+                    android:maxHeight="@dimen/_100sdp"
+                    android:visibility="visible"
+                    app:cardCornerRadius="@dimen/_6sdp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_payment_txt2"
+                    app:strokeColor="@color/gold"
+                    app:strokeWidth="@dimen/_1sdp">
 
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/tv_no_cards_found_service_payment"
-                android:layout_width="@dimen/_200sdp"
-                android:layout_height="@dimen/_100sdp"
-                android:layout_marginHorizontal="@dimen/_10sdp"
-                android:layout_marginTop="@dimen/_28sdp"
-                android:fontFamily="@font/avenir_medium"
-                android:gravity="center"
-                android:padding="@dimen/_10sdp"
-                android:text="@string/no_cards_found"
-                android:textColor="@color/gold"
-                android:textSize="@dimen/_15ssp"
-                android:textStyle="normal"
-                android:visibility="gone"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/card_creditcard" />
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rv_cards_listing"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="@dimen/_8sdp" />
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tv_no_cards_found_service_payment"
+                    android:layout_width="@dimen/_200sdp"
+                    android:layout_height="@dimen/_100sdp"
+                    android:layout_marginHorizontal="@dimen/_10sdp"
+                    android:layout_marginTop="@dimen/_28sdp"
+                    android:fontFamily="@font/avenir_medium"
+                    android:gravity="center"
+                    android:padding="@dimen/_10sdp"
+                    android:text="@string/no_cards_found"
+                    android:textColor="@color/gold"
+                    android:textSize="@dimen/_15ssp"
+                    android:textStyle="normal"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/card_creditcard" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
             <View
                 android:id="@+id/view3"
@@ -204,7 +218,8 @@
                 android:layout_height="1dp"
                 android:layout_marginTop="@dimen/_14sdp"
                 android:background="@color/gold"
-                app:layout_constraintTop_toBottomOf="@id/tv_no_cards_found_service_payment" />
+                android:visibility="visible"
+                app:layout_constraintTop_toBottomOf="@id/cardCL" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_subscribe"

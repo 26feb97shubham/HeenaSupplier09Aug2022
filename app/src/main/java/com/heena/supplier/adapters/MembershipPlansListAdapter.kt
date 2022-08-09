@@ -1,6 +1,7 @@
 package com.heena.supplier.adapters
 
 import android.content.Context
+import android.graphics.Color
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -20,21 +21,10 @@ class MembershipPlansListAdapter(private val context: Context,
                                  private val membershipList: ArrayList<Membership>,
                                  private val click: ClickInterface.OnRecyclerItemClick)
     : RecyclerView.Adapter<MembershipPlansListAdapter.MembershipPlansListAdapterVH>() {
-    private var checkedPosition : Int = -1
-    init {
-        setHasStableIds(true)
-    }
+    var mSelectedItem = -1
     inner class MembershipPlansListAdapterVH(itemView: View) : RecyclerView.ViewHolder(itemView){
         init {
             itemView.iv_selected_unselected.visibility = View.GONE
-        }
-
-        fun getMembershipDetails() : ItemDetailsLookup.ItemDetails<Long> = object :
-            ItemDetailsLookup.ItemDetails<Long>() {
-            override fun getPosition(): Int = adapterPosition
-
-            override fun getSelectionKey(): Long  = itemId
-
         }
 
         fun onBindData(position: Int) {
@@ -44,27 +34,16 @@ class MembershipPlansListAdapter(private val context: Context,
             )
             itemView.tv_membership_desc.text = membershipList[position].description
 
-            itemView.setSafeOnClickListener {
+            if (position == mSelectedItem){
                 itemView.iv_selected_unselected.visibility = View.VISIBLE
-                if (checkedPosition!=adapterPosition){
-                    notifyItemChanged(checkedPosition)
-                    checkedPosition = adapterPosition
-                }
-                click.OnClickAction(position)
-            }
-
-            if(MembershipBottomSheetDialogFragment.dashboardMembershipId==membershipList[position].membership_id){
-                checkedPosition = position
-            }
-
-            if(checkedPosition==-1){
-                itemView.iv_selected_unselected.visibility = View.GONE
             }else{
-                if (checkedPosition == adapterPosition){
-                    itemView.iv_selected_unselected.visibility = View.VISIBLE
-                }else{
-                    itemView.iv_selected_unselected.visibility = View.GONE
-                }
+                itemView.iv_selected_unselected.visibility = View.GONE
+            }
+
+            itemView.setSafeOnClickListener {
+                mSelectedItem =adapterPosition
+                notifyDataSetChanged()
+                click.OnClickAction(mSelectedItem)
             }
         }
     }
@@ -75,7 +54,7 @@ class MembershipPlansListAdapter(private val context: Context,
     }
 
     override fun onBindViewHolder(holder: MembershipPlansListAdapterVH, position: Int) {
-       holder.onBindData(position)
+        holder.onBindData(position)
     }
 
     override fun getItemCount(): Int {
@@ -87,9 +66,9 @@ class MembershipPlansListAdapter(private val context: Context,
     }
 
     fun getSelected() : Membership? {
-        if (checkedPosition!=-1){
-            Log.e("pos", ""+checkedPosition)
-            return membershipList.get(checkedPosition)
+        if (mSelectedItem!=-1){
+            Log.e("pos", ""+mSelectedItem)
+            return membershipList.get(mSelectedItem)
         }
         return null
     }

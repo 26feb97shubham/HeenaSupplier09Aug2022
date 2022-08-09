@@ -351,4 +351,9 @@
     <string name="excel_sheet_downloaded_successfully">تم تنزيل مستند الإيرادات بنجاح. يرجى التحقق من تخزين هاتفك أو بطاقة الذاكرة الداخلية أو قسم التنزيل.</string>
     <string name="iban" translatable="false">"رقم الحساب المصرفي الدولي "</string>
     <string name="cvv" translatable="false">حفظ البطاقة</string>
+    <string name="search_address">عنوان البحث</string>
+    <string name="please_do_not_press_back_button_until_the_add_card_is_is_process">يرجى عدم الضغط على زر الرجوع حتى تتم عملية إضافة البطاقة</string>
+    <string name="please_select_the_address_first">الرجاء تحديد العنوان أولا!</string>
+    <string name="membership_purchased_successfully">تم شراء العضوية بنجاح</string>
+    <string name="subscription_purchased_successfully">تم شراء الاشتراك بنجاح</string>
 </resources>

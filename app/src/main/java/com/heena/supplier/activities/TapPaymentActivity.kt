@@ -198,6 +198,35 @@ class TapPaymentActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        LogUtils.shortToast(this, R.string.payment.toString())
+        cancelPaymentDialog = AlertDialog.Builder(this)
+
+        cancelPaymentDialog.setTitle(R.string.cancel_payment)
+        cancelPaymentDialog.setMessage(R.string.cancel_payment_message)
+        cancelPaymentDialog.setCancelable(false)
+        cancelPaymentDialog.setPositiveButton(R.string.yes
+        ) { _, _ ->
+            finish()
+            showCancellationDialog(R.string.payment_status.toString(),R.string.cancel_message.toString())
+            startActivity(Intent(this, HomeActivity::class.java))
+        }
+
+        cancelPaymentDialog.setNegativeButton(R.string.no
+        ) { p0, _ -> p0!!.cancel() }
+
+
+        val cancelAlert = cancelPaymentDialog.create()
+        cancelAlert.setTitle(R.string.cancel_payment)
+        cancelAlert.show()
+    }
+
+    private fun showCancellationDialog(title: String,message: String) {
+        val customToastLayout = layoutInflater.inflate(R.layout.custom_toast_layout,llCustomToastContainer)
+        val customToast = Toast(this)
+        customToast.view = customToastLayout
+        customToast.setGravity(Gravity.CENTER,0,0)
+        customToast.duration = Toast.LENGTH_LONG
+        customToastLayout.tv_booking_confirmed.text = title
+        customToastLayout.tv_booking_confirmed_message.text = message
+        customToast.show()
     }
 }

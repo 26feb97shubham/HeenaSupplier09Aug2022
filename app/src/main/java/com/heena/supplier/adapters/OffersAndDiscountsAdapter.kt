@@ -30,31 +30,60 @@ class OffersAndDiscountsAdapter(
     var favAdded : Boolean = true
     inner class OffersAndDiscountsAdapterVH(val offeritemView : View) : RecyclerView.ViewHolder(offeritemView){
         fun bind(offerItem: OfferItem, position: Int) {
-            Glide.with(context).load(offerItem.gallery!![0])
-                .listener(object : RequestListener<Drawable>{
-                    override fun onLoadFailed(
-                        e: GlideException?,
-                        model: Any?,
-                        target: Target<Drawable>?,
-                        isFirstResource: Boolean
-                    ): Boolean {
-                        offeritemView.offers_loader.visibility = View.GONE
-                        return false
-                    }
+            if (offerItem.gallery!!.isEmpty()){
+                Glide.with(context).load(R.drawable.def_henna)
+                    .listener(object : RequestListener<Drawable>{
+                        override fun onLoadFailed(
+                            e: GlideException?,
+                            model: Any?,
+                            target: Target<Drawable>?,
+                            isFirstResource: Boolean
+                        ): Boolean {
+                            offeritemView.offers_loader.visibility = View.GONE
+                            return false
+                        }
 
-                    override fun onResourceReady(
-                        resource: Drawable?,
-                        model: Any?,
-                        target: Target<Drawable>?,
-                        dataSource: DataSource?,
-                        isFirstResource: Boolean
-                    ): Boolean {
-                        offeritemView.offers_loader.visibility = View.GONE
-                        return false
-                    }
+                        override fun onResourceReady(
+                            resource: Drawable?,
+                            model: Any?,
+                            target: Target<Drawable>?,
+                            dataSource: DataSource?,
+                            isFirstResource: Boolean
+                        ): Boolean {
+                            offeritemView.offers_loader.visibility = View.GONE
+                            return false
+                        }
 
-                }).placeholder(R.drawable.def_henna)
-                .into(offeritemView.img)
+                    }).placeholder(R.drawable.def_henna)
+                    .into(offeritemView.img)
+            }else{
+                Glide.with(context).load(offerItem.gallery!![0])
+                    .listener(object : RequestListener<Drawable>{
+                        override fun onLoadFailed(
+                            e: GlideException?,
+                            model: Any?,
+                            target: Target<Drawable>?,
+                            isFirstResource: Boolean
+                        ): Boolean {
+                            offeritemView.offers_loader.visibility = View.GONE
+                            return false
+                        }
+
+                        override fun onResourceReady(
+                            resource: Drawable?,
+                            model: Any?,
+                            target: Target<Drawable>?,
+                            dataSource: DataSource?,
+                            isFirstResource: Boolean
+                        ): Boolean {
+                            offeritemView.offers_loader.visibility = View.GONE
+                            return false
+                        }
+
+                    }).placeholder(R.drawable.def_henna)
+                    .into(offeritemView.img)
+            }
+
             offeritemView.tv_services.text = offerItem.name
             offeritemView.tv_original_price.text = "AED ${
                 Utility.convertDoubleValueWithCommaSeparator(

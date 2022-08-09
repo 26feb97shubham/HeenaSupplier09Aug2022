@@ -28,6 +28,7 @@ import java.io.IOException
 
 class ForgotPasswordActivity : AppCompatActivity() {
     var emailAddress: String?=null
+    var mobileNumber: String?=null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_forgot_password2)
@@ -47,6 +48,15 @@ class ForgotPasswordActivity : AppCompatActivity() {
             }
         }
 
+        edtMobileNumber.doOnTextChanged { _, _, _, _ ->
+            if (!TextUtils.isEmpty(mobileNumber) && mobileNumber!!.length<7) {
+                Utility.showSnackBarValidationError(forgotPasswordActivityConstraintLayout,
+                    getString(R.string.please_enter_valid_mobile_number),
+                    this)
+            }
+        }
+
+
         btnSubmit.setSafeOnClickListener {
             btnSubmit.startAnimation(AlphaAnimation(1f, 0.5f))
             sharedPreferenceInstance!!.hideSoftKeyBoard(this, btnSubmit)
@@ -56,12 +66,18 @@ class ForgotPasswordActivity : AppCompatActivity() {
 
     private fun validateAndForgot() {
         emailAddress = edtemailaddress.text.toString().trim()
+        mobileNumber = edtMobileNumber.text.toString().trim()
 
         if(TextUtils.isEmpty(emailAddress)){
             Utility.showSnackBarValidationError(forgotPasswordActivityConstraintLayout,
                 getString(R.string.please_enter_valid_email),
                 this)
-        }else{
+        }/*else if (TextUtils.isEmpty(mobileNumber)){
+            Utility.showSnackBarValidationError(forgotPasswordActivityConstraintLayout,
+                getString(R.string.please_enter_your_phone_number),
+                this)
+        }*/
+        else{
             forgotPassword()
         }
     }

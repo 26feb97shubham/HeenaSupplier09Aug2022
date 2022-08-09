@@ -178,4 +178,13 @@ interface APIInterface {
 
     @GET(APIUtils.transaction_excel)
     fun getTransactionURL(@Path("user_id") manager_id : Int,@QueryMap query : HashMap<String, String>):Call<TransactionURLResponse?>?
+
+    @POST(APIUtils.PAYMENTTOKEN)
+    fun paymentToken(@Body body: RequestBody?) : Call<ResponseBody?>
+
+    @POST(APIUtils.successtransaction)
+    fun successtransaction(@Body body: RequestBody?) : Call<ResponseBody?>
+
+    @POST(APIUtils.successtransactionSub)
+    fun successtransactionSub(@Body body: RequestBody?) : Call<ResponseBody?>
 }

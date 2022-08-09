@@ -471,6 +471,7 @@
                     android:fontFamily="@font/avenir_medium"
                     android:gravity="end"
                     android:text="@string/payment"
+                    android:visibility="visible"
                     android:textAllCaps="false"
                     android:textColor="@color/gold"
                     android:textSize="@dimen/_12ssp"

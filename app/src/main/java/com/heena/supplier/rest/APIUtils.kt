@@ -60,4 +60,12 @@ object APIUtils {
         const val createCharge = "create_charge"
         const val createChargeSubscriptions = "create_charge_subscriptions"
         const val transaction_excel = "transaction_excel/{user_id}"
+        const val PAYMENTTOKEN : String = "paymenttoken"
+        const val successtransaction : String = "payment/successtransaction"
+        const val successtransactionSub : String = "payment/successtransactionSub"
+        var ServicePayment = false
+        var ServicePaymentTOKEN = ""
+        var resultCodePayment = ""
+        var resultExplanationPayment = ""
+        var resultExplanationPaymentStatus = false
 }
